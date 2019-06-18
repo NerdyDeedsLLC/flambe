@@ -1,0 +1,56 @@
+{
+  "name": "flambe",
+  "version": "1.0.0",
+  "description": "An Excel-ent way of persuading JIRA to provide burndown charts for the current iteration",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NerdyDeedsLLC/flambe.git"
+  },
+  "keywords": [
+    "flambe",
+    "jira",
+    "excel",
+    "burndown",
+    "chart"
+  ],
+  "author": "@JJ (NerdyDeeds, LLC)",
+  "license": "SEE LICENSE IN ./license.md",
+  "bugs": {
+    "url": "https://github.com/NerdyDeedsLLC/flambe/issues"
+  },
+  "homepage": "https://github.com/NerdyDeedsLLC/flambe#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "async": "^2.6.1",
+    "browser-sync": "^2.26.7",
+    "gulp": "^4.0.0",
+    "gulp-autoprefixer": "^6.0.0",
+    "gulp-babel": "^8.0.0",
+    "gulp-fn": "0.0.3",
+    "gulp-postcss": "^8.0.0",
+    "gulp-run-command": "0.0.9",
+    "gulp-sass": "^4.0.2",
+    "gulp-watch": "^5.0.1",
+    "known-css-properties": "^0.5.0",
+    "minimatch": "^3.0.2",
+    "moment": "^2.23.0",
+    "request": "^2.88.0",
+    "rucksack-css": "^1.0.2",
+    "sass": "^1.15.2",
+    "gulp-changed": "^3.2.0",
+    "gulp-cli": "^2.0.1",
+    "gulp-notify": "^3.2.0",
+    "gulp-shell": "^0.6.5",
+    "gulp-streamify": "^1.0.2"
+  },
+  "browserslist": [
+    "last 1 version",
+    "> 1%",
+    "IE 10"
+  ]
+}
