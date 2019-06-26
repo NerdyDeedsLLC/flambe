@@ -1,0 +1,37 @@
+Issue key,Issue id,Parent id,Summary,Assignee,Remaining Estimate,Status
+DIGTDEV-12075,620041,,POST : DEFECTRACK - ITR15 Amigo Maintenance,Sairaghu.Uppala@sprint.com,0,Done
+DIGTDEV-11867,617851,,POST : TESTING - Reusable Data Grid Component,Manasa.Gottipati@sprint.com,0,Done
+DIGTDEV-11189,608521,,"POST : TESTING - ADMIN : Merge Code/""Tag"" Management UI",Manasa.Gottipati@sprint.com,57600,Definition
+DIGTDEV-12042,619757,,POST : CICD - Pipeline for POST Microservices (ITR15),Deepak.Ganta@sprint.com,0,In Development
+DIGTDEV-12043,619758,619757,"CLONE - Obtain environments for Dev/QA/Pre-Staging, Prod corresponding to their respective branches",Deepak.Ganta@sprint.com,,Completed
+DIGTDEV-12088,620263,619757,Create a bit bucket repository for notification-template management.,Deepak.Ganta@sprint.com,,Completed
+DIGTDEV-12428,623012,619757,Create a documentation for the Gitflow of the development process.,Deepak.Ganta@sprint.com,,Completed
+DIGTDEV-11998,619463,,POST : JAVA BE - Configure Document Definitions in Couchbase (Template Management),Harika.Kopparapu@sprint.com,0,In Development
+DIGTDEV-12078,620144,,POST : JAVA BE - Create API endpoints for CRUD Ops:  Get Templates,Joseph.Chantiny@sprint.com,3600,In Development
+DIGTDEV-12079,620145,,POST : JAVA BE - Create API endpoints for 3 CRUD Ops: Tags,Anil.Reddy@sprint.com,0,Done
+DIGTDEV-12084,620152,620145,PUT for New Tags,Anil.Reddy@sprint.com,,Completed
+DIGTDEV-12044,619760,,POST : PMGUI - TEMPL (Component) - Template Designer Tag Chooser,Pavankumar.Durgempudi@sprint.com,0,Done
+DIGTDEV-12045,619762,,POST : PMGUI - TEMPL (Component) - Drag-Drop Tag Insertion (Sidebar),Mounika.Giraboina@sprint.com,122400,In Development
+DIGTDEV-12050,619767,,POST : PMGUI - GLOBAL COMPONENT - Data-Driven Message Previewer,jason.jurusz@sprint.com,57600,In Development
+DIGTDEV-12226,621018,,Configure AEM and execute chq ,vivekreddy.doma@sprint.com,0,Done
+DIGTDEV-12495,624111,621018,utilize miremock to create stubs for Change plan flow,vivekreddy.doma@sprint.com,0,Completed
+DIGTDEV-11079,604889,,POST : Select Interaction (Testing),Manasa.Gottipati@sprint.com,0,Done
+DIGTDEV-11177,608360,604889,Testing,Manasa.Gottipati@sprint.com,0,Completed
+DIGTDEV-11261,609744,604889,select interaction work,Mounika.Giraboina@sprint.com,0,Completed
+DIGTDEV-11137,606079,,"POST : ADMIN : Merge Code/""Tag"" Management UI",jason.jurusz@sprint.com,0,Done
+DIGTDEV-11186,608517,606079,Set up and configure our long-term data store (Couchbase),sasanth.tummala@sprint.com,0,Completed
+DIGTDEV-11187,608518,606079,Build services/API for Create/Read/Update/Delete,jason.jurusz@sprint.com,0,Completed
+DIGTDEV-11188,608520,606079,Hard-code (seed) some dummy data,jason.jurusz@sprint.com,0,Completed
+DIGTDEV-12012,619703,606079,Patch grid to work with React Textarea and Checkboxes,jason.jurusz@sprint.com,7200,In Progress
+DIGTDEV-12077,620143,,POST : JAVA BE - Process YAML through MS Builder (Template Management),saisurya.pamidipati@sprint.com,0,Done
+DIGTDEV-12076,620142,,POST : JAVA BE - Revise YAML for Template Management,saisurya.pamidipati@sprint.com,0,Done
+DIGTDEV-11991,619453,,POST : JAVA BE - Create YAML for Outbound Service,saisurya.pamidipati@sprint.com,0,Done
+DIGTDEV-12358,622626,619453,Wokring on initial Document for Required End points,saisurya.pamidipati@sprint.com,0,Completed
+DIGTDEV-11994,619457,,POST : JAVA BE - Process YAML through MS Builder (Outbound Service),saisurya.pamidipati@sprint.com,0,Done
+DIGTDEV-11383,611068,,POST : BOOKKEEPING - Create the POST Interface Detailed Description (IDD) document,jason.jurusz@sprint.com,0,Done
+DIGTDEV-11384,611074,,POST : BE : Create the Swagger file for the project - Role Management,saisurya.pamidipati@sprint.com,0,Done
+DIGTDEV-11649,613889,611074,Requirement Understaning ,saisurya.pamidipati@sprint.com,,Completed
+DIGTDEV-11650,613890,611074,Publish Draft Swagger for discussions,saisurya.pamidipati@sprint.com,0,Completed
+DIGTDEV-11651,613891,611074,Discussion with Team on Swagger file,saisurya.pamidipati@sprint.com,0,Completed
+DIGTDEV-11667,614584,611074,Create Initial Skeleton for MS,saisurya.pamidipati@sprint.com,0,Completed
+DIGTDEV-11682,614789,611074,Create IDD,saisurya.pamidipati@sprint.com,0,Completed

@@ -1,0 +1,150 @@
+<html><head>
+    <title>read-excel-file</title>
+
+    <meta charset="utf-8">
+
+    <script src="./lib/js/read-excel-file.min.js"></script>
+    <script src="./lib/js/csv-to-json.js"></script>
+
+    <style>
+        body
+        {
+            margin : 20px;
+            font-family : Arial, Helvetica;
+        }
+
+        #input
+        {
+            margin-top    : 20px;
+            margin-bottom : 10px;
+        }
+
+
+        #result-table table
+        {
+            width : 100%;
+            border-collapse : collapse;
+            margin-top    : 2.5em;
+            margin-bottom : 2.5em;
+            font-size     : 12px;
+      }
+
+        #result-table table td
+        {
+            border : 1px solid black;
+            padding : 0.5em;
+
+            text-overflow : ellipsis;
+            overflow      : hidden;
+            max-width     : 10em;
+            white-space   : nowrap;
+        }
+
+        #main-link
+        {
+            display     : block;
+            font-size   : 24px;
+            color       : #0093C4;
+            font-family : monospace;
+            text-decoration : none;
+        }
+    </style>
+</head>
+
+<body>
+    <a id="main-link" href="https://github.com/catamphetamine/read-excel-file">
+        read-excel-file
+    </a>
+
+    <input type="file" id="input" multiple>
+
+    <div style="font-size: 12px">
+        * Parsing to JSON with a strict schema is supported. <a target="_blank" href="https://github.com/catamphetamine/read-excel-file#json" style="color: #0093C4; text-decoration: none">Read more</a>.
+    </div>
+
+    <div id="result-table"></div>
+
+    <pre id="result"></pre>
+
+
+
+    <script>
+        window.fileBuffer = [];
+        const ingestFileData = (fileObj, name, date, cb) => {
+            let textOutput = "";
+            var reader = new FileReader();
+            reader.onload = function(progressEvent){
+                // Entire file
+                // console.log(this.result);
+                
+                // By lines
+                var lines = this.result.split('\n');
+                var hdrs = lines[0].split(',');
+
+                var opRow = "";
+                var opSet = [];
+                
+                for(var line = 1; line < lines.length-1; line++){
+                    currentLine = lines[line].split(',');
+                    opRow={};
+                    hdrs.forEach((h,i)=>{
+                        opRow[h] = currentLine[i];
+                    });
+                    opSet.push(opRow);
+                }
+                appendToBuffer(opSet);
+            };
+            reader.readAsText(fileObj);
+        }
+
+        const appendToBuffer = (obj) => {
+            window.fileBuffer.push(obj);
+            
+            
+            // console.table(obj);
+
+        }
+
+
+        let input = document.getElementById('input'), buffer = [];
+
+        input.addEventListener('change', () => {
+
+            var promise1 = new Promise(function(resolve, reject) {
+
+                for(var i=0; i<input.files.length; i++){
+                    ingestFileData(input.files[i], input.files[i].name, new Date(input.files[i].lastModified).toLocaleString());
+                    
+                }
+               
+                    resolve(this);
+                }).then(function(value) {
+                console.log(window.fileBuffer);
+                // expected output: "foo"
+                });
+
+                return;
+                for(var i=0; i<input.files.length; i++){
+                    let fName = input.files[i].name;
+                    let modDate = new Date(input.files[i].lastModified).toLocaleString();
+                    readXlsxFile(input.files[i], { dateFormat: 'MM/DD/YY' }).then(
+                        (data)  => {buffer.push(
+                            {
+                                fileName: fName
+                                ,fileData: data
+                                ,lModDate: modDate
+                            }
+                        )}, 
+                        (error) => {
+                            console.error(error)
+                            alert("Error while parsing Excel file. See console output for the error stack trace.")
+                        }
+                    ).then(()=>{ console.log(buffer); return true});
+                }
+   
+        });
+        
+    </script>
+
+
+</body></html>

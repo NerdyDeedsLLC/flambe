@@ -23,7 +23,9 @@
     "url": "https://github.com/NerdyDeedsLLC/flambe/issues"
   },
   "homepage": "https://github.com/NerdyDeedsLLC/flambe#readme",
-  "dependencies": {},
+  "dependencies": {
+    "exceljs": "^1.13.0"
+  },
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "async": "^2.6.1",
