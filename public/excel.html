@@ -1,150 +1,182 @@
-<html><head>
+<html>
+
+<head>
     <title>read-excel-file</title>
-
     <meta charset="utf-8">
-
     <script src="./lib/js/read-excel-file.min.js"></script>
     <script src="./lib/js/csv-to-json.js"></script>
-
+    <link rel="stylesheet" href="lib/css/excel.css">
     <style>
-        body
-        {
-            margin : 20px;
-            font-family : Arial, Helvetica;
-        }
-
-        #input
-        {
-            margin-top    : 20px;
-            margin-bottom : 10px;
-        }
-
-
-        #result-table table
-        {
-            width : 100%;
-            border-collapse : collapse;
-            margin-top    : 2.5em;
-            margin-bottom : 2.5em;
-            font-size     : 12px;
-      }
-
-        #result-table table td
-        {
-            border : 1px solid black;
-            padding : 0.5em;
-
-            text-overflow : ellipsis;
-            overflow      : hidden;
-            max-width     : 10em;
-            white-space   : nowrap;
-        }
-
-        #main-link
-        {
-            display     : block;
-            font-size   : 24px;
-            color       : #0093C4;
-            font-family : monospace;
-            text-decoration : none;
-        }
+        
     </style>
 </head>
 
 <body>
-    <a id="main-link" href="https://github.com/catamphetamine/read-excel-file">
-        read-excel-file
-    </a>
-
     <input type="file" id="input" multiple>
 
-    <div style="font-size: 12px">
-        * Parsing to JSON with a strict schema is supported. <a target="_blank" href="https://github.com/catamphetamine/read-excel-file#json" style="color: #0093C4; text-decoration: none">Read more</a>.
+    <div class="settings-panel">
+    <input type="checkbox" id="option-box-1" class="option-box" name="option-box-1" checked onchange="handleSettings()">
+    <label for="option-box-1" class="option-label">JIRA Filename <i>format assumed to be default for imported files?</i></label>
+    <input type="checkbox" id="option-box-2" class="option-box" name="option-box-2" checked onchange="handleSettings()">
+    <label for="option-box-2" class="option-label">ISO Date/Time <i>promanently featured in filename?</i></label>
+    <input type="checkbox" id="option-box-3" class="option-box" name="option-box-3" checked onchange="handleSettings()">
+    <label for="option-box-3" class="option-label">Auto-sort <i>files by on name when first loaded?</i></label>
     </div>
-
+    <ol id="file-process-sequence"></ol>
     <div id="result-table"></div>
-
     <pre id="result"></pre>
-
-
-
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <script>
-        window.fileBuffer = [];
-        const ingestFileData = (fileObj, name, date, cb) => {
-            let textOutput = "";
-            var reader = new FileReader();
-            reader.onload = function(progressEvent){
-                // Entire file
-                // console.log(this.result);
-                
-                // By lines
-                var lines = this.result.split('\n');
-                var hdrs = lines[0].split(',');
+    
+    
+    const d=document, qs=(s)=>d.querySelector(s), qsa=(s)=>[...d.querySelectorAll(s)], sortableList = qs('ol');
 
-                var opRow = "";
-                var opSet = [];
-                
-                for(var line = 1; line < lines.length-1; line++){
-                    currentLine = lines[line].split(',');
-                    opRow={};
-                    hdrs.forEach((h,i)=>{
-                        opRow[h] = currentLine[i];
-                    });
-                    opSet.push(opRow);
-                }
-                appendToBuffer(opSet);
-            };
-            reader.readAsText(fileObj);
-        }
+    fileBuffer = [];
+    namedFiles = [];
+    impHeaders = [];
+    outHeaders = [];
+    OPsettings = {};
+    let tableMarkupOP = document.getElementById('result-table');
 
-        const appendToBuffer = (obj) => {
-            window.fileBuffer.push(obj);
-            
-            
-            // console.table(obj);
+    (handleSettings = () => {
+        OPsettings.isDefFormat = document.getElementById("option-box-1").checked;
+        OPsettings.isoDateTime = document.getElementById("option-box-2").checked;
+        OPsettings.autoSorting = document.getElementById("option-box-3").checked;
 
-        }
+        document.querySelector('ol').className = OPsettings.isoDateTime ? 'withDate' : '';
+    })();
 
+    let dragInProgress=false,
+        beingDragged=null;
 
-        let input = document.getElementById('input'), buffer = [];
-
-        input.addEventListener('change', () => {
-
-            var promise1 = new Promise(function(resolve, reject) {
-
-                for(var i=0; i<input.files.length; i++){
-                    ingestFileData(input.files[i], input.files[i].name, new Date(input.files[i].lastModified).toLocaleString());
-                    
-                }
-               
-                    resolve(this);
-                }).then(function(value) {
-                console.log(window.fileBuffer);
-                // expected output: "foo"
-                });
-
-                return;
-                for(var i=0; i<input.files.length; i++){
-                    let fName = input.files[i].name;
-                    let modDate = new Date(input.files[i].lastModified).toLocaleString();
-                    readXlsxFile(input.files[i], { dateFormat: 'MM/DD/YY' }).then(
-                        (data)  => {buffer.push(
-                            {
-                                fileName: fName
-                                ,fileData: data
-                                ,lModDate: modDate
-                            }
-                        )}, 
-                        (error) => {
-                            console.error(error)
-                            alert("Error while parsing Excel file. See console output for the error stack trace.")
-                        }
-                    ).then(()=>{ console.log(buffer); return true});
-                }
-   
+    const suppress  = (e) => {e.preventDefault();}
+    const dragstart = (e, obj=e.target) => { sortableList.classList.add('drag-in-progress'); obj.classList.add('being-dragged'); dragInProgress=true; beingDragged=obj;}
+    const dragend   = (e, obj=e.target) => { sortableList.classList.remove('drag-in-progress');  obj.classList.remove('being-dragged'); dragInProgress=false; beingDragged=null;}
+    const dragover  = (e, trg=e.target) => { suppress(e); }
+    const dragenter = (e, trg=e.target) => { trg.classList.add('being-dragged-over'); }
+    const dragleave = (e, trg=e.target) => { trg.classList.remove('being-dragged-over'); }
+    const drop      = (e, trg=e.target) => { suppress(e); console.log('dropped!') }
+    d.addEventListener('dragstart', dragstart);
+    d.addEventListener('dragend', dragend);
+    
+    const addDropHandlers = () => {
+        qsa('[data-drop="true"]').forEach(o=>{
+            o.addEventListener('dragover', dragover);
+            o.addEventListener('dragenter', dragenter);
+            o.addEventListener('dragleave', dragleave);
+            o.addEventListener('drop', drop);
         });
-        
+    }
+
+
+    const ingestFileData = (fileObj, name, date, cb) => {
+        let textOutput = "";
+        var reader = new FileReader();
+        reader.onload = function(progressEvent) {
+            // Entire file
+            // console.log(this.result);
+
+            // By lines
+            var lines = this.result.split('\n');
+            var hdrs = lines[0].split(',');
+
+            var opRow = "";
+            var opSet = [];
+
+            for (var line = 1; line < lines.length - 1; line++) {
+                currentLine = lines[line].split(',');
+                opRow = {};
+                hdrs.forEach((h, i) => {
+                    opRow[h] = currentLine[i];
+                });
+                opSet.push(opRow);
+            }
+            appendToBuffer(opSet);
+        };
+        reader.readAsText(fileObj);
+    }
+
+    const appendToBuffer = (obj) => fileBuffer.push(obj);
+    const processCollection = obj => {
+
+    }
+    
+    let input = document.getElementById('input'),
+        buffer = [];
+
+
+
+    const ructDraggableOutput = () => {
+        console.log(namedFiles)
+        opStr = '';
+        for (var i = 0; i < 10; i++) {
+            if(i < namedFiles.length){
+                let fileName = namedFiles[i];
+                let fileDate = fileName.replace(/^(.+)(\d{4})-(\d\d)-(\d\d)T(\d\d)_(\d\d)_(\d\d)(-\d{4})(.*)?$/, '$3-$4-$2, $5:$6');
+                opStr += `<li class="draggable" data-sort-order="${i+1}" data-drop="true"><b>${i+1}</b><span draggable="true"><em>[${fileDate}]</em>${fileName}</span></li>`
+            }else{
+                opStr += `<li class="not-draggable placeholder" data-sort-order="${i+1}"><b>${i+1}</b><span>No file specified (click to add!)</span></li>`;
+            }
+        }
+        sortableList.insertAdjacentHTML('beforeEnd', opStr);
+    }
+
+    input.addEventListener('change', () => {
+
+        var promise1 = new Promise(function(conclude, abort) {
+            for(let i=0; i<input.files.length; i++) namedFiles.push(input.files[i].name);
+            if(OPsettings.autoSorting && input.files) namedFiles = namedFiles.sort();
+            ructDraggableOutput()
+            conclude(this);
+        }).then(new Promise(function(conclude, abort) {
+
+            opStr = '';
+            
+
+            for (var i = 0; i < input.files.length; i++) {
+                ingestFileData(input.files[i], input.files[i].name, new Date(input.files[i].lastModified).toLocaleString());
+            }
+
+            conclude(this);
+        })).then(function(value) {
+            processCollection(fileBuffer);
+        });
+
+        return;
+        for (var i = 0; i < input.files.length; i++) {
+            let fName = input.files[i].name;
+            let modDate = new Date(input.files[i].lastModified).toLocaleString();
+            readXlsxFile(input.files[i], { dateFormat: 'MM/DD/YY' }).then(
+                (data) => {
+                    buffer.push({
+                        fileName: fName,
+                        fileData: data,
+                        lModDate: modDate
+                    })
+                },
+                (error) => {
+                    console.error(error)
+                    alert("Error while parsing Excel file. See console output for the error stack trace.")
+                }
+            ).then(() => { console.log(buffer); return true });
+        }
+
+    });
+
+
+    namedFiles = ["Amigos Current Sprint Export (Sprint Device JIRA) 2019-05-22T07_43_39-0500.csv", "Amigos Current Sprint Export (Sprint Device JIRA) 2019-05-23T08_26_02-0500.csv", "Amigos Current Sprint Export (Sprint Device JIRA) 2019-05-24T07_45_36-0500.csv", "Amigos Current Sprint Export (Sprint Device JIRA) 2019-05-27T07_31_36-0500.csv", "Amigos Current Sprint Export (Sprint Device JIRA) 2019-05-28T07_36_31-0500.csv", "Amigos Current Sprint Export (Sprint Device JIRA) 2019-05-29T07_36_25-0500.csv", "Amigos Current Sprint Export (Sprint Device JIRA) 2019-05-30T07_31_46-0500.csv", "Amigos Current Sprint Export (Sprint Device JIRA) 2019-05-31T16_44_17-0500.csv", "Amigos Current Sprint Export (Sprint Device JIRA) 2019-06-03T07_36_04-0500.csv"];
+    ructDraggableOutput();
     </script>
+</body>
 
-
-</body></html>
+</html>

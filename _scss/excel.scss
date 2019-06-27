@@ -1,0 +1,58 @@
+body { margin: 20px; font-family: Arial, Helvetica; }
+#input { margin-top: 20px; margin-bottom: 10px; }
+#result-table table { width: 100%; border-collapse: collapse; margin-top: 2.5em; margin-bottom: 2.5em; font-size: 12px; }
+#result-table table td { border: 1px solid black; padding: 0.5em; text-overflow: ellipsis; overflow: hidden; max-width: 10em; white-space: nowrap; }
+#main-link { display: block; font-size: 24px; color: #0093C4; font-family: monospace; text-decoration: none; }
+.option-box { 
+    position: fixed; left: 100000px; 
+    
+    & + label { 
+        display: inline-block; text-align: center; font-weight: bold; padding: 4px 10px; margin: 5px 10px 5px; border: 2px solid #AAA; border-radius: 8px; width: 120px; transition: 0.2s all ease-in-out; vertical-align: top; cursor: pointer; 
+        
+        i { font-weight: normal; display: block; max-height: 0; overflow: hidden; transition: 0.2s all ease-in-out; }
+    }
+    
+    &:checked + label { 
+        border-color: green; color: green; background-color: #CFC; 
+
+        &:hover { 
+            box-shadow: inset 0 0 20px limegreen; 
+            
+            i { max-height: 80px; }
+        }
+    }
+}
+
+ol { 
+    float: left; 
+    display: grid; 
+    
+    & > li { 
+        display: block; width: auto; height: 35px; padding: 0; line-height: 35px; position: relative; white-space: nowrap; width:1fr;
+
+        span { 
+            position: absolute; 
+            padding: 0 20px; 
+            height:35px;
+            line-height: 35px; 
+            z-index: 2; 
+
+            
+            &::before { display: inline-block; border: 1px solid black; border-radius: 40px; position: absolute; content: ''; top: 0; left: -30px; width: calc(100% + 205px); height: 35px; font-size: 20px; font-weight: bold; line-height: 35px; color: #aaa; }
+            
+            em { overflow: hidden; float: left; padding: 0; transition: 0.3s all ease-in-out; color: #000; max-width: 0; }
+        }
+
+        b { /* padding: 0 165px 0 0; */ display: inline-block; width: 25px; height: 25px; text-align: center; background: #f00; line-height: 25px; border-radius: 50%; vertical-align: bottom; margin: 5px 0 0 20px; }
+
+        &.placeholder { 
+            span {width:100%}
+        }
+    }
+
+    &.withDate li { 
+        color: #666; white-space: nowrap; 
+
+        & > span em { padding: 0 150px 0 15px; }
+    }
+}
