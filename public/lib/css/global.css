@@ -528,7 +528,7 @@ button.save, button.undo {
 .altered button.save:hover, .altered button.save:focus, .altered button.save:active {
   background: #0F0;
   color: #090;
-  text-shadow: -1px  0   0 #FFF, 0   -1px 0 #FFF, -1px -1px 0 #FFF, 0    1px 0 #FFF, 1px  0   0 #FFF, 1px  1px 0 #FFF;
+  text-shadow: -1px  0   0 #FFF, 0   -1px 0 #FFF, -1px -1px 0 #FFF, 0    1px 0 #FFF, 1px  0   0 #FFF, 1px  1px 0 #FFF;
 }
 
 .altered button.undo {
@@ -538,13 +538,13 @@ button.save, button.undo {
   -webkit-box-shadow: inset 0 6px 12px #3366ff;
           box-shadow: inset 0 6px 12px #3366ff;
   background: radial-gradient(circle, #3366ff 0%, #0000aa 50%);
-  text-shadow: -1px  0   0 #00A, 0   -1px 0 #00A, -1px -1px 0 #00A, 0    1px 0 #36F, 1px  0   0 #36F, 1px  1px 0 #36F;
+  text-shadow: -1px  0   0 #00A, 0   -1px 0 #00A, -1px -1px 0 #00A, 0    1px 0 #36F, 1px  0   0 #36F, 1px  1px 0 #36F;
 }
 
 .altered button.undo:hover, .altered button.undo:focus, .altered button.undo:active {
   background: #36F;
   color: #00A;
-  text-shadow: -1px  0   0 #FFF, 0   -1px 0 #FFF, -1px -1px 0 #FFF, 0    1px 0 #FFF, 1px  0   0 #FFF, 1px  1px 0 #FFF;
+  text-shadow: -1px  0   0 #FFF, 0   -1px 0 #FFF, -1px -1px 0 #FFF, 0    1px 0 #FFF, 1px  0   0 #FFF, 1px  1px 0 #FFF;
 }
 
 label {

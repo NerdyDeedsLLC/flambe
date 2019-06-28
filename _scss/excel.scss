@@ -23,12 +23,101 @@ body { margin: 20px; font-family: Arial, Helvetica; }
     }
 }
 
-ol { 
+#file-process-sequence { // base state
+    width:800px;
+    padding:0;
+    list-style: none;
+
+    li {
+        // border:1px dotted indigo;
+        position: relative;
+        height:40px;
+        vertical-align: middle; line-height: 25px;
+        background: linear-gradient(0deg, transparent 0, transparent 41px, red 56px, transparent 100%);
+        box-shadow: inset 30px 0 20px #fff, inset -30px 0 20px #fff;
+
+        & > span {
+            max-width:100%;
+            min-width:calc(100% - 50px);
+            border:2px solid blue;
+            position:absolute;
+            left:-1px;
+            top:-2px;
+            height:25px;
+            padding:5px 0 5px 40px;
+            border-radius: 20px;
+            background-color: #EEFFEE;
+        }
+
+        & > b {
+            line-height: 25px;
+            z-index: 10;
+            position: absolute;
+            background:white;
+            border:2px solid blue;
+            width:25px;
+            height:25px;
+            top:3px;
+            left:5px;
+            border-radius: 50%;
+            text-align: center;
+        }
+    }
+}
+
+
+
+#file-process-sequence.drag-in-progress    { // dragging
+    width:800px;
+    padding:0;
+    list-style: none;
+
+    span {
+        z-index:-100 !important;
+    }
+
+    li.initial.endex {
+        display:none;
+    }
+
+    li:not(.initial):not(.endex) {
+        color:pink;
+        margin-bottom:12px;
+
+        .being-dragged-over,.being-dragged-over + li {
+            padding-top:30px;
+            transition: 0.15s all ease-in-out;
+            background-color: red;
+
+            & > span { max-width:100%; min-width:calc(100% - 50px); border:2px solid blue; position:absolute; left:-1px; top:30px; height:25px; padding:5px 0 5px 40px; border-radius: 20px; background-color: #EEFFEE;  transition: 0.15s all ease-in-out;}
+            & > b { line-height: 25px; z-index: 10; position: absolute; background:white; border:2px solid blue; width:25px; height:25px; top:35px; left:5px; border-radius: 50%; text-align: center;  transition: 0.15s all ease-in-out;}
+        }
+
+        .being-dragged-over {
+            background: linear-gradient(0deg, transparent 0, transparent 41px, red 56px, transparent 100%);
+            box-shadow: inset 30px 0 20px #fff, inset -30px 0 20px #fff;
+        }
+
+        .being-dragged-over + li {
+            background: linear-gradient(180deg, transparent 0px, transparent 0px, red 15px,  transparent 30px, transparent 100%);
+            box-shadow: inset 30px 0 20px #fff, inset -30px 0 20px #fff;
+        }
+
+        &.endex * {
+            opacity:0;
+        }
+    }
+}z
+
+ol.fuckyou { 
     float: left; 
     display: grid; 
     
     & > li { 
-        display: block; width: auto; height: 35px; padding: 0; line-height: 35px; position: relative; white-space: nowrap; width:1fr;
+        display: block; width: auto; height: 50px; padding: 12px 165px 3px 0; line-height: 35px; position: relative; white-space: nowrap; width:1fr;
+        background-color:pink;
+        width:70vw;
+        border:1px dotted indigo;
 
         span { 
             position: absolute; 
@@ -36,14 +125,56 @@ ol {
             height:35px;
             line-height: 35px; 
             z-index: 2; 
-
+            background-color: #EEEEEE;
+            min-width:100%;
             
             &::before { display: inline-block; border: 1px solid black; border-radius: 40px; position: absolute; content: ''; top: 0; left: -30px; width: calc(100% + 205px); height: 35px; font-size: 20px; font-weight: bold; line-height: 35px; color: #aaa; }
             
             em { overflow: hidden; float: left; padding: 0; transition: 0.3s all ease-in-out; color: #000; max-width: 0; }
         }
 
-        b { /* padding: 0 165px 0 0; */ display: inline-block; width: 25px; height: 25px; text-align: center; background: #f00; line-height: 25px; border-radius: 50%; vertical-align: bottom; margin: 5px 0 0 20px; }
+        b { display: inline-block; width: 25px; height: 25px; text-align: center; background: #f00; line-height: 25px; border-radius: 50%; vertical-align: bottom; margin: 5px 0 0 20px; }
+
+        &.placeholder { 
+            span {width:100%}
+        }
+    }
+
+    &.withDate li { 
+        color: #666; white-space: nowrap; 
+
+        & > span em { padding: 0 150px 0 15px; }
+    }
+}
+
+@keyframes 'pulse' {
+    0 { opacity:0.5; }
+    50% { opacity:0; }
+    100% { opacity:0.5; }
+}
+
+ol.old { 
+    float: left; 
+    display: grid; 
+    
+    & > li { 
+        display: block; width: auto; height: 38px; padding: 0 0 3px 0; line-height: 35px; position: relative; white-space: nowrap; width:1fr;
+
+        span { 
+            position: absolute; 
+            padding: 0 20px; 
+            height:35px;
+            line-height: 35px; 
+            z-index: 2; 
+            background-color: #EEEEEE;
+            min-width:100%;
+            
+            &::before { display: inline-block; border: 1px solid black; border-radius: 40px; position: absolute; content: ''; top: 0; left: -30px; width: calc(100% + 205px); height: 35px; font-size: 20px; font-weight: bold; line-height: 35px; color: #aaa; }
+            
+            em { overflow: hidden; float: left; padding: 0; transition: 0.3s all ease-in-out; color: #000; max-width: 0; }
+        }
+
+        b { display: inline-block; width: 25px; height: 25px; text-align: center; background: #f00; line-height: 25px; border-radius: 50%; vertical-align: bottom; margin: 5px 0 0 20px; }
 
         &.placeholder { 
             span {width:100%}
