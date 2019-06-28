@@ -4,74 +4,50 @@
     <title>read-excel-file</title>
     <meta charset="utf-8">
 <!--     <script src="./lib/js/read-excel-file.min.js"></script>
-    <script src="./lib/js/csv-to-json.js"></script>
- -->    <link rel="stylesheet" href="lib/css/excel.css">
+-->    
+    <link rel="stylesheet" href="lib/css/excel.css">
     <style>
         
     </style>
 </head>
 
 <body>
+    <label for="reportStartDate" class="startDateLabel">Start Date:</label>
+    <input id="reportStartDate" name="startDate" type="date" class="datepicker" autocomplete="false" inputmode="verbatim" />
+    
     <input type="file" id="input" multiple>
 
     <div class="settings-panel">
-    <input type="checkbox" id="option-box-1" class="option-box" name="option-box-1" checked onchange="handleSettings()">
-    <label for="option-box-1" class="option-label">JIRA Filename <i>format assumed to be default for imported files?</i></label>
-    <input type="checkbox" id="option-box-2" class="option-box" name="option-box-2" checked onchange="handleSettings()">
-    <label for="option-box-2" class="option-label">ISO Date/Time <i>promanently featured in filename?</i></label>
-    <input type="checkbox" id="option-box-3" class="option-box" name="option-box-3" checked onchange="handleSettings()">
-    <label for="option-box-3" class="option-label">Auto-sort <i>files by on name when first loaded?</i></label>
+        <input type="checkbox" id="option-box-1" class="option-box" name="option-box-1" checked onchange="handleSettings()">
+        <label for="option-box-1" class="option-label">JIRA Filename <i>format assumed to be default for imported files?</i></label>
+        <input type="checkbox" id="option-box-2" class="option-box" name="option-box-2" checked onchange="handleSettings()">
+        <label for="option-box-2" class="option-label">ISO Date/Time <i>promanently featured in filename?</i></label>
+        <input type="checkbox" id="option-box-3" class="option-box" name="option-box-3" checked onchange="handleSettings()">
+        <label for="option-box-3" class="option-label">Auto-sort <i>files by on name when first loaded?</i></label>
+        <button onClick='runReport()'>Run Report</button>
     </div>
     <ol id="file-process-sequence"></ol>
     <div id="result-table"></div>
     <pre id="result"></pre>
     
     <script>
-    const d=document, qs=(s)=>d.querySelector(s), qsa=(s)=>[...d.querySelectorAll(s)], sortableList = qs('ol');
+    const d            = document
+         ,qs           = (s)=>d.querySelector(s)
+         ,qsa          = (s)=>[...d.querySelectorAll(s)]
+         ,input        = document.getElementById('input')
+         ,sortableList = qs('ol');
 
-    fileBuffer = [];
-    namedFiles = [];
-    impHeaders = [];
-    outHeaders = [];
-    OPsettings = {};
-
-
-    const unifyFileData = () => {
-        COMBD_DATA = [];
-        ISSUE_KEYS = []; 
-        console.group('Parsing CSV contents into a single structure...');
-        fileBuffer.flat().forEach(r=>(ISSUE_KEYS.push(r['Issue key']) && (COMBD_DATA[r['Issue key']] = new Array(fileBuffer.length).fill(''))));
-        DEBUG_DATA = JSON.parse(JSON.stringify(COMBD_DATA));
-        console.log(ISSUE_KEYS.length, 'total records found!\n     Reducing...');
-        ISSUE_KEYS = [...new Set(ISSUE_KEYS)];
-        console.log('Unique issues from specified files: ', ISSUE_KEYS.join(', '), '\n     Constructing combined dataset...');
-        activeRecord = null;
-        for(files in fileBuffer){
-            let file = fileBuffer[files];
-            file.forEach(f=>{
-                COMBD_DATA[f['Issue key']][files] = f;
-                DEBUG_DATA[f['Issue key']][files] = JSON.stringify(f);
-            });
-        }
-        console.info('Dataset unified. Current state:');
-        console.log('RAW DATA ', COMBD_DATA);
-        console.table(DEBUG_DATA);
-
-        console.groupEnd();
-    }
-    
-    let tableMarkupOP = document.getElementById('result-table');
-
-    (handleSettings = () => {
-        OPsettings.isDefFormat = document.getElementById("option-box-1").checked;
-        OPsettings.isoDateTime = document.getElementById("option-box-2").checked;
-        OPsettings.autoSorting = document.getElementById("option-box-3").checked;
-
-        document.querySelector('ol').className += OPsettings.isoDateTime ? ' withDate' : '';
-    })();
+    let fileBuffer = []
+       ,namedFiles = []
+       ,impHeaders = []
+       ,outHeaders = []
+       ,OPsettings = {}
+       ,COMBD_DATA = []
+       ,ISSUE_KEYS = []
+       ,dragInProgress = false
+       ,beingDragged   = null;
 
     const purgeClass = (cName, targObj=null, cSlctr='.'+cName) => {
-
         if(targObj === null) {
             targObj = qsa(cSlctr).forEach(o=>(o && o.className != null) ? o.className.replace(cSlctr, '') : o);
             return targObj;
@@ -79,116 +55,186 @@
         return targObj.className=targObj.className.replace(CSlctr, '');
      }
 
-    let dragInProgress=false,
-        beingDragged=null;
-
-        sortableList.classList.add('dammit');
-
-    const suppress  = (e) => {e.preventDefault();}
-    const dragstart = (e, obj=e.target) => { purgeClass('being-dragged'); obj.classList.add('being-dragged'); dragInProgress=true; beingDragged=obj;sortableList.classList.add('drag-in-progress');}
-    const dragend   = (e, obj=e.target) => { if(!dragInProgress) return; beingDragged.classList.remove('being-dragged'); dragInProgress=false; beingDragged=null; sortableList.classList.remove('drag-in-progress');}
-    const dragover  = (e, trg=e.target) => { if(!dragInProgress) return; suppress(e); }
-    const dragenter = (e, trg=e.target) => { if(!dragInProgress) return; trg.classList.add('being-dragged-over'); }
-    const dragleave = (e, trg=e.target) => { if(!dragInProgress) return; trg.classList.remove('being-dragged-over'); }
-    const drop      = (e, trg=e.target) => { if(!dragInProgress) return; suppress(e); console.log('dropped!') }
-    
-
-    const clicktest = (e, obj=e.target) => { console.log('target: ', obj, '\nactive: ', qs('.being-dragged')) }
-    
-
     const addDropHandlers = () => {
-    
+        const clicktest = (e, obj=e.target) => { console.log('target: ', obj, '\nactive: ', qs('.being-dragged')) }
+        const suppress  = (e) => {e.preventDefault();}
+        const dragstart = (e, obj=e.target) => { purgeClass('being-dragged'); obj.classList.add('being-dragged'); dragInProgress=true; beingDragged=obj;sortableList.classList.add('drag-in-progress');}
+        const dragend   = (e, obj=e.target) => { if(!dragInProgress) return; beingDragged.classList.remove('being-dragged'); dragInProgress=false; beingDragged=null; sortableList.classList.remove('drag-in-progress');}
+        const dragover  = (e, trg=e.target) => { if(!dragInProgress) return; suppress(e); }
+        const dragenter = (e, trg=e.target) => { if(!dragInProgress) return; trg.classList.add('being-dragged-over'); }
+        const dragleave = (e, trg=e.target) => { if(!dragInProgress) return; trg.classList.remove('being-dragged-over'); }
+        const drop      = (e, trg=e.target) => { if(!dragInProgress) return; suppress(e); console.log('dropped!') }
+
+        console.log('Binding event listeners to drag/drop DOM structure...');
+        console.groupCollapsed(' - Binding event listeners to draggable DOM structure...');
         qsa('[draggable="true"]').forEach(o=>{
             o.addEventListener('dragstart', dragstart);
             o.addEventListener('dragend', dragend);
             o.addEventListener('click', clicktest);
             o.addEventListener('mousedown', clicktest);
             o.addEventListener('mouseup', clicktest);
-        });    
+            console.log('   - ... now listening for dragStart, dragEnd, mouseDown, mouseUp, and click on', o);
+        });
+        console.groupEnd();
 
+        console.groupCollapsed(' - Binding event listeners to droptarget DOM structure...');
         qsa('[data-drop="true"]').forEach(o=>{
             o.addEventListener('dragover', dragover);
             o.addEventListener('dragenter', dragenter);
             o.addEventListener('dragleave', dragleave);
             o.addEventListener('drop', drop);
+            console.log('   - ... now listening for dragOver, dragEnter, dragLeave, and drop on', o);
         });
+        console.groupEnd();
     }
 
 
+
+
+    const appendToBuffer = (obj) => fileBuffer.push(obj);           
     const ingestFileData = (fileObj, name, date, cb) => {
-        let textOutput = "";
-        var reader = new FileReader();
-        reader.onload = function(progressEvent) {
-            // Entire file
-            // console.log(this.result);
+        var reader    = new FileReader();                           // Instantiate a new file reader...
+                                                                    // ⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢
+        reader.onload = function(progressEvent) {                   // ... Add a listener to observe once it's finished loading.
+            //     General Declarations
+            var opSet = [];                                         //     The collection we'll return containing all the rows we extract
+            var opRow = {};                                         //     The individual row objects that we'll iteratively collect
+            
+            //     Read and parse file contents, line by line.
+            var lines = this.result.split('\n');                    //     Break the file being read into an array, one record per line.
+            var hdrs  = lines.shift().split(',');                   //     Since this is assuming CSV format - with headers - extract the first
 
-            // By lines
-            var lines = this.result.split('\n');
-            var hdrs = lines[0].split(',');
-
-            var opRow = "";
-            var opSet = [];
-
-            for (var line = 1; line < lines.length - 1; line++) {
-                currentLine = lines[line].split(',');
-                opRow = {};
-                hdrs.forEach((h, i) => {
-                    opRow[h] = currentLine[i];
+            for (var line = 0; line < lines.length; line++) {       //     Loop through each line of file...
+                opRow = {};                                         //     ... create a fresh placeholder for its data...
+                currentLine = lines[line].split(',');               //     ... break the current line out into an array...
+                hdrs.forEach((h, i) => {                            //     ... then loop through the headers we collected earlier...
+                    opRow[h] = currentLine[i];                      //     ... creating a KVP for each subsequent value. (TODO: Destructuring assignment)
                 });
-                opSet.push(opRow);
+                opSet.push(opRow);                                  //     Collect each newly-constructed row of KVPs...
             }
-            appendToBuffer(opSet);
-        };
-        reader.readAsText(fileObj);
+            appendToBuffer(opSet);                                  //     ... and stuff it into the page-wide file buffer.
+        };                                                          // ⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣
+        reader.readAsText(fileObj);                                 // ... And read the file specified.
     }
 
-    const appendToBuffer = (obj) => fileBuffer.push(obj);
     const processCollection = obj => {
 
     }
     
-    let input = document.getElementById('input'),
-        buffer = [];
 
 
+    const unifyFileData = () => {
+        COMBD_DATA = [];
+        ISSUE_KEYS = []; 
+        DEBUG_DATA = [];
+        console.group('Parsing CSV contents into a single structure...');
+        fileBuffer.flat().forEach(r => (ISSUE_KEYS.push(r['Issue key']) 
+                                    && (COMBD_DATA[r['Issue key']] = new Array(fileBuffer.length).fill(''))
+                                    && (DEBUG_DATA[r['Issue key']] = new Array(fileBuffer.length).fill('')))
+        );
+        console.log(ISSUE_KEYS.length, 'total records found!',
+                    '\n     Reducing...');
+        ISSUE_KEYS = [...new Set(ISSUE_KEYS)];
+        console.log('Unique issues from specified files: ', ISSUE_KEYS.join(', '), 
+                    '\n     Constructing combined dataset...');
 
-    const ructDraggableOutput = () => {
-        if (namedFiles[0] != 'ENDEX') namedFiles.unshift('ENDEX');
-        opStr = '';
-        for (var i = 1; i <= 10; i++) {
+       for(files in fileBuffer){
+            let file = fileBuffer[files];
+            console.log('   - Ingesting file #' + files + ': ', file);
+            file.forEach(f=>{
+                if(f && f['Issue key'] && f['Issue key'] != null && f['Issue key'] !== ''){ 
+                    COMBD_DATA[f['Issue key']][files] = f;
+                    DEBUG_DATA[f['Issue key']][files] = JSON.stringify(f);
+                }
+            });
+        }
+        console.info('Dataset unified. Current state:');
+        console.log('RAW DATA ', COMBD_DATA);
+        console.log('RAW DATA ', JSON.stringify(Object.entries(COMBD_DATA)));
+        console.table(DEBUG_DATA);
+
+        console.groupEnd();
+        return true;
+    }
+
+
+    const ructDraggableOutput = response => {
+        console.log('Constructing drag/drop ui...');
+        let endexPositions = ['initial', 'terminus'];
+        const endex = (position=endexPositions.shift()) => 
+            `<li class="not-draggable ${position} endex" data-sort-order="0"><b>0</b><span>ENDEX</span></li>`;
+        
+        // if (namedFiles[0] != 'ENDEX') namedFiles.unshift('ENDEX');
+        let opStr = '';
+        for (var i = 0; i < 10; i++) {
             if(i < namedFiles.length){
                 let fileName = namedFiles[i];
                 let fileDate = fileName.replace(/^(.+)(\d{4})-(\d\d)-(\d\d)T(\d\d)_(\d\d)_(\d\d)(-\d{4})(.*)?$/, '$3-$4-$2, $5:$6');
-                opStr += `<li class="draggable" data-sort-order="${i}" data-drop="true"><b>${i}</b><span draggable="true" class="being-dragged"><em>[${fileDate}]</em>${fileName}</span></li>`
+                console.log('   - Creating draggable DOM node for ' + fileName);
+                opStr += `<li class="draggable" data-sort-order="${i}" data-drop="true">
+                            <b>${i}</b>
+                            <span draggable="true" class="being-dragged"><em>[${fileDate}]</em>${fileName}</span>
+                          </li>`
             }else{
-                opStr += `<li class="not-draggable placeholder" data-sort-order="${i}"><b>${i}</b><span>No file specified (click to add!)</span></li>`;
+                opStr += `<li class="not-draggable placeholder" data-sort-order="${i}">
+                            <b>${i}</b>
+                            <span>No file specified (click to add!)</span>
+                          </li>`;
             }
         }
-        opStr = `<li class="not-draggable initial endex" data-sort-order="0"><b>0</b><span>ENDEX</span></li>` + opStr + `<li class="not-draggable terminus endex" data-sort-order="11"><b>11</b><span>ENDEX</span></li>`;
+        opStr = endex() + opStr + endex();
+        console.log('   - Clearing current DOM structure of list...');
         sortableList.innerHTML = '';
         sortableList.insertAdjacentHTML('beforeEnd', opStr);
+        console.log('   - Inserting new draggable DOM structure...');
         addDropHandlers();
+        return Promise.resolve(response);
     }
 
     input.addEventListener('change', () => {
+        console.group('Files selected! Beginning processing tasks...');
+        const parseFileNames = response => {
+            console.log('- Parsing & Sorting File Names...')
+            for(let i=0; i<input.files.length; i++)     namedFiles.push(input.files[i].name);
+            if(OPsettings.autoSorting && input.files)   namedFiles = namedFiles.sort();
+            console.log('   -', namedFiles.join('\n   - '));
+            return Promise.resolve(response)
+            return Promise.reject(new Error(response.statusText))
+        }
 
-        var promise1 = new Promise(function(conclude, abort) {
-            for(let i=0; i<input.files.length; i++) namedFiles.push(input.files[i].name);
-            if(OPsettings.autoSorting && input.files) namedFiles = namedFiles.sort();
+        const outputFileNames = response => ructDraggableOutput()
+
+        const dateStampFiles = response => {
+            console.log('- Extracting Date Stamps from File Names...');
+            for (var i = 0; i < input.files.length; i++){ 
+
+                ingestFileData(input.files[i], input.files[i].name, new Date(input.files[i].lastModified).toLocaleString());
+            }
+            return Promise.resolve(response);
+        }
+
+        return parseFileNames()
+            .then(outputFileNames)
+            .then(dateStampFiles);
+
+        console.log('- Files ingested and parsed.\nAwaiting User confirmation of file sequence.')
+        return
+        var promise1 = () => new Promise(function(conclude, abort) {
+
+            for(let i=0; i<input.files.length; i++) 
+                namedFiles.push(input.files[i].name);
+            if(OPsettings.autoSorting && input.files) 
+                namedFiles = namedFiles.sort();
             ructDraggableOutput()
             conclude(this);
-        }).then(new Promise(function(conclude, abort) {
 
+        }).then(() => new Promise(function(conclude, abort) {
             opStr = '';
-            
-
-            for (var i = 0; i < input.files.length; i++) {
+            for (var i = 0; i < input.files.length; i++) 
                 ingestFileData(input.files[i], input.files[i].name, new Date(input.files[i].lastModified).toLocaleString());
-                console.table(input.files[i]);
-            }
-
+            
             conclude(this);
-        })).then(()=>unifyFileData());
+        })).then(unifyFileData());
 
         return;
         for (var i = 0; i < input.files.length; i++) {
@@ -211,9 +257,22 @@
 
     });
 
+    const runReport = () => {
+        unifyFileData();
+    }
+    
+    const handleSettings = () => {
+        console.log('Reading User Settings...');
+        OPsettings.isDefFormat = document.getElementById("option-box-1").checked;
+        OPsettings.isoDateTime = document.getElementById("option-box-2").checked;
+        OPsettings.autoSorting = document.getElementById("option-box-3").checked;
 
-    namedFiles = ["Amigos Current Sprint Export (Sprint Device JIRA) 2019-05-22T07_43_39-0500.csv", "Amigos Current Sprint Export (Sprint Device JIRA) 2019-05-23T08_26_02-0500.csv", "Amigos Current Sprint Export (Sprint Device JIRA) 2019-05-24T07_45_36-0500.csv", "Amigos Current Sprint Export (Sprint Device JIRA) 2019-05-27T07_31_36-0500.csv", "Amigos Current Sprint Export (Sprint Device JIRA) 2019-05-28T07_36_31-0500.csv", "Amigos Current Sprint Export (Sprint Device JIRA) 2019-05-29T07_36_25-0500.csv", "Amigos Current Sprint Export (Sprint Device JIRA) 2019-05-30T07_31_46-0500.csv", "Amigos Current Sprint Export (Sprint Device JIRA) 2019-05-31T16_44_17-0500.csv", "Amigos Current Sprint Export (Sprint Device JIRA) 2019-06-03T07_36_04-0500.csv"];
-    ructDraggableOutput();
+        document.querySelector('ol').className += OPsettings.isoDateTime ? ' withDate' : '';
+    }
+    
+    (init = () => {
+        handleSettings();
+    })();
     </script>
 </body>
 
