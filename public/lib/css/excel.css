@@ -282,8 +282,8 @@ ol.fuckyou.withDate li > span em {
   padding: 0 150px 0 15px;
 }
 
-@-webkit-keyframes 'pulse' {
-  0 {
+@-webkit-keyframes pulse {
+  0% {
     opacity: 0.5;
   }
   50% {
@@ -294,8 +294,8 @@ ol.fuckyou.withDate li > span em {
   }
 }
 
-@keyframes 'pulse' {
-  0 {
+@keyframes pulse {
+  0% {
     opacity: 0.5;
   }
   50% {

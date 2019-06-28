@@ -35,7 +35,30 @@
     outHeaders = [];
     OPsettings = {};
 
-    COMBD_DATA = [];
+
+    const unifyFileData = () => {
+        COMBD_DATA = [];
+        ISSUE_KEYS = []; 
+        console.group('Parsing CSV contents into a single structure...');
+        fileBuffer.flat().forEach(r=>(ISSUE_KEYS.push(r['Issue key']) && (COMBD_DATA[r['Issue key']] = new Array(fileBuffer.length).fill(''))));
+        DEBUG_DATA = JSON.parse(JSON.stringify(COMBD_DATA));
+        console.log(ISSUE_KEYS.length, 'total records found!\n     Reducing...');
+        ISSUE_KEYS = [...new Set(ISSUE_KEYS)];
+        console.log('Unique issues from specified files: ', ISSUE_KEYS.join(', '), '\n     Constructing combined dataset...');
+        activeRecord = null;
+        for(files in fileBuffer){
+            let file = fileBuffer[files];
+            file.forEach(f=>{
+                COMBD_DATA[f['Issue key']][files] = f;
+                DEBUG_DATA[f['Issue key']][files] = JSON.stringify(f);
+            });
+        }
+        console.info('Dataset unified. Current state:');
+        console.log('RAW DATA ', COMBD_DATA);
+        console.table(DEBUG_DATA);
+
+        console.groupEnd();
+    }
     
     let tableMarkupOP = document.getElementById('result-table');
 
@@ -165,9 +188,7 @@
             }
 
             conclude(this);
-        })).then(function(value) {
-            processCollection(fileBuffer);
-        });
+        })).then(()=>unifyFileData());
 
         return;
         for (var i = 0; i < input.files.length; i++) {
