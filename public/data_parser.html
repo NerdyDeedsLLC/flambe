@@ -1937,8 +1937,8 @@ function precise(val, dec) {
 }
 
 fullOp = [], rowOp=[];
-hdrRow = ['STATUS', 'STORY NUMBER', 'PARENT STORY']
-for(var i=0; i<data[Object.keys(data)[0]].length; i++){
+hdrRow = ['STATUS', 'STORY NUMBER', 'PARENT STORY', 'BASELINE']
+for(var i=0; i<data[Object.keys(data)[0]].length-1; i++){
     hdrRow.push('DAY ' + (i+1));
 }
 // fullOp.push(hdrRow);

@@ -3,19 +3,48 @@
 <head>
     <title>read-excel-file</title>
     <meta charset="utf-8">
-<!--     <script src="./lib/js/read-excel-file.min.js"></script>
--->    
+     <script src="./lib/js/csv-to-json.js"></script>
+    
     <link rel="stylesheet" href="lib/css/excel.css">
     <style>
-        
+        .file-dropzone {
+            display:block;
+            border:4px dashed #aaa;
+            background-color: #dde;
+            border-radius: 20px;
+            overflow: hidden;
+            height:200px;
+            min-height:200px;
+            width:400px;
+            min-width:400px;
+            position:relative;
+        }
+
+        .file-dropzone:after {
+            content:'Drag & Drop your JIRA .CSV exports here!';
+            position:absolute;
+            width:80%;
+            line-height: 1.6;
+            height:100%;
+            text-align: center;
+            font-size:26px;
+            padding:10%;
+        }
+
+        [type='file'] {
+            position:absolute;
+            margin-left:-400px;
+        }
     </style>
 </head>
 
 <body>
     <label for="reportStartDate" class="startDateLabel">Start Date:</label>
-    <input id="reportStartDate" name="startDate" type="date" class="datepicker" autocomplete="false" inputmode="verbatim" />
+    <input id="reportStartDate" name="startDate" type="date" class="datepicker" autocomplete="false" />
     
-    <input type="file" id="input" multiple>
+    <label id="file-dropzone" class="file-dropzone" for="input">
+        <input type="file" id="input" name="input" multiple>
+    </label>
 
     <div class="settings-panel">
         <input type="checkbox" id="option-box-1" class="option-box" name="option-box-1" checked onchange="handleSettings()">
@@ -26,7 +55,7 @@
         <label for="option-box-3" class="option-label">Auto-sort <i>files by on name when first loaded?</i></label>
         <button onClick='runReport()'>Run Report</button>
     </div>
-    <ol id="file-process-sequence"></ol>
+    <ul class="has-draggable-children"></ol>
     <div id="result-table"></div>
     <pre id="result"></pre>
     
@@ -35,93 +64,60 @@
          ,qs           = (s)=>d.querySelector(s)
          ,qsa          = (s)=>[...d.querySelectorAll(s)]
          ,input        = document.getElementById('input')
-         ,sortableList = qs('ol');
+         ,sortableList = qs('.has-draggable-children');
 
     let fileBuffer = []
        ,namedFiles = []
-       ,impHeaders = []
-       ,outHeaders = []
        ,OPsettings = {}
        ,COMBD_DATA = []
-       ,ISSUE_KEYS = []
-       ,dragInProgress = false
-       ,beingDragged   = null;
+       ,ISSUE_KEYS = [];
 
-    const purgeClass = (cName, targObj=null, cSlctr='.'+cName) => {
-        if(targObj === null) {
-            targObj = qsa(cSlctr).forEach(o=>(o && o.className != null) ? o.className.replace(cSlctr, '') : o);
-            return targObj;
-        }
-        return targObj.className=targObj.className.replace(CSlctr, '');
-     }
-
-    const addDropHandlers = () => {
-        const clicktest = (e, obj=e.target) => { console.log('target: ', obj, '\nactive: ', qs('.being-dragged')) }
-        const suppress  = (e) => {e.preventDefault();}
-        const dragstart = (e, obj=e.target) => { purgeClass('being-dragged'); obj.classList.add('being-dragged'); dragInProgress=true; beingDragged=obj;sortableList.classList.add('drag-in-progress');}
-        const dragend   = (e, obj=e.target) => { if(!dragInProgress) return; beingDragged.classList.remove('being-dragged'); dragInProgress=false; beingDragged=null; sortableList.classList.remove('drag-in-progress');}
-        const dragover  = (e, trg=e.target) => { if(!dragInProgress) return; suppress(e); }
-        const dragenter = (e, trg=e.target) => { if(!dragInProgress) return; trg.classList.add('being-dragged-over'); }
-        const dragleave = (e, trg=e.target) => { if(!dragInProgress) return; trg.classList.remove('being-dragged-over'); }
-        const drop      = (e, trg=e.target) => { if(!dragInProgress) return; suppress(e); console.log('dropped!') }
-
-        console.log('Binding event listeners to drag/drop DOM structure...');
-        console.groupCollapsed(' - Binding event listeners to draggable DOM structure...');
-        qsa('[draggable="true"]').forEach(o=>{
-            o.addEventListener('dragstart', dragstart);
-            o.addEventListener('dragend', dragend);
-            o.addEventListener('click', clicktest);
-            o.addEventListener('mousedown', clicktest);
-            o.addEventListener('mouseup', clicktest);
-            console.log('   - ... now listening for dragStart, dragEnd, mouseDown, mouseUp, and click on', o);
-        });
-        console.groupEnd();
-
-        console.groupCollapsed(' - Binding event listeners to droptarget DOM structure...');
-        qsa('[data-drop="true"]').forEach(o=>{
-            o.addEventListener('dragover', dragover);
-            o.addEventListener('dragenter', dragenter);
-            o.addEventListener('dragleave', dragleave);
-            o.addEventListener('drop', drop);
-            console.log('   - ... now listening for dragOver, dragEnter, dragLeave, and drop on', o);
-        });
-        console.groupEnd();
+    const establishDragDropList = (listClass) => {
+       Array.prototype.map.call(
+          document.getElementsByClassName(listClass),
+          list => {
+             Array.prototype.map.call(list.children, item => {
+                bindDragDropListeners(item);
+             });
+          }
+       );
     }
 
+    const bindDragDropListeners = (obj) => {
+       const drag = (e, trg = e.target, parList = trg.parentNode) => {
+          trg.className += " drag-sort-active";
+          let swapobj = document.elementFromPoint(event.clientX, event.clientY) || trg;
+
+          if (parList === swapobj.parentNode) {
+             // Thereby constraining the drop to the same list
+             swapobj = (swapobj !== trg.nextSibling) ? swapobj : swapobj.nextSibling;
+             parList.insertBefore(trg, swapobj);
+          }
+       };
+       const drop = (e, trg = e.target) => trg.className = trg.className.replace(/(\s+)?drag-sort-active(\s+)?/g, "");
 
 
+       obj.setAttribute("draggable", true);
+       obj.addEventListener("drag", drag);
+       obj.addEventListener("drop", drop);
+       obj.addEventListener("dragend", drop);
+    }
 
-    const appendToBuffer = (obj) => fileBuffer.push(obj);           
     const ingestFileData = (fileObj, name, date, cb) => {
-        var reader    = new FileReader();                           // Instantiate a new file reader...
-                                                                    // ⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢⌢
-        reader.onload = function(progressEvent) {                   // ... Add a listener to observe once it's finished loading.
-            //     General Declarations
-            var opSet = [];                                         //     The collection we'll return containing all the rows we extract
-            var opRow = {};                                         //     The individual row objects that we'll iteratively collect
-            
-            //     Read and parse file contents, line by line.
-            var lines = this.result.split('\n');                    //     Break the file being read into an array, one record per line.
-            var hdrs  = lines.shift().split(',');                   //     Since this is assuming CSV format - with headers - extract the first
-
-            for (var line = 0; line < lines.length; line++) {       //     Loop through each line of file...
-                opRow = {};                                         //     ... create a fresh placeholder for its data...
-                currentLine = lines[line].split(',');               //     ... break the current line out into an array...
-                hdrs.forEach((h, i) => {                            //     ... then loop through the headers we collected earlier...
-                    opRow[h] = currentLine[i];                      //     ... creating a KVP for each subsequent value. (TODO: Destructuring assignment)
-                });
-                opSet.push(opRow);                                  //     Collect each newly-constructed row of KVPs...
-            }
-            appendToBuffer(opSet);                                  //     ... and stuff it into the page-wide file buffer.
-        };                                                          // ⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣
-        reader.readAsText(fileObj);                                 // ... And read the file specified.
+        const appendToBuffer = (obj, index=null) => (index==null) ? fileBuffer.push(obj) : fileBuffer[index]=obj;
+        console.groupCollapsed('Ingesting file ' + name + '...')
+        var reader    = new FileReader();                               // Instantiate a new file reader...
+                                                                        //   ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  
+        reader.onload = function(progressEvent) {                       //    ... Add a listener to observe once it's finished loading.
+            var opJSON = CSV.parse(this.result);                        //    Parse the .CSV file input...
+            appendToBuffer(opJSON);                                     //    ... and add it to the global variable containing file data,
+            let keySet = JSON.stringify(opJSON,['Issue key'])           //    ... convert the resultant JSON to a string containing ONLY the 'Issue key' column...
+                             .match(/DIGTDEV-\d{4,6}/g)                 //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
+            ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])]       //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
+            console.log(name, '-----------------------------------\nopJSON ============================\n', opJSON, '-----------------------------------\nISSUE_KEYS (de-duped) ============================\n', ISSUE_KEYS);
+        };                                                              // ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  
+        reader.readAsText(fileObj);                                     // ... And read the file specified.
     }
-
-    const processCollection = obj => {
-
-    }
-    
-
 
     const unifyFileData = () => {
         COMBD_DATA = [];
@@ -160,29 +156,17 @@
 
     const ructDraggableOutput = response => {
         console.log('Constructing drag/drop ui...');
-        let endexPositions = ['initial', 'terminus'];
-        const endex = (position=endexPositions.shift()) => 
-            `<li class="not-draggable ${position} endex" data-sort-order="0"><b>0</b><span>ENDEX</span></li>`;
-        
-        // if (namedFiles[0] != 'ENDEX') namedFiles.unshift('ENDEX');
         let opStr = '';
         for (var i = 0; i < 10; i++) {
             if(i < namedFiles.length){
                 let fileName = namedFiles[i];
                 let fileDate = fileName.replace(/^(.+)(\d{4})-(\d\d)-(\d\d)T(\d\d)_(\d\d)_(\d\d)(-\d{4})(.*)?$/, '$3-$4-$2, $5:$6');
                 console.log('   - Creating draggable DOM node for ' + fileName);
-                opStr += `<li class="draggable" data-sort-order="${i}" data-drop="true">
-                            <b>${i}</b>
-                            <span draggable="true" class="being-dragged"><em>[${fileDate}]</em>${fileName}</span>
-                          </li>`
+                opStr += `<li class="draggable" data-drop="true" draggable="true">${fileName}</li>`
             }else{
-                opStr += `<li class="not-draggable placeholder" data-sort-order="${i}">
-                            <b>${i}</b>
-                            <span>No file specified (click to add!)</span>
-                          </li>`;
+                opStr += `<li class="not-draggable placeholder" data-slot="${i}">No file specified (click to add!)</li>`;
             }
         }
-        opStr = endex() + opStr + endex();
         console.log('   - Clearing current DOM structure of list...');
         sortableList.innerHTML = '';
         sortableList.insertAdjacentHTML('beforeEnd', opStr);
@@ -202,59 +186,9 @@
             return Promise.reject(new Error(response.statusText))
         }
 
-        const outputFileNames = response => ructDraggableOutput()
-
-        const dateStampFiles = response => {
-            console.log('- Extracting Date Stamps from File Names...');
-            for (var i = 0; i < input.files.length; i++){ 
-
-                ingestFileData(input.files[i], input.files[i].name, new Date(input.files[i].lastModified).toLocaleString());
-            }
-            return Promise.resolve(response);
-        }
-
         return parseFileNames()
-            .then(outputFileNames)
-            .then(dateStampFiles);
-
-        console.log('- Files ingested and parsed.\nAwaiting User confirmation of file sequence.')
-        return
-        var promise1 = () => new Promise(function(conclude, abort) {
-
-            for(let i=0; i<input.files.length; i++) 
-                namedFiles.push(input.files[i].name);
-            if(OPsettings.autoSorting && input.files) 
-                namedFiles = namedFiles.sort();
-            ructDraggableOutput()
-            conclude(this);
-
-        }).then(() => new Promise(function(conclude, abort) {
-            opStr = '';
-            for (var i = 0; i < input.files.length; i++) 
-                ingestFileData(input.files[i], input.files[i].name, new Date(input.files[i].lastModified).toLocaleString());
-            
-            conclude(this);
-        })).then(unifyFileData());
-
-        return;
-        for (var i = 0; i < input.files.length; i++) {
-            let fName = input.files[i].name;
-            let modDate = new Date(input.files[i].lastModified).toLocaleString();
-            readXlsxFile(input.files[i], { dateFormat: 'MM/DD/YY' }).then(
-                (data) => {
-                    buffer.push({
-                        fileName: fName,
-                        fileData: data,
-                        lModDate: modDate
-                    })
-                },
-                (error) => {
-                    console.error(error)
-                    alert("Error while parsing Excel file. See console output for the error stack trace.")
-                }
-            ).then(() => { console.log(buffer); return true });
-        }
-
+            .then(ructDraggableOutput)
+            .then(()=>establishDragDropList("has-draggable-children"));
     });
 
     const runReport = () => {
