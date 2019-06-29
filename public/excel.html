@@ -35,6 +35,63 @@
             position:absolute;
             margin-left:-400px;
         }
+
+        *, *::before, *::after {
+   font-family:sans-serif;
+  box-sizing: border-box;
+}
+
+html,
+body {
+   max-width:100%;
+   width:100vw;
+   height: 100vh;
+   max-height:100%;
+   padding:0;
+   margin:0;
+}
+
+.container {
+  margin: 20px auto 0;
+  max-width: 500px;
+}
+
+p.has-draggable-children {
+   font-size:19px;
+   text-align:center;
+   font-weight:BOLD;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+   font-size:14px;
+   font-weight:bold;
+   margin: 5px 0;
+   padding: 0 20px;
+   height: 42px;
+   line-height: 40px;
+   border-radius: 30px;
+   background: #EEE;
+   color: #333;
+   list-style: none;
+   border:2px solid #aaa;
+   cursor:grabbing;
+   transition:0.3s all ease-in-out;
+   position: relative;
+}
+
+li.drag-sort-active {
+   background: #EEE6;
+   color: #3333;
+   border: 2px dashed #aaa6;   
+   transition:0.3s all ease-in-out;
+   transform:scale(0.95)
+}
+
     </style>
 </head>
 
@@ -46,7 +103,7 @@
         <input type="file" id="input" name="input" multiple>
     </label>
 
-    <div class="settings-panel">
+    <!-- <div class="settings-panel">
         <input type="checkbox" id="option-box-1" class="option-box" name="option-box-1" checked onchange="handleSettings()">
         <label for="option-box-1" class="option-label">JIRA Filename <i>format assumed to be default for imported files?</i></label>
         <input type="checkbox" id="option-box-2" class="option-box" name="option-box-2" checked onchange="handleSettings()">
@@ -54,10 +111,8 @@
         <input type="checkbox" id="option-box-3" class="option-box" name="option-box-3" checked onchange="handleSettings()">
         <label for="option-box-3" class="option-label">Auto-sort <i>files by on name when first loaded?</i></label>
         <button onClick='runReport()'>Run Report</button>
-    </div>
+    </div> -->
     <ul class="has-draggable-children"></ol>
-    <div id="result-table"></div>
-    <pre id="result"></pre>
     
     <script>
     const d            = document
@@ -73,34 +128,48 @@
        ,ISSUE_KEYS = [];
 
     const establishDragDropList = (listClass) => {
-       Array.prototype.map.call(
-          document.getElementsByClassName(listClass),
-          list => {
-             Array.prototype.map.call(list.children, item => {
-                bindDragDropListeners(item);
-             });
-          }
+        console.group('Locating DOM elements to convert to drag-droppable...');
+        let ddObjects = sortableList.getElementsByClassName(listClass);
+        Array.prototype.map.call(ddObjects,
+                                 list => {
+                                    console.log('     ', ddObjects.length, ' elements located:', ddObjects);
+                                    Array.prototype.map.call(list.children, item => {
+                                        bindDragDropListeners(item);
+                                    });
+                                 }
        );
+
+       [...ddObjects].forEach(o=>bindDragDropListeners(o));
+       console.groupEnd();
     }
 
     const bindDragDropListeners = (obj) => {
-       const drag = (e, trg = e.target, parList = trg.parentNode) => {
-          trg.className += " drag-sort-active";
-          let swapobj = document.elementFromPoint(event.clientX, event.clientY) || trg;
+        try {
+            console.log('     Attempting to bind listeners to', obj);
 
-          if (parList === swapobj.parentNode) {
-             // Thereby constraining the drop to the same list
-             swapobj = (swapobj !== trg.nextSibling) ? swapobj : swapobj.nextSibling;
-             parList.insertBefore(trg, swapobj);
-          }
-       };
-       const drop = (e, trg = e.target) => trg.className = trg.className.replace(/(\s+)?drag-sort-active(\s+)?/g, "");
+            const drag = (e, trg = e.target, parList = trg.parentNode) => {
+                trg.className += " drag-sort-active";
+                let swapobj = document.elementFromPoint(event.clientX, event.clientY) || trg;
 
+                if (parList === swapobj.parentNode) {
+                    // Thereby constraining the drop to the same list
+                    swapobj = (swapobj !== trg.nextSibling) ? swapobj : swapobj.nextSibling;
+                    parList.insertBefore(trg, swapobj);
+                }
+            };
+            const drop = (e, trg = e.target) => {e.preventDefault(); trg.className = trg.className.replace(/(\s+)?drag-sort-active(\s+)?/g, ""); }
 
-       obj.setAttribute("draggable", true);
-       obj.addEventListener("drag", drag);
-       obj.addEventListener("drop", drop);
-       obj.addEventListener("dragend", drop);
+            console.log('Binding drag listeners...');
+            obj.addEventListener("drag", drag); 
+            console.log('Binding drop listeners...');
+            obj.addEventListener("drop", drop);
+            console.log('Binding dragend listeners...');
+            obj.addEventListener("dragend", drop);
+            return true;
+        } catch (err) {
+            console.error(err);
+            return false;
+        }
     }
 
     const ingestFileData = (fileObj, name, date, cb) => {
@@ -162,16 +231,17 @@
                 let fileName = namedFiles[i];
                 let fileDate = fileName.replace(/^(.+)(\d{4})-(\d\d)-(\d\d)T(\d\d)_(\d\d)_(\d\d)(-\d{4})(.*)?$/, '$3-$4-$2, $5:$6');
                 console.log('   - Creating draggable DOM node for ' + fileName);
-                opStr += `<li class="draggable" data-drop="true" draggable="true">${fileName}</li>`
+                opStr += `<li class="drag-drop" draggable="true">${fileName}</li>`
             }else{
-                opStr += `<li class="not-draggable placeholder" data-slot="${i}">No file specified (click to add!)</li>`;
+                opStr += `<li data-slot="${i}">No file specified (click to add!)</li>`;
             }
         }
         console.log('   - Clearing current DOM structure of list...');
         sortableList.innerHTML = '';
-        sortableList.insertAdjacentHTML('beforeEnd', opStr);
         console.log('   - Inserting new draggable DOM structure...');
-        addDropHandlers();
+        sortableList.insertAdjacentHTML('beforeEnd', opStr);
+        console.log('   - Binding event handlers...');
+
         return Promise.resolve(response);
     }
 
@@ -188,7 +258,7 @@
 
         return parseFileNames()
             .then(ructDraggableOutput)
-            .then(()=>establishDragDropList("has-draggable-children"));
+            .then(()=>establishDragDropList("drag-drop"));
     });
 
     const runReport = () => {
@@ -201,11 +271,11 @@
         OPsettings.isoDateTime = document.getElementById("option-box-2").checked;
         OPsettings.autoSorting = document.getElementById("option-box-3").checked;
 
-        document.querySelector('ol').className += OPsettings.isoDateTime ? ' withDate' : '';
+        // document.querySelector('ol').className += OPsettings.isoDateTime ? ' withDate' : '';
     }
     
     (init = () => {
-        handleSettings();
+        // handleSettings();
     })();
     </script>
 </body>
