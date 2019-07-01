@@ -33,10 +33,12 @@
             </label>
         </section>
     </form>
-    <ul class="has-draggable-children"></ul>
+    <div class="sort-order">
+        <ul class="has-draggable-children"></ul>
+        <button class="done-sorting" onclick="runReport()">Okay, I'm satisfied. Run it!</button>
+    </div>
     <div class="pbars">
-            <div id="pbar3"  title="PROCESSING..." style="--bar-color:aquamarine; --process:3s; --seq:4.3s; --bc:4;"></div>
-            <div id="pbar4"  title="GENERATING OUTPUT... DONE!" style="--bar-color:LimeGreen; --process:0.2s; --seq:7.7s; --bc:7.4;"></div>
+       <div id="pbar4"  title="GENERATING OUTPUT... DONE!" style="--bar-color:LimeGreen; --process:0.2s; --seq:7.7s; --bc:7.4;"></div>
     </div>
     <div class="output-table">
         <table>
@@ -120,6 +122,8 @@
     }
 
     const unifyFileData = () => {
+        pBar(3, 'PROCESSING', 'aquamarine', 1, 0, 0);
+
         COMBD_DATA = [];
         ISSUE_KEYS = []; 
         DEBUG_DATA = [];
@@ -138,6 +142,7 @@
             let file = fileBuffer[files];
             console.log('   - Ingesting file #' + files + ': ', file);
             file.forEach(f=>{
+
                 if(f && f['Issue key'] && f['Issue key'] != null && f['Issue key'] !== ''){ 
                     COMBD_DATA[f['Issue key']][files] = f;
                     DEBUG_DATA[f['Issue key']][files] = JSON.stringify(f);
@@ -162,9 +167,9 @@
                 let fileName = namedFiles[i];
                 let fileDate = fileName.replace(/^(.+)(\d{4})-(\d\d)-(\d\d)T(\d\d)_(\d\d)_(\d\d)(-\d{4})(.*)?$/, '$3-$4-$2, $5:$6');
                 console.log('   - Creating draggable DOM node for ' + fileName);
-                opStr += `<li class="drag-drop" draggable="true">${fileName}</li>`
+                opStr += `<li data-slot="${i+1}" class="drag-drop" draggable="true">${fileName}</li>`
             }else{
-                opStr += `<li data-slot="${i}"><label for="input">No file specified (click to add!)</label></li>`;
+                opStr += `<li data-slot="${i+1}"><label for="input">No file specified (click to add!)</label></li>`;
             }
         }
         console.log('   - Clearing current DOM structure of list...');
@@ -206,6 +211,9 @@
     });
 
     const runReport = () => {
+        // for (var i = 0; i < input.files.length; i++) 
+        //     ingestFileData(input.files[i], input.files[i].name, new Date(input.files[i].lastModified).toLocaleString());
+        //TODO: Above is non-applicable, now. Promiseify it (count ingestions?) THEN call unifyFileData.
         unifyFileData();
     }
     

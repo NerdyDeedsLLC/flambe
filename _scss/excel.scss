@@ -110,7 +110,7 @@ main {
         }
 
         & > section.file-drop-target {
-            max-height: calc(100% - 140px);
+            max-height: calc(100% - 90px);
 
             label.file-dropzone {
                 display: block;
@@ -118,7 +118,7 @@ main {
                 background-color: #f3f6fa;
                 border-radius: 20px;
                 overflow: hidden;
-                min-height: 220px;
+                min-height: 270px;
                 width: 500px;
                 min-width: 500px;
                 position: relative;
@@ -128,7 +128,7 @@ main {
                 &:after {
                     content: "Drag & Drop your JIRA .CSV exports here!";
                     position: absolute;
-                    line-height: 1.4;
+                    line-height: 3.5;
                     width: 100%;
                     height: 100%;
                     text-align: center;
@@ -149,10 +149,10 @@ main {
                     bottom: 0;
                     left: 0;
                     z-index: 10;
-                    line-height:370px;
+                    line-height:420px;
                     background: transparent
                         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='opacity:0.2;' viewBox='0 0 20 17'%3E%3Cpath d='M10 0L4.8 4.9h3.3V10h3.8V4.9h3.3L10 0zm9.3 11.5l-3.2-2.1h-2l3.4 2.6H14l-.2.1-.8 2.3H7l-.8-2.2L6 12H2.4l3.4-2.6h-2L.6 11.5c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9L20 13c.1-.5-.2-1.2-.7-1.5z'/%3E%3C/svg%3E")
-                        center 55px no-repeat;
+                        center 80px no-repeat;
                     background-size: 128px;
                 }
 
@@ -164,13 +164,49 @@ main {
         }
     }
 
-    & > :nth-child(2) {
+    & > div.sort-order {
         max-width: 550px;
-        height: 375px;
+        height: 425px;
+        position:relative;
+
+        button {
+            width:50%;
+            height:40px;
+            position:absolute;
+            bottom:0;
+            right:0;
+            overflow:hidden;
+            max-width:40px;
+            white-space: nowrap;
+            border:2px solid green;
+            background-color:lighten(green, 50%);
+            font-size:14px;
+            transition: 0.3s all ease-in-out;
+            text-indent: 40px;
+
+            &::after{
+                content:'✓';
+                color:white;
+                line-height: 40px;
+                font-size:40px;
+                text-indent: 0px;
+                position: absolute;
+                display: block;
+                background:green;
+                width:40px;
+                height:40px;
+                left:0;
+                top:0;
+            }
+
+            &:hover {
+                max-width:50%;
+            }
+        }
     }
 
     .pbars {
-        min-width:80%;
+        min-width:95%;
         height:25px;
     }
 }
@@ -223,10 +259,10 @@ ul {
         display: block;
         position: relative;
         max-width: 600px;
-        width: 100%;
+        width: calc(100% - 35px);
         height: 32px;
         font-size: 12px;
-        margin: 5px 0;
+        margin: 5px 0 5px 35px;
         line-height: 32px;
         text-indent: 20px;
 
@@ -245,6 +281,31 @@ ul {
             transition: 0.3s all ease-in-out;
             position: absolute;
             z-index: -1;
+        }
+
+        &::after {
+            content: attr(data-slot);
+            display: block;
+            height: 30px;
+            width: 30px;
+            line-height: 38px;
+            border-radius: 50%;
+            background: #aaa;
+            color: #000;
+            transition: 0.3s all ease-in-out;
+            position: absolute;
+            z-index: -1;
+            top:0;
+            left: -35px;
+
+            text-indent:0;
+            text-align:right;
+            padding:0;
+            font-size:30px;
+            letter-spacing: -5px;
+            padding-right:5px;
+            font-weight:bold;
+            color:white;
         }
         &.drag-sort-active {
             background: #eee6;
