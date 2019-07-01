@@ -48,19 +48,123 @@
     </div>
     </main>
     <script>
-    const d            = document
-         ,qs           = (s)=>d.querySelector(s)
-         ,qsa          = (s)=>[...d.querySelectorAll(s)]
-         ,input        = document.getElementById('input')
-         ,sortableList = qs('.has-draggable-children');
+    
+    // DECLARATIONS ==================================================================================================================
+    // Shortcut aliases and Helper functions -----------------------------------------------------------------------------------------
+    const d            = document                                       // ⥱ Alias - document
+         ,qs           = (s)=>d.querySelector(s)                        // ⥱ Alias - querySelector
+         ,qsa          = (s)=>[...d.querySelectorAll(s)]                // ⥱ Alias - querySelectorAll
+         ,pBar = (id, title, barColor, processor=1, seq=0, bc=0) =>     // ⍟ HLPfn - Generates a progress bar
+                 new Promise(conclude => {
+                    id ='pbar-' + id;
+                    let oldBar = qs('#' + id);
+                    if(oldBar) oldBar.remove();
+                    let pb = qs('.pbars');
+                    pb.insertAdjacentHTML('beforeEnd', `<div id="${id}" class="progress-bar" title="${title}" style="--bar-color:${barColor}; --process:${processor}s; --seq:${seq}; --bc:${bc}"></div>`)
+                    return conclude(qs('#' + id));
+                 });
 
-    let fileBuffer = []
-       ,namedFiles = []
-       ,OPsettings = {}
-       ,COMBD_DATA = []
-       ,ISSUE_KEYS = [];
+    // Global Variables --------------------------------------------------------------------------------------------------------------
+    let  fileBuffer   = []     // Stores copies of the file input's data collection (req'd in case the user maskes multiple sets of selections)
+        ,namedFiles   = []     // Array containing just the names of the files contained within fileBuffer (used for sequencing the read order)
+        ,COMBD_DATA   = []     
+        ,ISSUE_KEYS   = []
+        ,input        = document.getElementById('input')
+        ,sortableList = qs('.has-draggable-children');
 
-    const establishDragDropList = (listClass) => {
+    // APPLICATION SOURCE ============================================================================================================
+    const parseNamesOfSelectedFiles = response =>                      // ⓵ onChange of file input box, construct namedFiles collection
+        new Promise(conclude => {
+            console.log('- Parsing & Sorting File Names...')
+            for(let i=0; i<input.files.length; i++) {
+                
+            }
+            console.log('   -', namedFiles.join('\n   - '), ' - FileBuffer:', fileBuffer);
+            
+            return conclude(true);
+        });
+        
+    const parseFilesAndGenerateDragDrop = response =>                // ⓶ iterate namedFiles and generate Drag/Drop UL
+        new Promise(conclude => {
+
+            const bufferFile = (fileObj, fileIndex, fileName) => 
+            new Promise(fulfill => {
+                    fileName = fileObj.name;
+                    if(namedFiles.indexOf(fileName) !== -1) return fulfill(this);
+                    namedFiles.push(fileName);
+                    const appendToBuffer = (JSONObj, fileName=null) => {
+                        let extantIndex = fileBuffer.find(b=>b.fileName===fileName);
+                        if(extantIndex) fileBuffer[extantIndex] = JSONObj;
+                        else fileBuffer.push({fileName:fileName, fileData:JSONObj})
+                    };
+                    console.group('Ingesting file ' + fileName + '...')
+                    var reader    = new FileReader();                               // Instantiate a new file reader...
+                                                                                    //   ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  
+                    reader.onload = (progressEvent) => {                       //    ... Add a listener to observe once it's finished loading.
+                        
+                    var opJSON = CSV.parse(reader.result);                        //    Parse the .CSV file input...
+                        appendToBuffer(opJSON, fileName);                                     //    ... and add it to the global variable containing file data,
+                        console.log(fileName, opJSON);
+                        console.groupEnd();
+                        return fulfill(this);
+                    };                                                              // ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  
+                    reader.readAsText(fileObj);                                     // ... And read the file specified.
+                });
+            var previousFileCount=namedFiles.length;
+            var bufferedFiles = Promise.all([...input.files].map((file,ind) => bufferFile(file, ind, file.name))).then(
+                () => {
+                    namedFiles = [...new Set(namedFiles)];
+                    console.log('bufferedFiles', fileBuffer);
+                    console.log('Constructing drag/drop ui...');
+                    let opStr = '';
+                    for (var i = 0; i < 10; i++) {
+                        if(i < namedFiles.length){
+                            let fileName = namedFiles[i];
+                            console.log('   - Creating draggable DOM node for ' + fileName);
+                            opStr += `<li data-slot="${i+1}" class="drag-drop" draggable="true">${fileName}</li>`
+                        }else{
+                            opStr += `<li data-slot="${i+1}"><label for="input">No file specified (click to add!)</label></li>`;
+                        }
+                    }
+                    console.log('   - Clearing current DOM structure of list...');
+                    while(sortableList.childElementCount > 0) sortableList.childNodes[0].remove()
+                    console.log('   - Inserting new draggable DOM structure...');
+                    sortableList.insertAdjacentHTML('beforeEnd', opStr);
+                    console.log('   - Binding event handlers...');
+                    return conclude(response);
+                });
+        });
+
+    const primeDragDropListBehaviors = (listClass='drag-drop') => {    // ⓷ iterate UL and set up drag/drop on its children
+        
+        const bindDragDropListeners = (obj) => {
+            try {
+                console.log('     Attempting to bind listeners to', obj);
+
+                const drag = (e, trg = e.target, parList = trg.parentNode) => {
+                    trg.className += " drag-sort-active";
+                    let swapobj = document.elementFromPoint(event.clientX, event.clientY) || trg;
+
+                    if (parList === swapobj.parentNode) {
+                        // Thereby constraining the drop to the same list
+                        swapobj = (swapobj !== trg.nextSibling) ? swapobj : swapobj.nextSibling;
+                        parList.insertBefore(trg, swapobj);
+                    }
+                };
+                const drop = (e, trg = e.target) => {e.preventDefault(); trg.className = trg.className.replace(/(\s+)?drag-sort-active(\s+)?/g, ""); }
+
+                console.log('Binding drag listeners...');
+                obj.addEventListener("drag", drag); 
+                console.log('Binding drop listeners...');
+                obj.addEventListener("drop", drop);
+                console.log('Binding dragend listeners...');
+                obj.addEventListener("dragend", drop);
+                return true;
+            } catch (err) {
+                console.error(err);
+                return false;
+            }
+        }
         console.group('Locating DOM elements to convert to drag-droppable...');
         let ddObjects = sortableList.getElementsByClassName(listClass);
         Array.prototype.map.call(ddObjects,
@@ -76,36 +180,33 @@
        console.groupEnd();
     }
 
-    const bindDragDropListeners = (obj) => {
-        try {
-            console.log('     Attempting to bind listeners to', obj);
-
-            const drag = (e, trg = e.target, parList = trg.parentNode) => {
-                trg.className += " drag-sort-active";
-                let swapobj = document.elementFromPoint(event.clientX, event.clientY) || trg;
-
-                if (parList === swapobj.parentNode) {
-                    // Thereby constraining the drop to the same list
-                    swapobj = (swapobj !== trg.nextSibling) ? swapobj : swapobj.nextSibling;
-                    parList.insertBefore(trg, swapobj);
-                }
-            };
-            const drop = (e, trg = e.target) => {e.preventDefault(); trg.className = trg.className.replace(/(\s+)?drag-sort-active(\s+)?/g, ""); }
-
-            console.log('Binding drag listeners...');
-            obj.addEventListener("drag", drag); 
-            console.log('Binding drop listeners...');
-            obj.addEventListener("drop", drop);
-            console.log('Binding dragend listeners...');
-            obj.addEventListener("dragend", drop);
-            return true;
-        } catch (err) {
-            console.error(err);
-            return false;
+    const runReport = () => {                                           // ⓸ user clicks Run It!; orchastrate remaining steps
+        const ingestSingleFile = (fileData) => {
+            // return new Promise(resolve=> 
         }
+
+
+
+        // var promise1 = () => new Promise(function(conclude, abort) {
+        //     for(let i=0; i<input.files.length; i++) 
+        //         namedFiles.push(input.files[i].name);
+        //     if(OPsettings.autoSorting && input.files) 
+        //         namedFiles = namedFiles.sort();
+        //     parseFilesAndGenerateDragDrop()
+        //     conclude(this);
+        // }).then(() => new Promise(function(conclude, abort) {
+        //     opStr = '';
+        //     for (var i = 0; i < input.files.length; i++) 
+        //         readEachFileInSequence(input.files[i], input.files[i].name, new Date(input.files[i].lastModified).toLocaleString());
+            
+        //     conclude(this);
+        // })).then(()=>concatinateDataFromSequencedFiles());
     }
 
-    const ingestFileData = (fileObj, name, date, cb) => {
+    const reorderFilesInBufferToMatchList = () => {                     // ⓸ grab contents of UL and align namedFiles and buffer
+    }
+//onloadend
+    const readEachFileInSequence = (fileObj, name, date, cb) => {       // ⓹ iterate files in buffer create promise chain to read each in sequence
         const appendToBuffer = (obj, index=null) => (index==null) ? fileBuffer.push(obj) : fileBuffer[index]=obj;
         console.groupCollapsed('Ingesting file ' + name + '...')
         var reader    = new FileReader();                               // Instantiate a new file reader...
@@ -121,7 +222,7 @@
         reader.readAsText(fileObj);                                     // ... And read the file specified.
     }
 
-    const unifyFileData = () => {
+    const concatinateDataFromSequencedFiles = () => {                   // ⓺ iterate finalized buffer, and concatinated generate output data
         pBar(3, 'PROCESSING', 'aquamarine', 1, 0, 0);
 
         COMBD_DATA = [];
@@ -158,76 +259,17 @@
         return true;
     }
 
+    (init = () => {                                                     // ⓿ Initiate application, chaining steps 1-3 above to file input's onChange
+        input.addEventListener('change', () => {
+            console.group('Files selected! Beginning processing tasks...');
 
-    const ructDraggableOutput = response => {
-        console.log('Constructing drag/drop ui...');
-        let opStr = '';
-        for (var i = 0; i < 10; i++) {
-            if(i < namedFiles.length){
-                let fileName = namedFiles[i];
-                let fileDate = fileName.replace(/^(.+)(\d{4})-(\d\d)-(\d\d)T(\d\d)_(\d\d)_(\d\d)(-\d{4})(.*)?$/, '$3-$4-$2, $5:$6');
-                console.log('   - Creating draggable DOM node for ' + fileName);
-                opStr += `<li data-slot="${i+1}" class="drag-drop" draggable="true">${fileName}</li>`
-            }else{
-                opStr += `<li data-slot="${i+1}"><label for="input">No file specified (click to add!)</label></li>`;
-            }
-        }
-        console.log('   - Clearing current DOM structure of list...');
-        sortableList.innerHTML = '';
-        console.log('   - Inserting new draggable DOM structure...');
-        sortableList.insertAdjacentHTML('beforeEnd', opStr);
-        console.log('   - Binding event handlers...');
-
-        return Promise.resolve(response);
-    }
-
-    const pBar = (id=qs('.pbars').childElementCount, title, barColor, processor=1, seq=0, bc=0) => {
-        id='pbar-' + id;
-        let oldBar = qs('#' + id);
-        if(oldBar) oldBar.remove();
-        let pb = qs('.pbars');
-        pb.insertAdjacentHTML('beforeEnd', `<div id="${id}" class="progress-bar" title="${title}" style="--bar-color:${barColor}; --process:${processor}s; --seq:${seq}; --bc:${bc}"></div>`)
-        return Promise.resolve(qs('#' + id));
-    }
-
-    input.addEventListener('change', () => {
-        console.group('Files selected! Beginning processing tasks...');
-        const parseFileNames = response => {
-            
-            console.log('- Parsing & Sorting File Names...')
-            for(let i=0; i<input.files.length; i++)     namedFiles.push(input.files[i].name);
-            if(OPsettings.autoSorting && input.files)   namedFiles = namedFiles.sort();
-            console.log('   -', namedFiles.join('\n   - '));
-
-            return Promise.resolve(response)
-            return Promise.reject(new Error(response.statusText))
-        }
-
-        return pBar(1,"READING...✓", "teal", 0.1, 0, 0)
-        .then(()=>pBar(2,'PARSING...✓','DarkTurquoise',0.1,0.1,0.1))
-            .then(parseFileNames)
-            .then(ructDraggableOutput)
-            .then(()=>establishDragDropList("drag-drop"));
-    });
-
-    const runReport = () => {
-        // for (var i = 0; i < input.files.length; i++) 
-        //     ingestFileData(input.files[i], input.files[i].name, new Date(input.files[i].lastModified).toLocaleString());
-        //TODO: Above is non-applicable, now. Promiseify it (count ingestions?) THEN call unifyFileData.
-        unifyFileData();
-    }
-    
-    const handleSettings = () => {
-        console.log('Reading User Settings...');
-        OPsettings.isDefFormat = document.getElementById("option-box-1").checked;
-        OPsettings.isoDateTime = document.getElementById("option-box-2").checked;
-        OPsettings.autoSorting = document.getElementById("option-box-3").checked;
-
-        // document.querySelector('ol').className += OPsettings.isoDateTime ? ' withDate' : '';
-    }
-    
-    (init = () => {
-        // handleSettings();
+            return   pBar(1,"READING...✓", "teal", 0.1, 0, 0)
+                    .then(()=>pBar(2,'PARSING...✓','DarkTurquoise',0.1,0.1,0.1))
+                    .then(parseNamesOfSelectedFiles)
+                    .then(parseFilesAndGenerateDragDrop)
+                    .then(primeDragDropListBehaviors);
+            console.groupEnd();
+        });
     })();
     </script>
 </body>
