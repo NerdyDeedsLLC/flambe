@@ -7,113 +7,44 @@
     
     <link rel="stylesheet" href="lib/css/excel.css">
     <style>
-        .file-dropzone {
-            display:block;
-            border:4px dashed #aaa;
-            background-color: #dde;
-            border-radius: 20px;
-            overflow: hidden;
-            height:200px;
-            min-height:200px;
-            width:400px;
-            min-width:400px;
-            position:relative;
-        }
-
-        .file-dropzone:after {
-            content:'Drag & Drop your JIRA .CSV exports here!';
-            position:absolute;
-            width:80%;
-            line-height: 1.6;
-            height:100%;
-            text-align: center;
-            font-size:26px;
-            padding:10%;
-        }
-
-        [type='file'] {
-            position:absolute;
-            margin-left:-400px;
-        }
-
-        *, *::before, *::after {
-   font-family:sans-serif;
-  box-sizing: border-box;
-}
-
-html,
-body {
-   max-width:100%;
-   width:100vw;
-   height: 100vh;
-   max-height:100%;
-   padding:0;
-   margin:0;
-}
-
-.container {
-  margin: 20px auto 0;
-  max-width: 500px;
-}
-
-p.has-draggable-children {
-   font-size:19px;
-   text-align:center;
-   font-weight:BOLD;
-}
-
-ul {
-  margin: 0;
-  padding: 0;
-}
-
-li {
-   font-size:14px;
-   font-weight:bold;
-   margin: 5px 0;
-   padding: 0 20px;
-   height: 42px;
-   line-height: 40px;
-   border-radius: 30px;
-   background: #EEE;
-   color: #333;
-   list-style: none;
-   border:2px solid #aaa;
-   cursor:grabbing;
-   transition:0.3s all ease-in-out;
-   position: relative;
-}
-
-li.drag-sort-active {
-   background: #EEE6;
-   color: #3333;
-   border: 2px dashed #aaa6;   
-   transition:0.3s all ease-in-out;
-   transform:scale(0.95)
-}
+       
 
     </style>
 </head>
 
 <body>
-    <label for="reportStartDate" class="startDateLabel">Start Date:</label>
-    <input id="reportStartDate" name="startDate" type="date" class="datepicker" autocomplete="false" />
     
-    <label id="file-dropzone" class="file-dropzone" for="input">
-        <input type="file" id="input" name="input" multiple>
-    </label>
+    <main>
+    <form id='iteration-info' action="">
+        <section class="form-fields">
+            <div>
+                <input id="iteration-name" name="iteration-name" type="text" required class="input-field" autocomplete="false" placeholder="" />
+                <label for="iteration-name" class="iteration-name-label">Iteration Name <em>(this is a label that will appled to reports in this iteration)</em></label>
+            </div>
+            <div>
+                <input id="report-start-date" name="report-start-date" type="date" required class="datepicker" autocomplete="false" placeholder="" />
+                <label for="report-start-date" class="report-start-date-label">Burndown Chart Start Date <em>(The day the Iteration began)</em></label>
+            </div>
+        </section>
+        <section class="file-drop-target">
 
-    <!-- <div class="settings-panel">
-        <input type="checkbox" id="option-box-1" class="option-box" name="option-box-1" checked onchange="handleSettings()">
-        <label for="option-box-1" class="option-label">JIRA Filename <i>format assumed to be default for imported files?</i></label>
-        <input type="checkbox" id="option-box-2" class="option-box" name="option-box-2" checked onchange="handleSettings()">
-        <label for="option-box-2" class="option-label">ISO Date/Time <i>promanently featured in filename?</i></label>
-        <input type="checkbox" id="option-box-3" class="option-box" name="option-box-3" checked onchange="handleSettings()">
-        <label for="option-box-3" class="option-label">Auto-sort <i>files by on name when first loaded?</i></label>
-        <button onClick='runReport()'>Run Report</button>
-    </div> -->
-    <ul class="has-draggable-children"></ol>
-    
+            <label id="file-dropzone" class="file-dropzone" for="input">
+                <input type="file" id="input" name="input" multiple>
+            </label>
+        </section>
+    </form>
+    <ul class="has-draggable-children"></ul>
+    <div class="pbars">
+            <div id="pbar3"  title="PROCESSING..." style="--bar-color:aquamarine; --process:3s; --seq:4.3s; --bc:4;"></div>
+            <div id="pbar4"  title="GENERATING OUTPUT... DONE!" style="--bar-color:LimeGreen; --process:0.2s; --seq:7.7s; --bc:7.4;"></div>
+    </div>
+    <div class="output-table">
+        <table>
+            <thead></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    </main>
     <script>
     const d            = document
          ,qs           = (s)=>d.querySelector(s)
@@ -233,7 +164,7 @@ li.drag-sort-active {
                 console.log('   - Creating draggable DOM node for ' + fileName);
                 opStr += `<li class="drag-drop" draggable="true">${fileName}</li>`
             }else{
-                opStr += `<li data-slot="${i}">No file specified (click to add!)</li>`;
+                opStr += `<li data-slot="${i}"><label for="input">No file specified (click to add!)</label></li>`;
             }
         }
         console.log('   - Clearing current DOM structure of list...');
@@ -245,18 +176,31 @@ li.drag-sort-active {
         return Promise.resolve(response);
     }
 
+    const pBar = (id=qs('.pbars').childElementCount, title, barColor, processor=1, seq=0, bc=0) => {
+        id='pbar-' + id;
+        let oldBar = qs('#' + id);
+        if(oldBar) oldBar.remove();
+        let pb = qs('.pbars');
+        pb.insertAdjacentHTML('beforeEnd', `<div id="${id}" class="progress-bar" title="${title}" style="--bar-color:${barColor}; --process:${processor}s; --seq:${seq}; --bc:${bc}"></div>`)
+        return Promise.resolve(qs('#' + id));
+    }
+
     input.addEventListener('change', () => {
         console.group('Files selected! Beginning processing tasks...');
         const parseFileNames = response => {
+            
             console.log('- Parsing & Sorting File Names...')
             for(let i=0; i<input.files.length; i++)     namedFiles.push(input.files[i].name);
             if(OPsettings.autoSorting && input.files)   namedFiles = namedFiles.sort();
             console.log('   -', namedFiles.join('\n   - '));
+
             return Promise.resolve(response)
             return Promise.reject(new Error(response.statusText))
         }
 
-        return parseFileNames()
+        return pBar(1,"READING...✓", "teal", 0.1, 0, 0)
+        .then(()=>pBar(2,'PARSING...✓','DarkTurquoise',0.1,0.1,0.1))
+            .then(parseFileNames)
             .then(ructDraggableOutput)
             .then(()=>establishDragDropList("drag-drop"));
     });

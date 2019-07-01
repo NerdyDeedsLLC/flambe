@@ -1,36 +1,199 @@
+*,
+*::before,
+*::after {
+  font-family: sans-serif;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+html,
 body {
-  margin: 20px;
-  font-family: Arial, Helvetica;
+  max-width: 100%;
+  width: 100vw;
+  height: 100vh;
+  max-height: 100%;
+  padding: 0;
+  margin: 0;
 }
 
-#input {
-  margin-top: 20px;
-  margin-bottom: 10px;
-}
-
-#result-table table {
+main {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 2.5em;
-  margin-bottom: 2.5em;
+  max-width: 1080px;
+  margin: 30px auto;
+  -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
+  -ms-flex-line-pack: stretch;
+      align-content: stretch;
+  -webkit-box-pack: stretch;
+      -ms-flex-pack: stretch;
+          justify-content: stretch;
+  position: relative;
+}
+
+main > * {
+  -webkit-box-flex: 1;
+      -ms-flex: 1 1 0%;
+          flex: 1 1 0%;
+  border: 1px dotted silver;
+}
+
+main > form#iteration-info {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  max-width: 502px;
+  min-width: 502px;
+  margin: 0 20px 0 0;
+  position: relative;
+}
+
+main > form#iteration-info::before {
+  content: "Iteration Information";
+  display: inline-block;
+  position: absolute;
+  background-color: white;
+  color: #aab;
+  -webkit-transform: translate(10px, -50%);
+          transform: translate(10px, -50%);
+  padding: 0 5px;
   font-size: 12px;
+  top: 5px;
 }
 
-#result-table table td {
-  border: 1px solid black;
-  padding: 0.5em;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  max-width: 10em;
-  white-space: nowrap;
-}
-
-#main-link {
+main > form#iteration-info section.form-fields {
+  margin: 5px 0 15px;
+  padding: 20px 10px;
+  border: 1px solid #94949f;
+  border-radius: 10px;
   display: block;
-  font-size: 24px;
-  color: #0093C4;
-  font-family: monospace;
-  text-decoration: none;
+  min-width: 100%;
+  width: 100%;
+  height: 130px;
+  max-height: 130px;
+}
+
+main > form#iteration-info section.form-fields div {
+  margin: 10px 0 0px;
+  position: relative;
+}
+
+main > form#iteration-info section.form-fields div + div {
+  margin-top: 25px;
+}
+
+main > form#iteration-info section.form-fields div input {
+  border: 1px solid #aaa;
+  border-radius: 6px;
+  font-size: 18px;
+  width: 100%;
+  height: 30px;
+  padding: 0 0 2px 8px;
+  -webkit-transition: color 0.15s ease-out;
+  transition: color 0.15s ease-out;
+  color: white;
+}
+
+main > form#iteration-info section.form-fields div input:focus, main > form#iteration-info section.form-fields div input:valid {
+  color: black;
+}
+
+main > form#iteration-info section.form-fields div input:focus + label,
+main > form#iteration-info section.form-fields div input:valid + label {
+  margin: -50px 0 0 -5px;
+  font-size: 13px;
+}
+
+main > form#iteration-info section.form-fields div label {
+  display: inline-block;
+  width: 100px;
+  position: absolute;
+  height: 26px;
+  line-height: 26px;
+  margin: -28px 0 0 5px;
+  padding-left: 5px;
+  color: #aaa;
+  width: 500px;
+  -webkit-transition: all 0.15s ease-out;
+  transition: all 0.15s ease-out;
+  -webkit-transition-property: font-size, margin-top;
+  transition-property: font-size, margin-top;
+}
+
+main > form#iteration-info section.form-fields div label em {
+  display: inline-block;
+  vertical-align: baseline;
+  font-size: 80%;
+}
+
+main > form#iteration-info > section.file-drop-target {
+  max-height: calc(100% - 140px);
+}
+
+main > form#iteration-info > section.file-drop-target label.file-dropzone {
+  display: block;
+  border: 4px dashed #94949f;
+  background-color: #f3f6fa;
+  border-radius: 20px;
+  overflow: hidden;
+  min-height: 220px;
+  width: 500px;
+  min-width: 500px;
+  position: relative;
+  font-weight: bold;
+  color: #0006;
+}
+
+main > form#iteration-info > section.file-drop-target label.file-dropzone:after {
+  content: "Drag & Drop your JIRA .CSV exports here!";
+  position: absolute;
+  line-height: 1.4;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-size: 22px;
+  padding: 10px 20px 0;
+}
+
+main > form#iteration-info > section.file-drop-target label.file-dropzone:before {
+  content: "...or click to browse!";
+  position: absolute;
+  text-indent: -10px;
+  display: block;
+  line-height: 1;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-size: 16px;
+  padding: 3% 10%;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+  line-height: 370px;
+  background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='opacity:0.2;' viewBox='0 0 20 17'%3E%3Cpath d='M10 0L4.8 4.9h3.3V10h3.8V4.9h3.3L10 0zm9.3 11.5l-3.2-2.1h-2l3.4 2.6H14l-.2.1-.8 2.3H7l-.8-2.2L6 12H2.4l3.4-2.6h-2L.6 11.5c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9L20 13c.1-.5-.2-1.2-.7-1.5z'/%3E%3C/svg%3E") center 55px no-repeat;
+  background-size: 128px;
+}
+
+main > form#iteration-info > section.file-drop-target label.file-dropzone [type="file"] {
+  position: absolute;
+  margin-left: -400px;
+}
+
+main > :nth-child(2) {
+  max-width: 550px;
+  height: 375px;
+}
+
+main .pbars {
+  min-width: 80%;
+  height: 25px;
 }
 
 .option-box {
@@ -44,7 +207,7 @@ body {
   font-weight: bold;
   padding: 4px 10px;
   margin: 5px 10px 5px;
-  border: 2px solid #AAA;
+  border: 2px solid #aaa;
   border-radius: 8px;
   width: 120px;
   -webkit-transition: 0.2s all ease-in-out;
@@ -65,7 +228,7 @@ body {
 .option-box:checked + label {
   border-color: green;
   color: green;
-  background-color: #CFC;
+  background-color: #cfc;
 }
 
 .option-box:checked + label:hover {
@@ -77,308 +240,201 @@ body {
   max-height: 80px;
 }
 
-#file-process-sequence {
-  width: 800px;
+ul {
+  margin: 0;
   padding: 0;
-  list-style: none;
 }
 
-#file-process-sequence li {
+ul li {
+  display: block;
   position: relative;
-  height: 40px;
-  vertical-align: middle;
-  line-height: 25px;
-  background: linear-gradient(0deg, transparent 0, transparent 41px, red 56px, transparent 100%);
-  -webkit-box-shadow: inset 30px 0 20px #fff, inset -30px 0 20px #fff;
-          box-shadow: inset 30px 0 20px #fff, inset -30px 0 20px #fff;
+  max-width: 600px;
+  width: 100%;
+  height: 32px;
+  font-size: 12px;
+  margin: 5px 0;
+  line-height: 32px;
+  text-indent: 20px;
 }
 
-#file-process-sequence li > span {
-  max-width: 100%;
-  min-width: calc(100% - 50px);
-  border: 2px solid blue;
-  position: absolute;
-  left: -1px;
-  top: -2px;
-  height: 25px;
-  padding: 5px 0 5px 40px;
-  border-radius: 20px;
-  background-color: #EEFFEE;
-}
-
-#file-process-sequence li > b {
-  line-height: 25px;
-  z-index: 10;
-  position: absolute;
-  background: white;
-  border: 2px solid blue;
-  width: 25px;
-  height: 25px;
-  top: 3px;
-  left: 5px;
-  border-radius: 50%;
-  text-align: center;
-}
-
-#file-process-sequence.drag-in-progress {
-  width: 800px;
-  padding: 0;
+ul li::before {
+  content: "";
+  display: block;
+  height: 32px;
+  width: 100%;
+  line-height: 30px;
+  border-radius: 30px;
+  background: #eee;
+  color: #333;
   list-style: none;
-}
-
-#file-process-sequence.drag-in-progress span {
-  z-index: -100 !important;
-}
-
-#file-process-sequence.drag-in-progress li.initial.endex {
-  display: none;
-}
-
-#file-process-sequence.drag-in-progress li:not(.initial):not(.endex) {
-  color: pink;
-  margin-bottom: 12px;
-}
-
-#file-process-sequence.drag-in-progress li:not(.initial):not(.endex) .being-dragged-over, #file-process-sequence.drag-in-progress li:not(.initial):not(.endex) .being-dragged-over + li {
-  padding-top: 30px;
-  -webkit-transition: 0.15s all ease-in-out;
-  transition: 0.15s all ease-in-out;
-  background-color: red;
-}
-
-#file-process-sequence.drag-in-progress li:not(.initial):not(.endex) .being-dragged-over > span, #file-process-sequence.drag-in-progress li:not(.initial):not(.endex) .being-dragged-over + li > span {
-  max-width: 100%;
-  min-width: calc(100% - 50px);
-  border: 2px solid blue;
+  border: 2px solid #aaa;
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+  -webkit-transition: 0.3s all ease-in-out;
+  transition: 0.3s all ease-in-out;
   position: absolute;
-  left: -1px;
-  top: 30px;
-  height: 25px;
-  padding: 5px 0 5px 40px;
-  border-radius: 20px;
-  background-color: #EEFFEE;
-  -webkit-transition: 0.15s all ease-in-out;
-  transition: 0.15s all ease-in-out;
+  z-index: -1;
 }
 
-#file-process-sequence.drag-in-progress li:not(.initial):not(.endex) .being-dragged-over > b, #file-process-sequence.drag-in-progress li:not(.initial):not(.endex) .being-dragged-over + li > b {
-  line-height: 25px;
-  z-index: 10;
-  position: absolute;
-  background: white;
-  border: 2px solid blue;
-  width: 25px;
-  height: 25px;
-  top: 35px;
-  left: 5px;
-  border-radius: 50%;
-  text-align: center;
-  -webkit-transition: 0.15s all ease-in-out;
-  transition: 0.15s all ease-in-out;
+ul li.drag-sort-active {
+  background: #eee6;
+  color: #3333;
+  border: 2px dashed #aaa6;
+  -webkit-transition: 0.3s all ease-in-out;
+  transition: 0.3s all ease-in-out;
+  -webkit-transform: scale(0.95);
+          transform: scale(0.95);
 }
 
-#file-process-sequence.drag-in-progress li:not(.initial):not(.endex) .being-dragged-over {
-  background: linear-gradient(0deg, transparent 0, transparent 41px, red 56px, transparent 100%);
-  -webkit-box-shadow: inset 30px 0 20px #fff, inset -30px 0 20px #fff;
-          box-shadow: inset 30px 0 20px #fff, inset -30px 0 20px #fff;
+.output-table {
+  min-width: 95%;
 }
 
-#file-process-sequence.drag-in-progress li:not(.initial):not(.endex) .being-dragged-over + li {
-  background: linear-gradient(180deg, transparent 0px, transparent 0px, red 15px, transparent 30px, transparent 100%);
-  -webkit-box-shadow: inset 30px 0 20px #fff, inset -30px 0 20px #fff;
-          box-shadow: inset 30px 0 20px #fff, inset -30px 0 20px #fff;
-}
-
-#file-process-sequence.drag-in-progress li:not(.initial):not(.endex).endex * {
+.progress-bar {
+  display: inline-block;
+  -webkit-animation: manifest 0.2s ease-out calc(var(--bc) * 1s) forwards;
+          animation: manifest 0.2s ease-out calc(var(--bc) * 1s) forwards;
+  width: 216px;
+  height: 18px;
+  border: 1px solid #333;
+  border-radius: 6px;
+  margin: 7.2px;
+  position: relative;
+  overflow: hidden;
+  background: var(--bar-color) repeating-linear-gradient(45deg, #FFF8 0, #FFF8 10px, #FFFB 10px, #FFFB 20px);
+  -webkit-box-shadow: inset 2px 2px 0 #FFF, inset 2px -2px 0 #FFF, inset -2px 2px 0 #FFF, inset -2px -2px 0 #FFF;
+          box-shadow: inset 2px 2px 0 #FFF, inset 2px -2px 0 #FFF, inset -2px 2px 0 #FFF, inset -2px -2px 0 #FFF;
   opacity: 0;
+  -webkit-transform: scale(0);
+          transform: scale(0);
 }
 
-z
-ol.fuckyou {
-  float: left;
-  display: grid;
-}
-
-z
-ol.fuckyou > li {
-  display: block;
-  width: auto;
-  height: 50px;
-  padding: 12px 165px 3px 0;
-  line-height: 35px;
-  position: relative;
-  white-space: nowrap;
-  width: 1fr;
-  background-color: pink;
-  width: 70vw;
-  border: 1px dotted indigo;
-}
-
-z
-ol.fuckyou > li span {
-  position: absolute;
-  padding: 0 20px;
-  height: 35px;
-  line-height: 35px;
-  z-index: 2;
-  background-color: #EEEEEE;
-  min-width: 100%;
-}
-
-z
-ol.fuckyou > li span::before {
-  display: inline-block;
-  border: 1px solid black;
-  border-radius: 40px;
-  position: absolute;
+.progress-bar::before, .progress-bar::after {
   content: '';
-  top: 0;
-  left: -30px;
-  width: calc(100% + 205px);
-  height: 35px;
-  font-size: 20px;
-  font-weight: bold;
-  line-height: 35px;
-  color: #aaa;
-}
-
-z
-ol.fuckyou > li span em {
-  overflow: hidden;
-  float: left;
-  padding: 0;
-  -webkit-transition: 0.3s all ease-in-out;
-  transition: 0.3s all ease-in-out;
-  color: #000;
-  max-width: 0;
-}
-
-z
-ol.fuckyou > li b {
-  display: inline-block;
-  width: 25px;
-  height: 25px;
-  text-align: center;
-  background: #f00;
-  line-height: 25px;
-  border-radius: 50%;
-  vertical-align: bottom;
-  margin: 5px 0 0 20px;
-}
-
-z
-ol.fuckyou > li.placeholder span {
+  border-radius: 5.14286px;
   width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 1;
 }
 
-z
-ol.fuckyou.withDate li {
-  color: #666;
-  white-space: nowrap;
+.progress-bar::after {
+  content: attr(title);
+  text-align: center;
+  font-weight: bold;
+  line-height: 18px -0.5;
+  color: #FFFC;
+  text-shadow: 0 0 0 var(--bar-color), 0 -1px 0 #0005, 0 1px 0 #0005, -1px 0 0 #0005, 1px 0 0 #0005, 0 -1px 0 var(--bar-color), 0 1px 0 var(--bar-color), -1px 0 0 var(--bar-color), 1px 0 0 var(--bar-color);
+  opacity: 0.85;
+  font-size: 13.5px;
 }
 
-z
-ol.fuckyou.withDate li > span em {
-  padding: 0 150px 0 15px;
+.progress-bar::before {
+  -webkit-animation: progress var(--process) linear forwards;
+          animation: progress var(--process) linear forwards;
+  -webkit-animation-delay: var(--seq);
+          animation-delay: var(--seq);
+  width: 0%;
+  background: var(--bar-color) repeating-linear-gradient(45deg, #0003 0, #0003 5.94px, #0002 5.94px, #0002 11.88px);
+  height: 100%;
+  max-height: calc(100% - 3px);
+  max-width: calc(100% - 3px);
+  top: 1.5px;
+  left: 1.5px;
+  -webkit-box-shadow: 1px 1px 10px var(--bar-color);
+          box-shadow: 1px 1px 10px var(--bar-color);
 }
 
-@-webkit-keyframes pulse {
+@-webkit-keyframes progress {
   0% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 0;
+    width: 0%;
   }
   100% {
-    opacity: 0.5;
+    width: calc(100% - 4px);
   }
 }
 
-@keyframes pulse {
+@keyframes progress {
   0% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 0;
+    width: 0%;
   }
   100% {
-    opacity: 0.5;
+    width: calc(100% - 4px);
   }
 }
 
-ol.old {
-  float: left;
-  display: grid;
+@-webkit-keyframes manifest {
+  0% {
+    opacity: 0;
+    -webkit-transform: scale(0);
+            transform: scale(0);
+  }
+  37% {
+    opacity: 1;
+    -webkit-transform: scale(1.2);
+            transform: scale(1.2);
+  }
+  69% {
+    opacity: 1;
+    -webkit-transform: scale(0.9);
+            transform: scale(0.9);
+  }
+  85% {
+    opacity: 1;
+    -webkit-transform: scale(1.05);
+            transform: scale(1.05);
+  }
+  93% {
+    opacity: 1;
+    -webkit-transform: scale(0.975);
+            transform: scale(0.975);
+  }
+  97% {
+    opacity: 1;
+    -webkit-transform: scale(1.0125);
+            transform: scale(1.0125);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
 }
 
-ol.old > li {
-  display: block;
-  width: auto;
-  height: 38px;
-  padding: 0 0 3px 0;
-  line-height: 35px;
-  position: relative;
-  white-space: nowrap;
-  width: 1fr;
-}
-
-ol.old > li span {
-  position: absolute;
-  padding: 0 20px;
-  height: 35px;
-  line-height: 35px;
-  z-index: 2;
-  background-color: #EEEEEE;
-  min-width: 100%;
-}
-
-ol.old > li span::before {
-  display: inline-block;
-  border: 1px solid black;
-  border-radius: 40px;
-  position: absolute;
-  content: '';
-  top: 0;
-  left: -30px;
-  width: calc(100% + 205px);
-  height: 35px;
-  font-size: 20px;
-  font-weight: bold;
-  line-height: 35px;
-  color: #aaa;
-}
-
-ol.old > li span em {
-  overflow: hidden;
-  float: left;
-  padding: 0;
-  -webkit-transition: 0.3s all ease-in-out;
-  transition: 0.3s all ease-in-out;
-  color: #000;
-  max-width: 0;
-}
-
-ol.old > li b {
-  display: inline-block;
-  width: 25px;
-  height: 25px;
-  text-align: center;
-  background: #f00;
-  line-height: 25px;
-  border-radius: 50%;
-  vertical-align: bottom;
-  margin: 5px 0 0 20px;
-}
-
-ol.old > li.placeholder span {
-  width: 100%;
-}
-
-ol.old.withDate li {
-  color: #666;
-  white-space: nowrap;
-}
-
-ol.old.withDate li > span em {
-  padding: 0 150px 0 15px;
+@keyframes manifest {
+  0% {
+    opacity: 0;
+    -webkit-transform: scale(0);
+            transform: scale(0);
+  }
+  37% {
+    opacity: 1;
+    -webkit-transform: scale(1.2);
+            transform: scale(1.2);
+  }
+  69% {
+    opacity: 1;
+    -webkit-transform: scale(0.9);
+            transform: scale(0.9);
+  }
+  85% {
+    opacity: 1;
+    -webkit-transform: scale(1.05);
+            transform: scale(1.05);
+  }
+  93% {
+    opacity: 1;
+    -webkit-transform: scale(0.975);
+            transform: scale(0.975);
+  }
+  97% {
+    opacity: 1;
+    -webkit-transform: scale(1.0125);
+            transform: scale(1.0125);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
 }
