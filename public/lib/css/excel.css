@@ -202,34 +202,62 @@ main > div.sort-order button {
   overflow: hidden;
   max-width: 40px;
   white-space: nowrap;
-  border: 2px solid green;
-  background-color: #80ff80;
-  font-size: 14px;
   -webkit-transition: 0.3s all ease-in-out;
   transition: 0.3s all ease-in-out;
+  font-size: 16px;
   text-indent: 40px;
+  font-weight: bold;
+  text-shadow: 0 -1px 0 #FFF;
 }
 
 main > div.sort-order button::after {
-  content: '✓';
+  content: '';
+  text-indent: -40px;
   color: white;
   line-height: 40px;
   font-size: 40px;
   text-indent: 0px;
   position: absolute;
   display: block;
-  background: green;
   width: 40px;
   height: 40px;
   left: 0;
   top: 0;
   text-align: center;
-  -webkit-transition: all 0.1s ease-in-out;
-  transition: all 0.1s ease-in-out;
+  -webkit-transition: content 0.1s ease-in-out, margin-left 0.27s ease-in-out;
+  transition: content 0.1s ease-in-out, margin-left 0.27s ease-in-out;
 }
 
 main > div.sort-order button:hover {
   max-width: 50%;
+}
+
+main > div.sort-order button.done-sorting {
+  border: 2px solid green;
+  background-color: #80ff80;
+}
+
+main > div.sort-order button.done-sorting::after {
+  content: '✓';
+  background: green;
+  font-weight: normal;
+}
+
+main > div.sort-order button.insert-missing-day {
+  border: 2px solid #003bbc;
+  background-color: #c9d9f9;
+  right: unset;
+  left: 0;
+  text-indent: -40px;
+}
+
+main > div.sort-order button.insert-missing-day::after {
+  background: #003bbc url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 127 114' fill='white'%3E%3Cpath fill-rule='evenodd' d='M122.8 45.9h-5.3v-4.3h9.5V48h-4.2v-2zm-17.2-4.3H116V46h-10.3v-4.3zM35.4.3h79v27h-79V.3zM18 73.8a17.4 17.4 0 1 1-.1-34.8 17.4 17.4 0 0 1 0 34.8zm12-21.4h-8v-8h-8v8H6v8h8v8h8v-8h8v-8zm27 4.1L42.7 67v-6.4H38v-8.2h4.7V46L57 56.5zm49.5 14.8H96.4v-4.2h10.2v4.2zm-3-29.7V46H93.3v-4.3h10.2zm-10 29.7H83.4v-4.2h10.2v4.2zm-3-29.7V46H80.3v-4.3h10.2zm-9.2 29.7H71v-4.2h10.3v4.2zM78 41.6V46H67.8v-4.3h10.3zM69 71.3h-9.4V65h4.2v2h5.2v4.2zm-5-8.5H59v-10h5v10zm1.8-21.2V46h-2V51h-4.2v-9.5h6.2zm48.8 71.7H35.4v-27h79v27zM108.8 67H119v4.2h-10.3v-4.2zM127 49.8v10h-4v-10h4zm-4.3 12h4.3v9.5h-6.3v-4.2h2v-5.2z'/%3E%3C/svg%3E") 3px 5px no-repeat;
+  background-size: 75%;
+}
+
+main > div.sort-order button.insert-missing-day:hover::after {
+  margin-left: calc(100% - 40px);
 }
 
 main > div.sort-order button:disabled {
@@ -241,7 +269,7 @@ main > div.sort-order button:disabled {
 }
 
 main > div.sort-order button:disabled::after {
-  background: #BBB;
+  background-color: #BBB;
 }
 
 main > div.sort-order button:disabled:hover::after {

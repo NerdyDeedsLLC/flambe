@@ -3,306 +3,242 @@
 <head>
     <title>read-excel-file</title>
     <meta charset="utf-8">
-     <script src="./lib/js/csv-to-json.js"></script>
-    
+    <script src="./lib/js/csv-to-json.js"></script>
     <link rel="stylesheet" href="lib/css/excel.css">
     <style>
-       
 
     </style>
 </head>
 
 <body>
-    
     <main>
-    <form id='iteration-info' action="">
-        <section class="form-fields">
-            <div>
-                <input id="iteration-name" name="iteration-name" type="text" required class="input-field" autocomplete="false" placeholder="" />
-                <label for="iteration-name" class="iteration-name-label">Iteration Name <em>(this is a label that will appled to reports in this iteration)</em></label>
-            </div>
-            <div>
-                <input id="report-start-date" name="report-start-date" type="date" required class="datepicker" autocomplete="false" placeholder="" />
-                <label for="report-start-date" class="report-start-date-label">Burndown Chart Start Date <em>(The day the Iteration began)</em></label>
-            </div>
-        </section>
-        <section class="file-drop-target">
-
-            <label id="file-dropzone" class="file-dropzone" for="input">
-                <input type="file" id="input" name="input" multiple>
-            </label>
-        </section>
-    </form>
-    <div class="sort-order">
-        <ul class="has-draggable-children"></ul>
-        <button class="done-sorting" onclick="runReport(this)" disabled="true">Okay, I'm satisfied. Run it!</button>
-    </div>
-    <div class="pbars">
-    </div>
-    <div class="output-table">
-        <table>
-            <thead></thead>
-            <tbody></tbody>
-        </table>
-    </div>
+        <form id='iteration-info' action="">
+            <section class="form-fields">
+                <div>
+                    <input id="iteration-name" name="iteration-name" type="text" required class="input-field"
+                        autocomplete="false" placeholder="" />
+                    <label for="iteration-name" class="iteration-name-label">Iteration Name <em>(this is a label that
+                            will appled to reports in this iteration)</em></label>
+                </div>
+                <div>
+                    <input id="report-start-date" name="report-start-date" type="date" required class="datepicker"
+                        autocomplete="false" placeholder="" />
+                    <label for="report-start-date" class="report-start-date-label">Burndown Chart Start Date <em>(The
+                            day the Iteration began)</em></label>
+                </div>
+            </section>
+            <section class="file-drop-target">
+                <label id="file-dropzone" class="file-dropzone" for="input">
+                    <input type="file" id="input" name="input" multiple>
+                </label>
+            </section>
+        </form>
+        <div class="sort-order">
+            <ul class="has-draggable-children"></ul>
+            <button class="insert-missing-day" onclick="insertDay(this)" disabled="true">Add Another Slot</button>
+            <button class="done-sorting" onclick="runReport(this)" disabled="true">Okay, I'm satisfied. Run it!</button>
+        </div>
+        <div class="pbars">
+        </div>
+        <div class="output-table">
+            <table>
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </main>
     <script>
-    
-    // DECLARATIONS ==================================================================================================================
-    // Shortcut aliases and Helper functions -----------------------------------------------------------------------------------------
-    const d            = document                                       // ⥱ Alias - document
-         ,qs           = (s)=>d.querySelector(s)                        // ⥱ Alias - querySelector
-         ,qsa          = (s)=>[...d.querySelectorAll(s)]                // ⥱ Alias - querySelectorAll
-         _             = (...args)=>console.log.call(this, ...args)     // ⥱ Alias - _
-         ,pBar = (id, title, barColor, processor=1, seq=0, bc=0) =>     // ⍟ HLPfn - Generates a progress bar
-                 new Promise(conclude => {
-                    id ='pbar-' + id;
+        // DECLARATIONS ==================================================================================================================
+        // Shortcut aliases and Helper functions -----------------------------------------------------------------------------------------
+        const d = document                                       // ⥱ Alias - document
+            , qs = (s) => d.querySelector(s)                        // ⥱ Alias - querySelector
+            , qsa = (s) => [...d.querySelectorAll(s)]                // ⥱ Alias - querySelectorAll
+        _ = (...args) => console.log.call(this, ...args)     // ⥱ Alias - _
+            , pBar = (id, title, barColor, processor = 1, seq = 0, bc = 0) =>     // ⍟ HLPfn - Generates a progress bar
+                new Promise(conclude => {
+                    id = 'pbar-' + id;
                     let oldBar = qs('#' + id);
-                    if(oldBar) oldBar.remove();
+                    if (oldBar) oldBar.remove();
                     let pb = qs('.pbars');
                     pb.insertAdjacentHTML('beforeEnd', `<div id="${id}" class="progress-bar" title="${title}" style="--bar-color:${barColor}; --process:${processor}s; --seq:${seq}; --bc:${bc}"></div>`)
                     return conclude(qs('#' + id));
-                 }),
-        
-        toHours = (val=null) =>{
-                        if(val == null || isNaN((val / 1))) return '';
-                        val = (val / 1);
-                        if(val <= 0) return 0;
-                        return (val/3600).toPrecision(3);
-                    }
-
-
-    // Global Variables --------------------------------------------------------------------------------------------------------------
-    let  fileBuffer   = []     // Stores copies of the file input's data collection (req'd in case the user maskes multiple sets of selections)
-        ,namedFiles   = []     // Array containing just the names of the files contained within fileBuffer (used for sequencing the read order)
-        ,COMBD_DATA   = []     
-        ,ISSUE_KEYS   = []
-        ,input        = document.getElementById('input')
-        ,sortableList = qs('.has-draggable-children')
-        ,doneButton   = qs('.done-sorting');
-
-    // APPLICATION SOURCE ============================================================================================================
-    const parseNamesOfSelectedFiles = response =>                      // ⓵ onChange of file input box, construct namedFiles collection
-        new Promise(conclude => {
-            _('- Parsing & Sorting File Names...')
-            for(let i=0; i<input.files.length; i++) {
-                
+                }),
+            toHours = (val = null) => {
+                if (val == null || isNaN((val / 1))) return '';
+                val = (val / 1);
+                if (val <= 0) return 0;
+                return (val / 3600).toPrecision(3);
             }
-            _('   -', namedFiles.join('\n   - '), ' - FileBuffer:', fileBuffer);
-            
-            return conclude(true);
-        });
-        
-    const parseFilesAndGenerateDragDrop = response =>                // ⓶ iterate namedFiles and generate Drag/Drop UL
-        new Promise(conclude => {
 
-            const bufferFile = (fileObj, fileIndex, fileName) => 
-            new Promise(fulfill => {
-                    fileName = fileObj.name;
-                    if(namedFiles.indexOf(fileName) !== -1) return fulfill(this);
-                    namedFiles.push(fileName);
-                    const appendToBuffer = (JSONObj, fileName=null) => {
-                        let extantIndex = fileBuffer.find(b=>b.fileName===fileName);
-                        if(extantIndex) fileBuffer[extantIndex] = JSONObj;
-                        else fileBuffer.push({fileName:fileName, fileData:JSONObj})
-                    };
-                    console.group('Ingesting file ' + fileName + '...')
-                    var reader    = new FileReader();                               // Instantiate a new file reader...
-                                                                                    //   ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  
-                    reader.onloadend = (progressEvent) => {                       //    ... Add a listener to observe once it's finished loading.
-                        
-                    var opJSON = CSV.parse(reader.result);                        //    Parse the .CSV file input...
-                        appendToBuffer(opJSON, fileName);                                     //    ... and add it to the global variable containing file data,
-                        _(fileName, opJSON);
-                        console.groupEnd();
-                        return fulfill(this);
-                    };                                                              // ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  
-                    reader.readAsText(fileObj);                                     // ... And read the file specified.
-                });
-            var previousFileCount=namedFiles.length;
-            var bufferedFiles = Promise.all([...input.files].map((file,ind) => bufferFile(file, ind, file.name))).then(
-                () => {
-                    namedFiles = [...new Set(namedFiles)];
-                    _('bufferedFiles', fileBuffer);
-                    _('Constructing drag/drop ui...');
-                    let opStr = '';
-                    for (var i = 0; i < 10; i++) {
-                        if(i < namedFiles.length){
-                            let fileName = namedFiles[i];
-                            _('   - Creating draggable DOM node for ' + fileName);
-                            opStr += `<li data-slot="${i+1}" class="drag-drop" draggable="true">${fileName}</li>`
-                        }else{
-                            opStr += `<li data-slot="${i+1}"><label for="input">No file specified (click to add!)</label></li>`;
+        // Global Variables --------------------------------------------------------------------------------------------------------------
+        let   fileBuffer = []     // Stores copies of the file input's data collection (req'd in case the user maskes multiple sets of selections)
+            , namedFiles = []     // Array containing just the names of the files contained within fileBuffer (used for sequencing the read order)
+            , COMBD_DATA = []
+            , ISSUE_KEYS = []
+            , input = document.getElementById('input')
+            , sortableList = qs('.has-draggable-children')
+            , doneButton = qs('.done-sorting');
+    
+        // APPLICATION SOURCE ============================================================================================================
+        FilesAndGenerateDragDrop = response =>                                      // ⓵ onChange of file input box, iterate namedFiles and generate Drag/Drop UL
+            new Promise(conclude => {
+                const bufferFile = (fileObj, fileIndex, fileName) =>
+                    new Promise(fulfill => {
+                        fileName = fileObj.name;
+                        if (namedFiles.indexOf(fileName) !== -1) return fulfill(this);
+                        namedFiles.push(fileName);
+                        const appendToBuffer = (JSONObj, fileName = null) => {
+                            let extantIndex = fileBuffer.find(b => b.fileName === fileName);
+                            if (extantIndex) fileBuffer[extantIndex] = JSONObj;
+                            else fileBuffer.push({ fileName: fileName, fileData: JSONObj })
+                        };
+                        var reader = new FileReader();                               // Instantiate a new file reader...
+                        //   ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  
+                        reader.onloadend = (progressEvent) => {                       //    ... Add a listener to observe once it's finished loading.
+                            var opJSON = CSV.parse(reader.result);                        //    Parse the .CSV file input...
+                            appendToBuffer(opJSON, fileName);                                     //    ... and add it to the global variable containing file data,
+
+                            return fulfill(this);
+                        };                                                              // ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  
+                        reader.readAsText(fileObj);                                     // ... And read the file specified.
+                    });
+                var previousFileCount = namedFiles.length;
+                var bufferedFiles = Promise.all([...input.files].map((file, ind) => bufferFile(file, ind, file.name))).then(
+                    () => {
+                        namedFiles = [...new Set(namedFiles)];
+
+                        let opStr = '';
+                        for (var i = 0; i < 10; i++) {
+                            if (i < namedFiles.length) {
+                                let fileName = namedFiles[i];
+                                opStr += `<li data-slot="${i + 1}" class="drag-drop" draggable="true">${fileName}</li>`
+                            } else {
+                                opStr += `<li data-slot="${i + 1}"><label for="input">No file specified (click to add!)</label></li>`;
+                            }
                         }
-                    }
-                    _('   - Clearing current DOM structure of list...');
-                    while(sortableList.childElementCount > 0) sortableList.childNodes[0].remove()
-                    _('   - Inserting new draggable DOM structure...');
-                    sortableList.insertAdjacentHTML('beforeEnd', opStr);
-                    _('   - Binding event handlers...');
-                    return conclude(response);
-                });
-        });
-
-    const primeDragDropListBehaviors = (listClass='drag-drop') => {    // ⓷ iterate UL and set up drag/drop on its children
-        
-        const bindDragDropListeners = (obj) => {
-            try {
-                _('     Attempting to bind listeners to', obj);
-
-                const drag = (e, trg = e.target, parList = trg.parentNode) => {
-                    trg.className += " drag-sort-active";
-                    let swapobj = document.elementFromPoint(event.clientX, event.clientY) || trg;
-
-                    if (parList === swapobj.parentNode) {
-                        // Thereby constraining the drop to the same list
-                        swapobj = (swapobj !== trg.nextSibling) ? swapobj : swapobj.nextSibling;
-                        parList.insertBefore(trg, swapobj);
-                    }
-                };
-                const drop = (e, trg = e.target) => {e.preventDefault(); trg.className = trg.className.replace(/(\s+)?drag-sort-active(\s+)?/g, ""); }
-
-                _('Binding drag listeners...');
-                obj.addEventListener("drag", drag); 
-                _('Binding drop listeners...');
-                obj.addEventListener("drop", drop);
-                _('Binding dragend listeners...');
-                obj.addEventListener("dragend", drop);
-                return true;
-            } catch (err) {
-                console.error(err);
-                return false;
-            }
-        }
-        console.group('Locating DOM elements to convert to drag-droppable...');
-        let ddObjects = sortableList.getElementsByClassName(listClass);
-        Array.prototype.map.call(ddObjects,
-                                 list => {
-                                    _('     ', ddObjects.length, ' elements located:', ddObjects);
-                                    Array.prototype.map.call(list.children, item => {
-                                        bindDragDropListeners(item);
-                                    });
-                                 }
-       );
-
-       [...ddObjects].forEach(o=>bindDragDropListeners(o));
-       console.groupEnd();
-       doneButton.disabled=false;
-    }
-
-    const runReport = (obj) => {                                           // ⓸ user clicks Run It!; orchastrate remaining steps
-        if(obj.disabled == true) return false;
-        COMBD_DATA = [];
-        ISSUE_KEYS = []; 
-        DEBUG_DATA = [];
-        getDistinctKeysFromFiles();
-
-    }
-
-    const reorderFilesInBufferToMatchList = () => {                     // ⓸ grab contents of UL and align namedFiles and buffer
-    }
-
-     const getDistinctKeysFromFiles = () =>                    // ⓹ iterate files in buffer create promise chain to read each in sequence
-        new Promise(resolve => {
-            pBar(3, 'PROCESSING', 'aquamarine', 1, 0, 0);
-            _('Sorting files... done. Sort order:', namedFiles.join(), '\nExtract distinct values...');
-            for(files in fileBuffer){
-                let file = fileBuffer[files].fileData;
-                let keySet = JSON.stringify(file,['Issue key'])           //    ... convert the resultant JSON to a string containing ONLY the 'Issue key' column...
-                                 .match(/DIGTDEV-\d{4,6}/g)                 //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
-                ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])]       //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
-            }
-            _('...done.')
-            _('Found ' + ISSUE_KEYS.length + ' unique keys:', ISSUE_KEYS.sort().join());
-            concatinateDataFromSequencedFiles()
-        });
-
-
-    const concatinateDataFromSequencedFiles = () => {                   // ⓺ iterate finalized buffer, and concatinated generate output data
-        temp_store = [];
-        console.group('Parsing CSV contents into a single structure...');
-        ISSUE_KEYS.forEach(r => {
-            _(r['Issue key'], r);
-            temp_store.push(r['Issue key']);
-            COMBD_DATA[r] = new Array(fileBuffer.length).fill('');
-            DEBUG_DATA[r] = new Array(fileBuffer.length).fill('');
-        });
-        _('Unique issues from specified files: ', ISSUE_KEYS.join(', '), '\n     Constructing combined dataset...');
-        console.info('SHELL CREATED!', COMBD_DATA);
-       for(files in fileBuffer){
-            let file = fileBuffer[files].fileData;
-            _('   - Ingesting file #' + files + ': ', file);
-            file.forEach(f=>{
-
-                if(f && f['Issue key'] && f['Issue key'] != null && f['Issue key'] !== ''){ 
-                    COMBD_DATA[f['Issue key']][files] = f;
-                    DEBUG_DATA[f['Issue key']][files] = JSON.stringify(f);
-                }
+                        while (sortableList.childElementCount > 0) sortableList.childNodes[0].remove()
+                        sortableList.insertAdjacentHTML('beforeEnd', opStr);
+                        return conclude(response);
+                    });
             });
-        }
-        console.info('Dataset unified. Current state:');
-        _('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nRAW DATA ', Object.keys(COMBD_DATA).length, 'records:\n\n', COMBD_DATA);
-        _('=========================================================\nRAW DATA ', JSON.stringify(Object.entries(COMBD_DATA)));
-        console.table(DEBUG_DATA);
-        console.groupEnd();
-        output=[]
-        Object.entries(COMBD_DATA).forEach(dataRecord => {
-            issue = dataRecord[0];
-            data  = dataRecord[1];
-            op=''
-            data.forEach((re)=>{re=re['Remaining Estimate']||''; op = op + '||--||' + toHours(re) + 'h'});
-            output.push([issue, ...op.split('||--||').slice(1)]);
-        })
-        console.table(output)
+        const primeDragDropListBehaviors = (listClass = 'drag-drop') => {           // ⓶ iterate UL and set up drag/drop on its children
+            const bindDragDropListeners = (obj) => {
+                try {
 
-        pBar(4, 'GENERATING OUTPUT... DONE!', 'LimeGreen', 0.1, 0.1, 0.1);
+                    const drag = (e, trg = e.target, parList = trg.parentNode) => {
+                        trg.className += " drag-sort-active";
+                        let swapobj = document.elementFromPoint(event.clientX, event.clientY) || trg;
+                        if (parList === swapobj.parentNode) {
+                            // Thereby constraining the drop to the same list
+                            swapobj = (swapobj !== trg.nextSibling) ? swapobj : swapobj.nextSibling;
+                            parList.insertBefore(trg, swapobj);
+                        }
+                    };
+                    const drop = (e, trg = e.target) => { e.preventDefault(); trg.className = trg.className.replace(/(\s+)?drag-sort-active(\s+)?/g, ""); }
 
-
-        let th = "";
-        let dateField = qs("#report-start-date");
-        let dateArr = [];
-        if(dateField.checkValidity()){
-            th = "<tr><th>Issue<br />Key</th><th>Seed<br/>" + dateField.value + "</th><th>Day "
-            let startDate = new Date(dateField.value).getTime();
-            let dayCt = 1;
-            while(dateArr.length<10 && dayCt < 50){
-                cDate = new Date(startDate + (dayCt * 86400000 ));
-                if(cDate.getDay() > 0 && cDate.getDay() < 6) dateArr.push((dateArr.length + 1) + '<br />' + cDate.toLocaleDateString())
-                dayCt++;
+                    obj.addEventListener("drag", drag);
+                    obj.addEventListener("drop", drop);
+                    obj.addEventListener("dragend", drop);
+                    return true;
+                } catch (err) {
+                    return false;
+                }
             }
-        } else {
-            th = "<tr><th>Issue</th><th>Seed</th><th>Day "
-            dateArr = [1,2,3,4,5,6,7,8,9,10];
+            let ddObjects = sortableList.getElementsByClassName(listClass);
+            Array.prototype.map.call(ddObjects,
+                list => {
+                    Array.prototype.map.call(list.children, item => {
+                        bindDragDropListeners(item);
+                    });
+                }
+            );
+            [...ddObjects].forEach(o => bindDragDropListeners(o));
+            doneButton.disabled = false;
         }
-        th += dateArr.join('</th><th>Day ') + '</tr>';
+        const runReport = (obj) => {                                                // ⓷ user clicks Run It!; orchastrate remaining steps
+            if (obj.disabled == true) return false;
+            COMBD_DATA = [];
+            ISSUE_KEYS = [];
+            DEBUG_DATA = [];
+            getDistinctKeysFromFiles();
+        }
+        const getDistinctKeysFromFiles = () =>                                      // ⓸ iterate files in buffer create promise chain to read each in sequence
+            new Promise(resolve => {
+                pBar(3, 'PROCESSING', 'aquamarine', 1, 0, 0);
+                for (files in fileBuffer) {
+                    let file = fileBuffer[files].fileData;
+                    let keySet = JSON.stringify(file, ['Issue key'])           //    ... convert the resultant JSON to a string containing ONLY the 'Issue key' column...
+                        .match(/DIGTDEV-\d{4,6}/g)                 //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
+                    ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])]       //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
+                }
 
-        let mu='';
-        output.forEach(o=>{
-            mu+='<tr><td>' + o.join('</td><td>') + '</td></tr>';
-        });
+                concatinateDataFromSequencedFiles()
+            });
 
-        let previewPanel = qs('.output-table');
-                    while(previewPanel.childElementCount > 0) previewPanel.childNodes[0].remove()
+        const concatinateDataFromSequencedFiles = () => {                           // ⓹ iterate finalized buffer, and concatinated generate output data
+            temp_store = [];
+            ISSUE_KEYS.forEach(r => {
+                temp_store.push(r['Issue key']);
+                COMBD_DATA[r] = new Array(fileBuffer.length).fill('');
+                DEBUG_DATA[r] = new Array(fileBuffer.length).fill('');
+            });
 
-        previewPanel.insertAdjacentHTML('beforeEnd', '<h1>' + qs("#iteration-name").value + '</h1><table>' + th + mu.replace(/\.00h|\.0h/g, 'h') + '</table>');
-        return true;
+            for (files in fileBuffer) {
+                let file = fileBuffer[files].fileData;
+                file.forEach(f => {
+                    if (f && f['Issue key'] && f['Issue key'] != null && f['Issue key'] !== '') {
+                        COMBD_DATA[f['Issue key']][files] = f;
+                        DEBUG_DATA[f['Issue key']][files] = JSON.stringify(f);
+                    }
+                });
+            }
+            output = []
+            Object.entries(COMBD_DATA).forEach(dataRecord => {
+                issue = dataRecord[0];
+                data = dataRecord[1];
+                op = ''
+                data.forEach((re) => { re = re['Remaining Estimate'] || ''; op = op + '||--||' + toHours(re) + 'h' });
+                output.push([issue, ...op.split('||--||').slice(1)]);
+            })
 
+            pBar(4, 'GENERATING OUTPUT... DONE!', 'LimeGreen', 0.1, 0.1, 0.1);
 
+            let th = "";
+            let dateField = qs("#report-start-date");
+            let dateArr = [];
+            if (dateField.checkValidity()) {
+                th = "<tr><th>Current Status</th><th>Issue<br />Key</th><th>Seed<br/>" + dateField.value + "</th><th>Day "
+                let startDate = new Date(dateField.value).getTime();
+                let dayCt = 1;
+                while (dateArr.length < 10 && dayCt < 50) {
+                    cDate = new Date(startDate + (dayCt * 86400000));
+                    if (cDate.getDay() > 0 && cDate.getDay() < 6) dateArr.push((dateArr.length + 1) + '<br />' + cDate.toLocaleDateString())
+                    dayCt++;
+                }
+            } else {
+                th = "<tr><th>Issue</th><th>Seed</th><th>Day "
+                dateArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            }
+            th += dateArr.join('</th><th>Day ') + '</tr>';
+            let mu = '';
+            output.forEach(o => {
+                mu += '<tr><td>' + o.join('</td><td>') + '</td></tr>';
+            });
+            let previewPanel = qs('.output-table');
+            while (previewPanel.childElementCount > 0) previewPanel.childNodes[0].remove()
+            previewPanel.insertAdjacentHTML('beforeEnd', '<h1>' + qs("#iteration-name").value + '</h1><table>' + th + mu.replace(/\.00h|\.0h/g, 'h') + '</table>');
+            return true;
+        }
+        (init = () => {                                                             // ⓿ Initiate application, chaining steps 1-3 above to file input's onChange
+            input.addEventListener('change', () => {
 
-    }
-
-    (init = () => {                                                     // ⓿ Initiate application, chaining steps 1-3 above to file input's onChange
-        input.addEventListener('change', () => {
-            console.group('Files selected! Beginning processing tasks...');
-
-            return   pBar(1,"READING...✓", "teal", 0.1, 0, 0)
-                    .then(()=>pBar(2,'PARSING...✓','DarkTurquoise',0.1,0.1,0.1))
+                return pBar(1, "READING...✓", "teal", 0.1, 0, 0)
+                    .then(() => pBar(2, 'PARSING...✓', 'DarkTurquoise', 0.1, 0.1, 0.1))
                     .then(parseNamesOfSelectedFiles)
                     .then(parseFilesAndGenerateDragDrop)
                     .then(primeDragDropListBehaviors);
-            console.groupEnd();
-        });
-    })();
+            });
+        })();
     </script>
 </body>
 
