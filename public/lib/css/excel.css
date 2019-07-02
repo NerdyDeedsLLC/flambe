@@ -223,59 +223,38 @@ main > div.sort-order button::after {
   height: 40px;
   left: 0;
   top: 0;
+  text-align: center;
+  -webkit-transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in-out;
 }
 
 main > div.sort-order button:hover {
   max-width: 50%;
 }
 
+main > div.sort-order button:disabled {
+  border: 2px solid #AAA;
+  background-color: #ccc;
+  opacity: 0.75;
+  cursor: not-allowed;
+  max-width: 40px;
+}
+
+main > div.sort-order button:disabled::after {
+  background: #BBB;
+}
+
+main > div.sort-order button:disabled:hover::after {
+  content: ' ⃠ ';
+  font-weight: bold;
+  font-size: 32px;
+  text-indent: -2px;
+}
+
 main .pbars {
   min-width: 95%;
   height: 25px;
-}
-
-.option-box {
-  position: fixed;
-  left: 100000px;
-}
-
-.option-box + label {
-  display: inline-block;
   text-align: center;
-  font-weight: bold;
-  padding: 4px 10px;
-  margin: 5px 10px 5px;
-  border: 2px solid #aaa;
-  border-radius: 8px;
-  width: 120px;
-  -webkit-transition: 0.2s all ease-in-out;
-  transition: 0.2s all ease-in-out;
-  vertical-align: top;
-  cursor: pointer;
-}
-
-.option-box + label i {
-  font-weight: normal;
-  display: block;
-  max-height: 0;
-  overflow: hidden;
-  -webkit-transition: 0.2s all ease-in-out;
-  transition: 0.2s all ease-in-out;
-}
-
-.option-box:checked + label {
-  border-color: green;
-  color: green;
-  background-color: #cfc;
-}
-
-.option-box:checked + label:hover {
-  -webkit-box-shadow: inset 0 0 20px limegreen;
-          box-shadow: inset 0 0 20px limegreen;
-}
-
-.option-box:checked + label:hover i {
-  max-height: 80px;
 }
 
 ul {
@@ -359,6 +338,8 @@ ul li.drag-sort-active {
           animation: manifest 0.2s ease-out calc(var(--bc) * 1s) forwards;
   width: 216px;
   height: 18px;
+  line-height: calc(17.5px);
+  text-align: left;
   border: 1px solid #333;
   border-radius: 6px;
   margin: 7.2px;
@@ -500,4 +481,25 @@ ul li.drag-sort-active {
     -webkit-transform: scale(1);
             transform: scale(1);
   }
+}
+
+table {
+  font-family: sans-serif;
+}
+
+th {
+  padding: 1px 10px;
+}
+
+td {
+  text-align: right;
+  padding: 1px 10px;
+}
+
+td:nth-of-type(-n+3) {
+  text-align: center;
+}
+
+td:nth-of-type(-n+1) {
+  text-align: left;
 }

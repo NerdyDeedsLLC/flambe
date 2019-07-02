@@ -197,10 +197,32 @@ main {
                 height:40px;
                 left:0;
                 top:0;
+                text-align: center;
+                transition:all 0.1s ease-in-out;
             }
 
             &:hover {
                 max-width:50%;
+            }
+
+            &:disabled {
+                border:2px solid #AAA;
+                background-color:#ccc;
+                opacity:0.75;
+                cursor: not-allowed;
+                max-width: 40px;
+
+                &::after {
+                    background:#BBB;
+                }
+
+                &:hover::after {
+                    content:' ⃠ ';
+                    font-weight:bold;
+                    font-size:32px;
+                    text-indent:-2px;
+
+                }
             }
         }
     }
@@ -208,46 +230,7 @@ main {
     .pbars {
         min-width:95%;
         height:25px;
-    }
-}
-.option-box {
-    position: fixed;
-    left: 100000px;
-
-    & + label {
-        display: inline-block;
-        text-align: center;
-        font-weight: bold;
-        padding: 4px 10px;
-        margin: 5px 10px 5px;
-        border: 2px solid #aaa;
-        border-radius: 8px;
-        width: 120px;
-        transition: 0.2s all ease-in-out;
-        vertical-align: top;
-        cursor: pointer;
-
-        i {
-            font-weight: normal;
-            display: block;
-            max-height: 0;
-            overflow: hidden;
-            transition: 0.2s all ease-in-out;
-        }
-    }
-
-    &:checked + label {
-        border-color: green;
-        color: green;
-        background-color: #cfc;
-
-        &:hover {
-            box-shadow: inset 0 0 20px limegreen;
-
-            i {
-                max-height: 80px;
-            }
-        }
+        text-align:center;
     }
 }
 
@@ -327,6 +310,9 @@ $bar-size:18px;
     animation: manifest 0.2s ease-out calc(var(--bc) * 1s) forwards;
     width:$bar-size * 12;
     height:$bar-size;
+    line-height:calc(#{$bar-size - 0.5};
+    text-align:left;
+
     border:1px solid #333;
     border-radius: $bar-size / 3;
     margin:$bar-size * 0.4;
@@ -383,4 +369,26 @@ $bar-size:18px;
     93% { opacity:1; transform:scale(0.975); }
     97% { opacity:1; transform:scale(1.0125); }
     100% { opacity:1; transform:scale(1); }
+}
+
+table {
+           font-family:sans-serif;
+
+       }
+
+       th {
+            padding:1px 10px;
+       }
+
+       td {
+           text-align:right;
+           padding:1px 10px;
+       }
+
+td:nth-of-type(-n+3){
+    text-align:center;
+}
+
+td:nth-of-type(-n+1){
+    text-align:left;
 }
