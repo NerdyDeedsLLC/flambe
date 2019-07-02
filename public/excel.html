@@ -77,10 +77,35 @@
             , ISSUE_KEYS = []
             , input = document.getElementById('input')
             , sortableList = qs('.has-draggable-children')
-            , doneButton = qs('.done-sorting');
+            , doneButton = qs('.done-sorting')
+            , concernColors = ['Transparent', 'DimGray', 'GreenYellow', 'Gold', 'Orange', 'Red']
+
+            , concernFlags = [
+                                { "shorthand":"--", "weight":0, "concern": "Hidden By ScrumMaster" },
+                                { "shorthand":"AT", "weight":1, "concern": "Related to Attendance" },
+                                { "shorthand":"HO", "weight":1, "concern": "Related to Holiday" },
+                                { "shorthand":"BE", "weight":2, "concern": "Bad Estimate" },
+                                { "shorthand":"AC", "weight":2, "concern": "Assigned User Changed" },
+                                { "shorthand":"UE", "weight":2, "concern": "User Error" },
+                                { "shorthand":"SC", "weight":2, "concern": "Scope Creep" },
+                                { "shorthand":"IA", "weight":2, "concern": "Improperly Assigned" },
+                                { "shorthand":"UE", "weight":3, "concern": "Unestimated at Sprint Start" },
+                                { "shorthand":"UB", "weight":3, "concern": "Unable to Begin" },
+                                { "shorthand":"BS", "weight":3, "concern": "Bad/Mistaken Story Inclusion" },
+                                { "shorthand":"HR", "weight":3, "concern": "Hours Not Being Burned" },
+                                { "shorthand":"NP", "weight":3, "concern": "No Progress Reported" },
+                                { "shorthand":"NS", "weight":4, "concern": "New Story Added to Iteration" },
+                                { "shorthand":"SD", "weight":4, "concern": "Story Deleted" },
+                                { "shorthand":"XX", "weight":5, "concern": "Blocking Issue" },
+
+                                { "shorthand":"NOSTRT", "weight": 2, "collection": "XX,NP,UB,HO,AT,00",    "concern": "No changes made to story for current iteration" },
+                                { "shorthand":"HRSINC", "weight": 3, "collection": "BE,UE,SC,BS,UB,NS,IA", "concern": "Hour increase from day prior!" },
+                                { "shorthand":"UNCHGD", "weight": 4, "collection": "XX,NP,UB,HO,AT,00",    "concern": "No changes made to story for 3 days!" }
+
+                            ];
     
         // APPLICATION SOURCE ============================================================================================================
-        FilesAndGenerateDragDrop = response =>                                      // ⓵ onChange of file input box, iterate namedFiles and generate Drag/Drop UL
+        parseFilesAndGenerateDragDrop = response =>                                      // ⓵ onChange of file input box, iterate namedFiles and generate Drag/Drop UL
             new Promise(conclude => {
                 const bufferFile = (fileObj, fileIndex, fileName) =>
                     new Promise(fulfill => {
@@ -103,17 +128,18 @@
                         reader.readAsText(fileObj);                                     // ... And read the file specified.
                     });
                 var previousFileCount = namedFiles.length;
-                var bufferedFiles = Promise.all([...input.files].map((file, ind) => bufferFile(file, ind, file.name))).then(
-                    () => {
+                var bufferedFiles = Promise.all([...input.files].map((file, ind) => bufferFile(file, ind, file.name)))
+                .then(() => {
                         namedFiles = [...new Set(namedFiles)];
 
                         let opStr = '';
-                        for (var i = 0; i < 10; i++) {
+                        for (var i = 0; i < 11; i++) {
+                            let dataSlot = !i ? "S" : i;
                             if (i < namedFiles.length) {
                                 let fileName = namedFiles[i];
-                                opStr += `<li data-slot="${i + 1}" class="drag-drop" draggable="true">${fileName}</li>`
+                                opStr += `<li data-slot="${dataSlot}" class="drag-drop" draggable="true">${fileName}</li>`
                             } else {
-                                opStr += `<li data-slot="${i + 1}"><label for="input">No file specified (click to add!)</label></li>`;
+                                opStr += `<li data-slot="${dataSlot}"><label for="input">No file specified (click to add!)</label></li>`;
                             }
                         }
                         while (sortableList.childElementCount > 0) sortableList.childNodes[0].remove()
@@ -167,9 +193,9 @@
                 pBar(3, 'PROCESSING', 'aquamarine', 1, 0, 0);
                 for (files in fileBuffer) {
                     let file = fileBuffer[files].fileData;
-                    let keySet = JSON.stringify(file, ['Issue key'])           //    ... convert the resultant JSON to a string containing ONLY the 'Issue key' column...
-                        .match(/DIGTDEV-\d{4,6}/g)                 //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
-                    ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])]       //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
+                    let keySet = JSON.stringify(file, ['Issue key'])                //    ... convert the resultant JSON to a string containing ONLY the 'Issue key' column...
+                        .match(/DIGTDEV-\d{4,6}/g)                                  //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
+                    ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])]           //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
                 }
 
                 concatinateDataFromSequencedFiles()
@@ -192,13 +218,51 @@
                     }
                 });
             }
+            _(DEBUG_DATA)
             output = []
-            Object.entries(COMBD_DATA).forEach(dataRecord => {
-                issue = dataRecord[0];
-                data = dataRecord[1];
-                op = ''
-                data.forEach((re) => { re = re['Remaining Estimate'] || ''; op = op + '||--||' + toHours(re) + 'h' });
-                output.push([issue, ...op.split('||--||').slice(1)]);
+
+            let flagCodex = 
+            Object.entries(COMBD_DATA).forEach((dataRecord, ind) => {
+                let issue = dataRecord[0],
+                    flags = [];
+                    data  = dataRecord[1],
+                    datCt = Object.entries(data).length; // How many "collumns" we're looking at
+                    op    = '',
+                    oldRE = '',
+                    reCtr = 1,
+                    ctCtr = 1,
+                    oldPI = '',
+                    oldII = '',
+                    oldST = '';
+
+                data.forEach((datRec, ix) => { 
+                    let newRE = datRec['Remaining Estimate']  || '';
+                    let newPI = datRec['Parent id']           || '';
+                    let newII = datRec['Issue id']            || '';
+                    let newST = datRec['Status']              || '';
+                    if(newRE !== oldRE) {
+                        if(newRE > oldRE){          // Estimated Hours INcreased (Bad Estimate? Bad Story Inclusion? New Story Added? Scope Creep?)
+
+                        }                           // If they've DEcreased we're on the happy path.
+                        reCtr = 1;                  // It's changed for the good or the bad. Reset our "same" counter;
+                        ctCtr = 0;                  // It's changed at SOME POINT. Remove this counter from consideration;
+                    }else{                          // Estimated Hours Havent Changed (ergo, no burndown)
+                        if(reCtr > 3){              // Unchanged for 3+ days... 
+                            if(reCtr === ctCtr){    // ... and hasn't for the duration being examined. FLAG (No burndown? Blocked? No Progress? Possible Bad Story)
+
+                            }
+                        }
+                        reCtr++;                    // Increment our "same" counter
+                        if(!!ctCtr) ctCtr++;        // If our Issue-wide "same" counter is still in play (i.e. it's NEVER changed), increment
+                    }
+                    pi = (pi === datRec['Parent id']) ? pi : datRec['Parent id'] || '';
+                    ii = (ii === datRec['Issue id'])  ? ii : datRec['Issue id']  || '';
+                    st = (st === datRec['Status'])    ? st : datRec['Status']    || '';
+                    op = op + '||--||' + toHours(re) + 'h' ;
+                });
+
+                op = st + "||--||" + issue + "||--||" + pi + "||--||" + ii + "||--||" + op;
+                output.push(op.split('||--||'));
             })
 
             pBar(4, 'GENERATING OUTPUT... DONE!', 'LimeGreen', 0.1, 0.1, 0.1);
@@ -216,7 +280,7 @@
                     dayCt++;
                 }
             } else {
-                th = "<tr><th>Issue</th><th>Seed</th><th>Day "
+                th = "<tr><th>Current Status</th><th>Issue</th><th>Parent ID</th><th>Issue ID</th><th>Seed</th><th>Day "
                 dateArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
             }
             th += dateArr.join('</th><th>Day ') + '</tr>';
@@ -234,7 +298,7 @@
 
                 return pBar(1, "READING...✓", "teal", 0.1, 0, 0)
                     .then(() => pBar(2, 'PARSING...✓', 'DarkTurquoise', 0.1, 0.1, 0.1))
-                    .then(parseNamesOfSelectedFiles)
+                    // .then(parseNamesOfSelectedFiles)
                     .then(parseFilesAndGenerateDragDrop)
                     .then(primeDragDropListBehaviors);
             });

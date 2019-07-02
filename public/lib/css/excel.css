@@ -189,7 +189,7 @@ main > form#iteration-info > section.file-drop-target label.file-dropzone [type=
 
 main > div.sort-order {
   max-width: 550px;
-  height: 425px;
+  height: 465px;
   position: relative;
 }
 
@@ -513,15 +513,20 @@ ul li.drag-sort-active {
 
 table {
   font-family: sans-serif;
+  width: 100%;
+}
+
+tr {
+  border-bottom: 3px solid #000;
 }
 
 th {
-  padding: 1px 10px;
+  padding: 3px 10px;
 }
 
 td {
   text-align: right;
-  padding: 1px 10px;
+  padding: 3px 10px;
 }
 
 td:nth-of-type(-n+3) {
