@@ -53,7 +53,7 @@
         const d = document                                       // ⥱ Alias - document
             , qs = (s) => d.querySelector(s)                        // ⥱ Alias - querySelector
             , qsa = (s) => [...d.querySelectorAll(s)]                // ⥱ Alias - querySelectorAll
-        _ = (...args) => console.log.call(this, ...args)     // ⥱ Alias - _
+            , _ = (...args) => console.log.call(this, ...args)     // ⥱ Alias - _
             , pBar = (id, title, barColor, processor = 1, seq = 0, bc = 0) =>     // ⍟ HLPfn - Generates a progress bar
                 new Promise(conclude => {
                     id = 'pbar-' + id;
@@ -62,13 +62,22 @@
                     let pb = qs('.pbars');
                     pb.insertAdjacentHTML('beforeEnd', `<div id="${id}" class="progress-bar" title="${title}" style="--bar-color:${barColor}; --process:${processor}s; --seq:${seq}; --bc:${bc}"></div>`)
                     return conclude(qs('#' + id));
-                }),
-            toHours = (val = null) => {
+                })
+            , rote = window.localStorage
+            , memories = a => rote.length
+            , recall = a => rote.getItem.call(this, ...args)
+            , retain = a => rote.setItem.call(this, ...args)
+            , forget = a => rote.removeItem.call(this, ...args)
+            , recollect = a => rote.getItem.call(this, ...args)
+            , fugue = a => rote.clear.call(this, ...args)
+            , toHours = (val = null) => {
                 if (val == null || isNaN((val / 1))) return '';
                 val = (val / 1);
                 if (val <= 0) return 0;
                 return (val / 3600).toPrecision(3);
             }
+
+
 
         // Global Variables --------------------------------------------------------------------------------------------------------------
         let   fileBuffer = []     // Stores copies of the file input's data collection (req'd in case the user maskes multiple sets of selections)
@@ -80,29 +89,28 @@
             , doneButton = qs('.done-sorting')
             , concernColors = ['Transparent', 'DimGray', 'GreenYellow', 'Gold', 'Orange', 'Red']
 
-            , concernFlags = [
-                                { "shorthand":"--", "weight":0, "concern": "Hidden By ScrumMaster" },
-                                { "shorthand":"AT", "weight":1, "concern": "Related to Attendance" },
-                                { "shorthand":"HO", "weight":1, "concern": "Related to Holiday" },
-                                { "shorthand":"BE", "weight":2, "concern": "Bad Estimate" },
-                                { "shorthand":"AC", "weight":2, "concern": "Assigned User Changed" },
-                                { "shorthand":"UE", "weight":2, "concern": "User Error" },
-                                { "shorthand":"SC", "weight":2, "concern": "Scope Creep" },
-                                { "shorthand":"IA", "weight":2, "concern": "Improperly Assigned" },
-                                { "shorthand":"UE", "weight":3, "concern": "Unestimated at Sprint Start" },
-                                { "shorthand":"UB", "weight":3, "concern": "Unable to Begin" },
-                                { "shorthand":"BS", "weight":3, "concern": "Bad/Mistaken Story Inclusion" },
-                                { "shorthand":"HR", "weight":3, "concern": "Hours Not Being Burned" },
-                                { "shorthand":"NP", "weight":3, "concern": "No Progress Reported" },
-                                { "shorthand":"NS", "weight":4, "concern": "New Story Added to Iteration" },
-                                { "shorthand":"SD", "weight":4, "concern": "Story Deleted" },
-                                { "shorthand":"XX", "weight":5, "concern": "Blocking Issue" },
-
-                                { "shorthand":"NOSTRT", "weight": 2, "collection": "XX,NP,UB,HO,AT,00",    "concern": "No changes made to story for current iteration" },
-                                { "shorthand":"HRSINC", "weight": 3, "collection": "BE,UE,SC,BS,UB,NS,IA", "concern": "Hour increase from day prior!" },
-                                { "shorthand":"UNCHGD", "weight": 4, "collection": "XX,NP,UB,HO,AT,00",    "concern": "No changes made to story for 3 days!" }
-
-                            ];
+            , concernFlags = {  // CONCERN CODEX
+                                "HID":    {"weight": 0, "concern": "Hidden By ScrumMaster" },
+                                "ATT":    {"weight": 1, "concern": "Related to Attendance" },
+                                "HOL":    {"weight": 1, "concern": "Related to Holiday" },
+                                "EST":    {"weight": 2, "concern": "Bad Estimate" },
+                                "AUC":    {"weight": 2, "concern": "Assigned User Changed" },
+                                "UER":    {"weight": 2, "concern": "User Error" },
+                                "SCR":    {"weight": 2, "concern": "Scope Creep" },
+                                "ASS":    {"weight": 2, "concern": "Improperly Assigned" },
+                                "USS":    {"weight": 3, "concern": "Unestimated at Sprint Start" },
+                                "STK":    {"weight": 3, "concern": "Unable to Begin" },
+                                "STR":    {"weight": 3, "concern": "Bad/Mistaken Story Inclusion" },
+                                "HRS":    {"weight": 3, "concern": "Hours Not Being Burned" },
+                                "NPR":    {"weight": 3, "concern": "No Progress Reported" },
+                                "NEW":    {"weight": 4, "concern": "New Story Added to Iteration" },
+                                "DEL":    {"weight": 4, "concern": "Story Deleted" },
+                                "XXX":    {"weight": 5, "concern": "Blocking Issue" },
+                                // BUNDLES
+                                "UNCHGD": {"weight": 2, "collection": "XXX,NPR,STK,HOL,ATT,HRS",     "concern": "No changes made to story for current iteration" },
+                                "HRSINC": {"weight": 3, "collection": "EST,UER,SCR,STR,STK,NEW,ASS", "concern": "Hour increase from day prior!" },
+                                "UNCHG3": {"weight": 4, "collection": "XXX,NPR,STK,HOL,ATT,HRS",     "concern": "No changes made to story for 3 days!" }
+                            }
     
         // APPLICATION SOURCE ============================================================================================================
         parseFilesAndGenerateDragDrop = response =>                                      // ⓵ onChange of file input box, iterate namedFiles and generate Drag/Drop UL
@@ -180,6 +188,7 @@
             );
             [...ddObjects].forEach(o => bindDragDropListeners(o));
             doneButton.disabled = false;
+            // retain(
         }
         const runReport = (obj) => {                                                // ⓷ user clicks Run It!; orchastrate remaining steps
             if (obj.disabled == true) return false;
@@ -233,13 +242,17 @@
                     ctCtr = 1,
                     oldPI = '',
                     oldII = '',
-                    oldST = '';
+                    oldST = '',
+                    newRE = '',
+                    newPI = '',
+                    newII = '',
+                    newST = '';
 
                 data.forEach((datRec, ix) => { 
-                    let newRE = datRec['Remaining Estimate']  || '';
-                    let newPI = datRec['Parent id']           || '';
-                    let newII = datRec['Issue id']            || '';
-                    let newST = datRec['Status']              || '';
+                    newRE = datRec['Remaining Estimate']  || '';
+                    newPI = datRec['Parent id']           || '';
+                    newII = datRec['Issue id']            || '';
+                    newST = datRec['Status']              || '';
                     if(newRE !== oldRE) {
                         if(newRE > oldRE){          // Estimated Hours INcreased (Bad Estimate? Bad Story Inclusion? New Story Added? Scope Creep?)
 
@@ -255,23 +268,23 @@
                         reCtr++;                    // Increment our "same" counter
                         if(!!ctCtr) ctCtr++;        // If our Issue-wide "same" counter is still in play (i.e. it's NEVER changed), increment
                     }
-                    pi = (pi === datRec['Parent id']) ? pi : datRec['Parent id'] || '';
-                    ii = (ii === datRec['Issue id'])  ? ii : datRec['Issue id']  || '';
-                    st = (st === datRec['Status'])    ? st : datRec['Status']    || '';
-                    op = op + '||--||' + toHours(re) + 'h' ;
+                    // newPI = (newPI === datRec['Parent id']) ? newPI : datRec['Parent id'] || '';
+                    // newII = (newII === datRec['Issue id'])  ? newII : datRec['Issue id']  || '';
+                    // newST = (newST === datRec['Status'])    ? newST : datRec['Status']    || '';
+                    op = op + '||--||' + toHours(newRE) + 'h' ;
                 });
 
-                op = st + "||--||" + issue + "||--||" + pi + "||--||" + ii + "||--||" + op;
+                op = newST + "||--||" + issue + "||--||" + newPI + "||--||" + newII + "||--||" + op;
                 output.push(op.split('||--||'));
             })
 
             pBar(4, 'GENERATING OUTPUT... DONE!', 'LimeGreen', 0.1, 0.1, 0.1);
 
-            let th = "";
+            let th = "<tr><th>Current Status</th><th>Issue</th><th>Parent ID</th><th>Issue ID</th>";
             let dateField = qs("#report-start-date");
             let dateArr = [];
             if (dateField.checkValidity()) {
-                th = "<tr><th>Current Status</th><th>Issue<br />Key</th><th>Seed<br/>" + dateField.value + "</th><th>Day "
+                th += "<th>Seed<br/>" + dateField.value + "</th><th>Day "
                 let startDate = new Date(dateField.value).getTime();
                 let dayCt = 1;
                 while (dateArr.length < 10 && dayCt < 50) {
@@ -280,7 +293,6 @@
                     dayCt++;
                 }
             } else {
-                th = "<tr><th>Current Status</th><th>Issue</th><th>Parent ID</th><th>Issue ID</th><th>Seed</th><th>Day "
                 dateArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
             }
             th += dateArr.join('</th><th>Day ') + '</tr>';
