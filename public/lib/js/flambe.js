@@ -18,15 +18,27 @@ new Promise(conclude => {
   return conclude(qs('#' + id));
 }) // Rote memory's storage
 ,
-      rote = window.localStorage,
-      memories = () => rote.length,
+      rote = window.localStorage // Alias to the window's localStorage. Really these are all just helper functions that amuse me.
+,
+      memories = () => rote.length // Returns the count of how many memories are being held in rote storage
+,
       recall = (k, def = null) => {
   k = rote.getItem(k);
   return k ? k : def ? def : null;
-},
-      retain = (k, v) => rote.setItem(k, v) ? v : v,
-      forget = k => rote.removeItem(k),
-      fugue = () => rote.clear(),
+} // Returns a memory value if present. If not, returns def if provided, null if not
+,
+      retain = (k, v) => {
+  _('\nRETAINING==============================\n', k, '\n - - - - - - - - - - - - - - -\n', v, '\n=============================\n\n');
+
+  return rote.setItem(k, v) ? v : v;
+} // Creates a new memory for key k with value v, then returns v
+,
+      reflect = (k, def = null) => retain(k, recall(k, def)) // Runs a recall for a memory (value at key or null), then immediately retains it in memories
+,
+      forget = k => rote.removeItem(k) // Discrads the memories at key k
+,
+      fugue = () => rote.clear() // Purges all memories... as though they'd NEVER. BEEN. FORMED. AT. ALL!
+,
       toHours = (val = null) => {
   if (val == null || isNaN(val / 1)) return '0*';
   return val / 1 <= 0 ? 0 : (val / 3600).toPrecision(3);
@@ -55,7 +67,6 @@ let fileBuffer = [] // Stores copies of the file input's data collection (req'd 
     previewPanel = qs('.output-table'),
     targetSlot = null,
     dayCtPicker = qs('#days-in-iteration'),
-    desiredDays = dayCtPicker.placeholder || 10,
     concernColors = ['Transparent', 'DimGray', 'GreenYellow', 'Gold', 'Orange', 'Red'] // 0-indexed Color-Codings used for the 
 ,
     concernFlags = {
@@ -200,41 +211,51 @@ let fileBuffer = [] // Stores copies of the file input's data collection (req'd 
 
 };
 
-_(desiredDays);
-
 init = () => {
   // ⓿ Initiate application, chaining steps 1-3 above to file input's onChange
-  iterationName.value = recall('iterationName', '');
+  iterationName.value = recall('iterationName', ''); // Seed the value set for the iteration's name (or blank if none is stored)...
 
   iterationName.onInput = () => {
     retain('iterationName', iterationName.value);
-  };
+  }; // ... and set up the field's onInput handler to save any changes henceforth.
 
-  dateField.value = recall('dateField', '');
+
+  dateField.value = recall('dateField', ''); // Do the same for the Start Date value, seeding it (or blank) if set...
 
   dateField.onInput = () => {
     retain('dateField', iterationName.value);
-  };
+  }; // ... and establishing the onInput listener to store any updates.
 
-  fileBuffer = recall('fileBuffer', null);
-  fileBuffer = fileBuffer == null ? [] : JSON.parse(fileBuffer);
+
+  fileBuffer = recall('fileBuffer', null); // Try and retrieve the fileBuffer in one exisits in Rote memories...
+
+  fileBuffer = fileBuffer == null ? [] : JSON.parse(fileBuffer); // ... and, if one does, rehydrate it. Otherwise, establish it as a new array.
+
+  console.log('fileBuffer', fileBuffer);
+  let startingLength = 1;
+  console.log('fileBuffer', typeof fileBuffer, fileBuffer, fileBuffer.length);
 
   if (fileBuffer.length > 0) {
-    desiredDays = retain('desiredDays', fileBuffer.length);
-    namedFiles = retain('namedFiles', fileBuffer.flatMap(f => f && f.fileName ? f.fileName : 'BUFFER ERROR'));
+    // If we DID manage to restore a previous buffer...
+    startingLength = fileBuffer.length - 1;
+    namedFiles = retain('namedFiles', fileBuffer.flatMap(f => f && f.fileName ? //    ... and, should it prove that we have a valid file for each (filled) index... ********
+    f.fileName : //    ... reconstuct the list of previously-provided file names...
+    '')); //    ... otherwise, flag the individual record as having errored out.
+  } // if(fileBuffer.length === 0 || namedFiles.indexOf('BUFFER ERROR') !== -1){                           // If we FAILED to restore a previous buffer (or the one we DID errored out)...
+
+
+  if (fileBuffer.length <= 1) {
+    // If we FAILED to restore a previous buffer (or the one we DID errored out)...
+    namedFiles = reflect('namedFiles', []);
+    if (typeof namedFiles === 'string') namedFiles = retain('namedFiles', namedFiles.split(','));
   }
 
-  if (fileBuffer.length === 0 || namedFiles.indexOf('BUFFER ERROR') !== -1) {
-    desiredDays = recall('desiredDays', 10);
-    namedFiles = recall('namedFiles', []);
-    if (typeof namedFiles === 'string') namedFiles = namedFiles.split(',');
-  }
-
-  dayCtPicker.placeholder = desiredDays;
-  resizeBufferArraysAndRebuildSlots(desiredDays);
+  trg.placeholder = startingLength;
+  syncSpinner(startingLength);
+  resizeBufferArraysAndRebuildSlots();
   syncSpinner();
   input.addEventListener('change', e => {
-    if (targetSlot == null) {
+    if (targetSlot == null || input.files.length > 1) {
       // (Indicating we're dealing with a BULK upload)
       return pBar(1, "READING...✓", "teal", 0.1, 0, 0).then(() => pBar(2, 'PARSING...✓', 'DarkTurquoise', 0.1, 0.1, 0.1)).then(parseFilesAndGenerateDragDrop).then(primeDragDropListBehaviors);
     } else {
@@ -243,7 +264,7 @@ init = () => {
   });
 };
 
-resizeBufferArraysAndRebuildSlots = (newLen = desiredDays / 1 + 1) => {
+resizeBufferArraysAndRebuildSlots = (newLen = trg.placeholder / 1 + 1) => {
   if (typeof namedFiles == 'undefined' || isNaN(newLen) || newLen < 0) return false;
   let oldLen = namedFiles && namedFiles.length ? namedFiles.length / 1 : 0,
       opStr = '';
@@ -258,7 +279,7 @@ resizeBufferArraysAndRebuildSlots = (newLen = desiredDays / 1 + 1) => {
   retain('namedFiles', namedFiles);
   retain('fileBuffer', JSON.stringify(fileBuffer));
 
-  for (i = namedFiles.length; i >= 0; i--) {
+  for (i = namedFiles.length - 1; i >= 0; i--) {
     if (namedFiles.indexOf(namedFiles[i]) < i) namedFiles[i] = '';
     let pList = ' class="drag-drop" draggable="true" ',
         dSlot = ` data-slot="${i > 0 ? i : 'S'}" `,
@@ -274,8 +295,6 @@ resizeBufferArraysAndRebuildSlots = (newLen = desiredDays / 1 + 1) => {
 
     opStr = `<li ${arrID + dSlot + pList}>${fName}</li>` + opStr;
   }
-
-  desiredDays = retain('desiredDays', namedFiles.length);
 
   while (sortableList.childElementCount > 0) sortableList.childNodes[0].remove();
 
@@ -666,22 +685,20 @@ let ongoing = false,
 
 const syncSpinner = (hardValue = null) => {
   if (hardValue != null && !isNaN(hardValue)) trg.placeholder = hardValue;
-  let newVal = trg.placeholder;
+  let newVal = trg.placeholder / 1,
+      control = trg.parentElement;
   offset = trg.getBoundingClientRect().height + 2;
-  let control = trg.parentElement;
   control.style = "--value:" + trg.placeholder * offset * -1 + "px";
-  console.log('desiredDays', desiredDays);
-  desiredDays = retain('desiredDays', newVal - 1);
-  console.log('desiredDays', desiredDays);
-  resizeBufferArraysAndRebuildSlots(desiredDays);
+  resizeBufferArraysAndRebuildSlots();
 };
 
 const incDec = (dir, mechanical = true, dly = 750, scale = 1) => {
   ongoing = true;
   dly = dly < 50 ? 50 : Math.log2(dly) * dly / 10.4;
   let adjVal = dir * scale + parseInt(trg.placeholder);
-  if (adjVal < 0) adjVal = 0;
+  if (adjVal <= 1) adjVal = 1;
   if (adjVal > 60) adjVal = 60;
+  ;
   trg.placeholder = adjVal;
   syncSpinner();
   mechanical = false;

@@ -11,52 +11,50 @@
 </head>
 
 <body>
-    <main>
-        <form id='iteration-info' action="">
-            <section class="form-fields">
-                <div>
-                    <input id="iteration-name" name="iteration-name" type="text" required class="input-field"
-                        autocomplete="false" placeholder="" />
-                    <label for="iteration-name" class="iteration-name-label">Iteration Name <em>(this is a label that
-                            will appled to reports in this iteration)</em></label>
+    <main id='iteration-info'>
+        <section class="form-fields">
+            <div class='full-width itr-form-field'>
+                <input id="iteration-name" name="iteration-name" type="text" required class="input-field"
+                    autocomplete="false" placeholder="" />
+                <label for="iteration-name" class="iteration-name-label">Iteration Name <em>(this is a label that
+                        will appled to reports in this iteration)</em></label>
+            </div>
+            <div class='half-width itr-form-field'>
+                <input id="report-start-date" name="report-start-date" type="date" required class="datepicker"
+                    autocomplete="false" placeholder="" />
+                <label for="report-start-date" class="report-start-date-label">Burndown Start Date <em>(The
+                        day Iteration began)</em></label>
+            </div>
+            <div class="half-width picker">
+                <span>Days in iteration:</span>
+                <button id="picker-dec" class="picker-pushers" onmousedown='incDec(-1);' onmouseup='released();'></button>
+                <div class="picker-panel" style="--value:-250px">
+                    <input id="days-in-iteration" class="picker-panel-presenter" type="text" placeholder="" maxlength="2" onfocus="this.value=this.placeholder" onblur="this.placeholder=this.value; this.value=''; syncSpinner();" onInput="this.value=this.value.replace(/\D/,'')" required />
+                    <label class="picker-panel-plate"></label>
                 </div>
-                <div>
-                    <input id="report-start-date" name="report-start-date" type="date" required class="datepicker"
-                        autocomplete="false" placeholder="" />
-                    <label for="report-start-date" class="report-start-date-label">Burndown Chart Start Date <em>(The
-                            day the Iteration began)</em></label>
-                </div>
-            </section>
-            <section class="file-drop-target">
-                <label id="file-dropzone" class="file-dropzone" for="input">
-                    <input type="file" id="input" name="input" multiple>
-                </label>
-            </section>
-        </form>
+                <button id="picker-inc" class="picker-pushers" onmousedown='incDec(1);' onmouseup='released()'></button>
+            </div>
+        </section>
+        <div class="pbars"></div>
         <div class="sort-order">
             <ul class="has-draggable-children"></ul>
-            
-            <div class="picker">
-                <button class="picker-pushers" onmousedown='incDec(-1);' onmouseup='released();'></button>
-                <div class="picker-panel" style="--value:-250px">
-                   <input id="days-in-iteration" class="picker-panel-presenter" type="text" placeholder="" maxlength="2" onfocus="this.value=this.placeholder" onblur="this.placeholder=this.value; this.value=''; syncSpinner();" onInput="this.value=this.value.replace(/\D/,'')" required />
-                   <label class="picker-panel-plate"></label>
-                </div>
-                <button class="picker-pushers" onmousedown='incDec(1);' onmouseup='released()'></button>
-             </div>
-
-            <button class="done-sorting expandable" onclick="runReport(this)" disabled="true">Okay, I'm satisfied. Run it!</button>
         </div>
-        <div class="pbars">
-        </div>
-        <div class="output-table">
-            <table>
-                <thead></thead>
-                <tbody></tbody>
-            </table>
+        <div class="button-row">
+            <div><button class="start-new cta-button"    onclick="location=location;">Discard Stored Data & Begin Anew</button></div>
+            <div><button class="done-sorting cta-button" onclick="runReport(this)"   >Preview Output Using Above Data</button></div>
         </div>
     </main>
+    <div class="output-table">
+        <table>
+            <thead></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <section class="file-drop-target">
+            <label id="file-dropzone" class="file-dropzone" for="input">
+                <input type="file" id="input" name="input" multiple>
+            </label>
+        </section>
     <script src="lib/js/flambe.js"></script>
 </body>
-
 </html>
