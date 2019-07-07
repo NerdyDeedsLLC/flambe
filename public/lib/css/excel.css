@@ -311,6 +311,14 @@ div.sort-order ul.has-draggable-children li {
   margin: 5px 0 0px 35px;
   line-height: 32px;
   text-indent: 20px;
+  cursor: pointer;
+}
+
+div.sort-order ul.has-draggable-children li label {
+  width: 100%;
+  height: 40px;
+  display: block;
+  cursor: pointer;
 }
 
 div.sort-order ul.has-draggable-children li:first-of-type {
@@ -367,6 +375,14 @@ div.sort-order ul.has-draggable-children li.drag-sort-active {
   transition: 0.3s all ease-in-out;
   -webkit-transform: scale(0.95);
           transform: scale(0.95);
+}
+
+div.sort-order ul.has-draggable-children li[data-value='interpolated']::before {
+  background-color: #f001;
+}
+
+div.sort-order ul.has-draggable-children li[data-value='stored']::before {
+  background-color: #0f01;
 }
 
 div.sort-order ul.has-draggable-children:hover li {

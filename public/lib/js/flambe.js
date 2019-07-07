@@ -28,7 +28,9 @@ new Promise(conclude => {
 } // Returns a memory value if present. If not, returns def if provided, null if not
 ,
       retain = (k, v) => {
-  _('\nRETAINING==============================\n', k, '\n - - - - - - - - - - - - - - -\n', v, '\n=============================\n\n');
+  if (1 == 2) {
+    _('\nRETAINING==============================\n', k, '\n - - - - - - - - - - - - - - -\n', v, '\n=============================\n\n');
+  }
 
   return rote.setItem(k, v) ? v : v;
 } // Creates a new memory for key k with value v, then returns v
@@ -43,7 +45,12 @@ new Promise(conclude => {
   if (val == null || isNaN(val / 1)) return '0*';
   return val / 1 <= 0 ? 0 : (val / 3600).toPrecision(3);
 },
-      setTargetSlot = slotIndex => targetSlot = slotIndex; // Global Variables --------------------------------------------------------------------------------------------------------------
+      setTargetSlot = slotIndex => targetSlot = slotIndex,
+      findLastIndexOf = (arr = void 0, val = void 0, fromIndex = null) => {
+  for (var i = arr ? arr.length - 1 : 0; arr != void 0 && val != void 0 && i >= 0; i--) if ((val.constructor + '').match(/RegExp/) && arr[i].match(val) || val + '' == arr[i]) return i;
+
+  return -1;
+}; // Global Variables --------------------------------------------------------------------------------------------------------------
 
 
 let fileBuffer = [] // Stores copies of the file input's data collection (req'd in case the user maskes multiple sets of selections)
@@ -264,6 +271,21 @@ init = () => {
   });
 };
 
+insertFileNodeBetween = (e, trgObj = e.target) => {
+  console.log(e, trgObj);
+
+  if (trgObj.tagName == 'LABEL') {
+    // e.preventDefault();
+    return e.cancelBubble = true;
+  }
+
+  let targetIndex = trgObj.dataset.slot;
+  fileBuffer.splice(targetIndex, 0, '');
+  namedFiles.splice(targetIndex, 0, '');
+  syncSpinner(trg.placeholder / 1 + 1);
+  resizeBufferArraysAndRebuildSlots();
+};
+
 resizeBufferArraysAndRebuildSlots = (newLen = trg.placeholder / 1 + 1) => {
   if (typeof namedFiles == 'undefined' || isNaN(newLen) || newLen < 0) return false;
   let oldLen = namedFiles && namedFiles.length ? namedFiles.length / 1 : 0,
@@ -278,19 +300,30 @@ resizeBufferArraysAndRebuildSlots = (newLen = trg.placeholder / 1 + 1) => {
 
   retain('namedFiles', namedFiles);
   retain('fileBuffer', JSON.stringify(fileBuffer));
+  let interpolated = findLastIndexOf(namedFiles, /.+/);
 
   for (i = namedFiles.length - 1; i >= 0; i--) {
     if (namedFiles.indexOf(namedFiles[i]) < i) namedFiles[i] = '';
     let pList = ' class="drag-drop" draggable="true" ',
         dSlot = ` data-slot="${i > 0 ? i : 'S'}" `,
-        fName = namedFiles[i],
+        fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
+                              ${namedFiles[i]}
+                           </label>`,
         arrID = ` id="file-slot-${i}" `;
 
-    if (fName == '') {
-      pList = '';
-      fName = `<label for="input" onMouseDown="setTargetSlot(${i})">
-                            No file specified (click to add!)
-                        </label>`;
+    if (namedFiles[i] == '') {
+      if (i < interpolated) {
+        fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
+                                No file specified (click to add, or leave blank to interpolate data from neighbors)
+                              </label>`;
+        pList += ' data-value="interpolated"';
+      } else {
+        fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
+                                No file specified (click to add!)
+                            </label>`;
+      }
+    } else {
+      pList += ' data-value="stored"';
     }
 
     opStr = `<li ${arrID + dSlot + pList}>${fName}</li>` + opStr;
@@ -299,6 +332,7 @@ resizeBufferArraysAndRebuildSlots = (newLen = trg.placeholder / 1 + 1) => {
   while (sortableList.childElementCount > 0) sortableList.childNodes[0].remove();
 
   sortableList.insertAdjacentHTML('beforeEnd', opStr);
+  qsa('li').forEach(li => li.addEventListener('click', insertFileNodeBetween));
 };
 /*const ingestFileData = (fileObj, name, date, cb) => {
         let textOutput = "";
@@ -336,17 +370,17 @@ resizeBufferArraysAndRebuildSlots = (newLen = trg.placeholder / 1 + 1) => {
 addOrReplaceSingleFileAndParse = (slotId = targetSlot, liObj = qs('#file-slot-' + slotId)) => // Called when a LI slot is clicked to load a single file
 //    new Promise(conclude => {
 {
-  _('Attempting to gather new file for slot #' + slotId + '(' + liObj + ')!');
+  _('Attempting to gather new file for slot #' + slotId + '(', liObj, ')!');
 
-  return new Promise(resolve => {
+  new Promise(resolve => {
     // Entire addOrReplaceSingleFileAndParse returns this one promise, which should then chai9n below
-    _("Yay promises!");
+    _("\"Yay promises!\"");
 
     const ingestAndBufferFilesFromReader = (fileObj, fileName) => // CHILD FUNCTION - Reads and saves the file's contents
     {
       _('ingestAndBufferFilesFromReader', fileObj, fileName);
 
-      return new Promise(fulfill => {
+      new Promise(fulfill => {
         // We're gonna do this all async-like, in case it's a big file.
         const appendToBuffer = (JSONObj, fileName = null) => {
           let newJSONData = {
@@ -366,22 +400,27 @@ addOrReplaceSingleFileAndParse = (slotId = targetSlot, liObj = qs('#file-slot-' 
 
         reader.onloadend = progressEvent => {
           //    ... Add a listener to observe once it's finished loading.
-          console.log('read completed... results:\n\n');
-          var opJSON = CSV.parse(reader.result); //    Parse the .CSV file input, ...
+          new Promise(fulfill => {
+            console.log('read completed... results:\n\n');
+            var opJSON = CSV.parse(reader.result); //    Parse the .CSV file input, ...
 
-          appendToBuffer(opJSON, fileName); //    ... add it to the global variable containing file data,
+            appendToBuffer(opJSON, fileName); //    ... add it to the global variable containing file data,
 
-          retain('file-slot-' + slotId, fileName + ']||[' + JSON.stringify(opJSON)); //    ... and then stick a stringified copy into local storage.
+            retain('file-slot-' + slotId, fileName + ']||[' + JSON.stringify(opJSON)); //    ... and then stick a stringified copy into local storage.
+
+            return fulfill(); // Resolve the promise.
+          });
         };
 
-        reader.readAsText(fileObj); // ... And read the file specified, thereby triggering the onloadend above
-
-        return fulfill(); // Resolve the promise.
+        fulfill(reader.readAsText(fileObj)); // ... And read the file specified, thereby triggering the onloadend above
       });
     };
 
-    return Promise.all([...input.files].map((file, ind) => ingestAndBufferFilesFromReader(file, file.name))); // Iteratively call ingestAndBufferFilesFromReader, collecting a stack of promises to squash-return
+    Promise.all([...input.files].map((file, ind) => ingestAndBufferFilesFromReader(file, file.name))).then(resolve); // Iteratively call ingestAndBufferFilesFromReader, collecting a stack of promises to squash-return
   }).then(() => new Promise(resolve => {
+    _("yeah, yeah... promises, promises...");
+
+    resizeBufferArraysAndRebuildSlots();
     doneButton.disabled = false;
     return resolve(this);
   }));
