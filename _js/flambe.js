@@ -1,3 +1,240 @@
+(function (window, undefined) {
+    'use strict';
+
+    // Define local CSV object.
+    var CSV = {};
+
+    /**
+     * Split CSV text into an array of lines.
+     */
+    function splitLines(text, lineEnding) {
+        var strLineEnding = lineEnding.toString(),
+            bareRegExp    = strLineEnding.substring(1, strLineEnding.lastIndexOf('/')),
+            modifiers     = strLineEnding.substring(strLineEnding.lastIndexOf('/') + 1);
+
+        if (modifiers.indexOf('g') === -1) {
+            lineEnding = new RegExp(bareRegExp, modifiers + 'g');
+        }
+
+        // TODO: fix line splits inside quotes
+        return text.split(lineEnding);
+    }
+
+    /**
+     * If the line is empty (including all-whitespace lines), returns true. Otherwise, returns false.
+     */
+    function isEmptyLine(line) {
+        return (line.replace(/^[\s]*|[\s]*$/g, '') === '');
+    }
+
+    /**
+     * Removes all empty lines from the given array of lines.
+     */
+    function removeEmptyLines(lines) {
+        var i;
+
+        for (i = 0; i < lines.length; i++) {
+            if (isEmptyLine(lines[i])) {
+                lines.splice(i--, 1);
+            }
+        }
+    }
+
+    /**
+     * Joins line tokens where the value of a token may include a character that matches the delimiter.
+     * For example: "foo, bar", baz
+     */
+    function defragmentLineTokens(lineTokens, delimiter) {
+        var i, j,
+            token, quote;
+
+        for (i = 0; i < lineTokens.length; i++) {
+            token = lineTokens[i].replace(/^[\s]*|[\s]*$/g, '');
+            quote = '';
+
+            if (token.charAt(0) === '"' || token.charAt(0) === '\'') {
+                quote = token.charAt(0);
+            }
+
+            if (quote !== '' && token.slice(-1) !== quote) {
+                j = i + 1;
+
+                if (j < lineTokens.length) {
+                    token = lineTokens[j].replace(/^[\s]*|[\s]*$/g, '');
+                }
+
+                while (j < lineTokens.length && token.slice(-1) !== quote) {
+                    lineTokens[i] += delimiter + (lineTokens.splice(j, 1))[0];
+                    token = lineTokens[j].replace(/[\s]*$/g, '');
+                }
+
+                if (j < lineTokens.length) {
+                    lineTokens[i] += delimiter + (lineTokens.splice(j, 1))[0];
+                }
+            }
+        }
+    }
+
+    /**
+     * Removes leading and trailing whitespace from each token.
+     */
+    function trimWhitespace(lineTokens) {
+        var i;
+
+        for (i = 0; i < lineTokens.length; i++) {
+            lineTokens[i] = lineTokens[i].replace(/^[\s]*|[\s]*$/g, '');
+        }
+    }
+
+    /**
+     * Removes leading and trailing quotes from each token.
+     */
+    function trimQuotes(lineTokens) {
+        var i;
+
+        // TODO: allow for escaped quotes
+        for (i = 0; i < lineTokens.length; i++) {
+            if (lineTokens[i].charAt(0) === '"') {
+                lineTokens[i] = lineTokens[i].replace(/^"|"$/g, '');
+            } else if (lineTokens[i].charAt(0) === '\'') {
+                lineTokens[i] = lineTokens[i].replace(/^'|'$/g, '');
+            }
+        }
+    }
+
+    /**
+     * Converts a single line into a list of tokens, separated by the given delimiter.
+     */
+    function tokenizeLine(line, delimiter) {
+        var lineTokens = line.split(delimiter);
+
+        defragmentLineTokens(lineTokens, delimiter);
+        trimWhitespace(lineTokens);
+        trimQuotes(lineTokens);
+
+        return lineTokens;
+    }
+
+    /**
+     * Converts an array of lines into an array of tokenized lines.
+     */
+    function tokenizeLines(lines, delimiter) {
+        var i,
+            tokenizedLines = [];
+
+        for (i = 0; i < lines.length; i++) {
+            tokenizedLines[i] = tokenizeLine(lines[i], delimiter);
+        }
+
+        return tokenizedLines;
+    }
+
+    /**
+     * Converts an array of tokenized lines into an array of object literals, using the header's tokens for each object's keys.
+     */
+    function assembleObjects(tokenizedLines) {
+        var i, j,
+            tokenizedLine, obj, key,
+            objects = [],
+            keys = tokenizedLines[0];
+
+        for (i = 1; i < tokenizedLines.length; i++) {
+            tokenizedLine = tokenizedLines[i];
+
+            if (tokenizedLine.length > 0) {
+                if (tokenizedLine.length > keys.length) {
+                    throw new SyntaxError('not enough header fields');
+                }
+
+                obj = {};
+
+                for (j = 0; j < keys.length; j++) {
+                    key = keys[j];
+
+                    if (j < tokenizedLine.length) {
+                        obj[key] = tokenizedLine[j];
+                    } else {
+                        obj[key] = '';
+                    }
+                }
+
+                objects.push(obj);
+            }
+        }
+
+        return objects;
+    }
+
+    /**
+     * Parses CSV text and returns an array of objects, using the first CSV row's fields as keys for each object's values.
+     */
+    CSV.parse = function (text, lineEnding, delimiter, ignoreEmptyLines) {
+        var config = {
+                lineEnding:       /[\r\n]/,
+                delimiter:        ',',
+                ignoreEmptyLines: true
+            },
+
+            lines, tokenizedLines, objects;
+
+        // Empty text is a syntax error!
+        if (text === '') {
+            throw new SyntaxError('empty input');
+        }
+
+        if (typeof lineEnding !== 'undefined') {
+            if (lineEnding instanceof RegExp) {
+                config.lineEnding = lineEnding;
+            } else {
+                config.lineEnding = new RegExp('[' + String(lineEnding) + ']', 'g');
+            }
+        }
+
+        if (typeof delimiter !== 'undefined') {
+            config.delimiter = String(delimiter);
+        }
+
+        if (typeof ignoreEmptyLines !== 'undefined') {
+            config.ignoreEmptyLines = !!ignoreEmptyLines;
+        }
+
+        // Step 1: Split text into lines based on line ending.
+        lines = splitLines(text, config.lineEnding);
+
+        // Step 2: Get rid of empty lines. (Optional)
+        if (config.ignoreEmptyLines) {
+            removeEmptyLines(lines);
+        }
+
+        // Single line is a syntax error!
+        if (lines.length < 2) {
+            throw new SyntaxError('missing header');
+        }
+
+        // Step 3: Tokenize lines using delimiter.
+        tokenizedLines = tokenizeLines(lines, config.delimiter);
+
+        // Step 4: Using first line's tokens as a list of object literal keys, assemble remainder of lines into an array of objects.
+        objects = assembleObjects(tokenizedLines);
+
+        return objects;
+    };
+
+    // Expose local CSV object somehow.
+    if (typeof module === 'object' && module && typeof module.exports === 'object') {
+        // If Node module pattern is supported, use it and do not create global.
+        module.exports = CSV;
+    } else if (typeof define === 'function' && define.amd) {
+        // Node module pattern not supported, but AMD module pattern is, so use it.
+        define([], function () {
+            return CSV;
+        });
+    } else {
+        // No AMD loader is being used; expose to window (create global).
+        window.CSV = CSV;
+    }
+}(typeof window !== 'undefined' ? window : {}));
+
 // DECLARATIONS ==================================================================================================================
 // Shortcut aliases and Helper functions -----------------------------------------------------------------------------------------
 const d = document                                       // ⥱ Alias - document
@@ -14,123 +251,122 @@ const d = document                                       // ⥱ Alias - document
             return conclude(qs('#' + id));
         })
     // Rote memory's storage
-    , rote = window.localStorage                                                            // Alias to the window's localStorage. Really these are all just helper functions that amuse me.
-    , memories = ()             => rote.length                                              // Returns the count of how many memories are being held in rote storage
-    , recall   = (k, def=null)  => {k=rote.getItem(k); return k ? k : (def ? def : null);}  // Returns a memory value if present. If not, returns def if provided, null if not
-    , retain   = (k,v)          => {if(1==2){_('\nRETAINING==============================\n', k, '\n - - - - - - - - - - - - - - -\n', v, '\n=============================\n\n');} return (rote.setItem(k,v)) ? v : v; }                              // Creates a new memory for key k with value v, then returns v
-    , reflect  = (k, def=null)  => retain(k, recall(k, def))                                // Runs a recall for a memory (value at key or null), then immediately retains it in memories
-    , forget   = (k)            => rote.removeItem(k)                                       // Discrads the memories at key k
-    , fugue    = ()             => rote.clear()                                             // Purges all memories... as though they'd NEVER. BEEN. FORMED. AT. ALL!
+    , rote = window.localStorage                                                                    // Alias to the window's localStorage. Really these are all just helper functions that amuse me.
+    , memories = ()             => rote.length                                                      // Returns the count of how many memories are being held in rote storage
+    , recall   = (k, def=null)  => {k=rote.getItem(k); return k ? k : (def ? def : null);}          // Returns a memory value if present. If not, returns def if provided, null if not
+    , retain   = (k,v)          => rote.setItem(k,v) ? v : v                                        // Creates a new memory for key k with value v, then returns v
+    , reflect  = (k, def=null)  => retain(k, recall(k, def))                                        // Runs a recall for a memory (value at key or null), then immediately retains it in memories
+    , forget   = (k)            => rote.removeItem(k)                                               // Discrads the memories at key k
+    , fugue    = ()             => rote.clear()                                                     // Purges all memories... as though they'd NEVER. BEEN. FORMED. AT. ALL!
 
 
-    , toHours  = (val = null) => {
-            // _(val);
-            if(val == '---') return val;
-            if (val == null || isNaN((val / 1))) return '0*';
-            return (val / 1 <= 0) ? 0 : (val / 3600).toPrecision(3);
-        }
+    , toHours = (val = null) => {
+        // _(val);
+        if (val == '---') return val;
+        if (val == null || isNaN((val / 1))) return '0*';
+        return (val / 1 <= 0) ? 0 : (val / 3600).toPrecision(3);
+    }
     , setTargetSlot = (slotIndex) => (targetSlot = slotIndex)
 
-    , findLastIndexOf = (arr=void(0), val=void(0), fromIndex=null) => {
-        for(var i=arr?arr.length-1:0; arr!=void(0) && val!=void(0) && i>=0; i--)
-            if( ((val.constructor+'').match(/RegExp/) && arr[i].match(val))
-            ||  (val + '' == arr[i])  ) return(i);
+    , findLastIndexOf = (arr = void (0), val = void (0), fromIndex = null) => {
+        for (var i = arr ? arr.length - 1 : 0; arr != void(0) && val != void(0) && i >= 0; i--)
+            if (((val.constructor + '').match(/RegExp/) && arr[i].match(val))
+            || (val + '' == arr[i])) return (i);
         return -1;
     }
 
 // Global Variables --------------------------------------------------------------------------------------------------------------
-let   fileBuffer    = []                                                                     // Stores copies of the file input's data collection (req'd in case the user maskes multiple sets of selections)
+let   fileBuffer    = []                                                                            // Stores copies of the file input's data collection (req'd in case the user maskes multiple sets of selections)
     , safeBuffer    = []
     , fileCount     = 0
-    , namedFiles    = []                                                                     // Array containing just the names of the files contained within fileBuffer (used for sequencing the read order)
-    , COMBD_DATA    = []                                                                     // COMBINED DATA from all the files ingested
-    , ISSUE_KEYS    = []                                                                     // LIST OF ALL THE ISSUES from all the files ingested
+    , namedFiles    = []                                                                            // Array containing just the names of the files contained within fileBuffer (used for sequencing the read order)
+    , COMBD_DATA    = []                                                                            // COMBINED DATA from all the files ingested
+    , ISSUE_KEYS    = []                                                                            // LIST OF ALL THE ISSUES from all the files ingested
     , INTERPOL8D    = []
     , RPTDATA       = []
-    , input         = document.getElementById('input')                                       // HTML file <INPUT> field/drop target for uploading XLSX files into the system
-    , dateField     = qs("#report-start-date")                                               // HTML date <INPUT> field representing the start of the iteration
-    , sortableList  = qs('.has-draggable-children')                                          // The <UL> containing the drag-drop-sortable list of files provided by the user
-    , doneButton    = qs('.done-sorting')                                                    // "Run report" button
+    , input         = document.getElementById('input')                                              // HTML file <INPUT> field/drop target for uploading XLSX files into the system
+    , dateField     = qs("#report-start-date")                                                      // HTML date <INPUT> field representing the start of the iteration
+    , sortableList  = qs('.has-draggable-children')                                                 // The <UL> containing the drag-drop-sortable list of files provided by the user
+    , doneButton    = qs('.done-sorting')                                                           // "Run report" button
     , iterationName = qs("#iteration-name")
     , previewPanel  = qs('.output-table')
     , targetSlot    = null
     , dayCtPicker   = qs('#days-in-iteration')
 
-    , concernColors = ['Transparent', 'DimGray', 'GreenYellow', 'Gold', 'Orange', 'Red']     // 0-indexed Color-Codings used for the 
-    , concernFlags  = {  // CONCERN CODEX
+    , concernColors = ['Transparent', 'DimGray', 'GreenYellow', 'Gold', 'Orange', 'Red']            // 0-indexed Color-Codings used for the 
+    , concernFlags  = { // CONCERN CODEX
                         // TRIVIAL CONCERN: An issue weighted 0-1 indicate anomolies that
                         // are visible within the data that are known and being accounted
                         // for. Scrum masters may need to explain the blip to THEIR boss.
-                        "HID":    {"weight": 0, "concern": "Hidden By ScrumMaster" },        // Employed at scrum master's discretion to remove a concern from being flagged
-                        "ATT":    {"weight": 1, "concern": "Related to Attendance" },        // Assigned developer is AWOL/MIA/on leave/in the med bay. Occasionally presumed dead.
-                        "HOL":    {"weight": 1, "concern": "Related to Holiday" },           // Excluding a day iteration-wide for company holiday/operational shutdown
+                        "HID":    {"weight": 0, "concern": "Hidden By ScrumMaster" },               // Employed at scrum master's discretion to remove a concern from being flagged
+                        "ATT":    {"weight": 1, "concern": "Related to Attendance" },               // Assigned developer is AWOL/MIA/on leave/in the med bay. Occasionally presumed dead.
+                        "HOL":    {"weight": 1, "concern": "Related to Holiday" },                  // Excluding a day iteration-wide for company holiday/operational shutdown
 
                         // MINOR CONCERN: Issues weighted at 2- less usually indicates an
                         // error in procedure, in JIRA operation, or on the dev, assigned
                         // the issue. Scrum masters should inquire if it keeps happening.
-                        "EST":    {"weight": 2, "concern": "Bad Estimate" },                 // "Build a global satellite network, huh? No problem. 9 lines of code, 16 hours, tops."
-                        "AUC":    {"weight": 2, "concern": "Assigned User Changed" },        // "Huh? Bob made an unsubstantiated, unreported offer to handle it while I was in Figi!" 
-                        "UER":    {"weight": 2, "concern": "User Error" },                   // "Yeah, lemme just open the story real qui- SH*T! Where did it go!? ^&*%$^%$&* JIRA!"
-                        "SCR":    {"weight": 2, "concern": "Scope Creep" },                  // "Hey, so marketing wants to add one more little thing to the user-facing cart portal"
-                        "ASS":    {"weight": 2, "concern": "Improperly Assigned" },          // Likely curprits: "Oh, THAT Deepak?!" and "Why is this assigned to ME!? Stupid JIRA."
-                        "PID":    {"weight": 2, "concern": "Parent ID Changed" },            // "IO-11110 DOES look an awful lot like IO-11101"... mistakes happen.
-                        "PID":    {"weight": 2, "concern": "Inconsistent Status" },          // Status makes no sense (e.g. task In Definition, but hours burned).
+                        "EST":    {"weight": 2, "concern": "Bad Estimate" },                        // "Build a global satellite network, huh? No problem. 9 lines of code, 16 hours, tops."
+                        "AUC":    {"weight": 2, "concern": "Assigned User Changed" },               // "Huh? Bob made an unsubstantiated, unreported offer to handle it while I was in Figi!" 
+                        "UER":    {"weight": 2, "concern": "User Error" },                          // "Yeah, lemme just open the story real qui- SH*T! Where did it go!? ^&*%$^%$&* JIRA!"
+                        "SCR":    {"weight": 2, "concern": "Scope Creep" },                         // "Hey, so marketing wants to add one more little thing to the user-facing cart portal"
+                        "ASS":    {"weight": 2, "concern": "Improperly Assigned" },                 // Likely curprits: "Oh, THAT Deepak?!" and "Why is this assigned to ME!? Stupid JIRA."
+                        "PID":    {"weight": 2, "concern": "Parent ID Changed" },                   // "IO-11110 DOES look an awful lot like IO-11101"... mistakes happen.
+                        "PID":    {"weight": 2, "concern": "Inconsistent Status" },                 // Status makes no sense (e.g. task In Definition, but hours burned).
 
                         // MEDIUM CONCERN: Issues weighted at 3+ indicate an issue who is
                         // out of place, whose hours aren't (or, temporarily, CANNOT) get
                         // burned down, or admin error. These MAY/MAY NOT be impactful on
                         // the burndown. Scrum master should investigate & maybe inquire.
-                        "USS":    {"weight": 3, "concern": "Unestimated at Sprint Start" },  // Story had no hour estimate when Sprint began
-                        "STK":    {"weight": 3, "concern": "Unable to Begin" },              // Story is precluded from even getting started, Maybe prematurely added to iteration?
-                        "STR":    {"weight": 3, "concern": "Bad/Mistaken Story Inclusion" }, // Almost always user error. Story got added to iteration on accident. 
-                        "HRS":    {"weight": 3, "concern": "Hours Not Being Burned" },       // Almost always user error. Developer working a story simply hasn't reported the work/
-                        "NPR":    {"weight": 3, "concern": "No Progress Reported" },         // Developer has reported no progress on an issue for 3+ days. COULD be a warning flag
-                        "DEP":    {"weight": 3, "concern": "Unsatisfied Dependency" },       // Basically, the developer must complete another task first, and is blocking himself. 
-                        "TOS":    {"weight": 3, "concern": "Issue Changed to Subtask" },     // Former Issue downgraded to subtask.
+                        "USS":    {"weight": 3, "concern": "Unestimated at Sprint Start" },         // Story had no hour estimate when Sprint began
+                        "STK":    {"weight": 3, "concern": "Unable to Begin" },                     // Story is precluded from even getting started, Maybe prematurely added to iteration?
+                        "STR":    {"weight": 3, "concern": "Bad/Mistaken Story Inclusion" },        // Almost always user error. Story got added to iteration on accident. 
+                        "HRS":    {"weight": 3, "concern": "Hours Not Being Burned" },              // Almost always user error. Developer working a story simply hasn't reported the work/
+                        "NPR":    {"weight": 3, "concern": "No Progress Reported" },                // Developer has reported no progress on an issue for 3+ days. COULD be a warning flag
+                        "DEP":    {"weight": 3, "concern": "Unsatisfied Dependency" },              // Basically, the developer must complete another task first, and is blocking himself. 
+                        "TOS":    {"weight": 3, "concern": "Issue Changed to Subtask" },            // Former Issue downgraded to subtask.
 
                         // HIGH CONCERN: Issues weighted 4+ indicate a change in the tot.
                         // estimated hours for the iteration, and therefore have a DIRECT 
                         // impact on the burndown. Scrum master needs to perform inquiry.
-                        "TOI":    {"weight": 4, "concern": "Subtask Changed to Issue" },     // Former Subtask elevated to full Issue.
-                        "NEW":    {"weight": 4, "concern": "New Story Added to Iteration" }, // Issue just appeared in iteration.
-                        "DEL":    {"weight": 4, "concern": "Story Deleted" },                // Issue deleted/removed from iteration.
+                        "TOI":    {"weight": 4, "concern": "Subtask Changed to Issue" },            // Former Subtask elevated to full Issue.
+                        "NEW":    {"weight": 4, "concern": "New Story Added to Iteration" },        // Issue just appeared in iteration.
+                        "DEL":    {"weight": 4, "concern": "Story Deleted" },                       // Issue deleted/removed from iteration.
 
                         // CRITICAL CONCERN: Issues weighted at 5 typically indicate some
                         // flavor of impending disaster or serious problem on the flagged
                         // issue. Scrum masters should be loaded for bear & hunting fixes
-                        "XXX":    {"weight": 5, "concern": "Blocking Issue" },               // ISSUE BLOCKED FROM FURTHER PROGRESS. Highest source of concern
+                        "XXX":    {"weight": 5, "concern": "Blocking Issue" },                      // ISSUE BLOCKED FROM FURTHER PROGRESS. Highest source of concern
                         // BUNDLES
                         "UNCHGD": {"weight": 2, "collection": "XXX,NPR,STK,HOL,ATT,HRS",     "concern": "No changes made to story for current iteration" },
                         "HRSINC": {"weight": 3, "collection": "EST,UER,SCR,STR,STK,NEW,ASS", "concern": "Hours increased from day prior!" },
                         "UNCHG3": {"weight": 4, "collection": "XXX,NPR,STK,HOL,ATT,HRS",     "concern": "No changes made to story for 3 days!" }
                     }
 
-// APPLICATION SOURCE ===================================================================== 🅔🅧🅔🅒🅤🅣🅘🅞🅝 🅢🅔🅠🅤🅔🅝🅒🅔 indicated by encircled digits (➀-➈)
+       // APPLICATION SOURCE ===================================================================== 🅔🅧🅔🅒🅤🅣🅘🅞🅝 🅢🅔🅠🅤🅔🅝🅒🅔 indicated by encircled digits (➀-➈)
 init = () => {                                                                                      // ⓿ Initiate application, chaining steps 1-3 above to file input's onChange
-    iterationName.value   = recall('iterationName', '');                                                // Seed the value set for the iteration's name (or blank if none is stored)...
-    iterationName.onInput = ()=>{retain('iterationName', iterationName.value); }                        // ... and set up the field's onInput handler to save any changes henceforth.
-    dateField.value       = recall('dateField', '');                                                    // Do the same for the Start Date value, seeding it (or blank) if set...
-    dateField.onInput     = ()=>{retain('dateField', iterationName.value); }                            // ... and establishing the onInput listener to store any updates.
+    iterationName.value   = recall('iterationName', '');                                            // Seed the value set for the iteration's name (or blank if none is stored)...
+    iterationName.onInput = ()=>{retain('iterationName', iterationName.value); }                    // ... and set up the field's onInput handler to save any changes henceforth.
+    dateField.value       = recall('dateField', '');                                                // Do the same for the Start Date value, seeding it (or blank) if set...
+    dateField.onInput     = ()=>{retain('dateField', iterationName.value); }                        // ... and establishing the onInput listener to store any updates.
 
-    fileBuffer            = recall('fileBuffer', null);                                                 // Try and retrieve the fileBuffer in one exisits in Rote memories...
-    fileBuffer            = (fileBuffer == null) ? [] : JSON.parse(fileBuffer);                         // ... and, if one does, rehydrate it. Otherwise, establish it as a new array.
+    fileBuffer            = recall('fileBuffer', null);                                             // Try and retrieve the fileBuffer in one exisits in Rote memories...
+    fileBuffer            = (fileBuffer == null) ? [] : JSON.parse(fileBuffer);                     // ... and, if one does, rehydrate it. Otherwise, establish it as a new array.
     console.log('fileBuffer', fileBuffer);
 
     let startingLength = 1;
     
     console.log('fileBuffer', typeof(fileBuffer), fileBuffer, fileBuffer.length);
 
-    if(fileBuffer.length > 0) {                                                                         // If we DID manage to restore a previous buffer...
+    if(fileBuffer.length > 0) {                                                                     // If we DID manage to restore a previous buffer...
         startingLength = fileBuffer.length -1;
-        namedFiles  = retain('namedFiles', fileBuffer.flatMap(f=>(f && f.fileName) ?                    //    ... and, should it prove that we have a valid file for each (filled) index... ********
-                                                                  f.fileName :                          //    ... reconstuct the list of previously-provided file names...
-                                                                  ''))                      //    ... otherwise, flag the individual record as having errored out.
+        namedFiles  = retain('namedFiles', fileBuffer.flatMap(f=>(f && f.fileName)                  //    ... and, should it prove that we have a valid file for each (filled) index... ********
+                                                               ?  f.fileName                        //    ... reconstuct the list of previously-provided file names...
+                                                               :  ''))                              //    ... otherwise, flag the individual record as having errored out.
     }
 
-    // if(fileBuffer.length === 0 || namedFiles.indexOf('BUFFER ERROR') !== -1){                           // If we FAILED to restore a previous buffer (or the one we DID errored out)...
-    if(fileBuffer.length <= 1){                           // If we FAILED to restore a previous buffer (or the one we DID errored out)...
-        namedFiles  = reflect('namedFiles', []);
-        if(typeof(namedFiles) === 'string') namedFiles=retain('namedFiles', namedFiles.split(','));
+    if(fileBuffer.length <= 1){                                                                     // If we FAILED to restore a previous buffer (or the one we DID errored out)...
+        namedFiles  = reflect('namedFiles', []);                                                    //    ... grab theb previous buffer from rote memories (defaulting to [] if not present)...
+        if(typeof(namedFiles) === 'string') namedFiles=retain('namedFiles', namedFiles.split(',')); //    ... break our namedFiles back out too.
     }
 
     trg.placeholder = startingLength;
@@ -140,7 +376,7 @@ init = () => {                                                                  
     syncSpinner();
     
     input.addEventListener('change', e => {
-        if(targetSlot == null || input.files.length > 1){                                                                 // (Indicating we're dealing with a BULK upload)
+        if(targetSlot == null || input.files.length > 1){                                                                        // (Indicating we're dealing with a BULK upload)
             return pBar(1, "READING...✓", "teal", 0.1, 0, 0)
                   .then(() => pBar(2, 'PARSING...✓', 'DarkTurquoise', 0.1, 0.1, 0.1))
                   .then(parseFilesAndGenerateDragDrop)
@@ -156,7 +392,7 @@ init = () => {                                                                  
 insertFileNodeBetween = (e, trgObj=e.target) => {
     console.log(e, trgObj);
     if  (trgObj.tagName == 'LABEL') {
-            // e.preventDefault();
+                   // e.preventDefault();
             return (e.cancelBubble = true);
         }
     let targetIndex = trgObj.dataset.slot;
@@ -215,40 +451,8 @@ resizeBufferArraysAndRebuildSlots = (newLen = ((trg.placeholder / 1) + 1)) => {
         qsa('li').forEach(li=>li.addEventListener('click', insertFileNodeBetween));
     };
 
-    /*const ingestFileData = (fileObj, name, date, cb) => {
-            let textOutput = "";
-            var reader = new FileReader();
-            reader.onload = function(progressEvent){
-                // Entire file
-                // console.log(this.result);
-                
-                // By lines
-                var lines = this.result.split('\n');
-                var hdrs = lines[0].split(',');
-                 var opRow = "";
-                var opSet = [];
-                
-                for(var line = 1; line < lines.length-1; line++){
-                    currentLine = lines[line].split(',');
-                    opRow={};
-                    hdrs.forEach((h,i)=>{
-                        opRow[h] = currentLine[i];
-                    });
-                    opSet.push(opRow);
-                }
-                appendToBuffer(opSet);
-            };
-            reader.readAsText(fileObj);
-        }
-         const appendToBuffer = (obj) => {
-            window.fileBuffer.push(obj);
-            
-            
-            // console.table(obj);
-         }*/
-
-addOrReplaceSingleFileAndParse = (slotId=targetSlot, liObj=qs('#file-slot-'+slotId)) =>                                                        // Called when a LI slot is clicked to load a single file
-//    new Promise(conclude => {
+addOrReplaceSingleFileAndParse = (slotId=targetSlot, liObj=qs('#file-slot-'+slotId)) =>                                                               // Called when a LI slot is clicked to load a single file
+       //    new Promise(conclude => {
     {
         _("\"Yay promises!\"");
         let fileObj  = input.files[0],
@@ -273,7 +477,7 @@ addOrReplaceSingleFileAndParse = (slotId=targetSlot, liObj=qs('#file-slot-'+slot
         .then(result=>
             new Promise(resolve=>{
                 _('...resolved\n".then()" #1');
-                    var opJSON         = CSV.parse(result);                                                  //    Parse the .CSV file input, ...
+                    var opJSON         = CSV.parse(result);                                                         //    Parse the .CSV file input, ...
                     _(opJSON)
                     let newJSONData    = { fileName: fileName, fileData: opJSON };
                     fileBuffer[slotId] = newJSONData;
@@ -289,42 +493,8 @@ addOrReplaceSingleFileAndParse = (slotId=targetSlot, liObj=qs('#file-slot-'+slot
         });
     };
 
-        // _('Attempting to gather new file for slot #' + slotId + '(', liObj, ')!');
-
-        // new Promise(resolve => { // Entire addOrReplaceSingleFileAndParse returns this one promise, which should then chai9n below
-        //             _("\"Yay promises!\"");
-        //             let fileObj  = input.files[0],
-        //                 fileName = fileObj.name;
-
-        //                 _('ingestAndBufferFilesFromReader', fileObj, fileName);
-        //                 return Promise.resolve(()=>{
-        //                             // THIS PART IS SHIELDED FROM THE PROMISARY BULLSHIT GOING ON AROUND IT
-        //                             console.log('trying to ingest "' + fileName + '"; object:\n', fileObj)
-        //                             var reader = new FileReader();                                                              // Instantiate a new file reader...
-        //                             reader.onloadend = Promise.resolve(()=>{                                                    //    ... Add a listener to observe once it's finished loading.
-        //                                     console.log('read completed... results:\n\n');
-        //                                     var opJSON         = CSV.parse(reader.result);                                                  //    Parse the .CSV file input, ...
-        //                                     let newJSONData    = { fileName: fileName, fileData: opJSON };
-        //                                     fileBuffer[slotId] = newJSONData;
-
-        //                                     namedFiles[slotId] = fileName;
-        //                                     liObj.innerText    = fileName;
-        //                                     retain('fileBuffer', JSON.stringify(fileBuffer));
-        //                                     retain('namedFiles', namedFiles);
-        //                                     return resolve(this);                                                                   // Resolve the promise.
-        //                             });
-        //                            return resolve(reader.readAsText(fileObj));                                                             // ... And read the file specified, thereby triggering the onloadend above
-        //                 });
-        // })
-        // .then(()=>new Promise(resolve => {
-        //         _("yeah, yeah... promises, promises...");
-        //         resizeBufferArraysAndRebuildSlots();
-        //         doneButton.disabled = false;
-        //         return resolve(this);
-        //     }));
-    // }
-            
-parseFilesAndGenerateDragDrop = response =>                                                 // ⓵ onChange of file input box, iterate namedFiles and generate Drag/Drop UL
+         
+parseFilesAndGenerateDragDrop = response =>                                                        // ⓵ onChange of file input box, iterate namedFiles and generate Drag/Drop UL
     new Promise(conclude => {
         
         const bufferFile = (fileObj, fileIndex, fileName) =>
@@ -337,14 +507,14 @@ parseFilesAndGenerateDragDrop = response =>                                     
                     if (extantIndex) fileBuffer[extantIndex] = JSONObj;
                     else fileBuffer.push(JSON.stringify({ fileName: fileName, fileData: JSONObj }));
                 };
-                var reader = new FileReader();                               // Instantiate a new file reader...
-                //   ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  
-                reader.onloadend = (progressEvent) => {                       //    ... Add a listener to observe once it's finished loading.
-                    var opJSON = CSV.parse(reader.result);                        //    Parse the .CSV file input...
-                    appendToBuffer(opJSON, fileName);                                     //    ... and add it to the global variable containing file data,
+                var reader = new FileReader();                                      // Instantiate a new file reader...
+                       //   ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  
+                reader.onloadend = (progressEvent) => {                              //    ... Add a listener to observe once it's finished loading.
+                    var opJSON = CSV.parse(reader.result);                               //    Parse the .CSV file input...
+                    appendToBuffer(opJSON, fileName);                                            //    ... and add it to the global variable containing file data,
                     return fulfill(this);
-                };                                                              // ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  
-                reader.readAsText(fileObj);                                     // ... And read the file specified.
+                };                                                                     // ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  
+                reader.readAsText(fileObj);                                            // ... And read the file specified.
             });
         var bufferedFiles = Promise.all([...input.files].map((file, ind) => bufferFile(file, ind, file.name)))
         .then(() => {
@@ -365,7 +535,7 @@ parseFilesAndGenerateDragDrop = response =>                                     
             });
     });
 
-const primeDragDropListBehaviors = (listClass = 'drag-drop') => {                           // ⓶ iterate UL and set up drag/drop on its children
+const primeDragDropListBehaviors = (listClass = 'drag-drop') => {                                  // ⓶ iterate UL and set up drag/drop on its children
     const bindDragDropListeners = (obj) => {
         try {
 
@@ -373,7 +543,7 @@ const primeDragDropListBehaviors = (listClass = 'drag-drop') => {               
                 trg.className += " drag-sort-active";
                 let swapobj = document.elementFromPoint(event.clientX, event.clientY) || trg;
                 if (parList === swapobj.parentNode) {
-                    // Thereby constraining the drop to the same list
+                           // Thereby constraining the drop to the same list
                     swapobj = (swapobj !== trg.nextSibling) ? swapobj : swapobj.nextSibling;
                     parList.insertBefore(trg, swapobj);
                 }
@@ -398,10 +568,10 @@ const primeDragDropListBehaviors = (listClass = 'drag-drop') => {               
     );
     [...ddObjects].forEach(o => bindDragDropListeners(o));
     doneButton.disabled = false;
-    // retain(
+           // retain(
 }
 
-const runReport = (obj) => {                                                                // ⓷ user clicks Run It!; orchastrate remaining steps
+const runReport = (obj) => {                                                                       // ⓷ user clicks Run It!; orchastrate remaining steps
     if (obj.disabled == true) return false;
     COMBD_DATA = [];
     ISSUE_KEYS = [];
@@ -409,8 +579,8 @@ const runReport = (obj) => {                                                    
     getDistinctKeysFromFiles();
 }
 
-const getDistinctKeysFromFiles = () => {                                                     // ⓸ iterate files in buffer create promise chain to read each in sequence
-        // pBar(3, 'PROCESSING', 'aquamarine', 1, 0, 0);
+const getDistinctKeysFromFiles = () => {                                                            // ⓸ iterate files in buffer create promise chain to read each in sequence
+               // pBar(3, 'PROCESSING', 'aquamarine', 1, 0, 0);
         safeBuffer = Object.assign([], fileBuffer);
         while(safeBuffer.lastIndexOf('') === (safeBuffer.length - 1)) 
             safeBuffer.pop();
@@ -419,16 +589,16 @@ const getDistinctKeysFromFiles = () => {                                        
         for (files in safeBuffer) {
             let file = safeBuffer[files]
             if(file !== 'INTERPOLATED'){
-                let keySet = JSON.stringify(file.fileData, ['Issue key'])       //    ... convert the resultant JSON to a string containing ONLY the 'Issue key' column...
-                    .match(/DIGTDEV-\d{4,6}/g)                                  //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
-                ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])]           //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
+                let keySet = JSON.stringify(file.fileData, ['Issue key'])              //    ... convert the resultant JSON to a string containing ONLY the 'Issue key' column...
+                    .match(/DIGTDEV-\d{4,6}/g)                                         //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
+                ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])]                  //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
             } else INTERPOL8D.push(files);
         }
 
         concatinateDataFromSequencedFiles()
     };
 
-const concatinateDataFromSequencedFiles = () => {                                           // ⓹ iterate finalized buffer, and concatinated generate output data
+const concatinateDataFromSequencedFiles = () => {                                                  // ⓹ iterate finalized buffer, and concatinated generate output data
     temp_store = [];
     ISSUE_KEYS.forEach(r => {
         temp_store.push(r['Issue key']);
@@ -477,7 +647,7 @@ const showRecordDetails = (e, targetLink=e.target) => {
 
 const processParentChildRelationships = () => {
     const createJIRALink = (IssueId, isParent=false) => {
-        let hrefUrl = `href="https://jira.sprintdd.com/browse/${ IssueId }"' `;
+        let hrefUrl = `href="https:       //jira.sprintdd.com/browse/${ IssueId }"' `;
         let clsName = `class="issue-${isParent ? 'parent-' : ''}link iss-hvr-lnk" `;
         let wndoTrg = `target="_blank" `;
         let issueID = IssueId.replace(/(\d+)/gi, '<b>$1</b>');
@@ -527,7 +697,7 @@ const processParentChildRelationships = () => {
     constructPreviewAndReportData();
     
 }
-const constructPreviewAndReportData = () => {                                                  // ⓺ iterate concatinated output data, look for concern-suggestive trends and build our markup
+const constructPreviewAndReportData = () => {                                                         // ⓺ iterate concatinated output data, look for concern-suggestive trends and build our markup
     const ensureValidValue = (variable, value, altVal=value, tolerateEmptyStr=false) => {
         return  (  
                     typeof(value) === undefined 
@@ -539,55 +709,55 @@ const constructPreviewAndReportData = () => {                                   
 
     }
     console.log('constructPreviewAndReportData', COMBD_DATA);
-    let MRKUP = [],                                                                             // Collection of markup that'll we'll used to render both the HTML preview and the ultimate XLSX file output
-        _I_  = '||--||'                                                                         // The string delimiter we're using to distinguish one chunk of data from another. Our "Split-target"
-    Object.entries(COMBD_DATA).forEach((dataRecord, ind) => {                                   // Iterate across each Issue (the "rows") that we've ingested data for, to extract the following data:
+    let MRKUP = [],                                                                                    // Collection of markup that'll we'll used to render both the HTML preview and the ultimate XLSX file output
+        _I_  = '||--||'                                                                                // The string delimiter we're using to distinguish one chunk of data from another. Our "Split-target"
+    Object.entries(COMBD_DATA).forEach((dataRecord, ind) => {                                          // Iterate across each Issue (the "rows") that we've ingested data for, to extract the following data:
 
-        // _(dataRecord);
-        let  issueName = dataRecord[0]                                                          //   - The specific issue being examined (just the name; eg. 'DIGIT-12345'. Also serves as the array key)
-            ,issueData = dataRecord[1]                                                          //   - The specific issue being examined (all the data for all the days for the files provided)
-            ,colCt = issueData.length                                                           //   - How many "columns" we're looking at
+               // _(dataRecord);
+        let  issueName = dataRecord[0]                                                                 //   - The specific issue being examined (just the name; eg. 'DIGIT-12345'. Also serves as the array key)
+            ,issueData = dataRecord[1]                                                                 //   - The specific issue being examined (all the data for all the days for the files provided)
+            ,colCt = issueData.length                                                                  //   - How many "columns" we're looking at
             ,opSts = ''
-            ,ROWOP = ''                                                                         //   - The iteratively-constructed markup for the "row" corresponding to the issue being examined
+            ,ROWOP = ''                                                                                //   - The iteratively-constructed markup for the "row" corresponding to the issue being examined
             ,opHrs = 0
-            ,flags = ''                                                                         //   - The empty collection of flags, to be joined & processed later in the loop
-            ,reCtr = 1                                                                          //   - Counter for how many consecutive days the Remaining Estimate has languished, unchanged
-            ,ctCtr = 1                                                                          //   - Iteration-length counter for how many consecutive days the Remaining Estimate goes unchanged
-            ,oldRE = ''                                                                         //   - Previous (from the previous-iterated-over day in the row) Remaining Hours Estimate
-            ,oldPI = ''                                                                         //   - Previous (from the previous-iterated-over day in the row) Parent ID
-            ,oldII = ''                                                                         //   - Previous (from the previous-iterated-over day in the row) Issue ID
-            ,newRE = ''                                                                         //   - Current (from the currently-iterated-over day in the row) Remaining Hours Estimate
-            ,newPI = ''                                                                         //   - Current (from the currently-iterated-over day in the row) Parent ID
-            ,newII = ''                                                                         //   - Current (from the currently-iterated-over day in the row) Issue ID
-            ,newST = '';                                                                         //   - Current Status (in this case, we don't care what the previous one was, but need it at the issue scope)
+            ,flags = ''                                                                                //   - The empty collection of flags, to be joined & processed later in the loop
+            ,reCtr = 1                                                                                 //   - Counter for how many consecutive days the Remaining Estimate has languished, unchanged
+            ,ctCtr = 1                                                                                 //   - Iteration-length counter for how many consecutive days the Remaining Estimate goes unchanged
+            ,oldRE = ''                                                                                //   - Previous (from the previous-iterated-over day in the row) Remaining Hours Estimate
+            ,oldPI = ''                                                                                //   - Previous (from the previous-iterated-over day in the row) Parent ID
+            ,oldII = ''                                                                                //   - Previous (from the previous-iterated-over day in the row) Issue ID
+            ,newRE = ''                                                                                //   - Current (from the currently-iterated-over day in the row) Remaining Hours Estimate
+            ,newPI = ''                                                                                //   - Current (from the currently-iterated-over day in the row) Parent ID
+            ,newII = ''                                                                                //   - Current (from the currently-iterated-over day in the row) Issue ID
+            ,newST = '';                                                                                //   - Current Status (in this case, we don't care what the previous one was, but need it at the issue scope)
 
-        issueData.forEach((datRec, ix) => {                                                     // ...Iterate the issue's collected data (the "columns"), gathering...
+        issueData.forEach((datRec, ix) => {                                                            // ...Iterate the issue's collected data (the "columns"), gathering...
             newRE = (datRec === '---') ? '---' : (datRec['Remaining Estimate']  || '');           
             if(newRE === '---'){
-                ROWOP = ROWOP + _I_ + '---' ;                                        // Tack the current day being iterated past's Est. hours remaining onto the end of the issue being iterated past
+                ROWOP = ROWOP + _I_ + '---' ;                                               // Tack the current day being iterated past's Est. hours remaining onto the end of the issue being iterated past
             }else
-                ROWOP = ROWOP + _I_ + toHours(newRE) + 'h' ;                                        // Tack the current day being iterated past's Est. hours remaining onto the end of the issue being iterated past
+                ROWOP = ROWOP + _I_ + toHours(newRE) + 'h' ;                                               // Tack the current day being iterated past's Est. hours remaining onto the end of the issue being iterated past
         });
-        ROWOP = quickIndex.lastStatus(issueName) + _I_ + quickIndex.pathedName(issueName) + ROWOP;                                                    // STATUS | JIRA ID | PARENT ID | ISSUE ID | DAY 1 | DAY 2 | ... | DAY n | flags |
+        ROWOP = quickIndex.lastStatus(issueName) + _I_ + quickIndex.pathedName(issueName) + ROWOP;                                                           // STATUS | JIRA ID | PARENT ID | ISSUE ID | DAY 1 | DAY 2 | ... | DAY n | flags |
         for(var backfill=colCt; backfill<namedFiles.length; backfill++){
             ROWOP += _I_ + 'XxXxX';
         }
-        MRKUP.push(ROWOP.split(_I_));                                                           // Convert it to an iterable collection and push it onto the bottom of the output markup stack
+        MRKUP.push(ROWOP.split(_I_));                                                                  // Convert it to an iterable collection and push it onto the bottom of the output markup stack
     })
 
-    pBar(4, 'GENERATING OUTPUT... DONE!', 'LimeGreen', 0.1, 0.1, 0.1);                          // Show generating output progress meter
-    let colHeaders  = ['Current Status','Issue ID', 'Seed Day']           // Define always-present column headers (| Current Status | JIRA ID | Parent ID | Issue ID | Seed Day |)
-        ,dateArr     = [];                                                                        // Array holding the labels for each column, each of which represent the file being examined
-    if (dateField.checkValidity()) {                                                            // Since we can't date-stamp a column if the user didn't give us a date, see if they did. IF they did...
-        if(colHeaders[4] === 'Seed Day') colHeaders[4] += "<br>" + dateField.value              // Append the Seed Date to the seed column header (if currently unset)
-        let startDate = new Date(dateField.value).getTime();                                    // Get the epoch value of the StartDate
-        let dayCt = 1;                                                                          // Increment the number of days we're venturing forth from the start date. This is used to ignore weekends
-        while (dateArr.length < namedFiles.length && dayCt < namedFiles.length * 2) {                                             // Keep going until we have at least 10 days
-            let incrementedDate = new Date(startDate + (dayCt * 86400000));                     // Add 24 hours to the daying bering iterated across
-            if (incrementedDate.getDay() > 0 && incrementedDate.getDay() < 6)                   // If the now-incremented date falls on a M-F...
-                dateArr.push('Day ' + (dateArr.length + 1) + '<br />' +                         //    ... add both the day number... 
-                                incrementedDate.toLocaleDateString())                           //    ... and the date that works out to to the stack.
-            dayCt++;                                                                            // Increment the day counter whether we added to stack or not (since we skip over weekends and holidays)
+    pBar(4, 'GENERATING OUTPUT... DONE!', 'LimeGreen', 0.1, 0.1, 0.1);                                 // Show generating output progress meter
+    let colHeaders  = ['Current Status','Issue ID', 'Seed Day']                  // Define always-present column headers (| Current Status | JIRA ID | Parent ID | Issue ID | Seed Day |)
+        ,dateArr     = [];                                                                               // Array holding the labels for each column, each of which represent the file being examined
+    if (dateField.checkValidity()) {                                                                   // Since we can't date-stamp a column if the user didn't give us a date, see if they did. IF they did...
+        if(colHeaders[4] === 'Seed Day') colHeaders[4] += "<br>" + dateField.value                     // Append the Seed Date to the seed column header (if currently unset)
+        let startDate = new Date(dateField.value).getTime();                                           // Get the epoch value of the StartDate
+        let dayCt = 1;                                                                                 // Increment the number of days we're venturing forth from the start date. This is used to ignore weekends
+        while (dateArr.length < namedFiles.length && dayCt < namedFiles.length * 2) {                                                    // Keep going until we have at least 10 days
+            let incrementedDate = new Date(startDate + (dayCt * 86400000));                            // Add 24 hours to the daying bering iterated across
+            if (incrementedDate.getDay() > 0 && incrementedDate.getDay() < 6)                          // If the now-incremented date falls on a M-F...
+                dateArr.push('Day ' + (dateArr.length + 1) + '<br />' +                                //    ... add both the day number... 
+                                incrementedDate.toLocaleDateString())                                  //    ... and the date that works out to to the stack.
+            dayCt++;                                                                                   // Increment the day counter whether we added to stack or not (since we skip over weekends and holidays)
         }
     } else {
         for(i=1; i<= namedFiles.length-1; i++) 
@@ -599,7 +769,7 @@ const constructPreviewAndReportData = () => {                                   
     
     colHeaders = [...colHeaders, ...dateArr];
     let tblMarkup =             '<h1>' + iterationName.value + '</h1>' + 
-                                '<table class="outputTable" cellspacing="0">'
+                                '<table class="preview-table" cellspacing="0">'
         ,hdrMarkup =                '<thead><tr><th>' + colHeaders.join('</th><th>').replace(/>XXXDay/g, ' class="dim">Day') + 
                                     '</th>'
         ,rowMarkup =                '</tr></thead><tbody>'
@@ -627,14 +797,14 @@ const constructPreviewAndReportData = () => {                                   
     let interpString = '', 
         genLength = RPTDATA[0].length;
     INTERPOL8D.forEach(itpCol=>interpString += `td:nth-of-type(-n + ${itpCol - -3}):nth-last-of-type(-n + ${genLength - 2 - itpCol}),`);
-    // interpString += `td:nth-of-type(-n + ${INTERPOL8D[0] - -3}):nth-last-of-type(-n + ${genLength - 2 - INTERPOL8D[0]}),`;
+           // interpString += `td:nth-of-type(-n + ${INTERPOL8D[0] - -3}):nth-last-of-type(-n + ${genLength - 2 - INTERPOL8D[0]}),`;
     _(interpString)
-    let fx=[...qsa((interpString.slice(0,-1)))].forEach(itpCell=>itpCell.className+=' interpolated-value');
+    //let fx=[...qsa((interpString.slice(0,-1)))].forEach(itpCell=>itpCell.className+=' interpolated-value');
     return true;
 }
 
 const createReportData = () => {
-    tableNode = document.querySelector('.outputTable');
+    tableNode = document.querySelector('.preview-table');
     tHead = [...tableNode.querySelectorAll('th')].map(th=>th.innerText);
     tBody = [...tableNode.querySelectorAll('tr')].map(tr=>{
         let opObj = [...tr.querySelectorAll('td')];
@@ -658,13 +828,18 @@ const reFilterPreview = (obj) => {
     document.getElementById('record-ct').innerText = totDisp + ' records shown.';
 }
 
+let rowNodes       = [];
+let colNodes       = [];
+let hdrRowNode     = [];
+let hdrColNodes    = [];
+let numericTotals = ['',''];
 const postProcessData = () => {
-    let rptStatuses = {};
-    let dispCkBoxes = '';
+    rowNodes           = [...qsa('.preview-table tr')];
+    let rptStatuses    = {};
+    let dispCkBoxes    = '';
     let uniqueStatuses = []
-    let rowNodes = [...qsa('.outputTable tr')];
-    let colNodes = [];
-    let RPTString = JSON.stringify(RPTDATA);
+    let RPTString      = JSON.stringify(RPTDATA);
+    
     rowNodes.forEach((rows, idx)=>{
         let row = [...rows.querySelectorAll('td')];
         colNodes.push(row);
@@ -672,15 +847,18 @@ const postProcessData = () => {
             rowNodes[idx].className = 'row-status-' + row[0].innerText.replace(/\s+/g, '_');
             uniqueStatuses.push(row[0].innerText);
         }
-        
         return rows;
     })
-    let hdrRowNode = rowNodes.shift();
-    let hdrColNodes = colNodes.shift();
-    console.log('uniqueStatuses', uniqueStatuses);
-    console.log('rowNodes', rowNodes);
-    console.log('colNodes', colNodes);
+    hdrRowNode  = rowNodes.shift();
+    // hdrColNodes = colNodes.shift();
 
+    console.log('hdrRowNode', hdrRowNode);
+    console.log('rowNodes', rowNodes);
+    console.log('hdrColNodes', hdrColNodes);
+    console.log('colNodes', colNodes);
+    
+    
+    // Extarct the unique statuses and generate their respective checkboxes for the display filtes.
     [...new Set(uniqueStatuses)].sort().forEach(status=>{
         let muStatus = status.replace(/\s+/g, '_');
         let statusRE = new RegExp(status, 'g');
@@ -689,17 +867,21 @@ const postProcessData = () => {
     });
     document.getElementById('output-panels').insertAdjacentHTML('afterBegin', '<aside class="status-filters"><h2>Currently Showing:</h2><span id="record-ct"></span>' + dispCkBoxes + '</aside>');
     reFilterPreview();
-    RPTDATA.forEach((reportRow, rowIndex) => {
-        reportRow.forEach((col, colIndex)=>{
-            let cell = qs(`.outputTable tr:nth-of-type(${rowIndex}) td:nth-of-type(${colIndex+1})`);
-            if(col==='---'){
+
+    // Interpolate any missing data into its respective columns, from left to right, top to bottom.
+        RPTDATA.forEach((reportRow, rowIndex) => {
+            reportRow.forEach((col, colIndex)=>{
+                let cell = colNodes[rowIndex][colIndex];//qs(`.preview-table tr:nth-of-type(${rowIndex}) td:nth-of-type(${colIndex+1})`);
+                // _(cell == colNodes[rowIndex][colIndex]);
+                if(col==='---'){
+                cell.className = 'interpolated-value'
                 let p = cell.previousSiblingElement;
                 var pCell 	 = cell.previousSibling,
                     pCellVal = pCell.innerText.replace(/h/g, '') / 1,
                     nCell 	 = cell.nextSibling,
                     nCellVal = nCell.innerText;
                 while(nCellVal === '' || nCellVal === '---' || nCellVal === 'NaN'){ 
-                    // _(nCell, nCellVal);
+                           // _(nCell, nCellVal);
                     nCell = nCell.nextSibling; 
                     nCellVal = nCell.innerText;
                 }
@@ -715,6 +897,18 @@ const postProcessData = () => {
                 }
             }
         });
+    });
+
+    // Now for the flag processing.
+    numericTotals.length = colNodes[1].length;
+    numericTotals.fill(0, 2, colNodes[1].length)
+    RPTDATA.forEach((reportRow, rowIndex) => {
+        for(var t=2; t<numericTotals.length; t++) {
+            let newVal = ('' + reportRow[t]).replace(/h/gi, '') / 1;
+            if(!isNaN(newVal))
+			numericTotals[t] = (numericTotals[t] / 1) + newVal;
+        }
+
     });
 }
 

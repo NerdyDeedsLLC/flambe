@@ -1,5 +1,246 @@
-// DECLARATIONS ==================================================================================================================
+(function (window, undefined) {
+  'use strict'; // Define local CSV object.
+
+  var CSV = {};
+  /**
+   * Split CSV text into an array of lines.
+   */
+
+  function splitLines(text, lineEnding) {
+    var strLineEnding = lineEnding.toString(),
+        bareRegExp = strLineEnding.substring(1, strLineEnding.lastIndexOf('/')),
+        modifiers = strLineEnding.substring(strLineEnding.lastIndexOf('/') + 1);
+
+    if (modifiers.indexOf('g') === -1) {
+      lineEnding = new RegExp(bareRegExp, modifiers + 'g');
+    } // TODO: fix line splits inside quotes
+
+
+    return text.split(lineEnding);
+  }
+  /**
+   * If the line is empty (including all-whitespace lines), returns true. Otherwise, returns false.
+   */
+
+
+  function isEmptyLine(line) {
+    return line.replace(/^[\s]*|[\s]*$/g, '') === '';
+  }
+  /**
+   * Removes all empty lines from the given array of lines.
+   */
+
+
+  function removeEmptyLines(lines) {
+    var i;
+
+    for (i = 0; i < lines.length; i++) {
+      if (isEmptyLine(lines[i])) {
+        lines.splice(i--, 1);
+      }
+    }
+  }
+  /**
+   * Joins line tokens where the value of a token may include a character that matches the delimiter.
+   * For example: "foo, bar", baz
+   */
+
+
+  function defragmentLineTokens(lineTokens, delimiter) {
+    var i, j, token, quote;
+
+    for (i = 0; i < lineTokens.length; i++) {
+      token = lineTokens[i].replace(/^[\s]*|[\s]*$/g, '');
+      quote = '';
+
+      if (token.charAt(0) === '"' || token.charAt(0) === '\'') {
+        quote = token.charAt(0);
+      }
+
+      if (quote !== '' && token.slice(-1) !== quote) {
+        j = i + 1;
+
+        if (j < lineTokens.length) {
+          token = lineTokens[j].replace(/^[\s]*|[\s]*$/g, '');
+        }
+
+        while (j < lineTokens.length && token.slice(-1) !== quote) {
+          lineTokens[i] += delimiter + lineTokens.splice(j, 1)[0];
+          token = lineTokens[j].replace(/[\s]*$/g, '');
+        }
+
+        if (j < lineTokens.length) {
+          lineTokens[i] += delimiter + lineTokens.splice(j, 1)[0];
+        }
+      }
+    }
+  }
+  /**
+   * Removes leading and trailing whitespace from each token.
+   */
+
+
+  function trimWhitespace(lineTokens) {
+    var i;
+
+    for (i = 0; i < lineTokens.length; i++) {
+      lineTokens[i] = lineTokens[i].replace(/^[\s]*|[\s]*$/g, '');
+    }
+  }
+  /**
+   * Removes leading and trailing quotes from each token.
+   */
+
+
+  function trimQuotes(lineTokens) {
+    var i; // TODO: allow for escaped quotes
+
+    for (i = 0; i < lineTokens.length; i++) {
+      if (lineTokens[i].charAt(0) === '"') {
+        lineTokens[i] = lineTokens[i].replace(/^"|"$/g, '');
+      } else if (lineTokens[i].charAt(0) === '\'') {
+        lineTokens[i] = lineTokens[i].replace(/^'|'$/g, '');
+      }
+    }
+  }
+  /**
+   * Converts a single line into a list of tokens, separated by the given delimiter.
+   */
+
+
+  function tokenizeLine(line, delimiter) {
+    var lineTokens = line.split(delimiter);
+    defragmentLineTokens(lineTokens, delimiter);
+    trimWhitespace(lineTokens);
+    trimQuotes(lineTokens);
+    return lineTokens;
+  }
+  /**
+   * Converts an array of lines into an array of tokenized lines.
+   */
+
+
+  function tokenizeLines(lines, delimiter) {
+    var i,
+        tokenizedLines = [];
+
+    for (i = 0; i < lines.length; i++) {
+      tokenizedLines[i] = tokenizeLine(lines[i], delimiter);
+    }
+
+    return tokenizedLines;
+  }
+  /**
+   * Converts an array of tokenized lines into an array of object literals, using the header's tokens for each object's keys.
+   */
+
+
+  function assembleObjects(tokenizedLines) {
+    var i,
+        j,
+        tokenizedLine,
+        obj,
+        key,
+        objects = [],
+        keys = tokenizedLines[0];
+
+    for (i = 1; i < tokenizedLines.length; i++) {
+      tokenizedLine = tokenizedLines[i];
+
+      if (tokenizedLine.length > 0) {
+        if (tokenizedLine.length > keys.length) {
+          throw new SyntaxError('not enough header fields');
+        }
+
+        obj = {};
+
+        for (j = 0; j < keys.length; j++) {
+          key = keys[j];
+
+          if (j < tokenizedLine.length) {
+            obj[key] = tokenizedLine[j];
+          } else {
+            obj[key] = '';
+          }
+        }
+
+        objects.push(obj);
+      }
+    }
+
+    return objects;
+  }
+  /**
+   * Parses CSV text and returns an array of objects, using the first CSV row's fields as keys for each object's values.
+   */
+
+
+  CSV.parse = function (text, lineEnding, delimiter, ignoreEmptyLines) {
+    var config = {
+      lineEnding: /[\r\n]/,
+      delimiter: ',',
+      ignoreEmptyLines: true
+    },
+        lines,
+        tokenizedLines,
+        objects; // Empty text is a syntax error!
+
+    if (text === '') {
+      throw new SyntaxError('empty input');
+    }
+
+    if (typeof lineEnding !== 'undefined') {
+      if (lineEnding instanceof RegExp) {
+        config.lineEnding = lineEnding;
+      } else {
+        config.lineEnding = new RegExp('[' + String(lineEnding) + ']', 'g');
+      }
+    }
+
+    if (typeof delimiter !== 'undefined') {
+      config.delimiter = String(delimiter);
+    }
+
+    if (typeof ignoreEmptyLines !== 'undefined') {
+      config.ignoreEmptyLines = !!ignoreEmptyLines;
+    } // Step 1: Split text into lines based on line ending.
+
+
+    lines = splitLines(text, config.lineEnding); // Step 2: Get rid of empty lines. (Optional)
+
+    if (config.ignoreEmptyLines) {
+      removeEmptyLines(lines);
+    } // Single line is a syntax error!
+
+
+    if (lines.length < 2) {
+      throw new SyntaxError('missing header');
+    } // Step 3: Tokenize lines using delimiter.
+
+
+    tokenizedLines = tokenizeLines(lines, config.delimiter); // Step 4: Using first line's tokens as a list of object literal keys, assemble remainder of lines into an array of objects.
+
+    objects = assembleObjects(tokenizedLines);
+    return objects;
+  }; // Expose local CSV object somehow.
+
+
+  if (typeof module === 'object' && module && typeof module.exports === 'object') {
+    // If Node module pattern is supported, use it and do not create global.
+    module.exports = CSV;
+  } else if (typeof define === 'function' && define.amd) {
+    // Node module pattern not supported, but AMD module pattern is, so use it.
+    define([], function () {
+      return CSV;
+    });
+  } else {
+    // No AMD loader is being used; expose to window (create global).
+    window.CSV = CSV;
+  }
+})(typeof window !== 'undefined' ? window : {}); // DECLARATIONS ==================================================================================================================
 // Shortcut aliases and Helper functions -----------------------------------------------------------------------------------------
+
+
 const d = document // ⥱ Alias - document
 ,
       qs = s => d.querySelector(s) // ⥱ Alias - querySelector
@@ -27,13 +268,7 @@ new Promise(conclude => {
   return k ? k : def ? def : null;
 } // Returns a memory value if present. If not, returns def if provided, null if not
 ,
-      retain = (k, v) => {
-  if (1 == 2) {
-    _('\nRETAINING==============================\n', k, '\n - - - - - - - - - - - - - - -\n', v, '\n=============================\n\n');
-  }
-
-  return rote.setItem(k, v) ? v : v;
-} // Creates a new memory for key k with value v, then returns v
+      retain = (k, v) => rote.setItem(k, v) ? v : v // Creates a new memory for key k with value v, then returns v
 ,
       reflect = (k, def = null) => retain(k, recall(k, def)) // Runs a recall for a memory (value at key or null), then immediately retains it in memories
 ,
@@ -251,15 +486,15 @@ init = () => {
     // If we DID manage to restore a previous buffer...
     startingLength = fileBuffer.length - 1;
     namedFiles = retain('namedFiles', fileBuffer.flatMap(f => f && f.fileName ? //    ... and, should it prove that we have a valid file for each (filled) index... ********
-    f.fileName : //    ... reconstuct the list of previously-provided file names...
-    '')); //    ... otherwise, flag the individual record as having errored out.
-  } // if(fileBuffer.length === 0 || namedFiles.indexOf('BUFFER ERROR') !== -1){                           // If we FAILED to restore a previous buffer (or the one we DID errored out)...
-
+    f.fileName //    ... reconstuct the list of previously-provided file names...
+    : '')); //    ... otherwise, flag the individual record as having errored out.
+  }
 
   if (fileBuffer.length <= 1) {
     // If we FAILED to restore a previous buffer (or the one we DID errored out)...
-    namedFiles = reflect('namedFiles', []);
-    if (typeof namedFiles === 'string') namedFiles = retain('namedFiles', namedFiles.split(','));
+    namedFiles = reflect('namedFiles', []); //    ... grab theb previous buffer from rote memories (defaulting to [] if not present)...
+
+    if (typeof namedFiles === 'string') namedFiles = retain('namedFiles', namedFiles.split(',')); //    ... break our namedFiles back out too.
   }
 
   trg.placeholder = startingLength;
@@ -339,38 +574,6 @@ resizeBufferArraysAndRebuildSlots = (newLen = trg.placeholder / 1 + 1) => {
   sortableList.insertAdjacentHTML('beforeEnd', opStr);
   qsa('li').forEach(li => li.addEventListener('click', insertFileNodeBetween));
 };
-/*const ingestFileData = (fileObj, name, date, cb) => {
-        let textOutput = "";
-        var reader = new FileReader();
-        reader.onload = function(progressEvent){
-            // Entire file
-            // console.log(this.result);
-            
-            // By lines
-            var lines = this.result.split('\n');
-            var hdrs = lines[0].split(',');
-             var opRow = "";
-            var opSet = [];
-            
-            for(var line = 1; line < lines.length-1; line++){
-                currentLine = lines[line].split(',');
-                opRow={};
-                hdrs.forEach((h,i)=>{
-                    opRow[h] = currentLine[i];
-                });
-                opSet.push(opRow);
-            }
-            appendToBuffer(opSet);
-        };
-        reader.readAsText(fileObj);
-    }
-     const appendToBuffer = (obj) => {
-        window.fileBuffer.push(obj);
-        
-        
-        // console.table(obj);
-     }*/
-
 
 addOrReplaceSingleFileAndParse = (slotId = targetSlot, liObj = qs('#file-slot-' + slotId)) => // Called when a LI slot is clicked to load a single file
 //    new Promise(conclude => {
@@ -419,38 +622,7 @@ addOrReplaceSingleFileAndParse = (slotId = targetSlot, liObj = qs('#file-slot-' 
     doneButton.disabled = false;
     return;
   });
-}; // _('Attempting to gather new file for slot #' + slotId + '(', liObj, ')!');
-// new Promise(resolve => { // Entire addOrReplaceSingleFileAndParse returns this one promise, which should then chai9n below
-//             _("\"Yay promises!\"");
-//             let fileObj  = input.files[0],
-//                 fileName = fileObj.name;
-//                 _('ingestAndBufferFilesFromReader', fileObj, fileName);
-//                 return Promise.resolve(()=>{
-//                             // THIS PART IS SHIELDED FROM THE PROMISARY BULLSHIT GOING ON AROUND IT
-//                             console.log('trying to ingest "' + fileName + '"; object:\n', fileObj)
-//                             var reader = new FileReader();                                                              // Instantiate a new file reader...
-//                             reader.onloadend = Promise.resolve(()=>{                                                    //    ... Add a listener to observe once it's finished loading.
-//                                     console.log('read completed... results:\n\n');
-//                                     var opJSON         = CSV.parse(reader.result);                                                  //    Parse the .CSV file input, ...
-//                                     let newJSONData    = { fileName: fileName, fileData: opJSON };
-//                                     fileBuffer[slotId] = newJSONData;
-//                                     namedFiles[slotId] = fileName;
-//                                     liObj.innerText    = fileName;
-//                                     retain('fileBuffer', JSON.stringify(fileBuffer));
-//                                     retain('namedFiles', namedFiles);
-//                                     return resolve(this);                                                                   // Resolve the promise.
-//                             });
-//                            return resolve(reader.readAsText(fileObj));                                                             // ... And read the file specified, thereby triggering the onloadend above
-//                 });
-// })
-// .then(()=>new Promise(resolve => {
-//         _("yeah, yeah... promises, promises...");
-//         resizeBufferArraysAndRebuildSlots();
-//         doneButton.disabled = false;
-//         return resolve(this);
-//     }));
-// }
-
+};
 
 parseFilesAndGenerateDragDrop = response => // ⓵ onChange of file input box, iterate namedFiles and generate Drag/Drop UL
 new Promise(conclude => {
@@ -625,7 +797,7 @@ const showRecordDetails = (e, targetLink = e.target) => {
 
 const processParentChildRelationships = () => {
   const createJIRALink = (IssueId, isParent = false) => {
-    let hrefUrl = `href="https://jira.sprintdd.com/browse/${IssueId}"' `;
+    let hrefUrl = `href="https:       //jira.sprintdd.com/browse/${IssueId}"' `;
     let clsName = `class="issue-${isParent ? 'parent-' : ''}link iss-hvr-lnk" `;
     let wndoTrg = `target="_blank" `;
     let issueID = IssueId.replace(/(\d+)/gi, '<b>$1</b>');
@@ -763,7 +935,7 @@ const constructPreviewAndReportData = () => {
   }
 
   colHeaders = [...colHeaders, ...dateArr];
-  let tblMarkup = '<h1>' + iterationName.value + '</h1>' + '<table class="outputTable" cellspacing="0">',
+  let tblMarkup = '<h1>' + iterationName.value + '</h1>' + '<table class="preview-table" cellspacing="0">',
       hdrMarkup = '<thead><tr><th>' + colHeaders.join('</th><th>').replace(/>XXXDay/g, ' class="dim">Day') + '</th>',
       rowMarkup = '</tr></thead><tbody>';
   MRKUP.forEach(o => rowMarkup += '<tr><td>' + o.join('</td><td>').replace(/\.00h|\.0h/g, 'h').replace(/>XxXxX/g, ' class="dim">') + '</td></tr>');
@@ -782,14 +954,14 @@ const constructPreviewAndReportData = () => {
       genLength = RPTDATA[0].length;
   INTERPOL8D.forEach(itpCol => interpString += `td:nth-of-type(-n + ${itpCol - -3}):nth-last-of-type(-n + ${genLength - 2 - itpCol}),`); // interpString += `td:nth-of-type(-n + ${INTERPOL8D[0] - -3}):nth-last-of-type(-n + ${genLength - 2 - INTERPOL8D[0]}),`;
 
-  _(interpString);
+  _(interpString); //let fx=[...qsa((interpString.slice(0,-1)))].forEach(itpCell=>itpCell.className+=' interpolated-value');
 
-  let fx = [...qsa(interpString.slice(0, -1))].forEach(itpCell => itpCell.className += ' interpolated-value');
+
   return true;
 };
 
 const createReportData = () => {
-  tableNode = document.querySelector('.outputTable');
+  tableNode = document.querySelector('.preview-table');
   tHead = [...tableNode.querySelectorAll('th')].map(th => th.innerText);
   tBody = [...tableNode.querySelectorAll('tr')].map(tr => {
     let opObj = [...tr.querySelectorAll('td')];
@@ -815,12 +987,17 @@ const reFilterPreview = obj => {
   document.getElementById('record-ct').innerText = totDisp + ' records shown.';
 };
 
+let rowNodes = [];
+let colNodes = [];
+let hdrRowNode = [];
+let hdrColNodes = [];
+let numericTotals = ['', ''];
+
 const postProcessData = () => {
+  rowNodes = [...qsa('.preview-table tr')];
   let rptStatuses = {};
   let dispCkBoxes = '';
   let uniqueStatuses = [];
-  let rowNodes = [...qsa('.outputTable tr')];
-  let colNodes = [];
   let RPTString = JSON.stringify(RPTDATA);
   rowNodes.forEach((rows, idx) => {
     let row = [...rows.querySelectorAll('td')];
@@ -833,11 +1010,13 @@ const postProcessData = () => {
 
     return rows;
   });
-  let hdrRowNode = rowNodes.shift();
-  let hdrColNodes = colNodes.shift();
-  console.log('uniqueStatuses', uniqueStatuses);
+  hdrRowNode = rowNodes.shift(); // hdrColNodes = colNodes.shift();
+
+  console.log('hdrRowNode', hdrRowNode);
   console.log('rowNodes', rowNodes);
-  console.log('colNodes', colNodes);
+  console.log('hdrColNodes', hdrColNodes);
+  console.log('colNodes', colNodes); // Extarct the unique statuses and generate their respective checkboxes for the display filtes.
+
   [...new Set(uniqueStatuses)].sort().forEach(status => {
     let muStatus = status.replace(/\s+/g, '_');
     let statusRE = new RegExp(status, 'g');
@@ -845,12 +1024,15 @@ const postProcessData = () => {
     dispCkBoxes += `<input name="chk-${muStatus}" id="chk-${muStatus}" class='status-filter-checkboxes' type="checkbox" value="${rptStatuses[muStatus]}" checked="true" onChange="reFilterPreview(this)" /><label for="chk-${muStatus}">${status} (${rptStatuses[muStatus]})</label><br>`;
   });
   document.getElementById('output-panels').insertAdjacentHTML('afterBegin', '<aside class="status-filters"><h2>Currently Showing:</h2><span id="record-ct"></span>' + dispCkBoxes + '</aside>');
-  reFilterPreview();
+  reFilterPreview(); // Interpolate any missing data into its respective columns, from left to right, top to bottom.
+
   RPTDATA.forEach((reportRow, rowIndex) => {
     reportRow.forEach((col, colIndex) => {
-      let cell = qs(`.outputTable tr:nth-of-type(${rowIndex}) td:nth-of-type(${colIndex + 1})`);
+      let cell = colNodes[rowIndex][colIndex]; //qs(`.preview-table tr:nth-of-type(${rowIndex}) td:nth-of-type(${colIndex+1})`);
+      // _(cell == colNodes[rowIndex][colIndex]);
 
       if (col === '---') {
+        cell.className = 'interpolated-value';
         let p = cell.previousSiblingElement;
         var pCell = cell.previousSibling,
             pCellVal = pCell.innerText.replace(/h/g, '') / 1,
@@ -875,6 +1057,15 @@ const postProcessData = () => {
         }
       }
     });
+  }); // Now for the flag processing.
+
+  numericTotals.length = colNodes[1].length;
+  numericTotals.fill(0, 2, colNodes[1].length);
+  RPTDATA.forEach((reportRow, rowIndex) => {
+    for (var t = 2; t < numericTotals.length; t++) {
+      let newVal = ('' + reportRow[t]).replace(/h/gi, '') / 1;
+      if (!isNaN(newVal)) numericTotals[t] = numericTotals[t] / 1 + newVal;
+    }
   });
 };
 

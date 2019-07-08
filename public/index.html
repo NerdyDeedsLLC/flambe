@@ -1,181 +1,68 @@
-<!DOCTYPE html>
 <html>
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>SheetJS Live Demo</title>
-    <style>
-    #drop {
-        border: 2px dashed #bbb;
-        -moz-border-radius: 5px;
-        -webkit-border-radius: 5px;
-        border-radius: 5px;
-        padding: 25px;
-        text-align: center;
-        font: 20pt bold, "Vollkorn";
-        color: #bbb
-    }
-
-    #b64data {
-        width: 100%;
-    }
-
-    a {
-        text-decoration: none
-    }
-    </style>
+    <title>read-excel-file</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="lib/css/flambe.css">
 </head>
 
 <body>
-    <pre>
-
-<div id="drop">Drop a spreadsheet file here to see sheet data</div>
-<input type="file" name="xlfile" id="xlf" /> ... or click here to select a file
-
-<textarea id="b64data">... or paste a base64-encoding here</textarea>
-<input type="button" id="dotext" value="Click here to process the base64 text" onclick="b64it();"/><br />
-</pre>
-    <pre id="out"></pre>
-    <div id="htmlout"></div>
-    <br />
-    <script src="lib/js/xlsx.full.min.js"></script>
-    <script>
-    /*jshint browser:true */
-    /* eslint-env browser */
-    /* eslint no-use-before-define:0 */
-    /*global Uint8Array, Uint16Array, ArrayBuffer */
-    /*global XLSX */
-    var global_wb;
-
-    var process_wb = (function() {
-        var OUT = document.getElementById('out');
-        var HTMLOUT = document.getElementById('htmlout');
-
-        var get_format = function() {
-                return 'json'
-        };
-
-        var to_json = function to_json(workbook) {
-            var result = {};
-            workbook.SheetNames.forEach(function(sheetName) {
-                var roa = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
-                if (roa.length) result[sheetName] = roa;
-            });
-            return JSON.stringify(result, 2, 2);
-        };
-
-        return function process_wb(wb) {
-            global_wb = wb;
-            var output = to_json(wb);
-            if (OUT.innerText === undefined) OUT.textContent = output;
-            else OUT.innerText = output;
-            console.log("output", new Date(), output);
-        };
-    })();
-
-    var setfmt = window.setfmt = function setfmt() { if (global_wb) process_wb(global_wb); };
-
-    var b64it = window.b64it = function b64it() {
-        console.log("onload", new Date());
-        var wb = XLSX.read(tarea.value, { type: 'base64', WTF: false });
-        process_wb(wb);
-    };
-
-    var do_file = function do_file(files) {
-        console.log('do_file', 'files:', files)
-        var rABS = ((typeof FileReader !== "undefined") && ((FileReader.prototype || {}).readAsBinaryString)); // true÷
-        var use_worker = false
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            // console.log(reader, "completed readystate change (onload)", new Date(), e,'\nrABS: ', rABS);
-            var data = e.target.result || new Uint8Array(data);
-            // if (use_worker) xw(data, process_wb);
-            // else 
-            process_wb(XLSX.read(data, { type: (rABS) ? 'binary' : 'array' }));
-        };
-        if (rABS) reader.readAsBinaryString(files[0]);
-        else      reader.readAsArrayBuffer(files[0]);
-    };
-
-    (function() {
-        var drop = document.getElementById('drop');
-        if (!drop.addEventListener) return;
-
-        function handleDrop(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            do_file(e.dataTransfer.files);
-        }
-
-        function handleDragover(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'copy';
-        }
-
-        drop.addEventListener('dragenter', handleDragover, false);
-        drop.addEventListener('dragover', handleDragover, false);
-        drop.addEventListener('drop', handleDrop, false);
-    })();
-
-    (function() {
-        var xlf = document.getElementById('xlf');
-        if (!xlf.addEventListener) return;
-
-        function handleFile(e) { do_file(e.target.files); }
-        xlf.addEventListener('change', handleFile, false);
-    })();
-    </script>
+    <main id='iteration-info'>
+        <section class="form-fields">
+            <div class='full-width itr-form-field'>
+                <input id="iteration-name" name="iteration-name" type="text" required class="input-field"
+                    autocomplete="false" placeholder="" />
+                <label for="iteration-name" class="iteration-name-label">Iteration Name <em>(this is a label that
+                        will appled to reports in this iteration)</em></label>
+            </div>
+            <div class='half-width itr-form-field'>
+                <input id="report-start-date" name="report-start-date" type="date" required class="datepicker"
+                    autocomplete="false" placeholder="" />
+                <label for="report-start-date" class="report-start-date-label">Burndown Start Date <em>(The
+                        day Iteration began)</em></label>
+            </div>
+            <div class="half-width picker">
+                <span>Days in iteration:</span>
+                <button id="picker-dec" class="picker-pushers" onmousedown='incDec(-1);' onmouseup='released();'></button>
+                <div class="picker-panel" style="--value:-250px">
+                    <input id="days-in-iteration" class="picker-panel-presenter" type="text" placeholder="" maxlength="2" onfocus="this.value=this.placeholder" onblur="this.placeholder=this.value; this.value=''; syncSpinner();" onInput="this.value=this.value.replace(/\D/,'')" required />
+                    <label class="picker-panel-plate"></label>
+                </div>
+                <button id="picker-inc" class="picker-pushers" onmousedown='incDec(1);' onmouseup='released()'></button>
+            </div>
+        </section>
+        <div class="pbars"></div>
+        <div class="sort-order">
+            <aside class="color-key sort-key">
+                <h2>KEY</h2>
+                <span class="key-item-1 key-items"><b>Empty File Slot</b><em>Click this slot to add a file containing the day's burned hours at this location.</em></span>
+                <span class="key-item-2 key-items"><b>Completed File Slot</b><em>File has been added, and parsed without issue, and will be added to the report.</em></span>
+                <span class="key-item-3 key-items"><b>Interpolated File</b><em>Because this file omitted mid-structure, Flambe will attempt to interpolate its data.</em></span>
+                <span class="key-item-4 key-items"><b>Unusable File</b><em>File is of the wrong type, structure, or cannot be interpreted. Try a .CSV file.</em></span>
+                <span class="key-item-5 key-items"><b>Errored File</b><em>File is corrupt, unreadable, or the retained copy has been damaged. Please re-add.</em></span>
+                
+            </aside>
+            <ul class="has-draggable-children"></ul>
+            <button class="add-record" onclick="incDec(1); released();"></button>
+        </div>
+        <div class="button-row">
+            <div><button class="start-new cta-button"    onclick="fugue(); location=location;">Discard Stored Data & Begin Anew</button></div>
+            <div><button class="done-sorting cta-button" onclick="runReport(this)"   >Preview Output Using Above Data</button></div>
+        </div>
+    </main>
+    <section id="output-panels">
+        <div class="output-table">
+            <table>
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </section>
+    <section class="file-drop-target">
+            <label id="file-dropzone" class="file-dropzone" for="input">
+                <input type="file" id="input" name="input" multiple>
+            </label>
+        </section>
+    <script src="lib/js/flambe.js"></script>
 </body>
-<!-- <!DOCTYPE html>
-<html>
-
-<head>
-    <title>Flambé</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="author" content="name">
-    <meta name="description" content="description here">
-    <meta name="keywords" content="keywords,here">
-    <link rel="stylesheet" href="lib/css/global.css" type="text/css">
-</head>
-
-<body>
-    <script src="lib/js/xlsx.full.min.js"></script>
-<script>
-var ExcelToJSON = function() {
-
-  this.parseExcel = function(file) {
-    var reader = new FileReader();
-
-    reader.onload = function(e) {
-      var data = e.target.result();
-      var workbook = XLSX.read(data, {
-        type: 'binary'
-      });
-
-      workbook.SheetNames.forEach(function(sheetName) {
-        // Here is your object
-        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
-        var json_object = JSON.stringify(XL_row_object);
-        console.log(json_object);
-
-      })
-
-    };
-
-    reader.onerror = function(ex) {
-      console.log(ex);
-    };
-
-    reader.readAsBinaryString(file);
-  };
-};
-</script>
-
-
-</body>
-
-</html>
- -->
 </html>
