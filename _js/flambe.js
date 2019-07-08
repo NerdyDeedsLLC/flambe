@@ -46,6 +46,7 @@ let   fileBuffer    = []                                                        
     , COMBD_DATA    = []                                                                     // COMBINED DATA from all the files ingested
     , ISSUE_KEYS    = []                                                                     // LIST OF ALL THE ISSUES from all the files ingested
     , INTERPOL8D    = []
+    , RPTDATA       = []
     , input         = document.getElementById('input')                                       // HTML file <INPUT> field/drop target for uploading XLSX files into the system
     , dateField     = qs("#report-start-date")                                               // HTML date <INPUT> field representing the start of the iteration
     , sortableList  = qs('.has-draggable-children')                                          // The <UL> containing the drag-drop-sortable list of files provided by the user
@@ -462,12 +463,26 @@ const concatinateDataFromSequencedFiles = () => {                               
     processParentChildRelationships();
 }
 
+const showRecordDetails = (e, targetLink=e.target) => {
+    if(targetLink.tagName != 'A') targetLink = targetLink.parentNode;
+    if(targetLink.tagName != 'A') return false;
+    e.preventDefault(true);
+    const destroyExtantDetailPreviewers = () => [...qsa('.extra-details')].forEach(pp=>pp.remove());
+    destroyExtantDetailPreviewers();
+    window.addEventListener('click', destroyExtantDetailPreviewers)
+    let gatheredDetails = quickIndex.getLatestDetails(targetLink.innerText);
+    flatData = '<div class="extra-details"><span>' + Object.entries(gatheredDetails).flat().join('</span><span>') + '</span></div>'
+    targetLink.insertAdjacentHTML('afterEnd', flatData);
+}
+
 const processParentChildRelationships = () => {
     const createJIRALink = (IssueId, isParent=false) => {
         let hrefUrl = `href="https://jira.sprintdd.com/browse/${ IssueId }"' `;
-        let clsName = `class="issue-${isParent ? 'parent-' : ''}link" `;
+        let clsName = `class="issue-${isParent ? 'parent-' : ''}link iss-hvr-lnk" `;
         let wndoTrg = `target="_blank" `;
-        return `<a ${hrefUrl + clsName + wndoTrg}>${IssueId.replace(/(\d+)/gi, '<b>$1</b>')}</a>`;
+        let issueID = IssueId.replace(/(\d+)/gi, '<b>$1</b>');
+        
+        return `<a ${hrefUrl + clsName + wndoTrg}>${issueID}</a>`;
     }
 
     var toc = {};
@@ -485,6 +500,8 @@ const processParentChildRelationships = () => {
             ,iid: toc[validRow['Issue id']]
             ,pid: toc[validRow['Parent id']] || ''
             ,sts: validRow['Status']
+            ,ass: validRow['Assignee']
+            ,sum: validRow['Summary']
             ,vld: validRow
         }
         opIssueObj['pathLinks'] = (opIssueObj.pid === '') 
@@ -501,6 +518,10 @@ const processParentChildRelationships = () => {
     quickIndex.lastStatus = (key) => {
         let results = quickIndex.find(qI => qI.key === key);
         return (results && results.sts) ? results.sts : '';
+    }
+    quickIndex.getLatestDetails = (key) => {
+        let results = quickIndex.find(qI => qI.key === key);
+        return (results && results.vld) ? results.vld : false;
     }
 
     constructPreviewAndReportData();
@@ -542,42 +563,15 @@ const constructPreviewAndReportData = () => {                                   
 
         issueData.forEach((datRec, ix) => {                                                     // ...Iterate the issue's collected data (the "columns"), gathering...
             newRE = (datRec === '---') ? '---' : (datRec['Remaining Estimate']  || '');           
-            opSts += ensureValidValue(opSts, datRec['Status'], void(0), false);
-            if(newRE != '---' && newRE !== oldRE) {                                                               // If the remaining hours have changed, we need to examine the delta to determine if this should be flagged
-                newPI = datRec['Parent id']           || '';                                        //    ...the latest ParentID (we check daily in case someone converts a story to a subtask)
-                newII = quickIndex.pathedName(datRec['Issue id']) || '';                                        //    ...the latest IssueID (we check daily in case someone converts a subtask to a story)
-                // _(newII)
-                newST = datRec['Status']              || '';                                        //    ...and the latest Status, per Jira. We may alter this if it's insufficient/incorrect later.
-
-                if(newRE !== '---'){
-                    flags = '';
-                    if(newRE > oldRE) flags += ',HRSINC';                                              //    ** FLAG Estimated Hours INcreased (Bad Estimate? Bad Story Inclusion? New Story Added? Scope Creep?)
-                    reCtr = 1;                                                                      // It's changed for the good or the bad. Reset our "same" counter;
-                    ctCtr = 0;                                                                      // It's changed at SOME POINT during this iteration. Remove this issue's ITR counter from consideration;
-                }else{                                                                              // Estimated Hours Havent Changed (ergo, no burndown)
-                    // console.log('|', newST, '|', newST == 'Completed', '|', newST.trim() == 'Completed', '|', newST == 'Done', '|', newST.trim() == 'Done')
-                    if(ix === reCtr) flags += ',UNCHGD'
-                    else {
-                        if(newST !== 'Completed') 
-                        flags += ',UNCHG3';
-                    }
-                    reCtr++;                                                                        // Increment our unchanged for 3 days counter
-                    if(!!ctCtr) ctCtr++;                                                            // If our iteration-duration unchanged counter is still in play (e.g. it's NEVER changed), increment
-                }
-                ROWOP = ROWOP + _I_ + toHours(newRE) + 'h' ;                                        // Tack the current day being iterated past's Est. hours remaining onto the end of the issue being iterated past
-                oldRE = newRE;                                                                      //   - Previous (from the previous-iterated-over day in the row) Remaining Hours Estimate
-                oldPI = newPI;                                                                         //   - Previous (from the previous-iterated-over day in the row) Parent ID
-                oldII = oldII; 
-            } else if(newRE === '---'){
+            if(newRE === '---'){
                 ROWOP = ROWOP + _I_ + '---' ;                                        // Tack the current day being iterated past's Est. hours remaining onto the end of the issue being iterated past
             }else
                 ROWOP = ROWOP + _I_ + toHours(newRE) + 'h' ;                                        // Tack the current day being iterated past's Est. hours remaining onto the end of the issue being iterated past
         });
         ROWOP = quickIndex.lastStatus(issueName) + _I_ + quickIndex.pathedName(issueName) + ROWOP;                                                    // STATUS | JIRA ID | PARENT ID | ISSUE ID | DAY 1 | DAY 2 | ... | DAY n | flags |
-        for(var bf=colCt; bf<namedFiles.length; bf++){
+        for(var backfill=colCt; backfill<namedFiles.length; backfill++){
             ROWOP += _I_ + 'XxXxX';
         }
-        ROWOP += (flags === '') ? _I_ : _I_ + ([...new Set(flags.split(','))].join());           // Append joined flag string to end of row
         MRKUP.push(ROWOP.split(_I_));                                                           // Convert it to an iterable collection and push it onto the bottom of the output markup stack
     })
 
@@ -607,10 +601,10 @@ const constructPreviewAndReportData = () => {                                   
     let tblMarkup =             '<h1>' + iterationName.value + '</h1>' + 
                                 '<table class="outputTable" cellspacing="0">'
         ,hdrMarkup =                '<thead><tr><th>' + colHeaders.join('</th><th>').replace(/>XXXDay/g, ' class="dim">Day') + 
-                                    '</th><th>Flags</th>'
+                                    '</th>'
         ,rowMarkup =                '</tr></thead><tbody>'
     MRKUP.forEach(o => rowMarkup +=    '<tr><td>' + 
-                                            o.join('</td><td>').replace(/\.00h|\.0h/g, 'h').replace(/>XxXxX</g, ' class="dim"><') + 
+                                            o.join('</td><td>').replace(/\.00h|\.0h/g, 'h').replace(/>XxXxX/g, ' class="dim">') + 
                                         '</td></tr>');
     rowMarkup +=                   '</tbody>';
     tblMarkup +=                    hdrMarkup + rowMarkup + 
@@ -618,10 +612,111 @@ const constructPreviewAndReportData = () => {                                   
     
     while (previewPanel.childElementCount > 0){ previewPanel.childNodes[0].remove() }
     previewPanel.insertAdjacentHTML('beforeEnd', tblMarkup);
+
+    let linkHandlers = [...qsa('a.iss-hvr-lnk')].forEach(lnk=>lnk.addEventListener('contextmenu', showRecordDetails));
+
+    createReportData();
+
+
+
+    postProcessData()
+
+
+
+
+    let interpString = '', 
+        genLength = RPTDATA[0].length;
+    INTERPOL8D.forEach(itpCol=>interpString += `td:nth-of-type(-n + ${itpCol - -3}):nth-last-of-type(-n + ${genLength - 2 - itpCol}),`);
+    // interpString += `td:nth-of-type(-n + ${INTERPOL8D[0] - -3}):nth-last-of-type(-n + ${genLength - 2 - INTERPOL8D[0]}),`;
+    _(interpString)
+    let fx=[...qsa((interpString.slice(0,-1)))].forEach(itpCell=>itpCell.className+=' interpolated-value');
     return true;
 }
 
+const createReportData = () => {
+    tableNode = document.querySelector('.outputTable');
+    tHead = [...tableNode.querySelectorAll('th')].map(th=>th.innerText);
+    tBody = [...tableNode.querySelectorAll('tr')].map(tr=>{
+        let opObj = [...tr.querySelectorAll('td')];
+        opObj = opObj.flatMap(f=>f.innerText);
+        
+        return opObj;
+    })
+    tBody[0]=tHead;
+    RPTDATA = Object.assign([], tBody);
+}
 
+const reFilterPreview = (obj) => {
+    if(obj != null){
+        let targetClass = obj.id.replace('chk-','.row-status-');
+        [...document.querySelectorAll(targetClass)].forEach(row=>{
+            row.className = obj.checked ? row.className.replace(' obfuscated', '') : row.className + ' obfuscated';
+        });
+    }
+    let totDisp = 0;
+    [...qsa('.status-filter-checkboxes')].forEach(cb => { totDisp += cb.checked ? (cb.value / 1) : 0});
+    document.getElementById('record-ct').innerText = totDisp + ' records shown.';
+}
+
+const postProcessData = () => {
+    let rptStatuses = {};
+    let dispCkBoxes = '';
+    let uniqueStatuses = []
+    let rowNodes = [...qsa('.outputTable tr')];
+    let colNodes = [];
+    let RPTString = JSON.stringify(RPTDATA);
+    rowNodes.forEach((rows, idx)=>{
+        let row = [...rows.querySelectorAll('td')];
+        colNodes.push(row);
+        if(row && row[0] && row[0].innerText !== '') {
+            rowNodes[idx].className = 'row-status-' + row[0].innerText.replace(/\s+/g, '_');
+            uniqueStatuses.push(row[0].innerText);
+        }
+        
+        return rows;
+    })
+    let hdrRowNode = rowNodes.shift();
+    let hdrColNodes = colNodes.shift();
+    console.log('uniqueStatuses', uniqueStatuses);
+    console.log('rowNodes', rowNodes);
+    console.log('colNodes', colNodes);
+
+    [...new Set(uniqueStatuses)].sort().forEach(status=>{
+        let muStatus = status.replace(/\s+/g, '_');
+        let statusRE = new RegExp(status, 'g');
+        rptStatuses[muStatus] = RPTString.match(statusRE).length;
+        dispCkBoxes += `<input name="chk-${muStatus}" id="chk-${muStatus}" class='status-filter-checkboxes' type="checkbox" value="${rptStatuses[muStatus]}" checked="true" onChange="reFilterPreview(this)" /><label for="chk-${muStatus}">${status} (${rptStatuses[muStatus]})</label><br>`;
+    });
+    document.getElementById('output-panels').insertAdjacentHTML('afterBegin', '<aside class="status-filters"><h2>Currently Showing:</h2><span id="record-ct"></span>' + dispCkBoxes + '</aside>');
+    reFilterPreview();
+    RPTDATA.forEach((reportRow, rowIndex) => {
+        reportRow.forEach((col, colIndex)=>{
+            let cell = qs(`.outputTable tr:nth-of-type(${rowIndex}) td:nth-of-type(${colIndex+1})`);
+            if(col==='---'){
+                let p = cell.previousSiblingElement;
+                var pCell 	 = cell.previousSibling,
+                    pCellVal = pCell.innerText.replace(/h/g, '') / 1,
+                    nCell 	 = cell.nextSibling,
+                    nCellVal = nCell.innerText;
+                while(nCellVal === '' || nCellVal === '---' || nCellVal === 'NaN'){ 
+                    // _(nCell, nCellVal);
+                    nCell = nCell.nextSibling; 
+                    nCellVal = nCell.innerText;
+                }
+                nCellVal = nCellVal.replace(/h/g, '') / 1;
+                var cellDiff = pCellVal - nCellVal,
+                    itpValue = nCellVal + cellDiff/2,
+                    opString = (itpValue.toPrecision(3).replace(/0+$/g, '') + 'h').replace('.h','h');
+
+                if(!isNaN(itpValue)) {
+                    opString = (opString === '0h') ? '<i>0h</i>' : '<strong><em>' + opString + '</em></strong>';
+                    cell.innerHTML = opString;
+                    RPTDATA[rowIndex][colIndex] = itpValue;
+                }
+            }
+        });
+    });
+}
 
 
 
