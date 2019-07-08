@@ -37,10 +37,20 @@
         </section>
         <div class="pbars"></div>
         <div class="sort-order">
+            <aside class="color-key sort-key">
+                <h2>KEY</h2>
+                <span class="key-item-1 key-items"><b>Empty File Slot</b><em>Click this slot to add a file containing the day's burned hours at this location.</em></span>
+                <span class="key-item-2 key-items"><b>Completed File Slot</b><em>File has been added, and parsed without issue, and will be added to the report.</em></span>
+                <span class="key-item-3 key-items"><b>Interpolated File</b><em>Because this file omitted mid-structure, Flambe will attempt to interpolate its data.</em></span>
+                <span class="key-item-4 key-items"><b>Unusable File</b><em>File is of the wrong type, structure, or cannot be interpreted. Try a .CSV file.</em></span>
+                <span class="key-item-5 key-items"><b>Errored File</b><em>File is corrupt, unreadable, or the retained copy has been damaged. Please re-add.</em></span>
+                
+            </aside>
             <ul class="has-draggable-children"></ul>
+            <button class="add-record" onclick="incDec(1); released();"></button>
         </div>
         <div class="button-row">
-            <div><button class="start-new cta-button"    onclick="location=location;">Discard Stored Data & Begin Anew</button></div>
+            <div><button class="start-new cta-button"    onclick="fugue(); location=location;">Discard Stored Data & Begin Anew</button></div>
             <div><button class="done-sorting cta-button" onclick="runReport(this)"   >Preview Output Using Above Data</button></div>
         </div>
     </main>

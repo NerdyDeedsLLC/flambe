@@ -42,6 +42,8 @@ new Promise(conclude => {
       fugue = () => rote.clear() // Purges all memories... as though they'd NEVER. BEEN. FORMED. AT. ALL!
 ,
       toHours = (val = null) => {
+  // _(val);
+  if (val == '---') return val;
   if (val == null || isNaN(val / 1)) return '0*';
   return val / 1 <= 0 ? 0 : (val / 3600).toPrecision(3);
 },
@@ -55,6 +57,7 @@ new Promise(conclude => {
 
 let fileBuffer = [] // Stores copies of the file input's data collection (req'd in case the user maskes multiple sets of selections)
 ,
+    safeBuffer = [],
     fileCount = 0,
     namedFiles = [] // Array containing just the names of the files contained within fileBuffer (used for sequencing the read order)
 ,
@@ -62,6 +65,7 @@ let fileBuffer = [] // Stores copies of the file input's data collection (req'd 
 ,
     ISSUE_KEYS = [] // LIST OF ALL THE ISSUES from all the files ingested
 ,
+    INTERPOL8D = [],
     input = document.getElementById('input') // HTML file <INPUT> field/drop target for uploading XLSX files into the system
 ,
     dateField = qs("#report-start-date") // HTML date <INPUT> field representing the start of the iteration
@@ -370,61 +374,82 @@ resizeBufferArraysAndRebuildSlots = (newLen = trg.placeholder / 1 + 1) => {
 addOrReplaceSingleFileAndParse = (slotId = targetSlot, liObj = qs('#file-slot-' + slotId)) => // Called when a LI slot is clicked to load a single file
 //    new Promise(conclude => {
 {
-  _('Attempting to gather new file for slot #' + slotId + '(', liObj, ')!');
+  _("\"Yay promises!\"");
 
-  new Promise(resolve => {
-    // Entire addOrReplaceSingleFileAndParse returns this one promise, which should then chai9n below
-    _("\"Yay promises!\"");
+  let fileObj = input.files[0],
+      fileName = fileObj.name;
+  if (namedFiles.indexOf(fileName) != -1) return alert('This file is already in use!');
 
-    const ingestAndBufferFilesFromReader = (fileObj, fileName) => // CHILD FUNCTION - Reads and saves the file's contents
-    {
-      _('ingestAndBufferFilesFromReader', fileObj, fileName);
+  _("WORKING WITH PROVIDED FILE ", fileName, namedFiles.indexOf(fileName));
 
-      new Promise(fulfill => {
-        // We're gonna do this all async-like, in case it's a big file.
-        const appendToBuffer = (JSONObj, fileName = null) => {
-          let newJSONData = {
-            fileName: fileName,
-            fileData: JSONObj
-          };
-          fileBuffer[slotId] = newJSONData;
-          namedFiles[slotId] = fileName;
-          liObj.innerText = fileName;
-          retain('fileBuffer', JSON.stringify(fileBuffer));
-          retain('namedFiles', namedFiles);
-        }; // THIS PART IS SHIELDED FROM THE PROMISARY BULLSHIT GOING ON AROUND IT
+  const readUploadedFileAsText = fileObj => {
+    _("readUploadedFileAsText");
 
+    let reader = new FileReader();
+    return new Promise(resolve => {
+      reader.onload = () => {
+        _('onload Event fired...');
 
-        console.log('trying to ingest "' + fileName + '"; object:\n', fileObj);
-        var reader = new FileReader(); // Instantiate a new file reader...
+        resolve(reader.result);
+      };
 
-        reader.onloadend = progressEvent => {
-          //    ... Add a listener to observe once it's finished loading.
-          new Promise(fulfill => {
-            console.log('read completed... results:\n\n');
-            var opJSON = CSV.parse(reader.result); //    Parse the .CSV file input, ...
+      reader.readAsText(fileObj);
+    });
+  };
 
-            appendToBuffer(opJSON, fileName); //    ... add it to the global variable containing file data,
+  readUploadedFileAsText(fileObj).then(result => new Promise(resolve => {
+    _('...resolved\n".then()" #1');
 
-            retain('file-slot-' + slotId, fileName + ']||[' + JSON.stringify(opJSON)); //    ... and then stick a stringified copy into local storage.
+    var opJSON = CSV.parse(result); //    Parse the .CSV file input, ...
 
-            return fulfill(); // Resolve the promise.
-          });
-        };
+    _(opJSON);
 
-        fulfill(reader.readAsText(fileObj)); // ... And read the file specified, thereby triggering the onloadend above
-      });
+    let newJSONData = {
+      fileName: fileName,
+      fileData: opJSON
     };
-
-    Promise.all([...input.files].map((file, ind) => ingestAndBufferFilesFromReader(file, file.name))).then(resolve); // Iteratively call ingestAndBufferFilesFromReader, collecting a stack of promises to squash-return
-  }).then(() => new Promise(resolve => {
-    _("yeah, yeah... promises, promises...");
+    fileBuffer[slotId] = newJSONData;
+    namedFiles[slotId] = fileName;
+    resolve();
+  })).then(() => {
+    _('...resolved\n".then()" #2');
 
     resizeBufferArraysAndRebuildSlots();
     doneButton.disabled = false;
-    return resolve(this);
-  }));
-};
+    return;
+  });
+}; // _('Attempting to gather new file for slot #' + slotId + '(', liObj, ')!');
+// new Promise(resolve => { // Entire addOrReplaceSingleFileAndParse returns this one promise, which should then chai9n below
+//             _("\"Yay promises!\"");
+//             let fileObj  = input.files[0],
+//                 fileName = fileObj.name;
+//                 _('ingestAndBufferFilesFromReader', fileObj, fileName);
+//                 return Promise.resolve(()=>{
+//                             // THIS PART IS SHIELDED FROM THE PROMISARY BULLSHIT GOING ON AROUND IT
+//                             console.log('trying to ingest "' + fileName + '"; object:\n', fileObj)
+//                             var reader = new FileReader();                                                              // Instantiate a new file reader...
+//                             reader.onloadend = Promise.resolve(()=>{                                                    //    ... Add a listener to observe once it's finished loading.
+//                                     console.log('read completed... results:\n\n');
+//                                     var opJSON         = CSV.parse(reader.result);                                                  //    Parse the .CSV file input, ...
+//                                     let newJSONData    = { fileName: fileName, fileData: opJSON };
+//                                     fileBuffer[slotId] = newJSONData;
+//                                     namedFiles[slotId] = fileName;
+//                                     liObj.innerText    = fileName;
+//                                     retain('fileBuffer', JSON.stringify(fileBuffer));
+//                                     retain('namedFiles', namedFiles);
+//                                     return resolve(this);                                                                   // Resolve the promise.
+//                             });
+//                            return resolve(reader.readAsText(fileObj));                                                             // ... And read the file specified, thereby triggering the onloadend above
+//                 });
+// })
+// .then(()=>new Promise(resolve => {
+//         _("yeah, yeah... promises, promises...");
+//         resizeBufferArraysAndRebuildSlots();
+//         doneButton.disabled = false;
+//         return resolve(this);
+//     }));
+// }
+
 
 parseFilesAndGenerateDragDrop = response => // ⓵ onChange of file input box, iterate namedFiles and generate Drag/Drop UL
 new Promise(conclude => {
@@ -524,151 +549,202 @@ const runReport = obj => {
   getDistinctKeysFromFiles();
 };
 
-const getDistinctKeysFromFiles = () => // ⓸ iterate files in buffer create promise chain to read each in sequence
-new Promise(resolve => {
-  pBar(3, 'PROCESSING', 'aquamarine', 1, 0, 0);
+const getDistinctKeysFromFiles = () => {
+  // ⓸ iterate files in buffer create promise chain to read each in sequence
+  // pBar(3, 'PROCESSING', 'aquamarine', 1, 0, 0);
+  safeBuffer = Object.assign([], fileBuffer);
 
-  for (files in fileBuffer) {
-    let file = fileBuffer[files].fileData;
-    let keySet = JSON.stringify(file, ['Issue key']) //    ... convert the resultant JSON to a string containing ONLY the 'Issue key' column...
-    .match(/DIGTDEV-\d{4,6}/g); //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
+  while (safeBuffer.lastIndexOf('') === safeBuffer.length - 1) safeBuffer.pop();
 
-    ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])]; //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
+  while (safeBuffer.indexOf('') != -1) safeBuffer[safeBuffer.indexOf('')] = 'INTERPOLATED';
+
+  for (files in safeBuffer) {
+    let file = safeBuffer[files];
+
+    if (file !== 'INTERPOLATED') {
+      let keySet = JSON.stringify(file.fileData, ['Issue key']) //    ... convert the resultant JSON to a string containing ONLY the 'Issue key' column...
+      .match(/DIGTDEV-\d{4,6}/g); //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
+
+      ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])]; //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
+    } else INTERPOL8D.push(files);
   }
 
   concatinateDataFromSequencedFiles();
-});
+};
 
 const concatinateDataFromSequencedFiles = () => {
   // ⓹ iterate finalized buffer, and concatinated generate output data
   temp_store = [];
   ISSUE_KEYS.forEach(r => {
     temp_store.push(r['Issue key']);
-    COMBD_DATA[r] = new Array(fileBuffer.length).fill('');
-    DEBUG_DATA[r] = new Array(fileBuffer.length).fill('');
+    COMBD_DATA[r] = new Array(safeBuffer.length).fill('');
+    DEBUG_DATA[r] = new Array(safeBuffer.length).fill('');
   });
+  let prevDay, prevData;
 
-  for (files in fileBuffer) {
-    let file = fileBuffer[files].fileData;
-    file.forEach(f => {
-      if (f && f['Issue key'] && f['Issue key'] != null && f['Issue key'] !== '') {
-        COMBD_DATA[f['Issue key']][files] = f;
-        DEBUG_DATA[f['Issue key']][files] = JSON.stringify(f);
-      }
-    });
-  } // _(DEBUG_DATA)
+  for (files in safeBuffer) {
+    let file = safeBuffer[files];
+    console.log('file', file);
+    console.log('safeBuffer[files]', safeBuffer[files]);
 
+    if (file !== 'INTERPOLATED') {
+      file = file.fileData;
+      console.log('file', file);
+      file.forEach(f => {
+        if (f && f['Issue key'] && f['Issue key'] != null && f['Issue key'] !== '') {
+          COMBD_DATA[f['Issue key']][files] = f;
+          DEBUG_DATA[f['Issue key']][files] = JSON.stringify(f);
+        }
+      });
+      prevDay = files;
+      prevData = file;
+      prevData = Object.assign([], safeBuffer[files]);
+    }
+  }
 
+  Object.keys(COMBD_DATA).forEach(cbd => {
+    INTERPOL8D.forEach(itp => COMBD_DATA[cbd][itp] = '---');
+  });
   processParentChildRelationships();
 };
 
 const processParentChildRelationships = () => {
-  var toc = {};
-  quickIndex = Object.entries(COMBD_DATA).flatMap(d => {
-    let nd = d[1].flat(),
-        dat = null;
-
-    for (var i = nd.length - 1; i >= 0; i--) {
-      if (nd[i]['Issue id']) dat = nd[i];
-    }
-
-    if (!dat) return null;
-    console.log(dat);
-    let obj = {
-      'issueKey': dat['Issue key'],
-      'jiraIssueId': dat['Issue id'],
-      'parent': dat['Parent id']
-    };
-    toc[obj.jiraIssueId] = obj.issueKey;
-    obj['displayText'] = toc[obj.parent] ? toc[obj.parent] + ' / ' + obj.issueKey : obj.issueKey;
-    obj['pathLinks'] = toc[obj.parent] ? '<a href="https://jira.sprintdd.com/browse/' + toc[obj.parent] + '" target="_blank" class="issue-parent-link">' + toc[obj.parent] + '</a>' + ' / ' + '<a href="https://jira.sprintdd.com/browse/' + obj.issueKey + '" target="_blank" class="issue-link">' + obj.issueKey + '</a>' : '<a href="https://jira.sprintdd.com/browse/' + obj.issueKey + '" target="_blank" class="issue-link">' + obj.issueKey + '</a>'; // obj['pathLinks'] = obj.displayText.replace(/(DIGTDEV-\d+)/g, );
-
-    return obj;
-  });
-
-  _(quickIndex, toc);
-
-  quickIndex.toc = toc;
-
-  quickIndex.getLinked = issueID => {
-    return quickIndex.find((f, i) => f.jiraIssueId == issueID).pathLinks || issueID;
+  const createJIRALink = (IssueId, isParent = false) => {
+    let hrefUrl = `href="https://jira.sprintdd.com/browse/${IssueId}"' `;
+    let clsName = `class="issue-${isParent ? 'parent-' : ''}link" `;
+    let wndoTrg = `target="_blank" `;
+    return `<a ${hrefUrl + clsName + wndoTrg}>${IssueId.replace(/(\d+)/gi, '<b>$1</b>')}</a>`;
   };
 
-  _(quickIndex);
+  var toc = {};
+  quickIndex = Object.entries(COMBD_DATA).map(e => {
+    let opIssueObj = {},
+        issueKey = e[0],
+        issueData = e[1],
+        fltrdRows = issueData.filter(col => typeof col === 'object'),
+        validRow = fltrdRows[fltrdRows.length - 1],
+        issueId = validRow['Issue id'];
+    toc[issueId] = issueKey;
+    opIssueObj = {
+      key: issueKey,
+      iid: toc[validRow['Issue id']],
+      pid: toc[validRow['Parent id']] || '',
+      sts: validRow['Status'],
+      vld: validRow
+    };
+    opIssueObj['pathLinks'] = opIssueObj.pid === '' ? createJIRALink(opIssueObj.iid) : createJIRALink(opIssueObj.pid, true) + ' / ' + createJIRALink(opIssueObj.iid);
+    return opIssueObj;
+  });
+  quickIndex.toc = toc;
 
-  analyzeDataAndFlagConcerns();
+  quickIndex.pathedName = key => {
+    let results = quickIndex.find(qI => qI.key === key);
+    return results && results.pathLinks ? results.pathLinks : key;
+  };
+
+  quickIndex.lastStatus = key => {
+    let results = quickIndex.find(qI => qI.key === key);
+    return results && results.sts ? results.sts : '';
+  };
+
+  constructPreviewAndReportData();
 };
 
-const analyzeDataAndFlagConcerns = () => {
+const constructPreviewAndReportData = () => {
   // ⓺ iterate concatinated output data, look for concern-suggestive trends and build our markup
+  const ensureValidValue = (variable, value, altVal = value, tolerateEmptyStr = false) => {
+    return typeof value === undefined || value == null || !tolerateEmptyStr && value === '' || value === '---' ? altVal !== value ? altVal : variable : value;
+  };
+
+  console.log('constructPreviewAndReportData', COMBD_DATA);
   let MRKUP = [],
       // Collection of markup that'll we'll used to render both the HTML preview and the ultimate XLSX file output
   _I_ = '||--||'; // The string delimiter we're using to distinguish one chunk of data from another. Our "Split-target"
 
   Object.entries(COMBD_DATA).forEach((dataRecord, ind) => {
     // Iterate across each Issue (the "rows") that we've ingested data for, to extract the following data:
-    let issueName = dataRecord[0],
-        //   - The specific issue being examined (just the name; eg. 'DIGIT-12345'. Also serves as the array key)
-    issueData = dataRecord[1],
-        //   - The specific issue being examined (all the data for all the days for the files provided)
-    ROWOP = '',
-        //   - The iteratively-constructed markup for the "row" corresponding to the issue being examined
-    flags = ''; //   - The empty collection of flags, to be joined & processed later in the loop
-
-    datCt = Object.entries(issueData).length; //   - How many "columns" we're looking at
-
-    reCtr = 1, //   - Counter for how many consecutive days the Remaining Estimate has languished, unchanged
-    ctCtr = 1, //   - Iteration-length counter for how many consecutive days the Remaining Estimate goes unchanged
-    oldRE = '', //   - Previous (from the previous-iterated-over day in the row) Remaining Hours Estimate
-    oldPI = '', //   - Previous (from the previous-iterated-over day in the row) Parent ID
-    oldII = '', //   - Previous (from the previous-iterated-over day in the row) Issue ID
-    newRE = '', //   - Current (from the currently-iterated-over day in the row) Remaining Hours Estimate
-    newPI = '', //   - Current (from the currently-iterated-over day in the row) Parent ID
-    newII = '', //   - Current (from the currently-iterated-over day in the row) Issue ID
-    newST = ''; //   - Current Status (in this case, we don't care what the previous one was, but need it at the issue scope)
+    // _(dataRecord);
+    let issueName = dataRecord[0] //   - The specific issue being examined (just the name; eg. 'DIGIT-12345'. Also serves as the array key)
+    ,
+        issueData = dataRecord[1] //   - The specific issue being examined (all the data for all the days for the files provided)
+    ,
+        colCt = issueData.length //   - How many "columns" we're looking at
+    ,
+        opSts = '',
+        ROWOP = '' //   - The iteratively-constructed markup for the "row" corresponding to the issue being examined
+    ,
+        opHrs = 0,
+        flags = '' //   - The empty collection of flags, to be joined & processed later in the loop
+    ,
+        reCtr = 1 //   - Counter for how many consecutive days the Remaining Estimate has languished, unchanged
+    ,
+        ctCtr = 1 //   - Iteration-length counter for how many consecutive days the Remaining Estimate goes unchanged
+    ,
+        oldRE = '' //   - Previous (from the previous-iterated-over day in the row) Remaining Hours Estimate
+    ,
+        oldPI = '' //   - Previous (from the previous-iterated-over day in the row) Parent ID
+    ,
+        oldII = '' //   - Previous (from the previous-iterated-over day in the row) Issue ID
+    ,
+        newRE = '' //   - Current (from the currently-iterated-over day in the row) Remaining Hours Estimate
+    ,
+        newPI = '' //   - Current (from the currently-iterated-over day in the row) Parent ID
+    ,
+        newII = '' //   - Current (from the currently-iterated-over day in the row) Issue ID
+    ,
+        newST = ''; //   - Current Status (in this case, we don't care what the previous one was, but need it at the issue scope)
 
     issueData.forEach((datRec, ix) => {
       // ...Iterate the issue's collected data (the "columns"), gathering...
-      newRE = datRec['Remaining Estimate'] || ''; //    ...the latest value from the Remaining Estimated Hours (ideally diminished from Yesterday's)
+      newRE = datRec === '---' ? '---' : datRec['Remaining Estimate'] || '';
+      opSts += ensureValidValue(opSts, datRec['Status'], void 0, false);
 
-      newPI = datRec['Parent id'] || ''; //    ...the latest ParentID (we check daily in case someone converts a story to a subtask)
-
-      newII = quickIndex.getLinked(datRec['Issue id']).replace(/(.+?>)(DIGTDEV-)(.+?)(<\/a>)/g, '$1$2<b>$3</b>$4') || ''; //    ...the latest IssueID (we check daily in case someone converts a subtask to a story)
-
-      _(newII);
-
-      newST = datRec['Status'] || ''; //    ...and the latest Status, per Jira. We may alter this if it's insufficient/incorrect later.
-
-      if (newRE !== oldRE) {
+      if (newRE != '---' && newRE !== oldRE) {
         // If the remaining hours have changed, we need to examine the delta to determine if this should be flagged
-        flags = '';
-        if (newRE > oldRE) flags += ',HRSINC'; //    ** FLAG Estimated Hours INcreased (Bad Estimate? Bad Story Inclusion? New Story Added? Scope Creep?)
+        newPI = datRec['Parent id'] || ''; //    ...the latest ParentID (we check daily in case someone converts a story to a subtask)
 
-        reCtr = 1; // It's changed for the good or the bad. Reset our "same" counter;
+        newII = quickIndex.pathedName(datRec['Issue id']) || ''; //    ...the latest IssueID (we check daily in case someone converts a subtask to a story)
+        // _(newII)
 
-        ctCtr = 0; // It's changed at SOME POINT during this iteration. Remove this issue's ITR counter from consideration;
-      } else {
-        // Estimated Hours Havent Changed (ergo, no burndown)
-        // console.log('|', newST, '|', newST == 'Completed', '|', newST.trim() == 'Completed', '|', newST == 'Done', '|', newST.trim() == 'Done')
-        if (ix === reCtr) flags += ',UNCHGD';else {
-          if (newST !== 'Completed') flags += ',UNCHG3';
+        newST = datRec['Status'] || ''; //    ...and the latest Status, per Jira. We may alter this if it's insufficient/incorrect later.
+
+        if (newRE !== '---') {
+          flags = '';
+          if (newRE > oldRE) flags += ',HRSINC'; //    ** FLAG Estimated Hours INcreased (Bad Estimate? Bad Story Inclusion? New Story Added? Scope Creep?)
+
+          reCtr = 1; // It's changed for the good or the bad. Reset our "same" counter;
+
+          ctCtr = 0; // It's changed at SOME POINT during this iteration. Remove this issue's ITR counter from consideration;
+        } else {
+          // Estimated Hours Havent Changed (ergo, no burndown)
+          // console.log('|', newST, '|', newST == 'Completed', '|', newST.trim() == 'Completed', '|', newST == 'Done', '|', newST.trim() == 'Done')
+          if (ix === reCtr) flags += ',UNCHGD';else {
+            if (newST !== 'Completed') flags += ',UNCHG3';
+          }
+          reCtr++; // Increment our unchanged for 3 days counter
+
+          if (!!ctCtr) ctCtr++; // If our iteration-duration unchanged counter is still in play (e.g. it's NEVER changed), increment
         }
-        reCtr++; // Increment our unchanged for 3 days counter
 
-        if (!!ctCtr) ctCtr++; // If our iteration-duration unchanged counter is still in play (e.g. it's NEVER changed), increment
-      }
+        ROWOP = ROWOP + _I_ + toHours(newRE) + 'h'; // Tack the current day being iterated past's Est. hours remaining onto the end of the issue being iterated past
 
-      ROWOP = ROWOP + _I_ + toHours(newRE) + 'h'; // Tack the current day being iterated past's Est. hours remaining onto the end of the issue being iterated past
+        oldRE = newRE; //   - Previous (from the previous-iterated-over day in the row) Remaining Hours Estimate
 
-      oldRE = newRE; //   - Previous (from the previous-iterated-over day in the row) Remaining Hours Estimate
+        oldPI = newPI; //   - Previous (from the previous-iterated-over day in the row) Parent ID
 
-      oldPI = newPI; //   - Previous (from the previous-iterated-over day in the row) Parent ID
+        oldII = oldII;
+      } else if (newRE === '---') {
+        ROWOP = ROWOP + _I_ + '---'; // Tack the current day being iterated past's Est. hours remaining onto the end of the issue being iterated past
+      } else ROWOP = ROWOP + _I_ + toHours(newRE) + 'h'; // Tack the current day being iterated past's Est. hours remaining onto the end of the issue being iterated past
 
-      oldII = oldII;
     });
-    ROWOP += flags === '' ? '' : _I_ + [...new Set(flags.split(','))].join(); // Append joined flag string to end of row
+    ROWOP = quickIndex.lastStatus(issueName) + _I_ + quickIndex.pathedName(issueName) + ROWOP; // STATUS | JIRA ID | PARENT ID | ISSUE ID | DAY 1 | DAY 2 | ... | DAY n | flags |
 
-    ROWOP = newST + _I_ + newII + ROWOP; // STATUS | JIRA ID | PARENT ID | ISSUE ID | DAY 1 | DAY 2 | ... | DAY n | flags |
+    for (var bf = colCt; bf < namedFiles.length; bf++) {
+      ROWOP += _I_ + 'XxXxX';
+    }
+
+    ROWOP += flags === '' ? _I_ : _I_ + [...new Set(flags.split(','))].join(); // Append joined flag string to end of row
 
     MRKUP.push(ROWOP.split(_I_)); // Convert it to an iterable collection and push it onto the bottom of the output markup stack
   });
@@ -686,7 +762,7 @@ const analyzeDataAndFlagConcerns = () => {
 
     let dayCt = 1; // Increment the number of days we're venturing forth from the start date. This is used to ignore weekends
 
-    while (dateArr.length < 10 && dayCt < 50) {
+    while (dateArr.length < namedFiles.length && dayCt < namedFiles.length * 2) {
       // Keep going until we have at least 10 days
       let incrementedDate = new Date(startDate + dayCt * 86400000); // Add 24 hours to the daying bering iterated across
 
@@ -697,17 +773,16 @@ const analyzeDataAndFlagConcerns = () => {
       dayCt++; // Increment the day counter whether we added to stack or not (since we skip over weekends and holidays)
     }
   } else {
-    for (i = 1; i <= namedFiles.length - 1; i++) dateArr.push(i);
+    for (i = 1; i <= namedFiles.length - 1; i++) if (i > safeBuffer.length - 1) dateArr.push('XXXDay ' + i);else dateArr.push('Day ' + i);
   }
 
   colHeaders = [...colHeaders, ...dateArr];
   let tblMarkup = '<h1>' + iterationName.value + '</h1>' + '<table class="outputTable" cellspacing="0">',
-      hdrMarkup = '<thead><tr><th>' + colHeaders.join('</th><th>'),
-      rowMarkup = '<tbody>';
-  '</th></thead></table>';
-  MRKUP.forEach(o => rowMarkup += '<tr><td>' + o.join('</td><td>').replace(/\.00h|\.0h/g, 'h') + '</td></tr>');
+      hdrMarkup = '<thead><tr><th>' + colHeaders.join('</th><th>').replace(/>XXXDay/g, ' class="dim">Day') + '</th><th>Flags</th>',
+      rowMarkup = '</tr></thead><tbody>';
+  MRKUP.forEach(o => rowMarkup += '<tr><td>' + o.join('</td><td>').replace(/\.00h|\.0h/g, 'h').replace(/>XxXxX</g, ' class="dim"><') + '</td></tr>');
   rowMarkup += '</tbody>';
-  tblMarkup += hdrMarkup + rowMarkup + '</table>';
+  tblMarkup += hdrMarkup + rowMarkup + '</tbody>';
 
   while (previewPanel.childElementCount > 0) {
     previewPanel.childNodes[0].remove();
