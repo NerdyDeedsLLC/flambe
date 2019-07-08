@@ -247,7 +247,7 @@ const d = document                                       // ⥱ Alias - document
             let oldBar = qs('#' + id);
             if (oldBar) oldBar.remove();
             let pb = qs('.pbars');
-            pb.insertAdjacentHTML('beforeEnd', `<div id="${id}" class="progress-bar" title="${title}" style="--bar-color:${barColor}; --process:${processor}s; --seq:${seq}; --bc:${bc}"></div>`)
+            pb.insertAdjacentHTML('beforeEnd', `<div id="${id}" class="progress-bar" title="${title}" style="--bar-color:${barColor}; --process:${processor}s; --seq:${seq}; --bc:${bc}"></div>`);
             return conclude(qs('#' + id));
         })
     // Rote memory's storage
@@ -262,16 +262,15 @@ const d = document                                       // ⥱ Alias - document
 
     , toHours = (val = null) => {
         // _(val);
-        if (val == '---') return val;
-        if (val == null || isNaN((val / 1))) return '0*';
+        if (val === '---'){ return val; }
+        if (val == null || isNaN((val / 1))){ return '0*'; }
         return (val / 1 <= 0) ? 0 : (val / 3600).toPrecision(3);
     }
     , setTargetSlot = (slotIndex) => (targetSlot = slotIndex)
 
     , findLastIndexOf = (arr = void (0), val = void (0), fromIndex = null) => {
-        for (var i = arr ? arr.length - 1 : 0; arr != void(0) && val != void(0) && i >= 0; i--)
-            if (((val.constructor + '').match(/RegExp/) && arr[i].match(val))
-            || (val + '' == arr[i])) return (i);
+        for (var i = arr ? arr.length - 1 : 0; arr !== void(0) && val !== void(0) && i >= 0; i--)
+            if (((val.constructor + '').match(/RegExp/) && arr[i].match(val)) || (val + '' == arr[i])) return (i);
         return -1;
     }
 
@@ -344,13 +343,15 @@ let   fileBuffer    = []                                                        
 
        // APPLICATION SOURCE ===================================================================== 🅔🅧🅔🅒🅤🅣🅘🅞🅝 🅢🅔🅠🅤🅔🅝🅒🅔 indicated by encircled digits (➀-➈)
 init = () => {                                                                                      // ⓿ Initiate application, chaining steps 1-3 above to file input's onChange
-    iterationName.value   = recall('iterationName', '');                                            // Seed the value set for the iteration's name (or blank if none is stored)...
-    iterationName.onInput = ()=>{retain('iterationName', iterationName.value); }                    // ... and set up the field's onInput handler to save any changes henceforth.
-    dateField.value       = recall('dateField', '');                                                // Do the same for the Start Date value, seeding it (or blank) if set...
-    dateField.onInput     = ()=>{retain('dateField', iterationName.value); }                        // ... and establishing the onInput listener to store any updates.
+    iterationName.value    = recall('iterationName', '');                                           // Seed the value set for the iteration's name (or blank if none is stored)...
+    iterationName.onkeyup  = ()=>{retain('iterationName', iterationName.value); }                   // ... and set up the field's onKeyUp handler to save any changes henceforth.
+    iterationName.onchangd = ()=>{retain('iterationName', iterationName.value); }                   // ... aaaand again, some more, for onChange.
+    dateField.value        = recall('reportStartDate', '');                                               // Do the same for the Start Date value, seeding it (or blank) if set...
+    dateField.onkeyup      = ()=>{retain('reportStartDate', dateField.value); }                       // ... and establishing the onKeyUp listener to store any updates.
+    dateField.onchange     = ()=>{retain('reportStartDate', dateField.value); }                       // ... and establishing the onChange listener to store any updates.
 
-    fileBuffer            = recall('fileBuffer', null);                                             // Try and retrieve the fileBuffer in one exisits in Rote memories...
-    fileBuffer            = (fileBuffer == null) ? [] : JSON.parse(fileBuffer);                     // ... and, if one does, rehydrate it. Otherwise, establish it as a new array.
+    fileBuffer             = recall('fileBuffer', null);                                            // Try and retrieve the fileBuffer in one exisits in Rote memories...
+    fileBuffer             = (fileBuffer == null) ? [] : JSON.parse(fileBuffer);                    // ... and, if one does, rehydrate it. Otherwise, establish it as a new array.
     console.log('fileBuffer', fileBuffer);
 
     let startingLength = 1;
@@ -391,7 +392,7 @@ init = () => {                                                                  
 
 insertFileNodeBetween = (e, trgObj=e.target) => {
     console.log(e, trgObj);
-    if  (trgObj.tagName == 'LABEL') {
+    if  (trgObj.tagName !== 'LI') {
                    // e.preventDefault();
             return (e.cancelBubble = true);
         }
@@ -401,6 +402,19 @@ insertFileNodeBetween = (e, trgObj=e.target) => {
     syncSpinner(((trg.placeholder / 1) + 1))
     resizeBufferArraysAndRebuildSlots()
     
+}
+
+removeFileAtIndex = (trgBtn) => {
+    ind = trgBtn.dataset.index;
+    if(findLastIndexOf(namedFiles, /.+/) === 0) {
+        namedFiles[0]=retain('namedFiles', '');
+        fileBuffer[0]=retain('fileBuffer', '');
+        return resizeBufferArraysAndRebuildSlots();
+    }
+    console.log(ind, trgBtn)
+    namedFiles.splice(ind, 1);
+    fileBuffer.splice(ind, 1);
+    return resizeBufferArraysAndRebuildSlots();
 }
 
 resizeBufferArraysAndRebuildSlots = (newLen = ((trg.placeholder / 1) + 1)) => {
@@ -425,6 +439,7 @@ resizeBufferArraysAndRebuildSlots = (newLen = ((trg.placeholder / 1) + 1)) => {
                 ,dSlot = ` data-slot="${(i > 0) ? i : 'S'}" `
                 ,fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
                               ${namedFiles[i]}
+                              <button class="remove-buttons" data-index="${1}" onMouseUp="removeFileAtIndex(this)" />
                            </label>`
                 ,arrID = ` id="file-slot-${i}" `;
 
@@ -432,11 +447,14 @@ resizeBufferArraysAndRebuildSlots = (newLen = ((trg.placeholder / 1) + 1)) => {
                 if(i < interpolated){
                     fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
                                 No file specified (click to add, or leave blank to interpolate data from neighbors)
+                                <button class="remove-buttons" data-index="${1}" onMouseUp="removeFileAtIndex(this)" />
                               </label>`;
                     pList += ' data-value="interpolated"';
                 } else {
                     fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
                                 No file specified (click to add!)
+                               <button class="remove-buttons" data-index="${1}" onMouseUp="incDec(-1); released();" />
+
                             </label>`;
                 }
             } else {
@@ -880,7 +898,7 @@ const postProcessData = () => {
                     pCellVal = pCell.innerText.replace(/h/g, '') / 1,
                     nCell 	 = cell.nextSibling,
                     nCellVal = nCell.innerText;
-                while(nCellVal === '' || nCellVal === '---' || nCellVal === 'NaN'){ 
+                while(nCellVal === '' || nCellVal === '---'){ 
                            // _(nCell, nCellVal);
                     nCell = nCell.nextSibling; 
                     nCellVal = nCell.innerText;

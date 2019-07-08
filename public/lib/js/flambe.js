@@ -278,13 +278,19 @@ new Promise(conclude => {
 ,
       toHours = (val = null) => {
   // _(val);
-  if (val == '---') return val;
-  if (val == null || isNaN(val / 1)) return '0*';
+  if (val === '---') {
+    return val;
+  }
+
+  if (val == null || isNaN(val / 1)) {
+    return '0*';
+  }
+
   return val / 1 <= 0 ? 0 : (val / 3600).toPrecision(3);
 },
       setTargetSlot = slotIndex => targetSlot = slotIndex,
       findLastIndexOf = (arr = void 0, val = void 0, fromIndex = null) => {
-  for (var i = arr ? arr.length - 1 : 0; arr != void 0 && val != void 0 && i >= 0; i--) if ((val.constructor + '').match(/RegExp/) && arr[i].match(val) || val + '' == arr[i]) return i;
+  for (var i = arr ? arr.length - 1 : 0; arr !== void 0 && val !== void 0 && i >= 0; i--) if ((val.constructor + '').match(/RegExp/) && arr[i].match(val) || val + '' == arr[i]) return i;
 
   return -1;
 }; // Global Variables --------------------------------------------------------------------------------------------------------------
@@ -462,16 +468,26 @@ init = () => {
   // ⓿ Initiate application, chaining steps 1-3 above to file input's onChange
   iterationName.value = recall('iterationName', ''); // Seed the value set for the iteration's name (or blank if none is stored)...
 
-  iterationName.onInput = () => {
+  iterationName.onkeyup = () => {
     retain('iterationName', iterationName.value);
-  }; // ... and set up the field's onInput handler to save any changes henceforth.
+  }; // ... and set up the field's onKeyUp handler to save any changes henceforth.
 
 
-  dateField.value = recall('dateField', ''); // Do the same for the Start Date value, seeding it (or blank) if set...
+  iterationName.onchangd = () => {
+    retain('iterationName', iterationName.value);
+  }; // ... aaaand again, some more, for onChange.
 
-  dateField.onInput = () => {
-    retain('dateField', iterationName.value);
-  }; // ... and establishing the onInput listener to store any updates.
+
+  dateField.value = recall('reportStartDate', ''); // Do the same for the Start Date value, seeding it (or blank) if set...
+
+  dateField.onkeyup = () => {
+    retain('reportStartDate', dateField.value);
+  }; // ... and establishing the onKeyUp listener to store any updates.
+
+
+  dateField.onchange = () => {
+    retain('reportStartDate', dateField.value);
+  }; // ... and establishing the onChange listener to store any updates.
 
 
   fileBuffer = recall('fileBuffer', null); // Try and retrieve the fileBuffer in one exisits in Rote memories...
@@ -514,7 +530,7 @@ init = () => {
 insertFileNodeBetween = (e, trgObj = e.target) => {
   console.log(e, trgObj);
 
-  if (trgObj.tagName == 'LABEL') {
+  if (trgObj.tagName !== 'LI') {
     // e.preventDefault();
     return e.cancelBubble = true;
   }
@@ -524,6 +540,21 @@ insertFileNodeBetween = (e, trgObj = e.target) => {
   namedFiles.splice(targetIndex, 0, '');
   syncSpinner(trg.placeholder / 1 + 1);
   resizeBufferArraysAndRebuildSlots();
+};
+
+removeFileAtIndex = trgBtn => {
+  ind = trgBtn.dataset.index;
+
+  if (findLastIndexOf(namedFiles, /.+/) === 0) {
+    namedFiles[0] = retain('namedFiles', '');
+    fileBuffer[0] = retain('fileBuffer', '');
+    return resizeBufferArraysAndRebuildSlots();
+  }
+
+  console.log(ind, trgBtn);
+  namedFiles.splice(ind, 1);
+  fileBuffer.splice(ind, 1);
+  return resizeBufferArraysAndRebuildSlots();
 };
 
 resizeBufferArraysAndRebuildSlots = (newLen = trg.placeholder / 1 + 1) => {
@@ -548,6 +579,7 @@ resizeBufferArraysAndRebuildSlots = (newLen = trg.placeholder / 1 + 1) => {
         dSlot = ` data-slot="${i > 0 ? i : 'S'}" `,
         fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
                               ${namedFiles[i]}
+                              <button class="remove-buttons" data-index="${1}" onMouseUp="removeFileAtIndex(this)" />
                            </label>`,
         arrID = ` id="file-slot-${i}" `;
 
@@ -555,11 +587,14 @@ resizeBufferArraysAndRebuildSlots = (newLen = trg.placeholder / 1 + 1) => {
       if (i < interpolated) {
         fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
                                 No file specified (click to add, or leave blank to interpolate data from neighbors)
+                                <button class="remove-buttons" data-index="${1}" onMouseUp="removeFileAtIndex(this)" />
                               </label>`;
         pList += ' data-value="interpolated"';
       } else {
         fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
                                 No file specified (click to add!)
+                               <button class="remove-buttons" data-index="${1}" onMouseUp="incDec(-1); released();" />
+
                             </label>`;
       }
     } else {
@@ -1039,7 +1074,7 @@ const postProcessData = () => {
             nCell = cell.nextSibling,
             nCellVal = nCell.innerText;
 
-        while (nCellVal === '' || nCellVal === '---' || nCellVal === 'NaN') {
+        while (nCellVal === '' || nCellVal === '---') {
           // _(nCell, nCellVal);
           nCell = nCell.nextSibling;
           nCellVal = nCell.innerText;
