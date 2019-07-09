@@ -935,7 +935,7 @@ const constructPreviewAndReportData = () => {
     });
     ROWOP = quickIndex.lastStatus(issueName) + _I_ + quickIndex.pathedName(issueName) + ROWOP; // STATUS | JIRA ID | PARENT ID | ISSUE ID | DAY 1 | DAY 2 | ... | DAY n | flags |
 
-    for (var backfill = colCt; backfill < namedFiles.length; backfill++) {
+    for (var backfill = colCt; backfill <= namedFiles.length - 1; backfill++) {
       ROWOP += _I_ + 'XxXxX';
     }
 
@@ -955,7 +955,7 @@ const constructPreviewAndReportData = () => {
 
     let dayCt = 1; // Increment the number of days we're venturing forth from the start date. This is used to ignore weekends
 
-    while (dateArr.length < namedFiles.length && dayCt < namedFiles.length * 2) {
+    while (dateArr.length < namedFiles.length - 1 && dayCt < namedFiles.length * 2) {
       // Keep going until we have at least 10 days
       let incrementedDate = new Date(startDate + dayCt * 86400000); // Add 24 hours to the daying bering iterated across
 
@@ -966,7 +966,7 @@ const constructPreviewAndReportData = () => {
       dayCt++; // Increment the day counter whether we added to stack or not (since we skip over weekends and holidays)
     }
   } else {
-    for (i = 1; i <= namedFiles.length - 1; i++) if (i > safeBuffer.length - 1) dateArr.push('XXXDay ' + i);else dateArr.push('Day ' + i);
+    for (i = 1; i <= namedFiles.length; i++) if (i > safeBuffer.length - 1) dateArr.push('XXXDay ' + i);else dateArr.push('Day ' + i);
   }
 
   colHeaders = [...colHeaders, ...dateArr];
@@ -981,6 +981,8 @@ const constructPreviewAndReportData = () => {
     previewPanel.childNodes[0].remove();
   }
 
+  let cbPanel = document.getElementById('filter-ckbox-panel');
+  if (cbPanel) cbPanel.remove();
   previewPanel.insertAdjacentHTML('beforeEnd', tblMarkup);
   let linkHandlers = [...qsa('a.iss-hvr-lnk')].forEach(lnk => lnk.addEventListener('contextmenu', showRecordDetails));
   createReportData();
@@ -1058,11 +1060,12 @@ const postProcessData = () => {
     rptStatuses[muStatus] = RPTString.match(statusRE).length;
     dispCkBoxes += `<input name="chk-${muStatus}" id="chk-${muStatus}" class='status-filter-checkboxes' type="checkbox" value="${rptStatuses[muStatus]}" checked="true" onChange="reFilterPreview(this)" /><label for="chk-${muStatus}">${status} (${rptStatuses[muStatus]})</label><br>`;
   });
-  document.getElementById('output-panels').insertAdjacentHTML('afterBegin', '<aside class="status-filters"><h2>Currently Showing:</h2><span id="record-ct"></span>' + dispCkBoxes + '</aside>');
+  document.getElementById('output-panels').insertAdjacentHTML('beforeEnd', '<aside id="filter-ckbox-panel" class="status-filters"><h2>Currently Showing:</h2><span id="record-ct"></span>' + dispCkBoxes + '</aside>');
   reFilterPreview(); // Interpolate any missing data into its respective columns, from left to right, top to bottom.
 
-  RPTDATA.forEach((reportRow, rowIndex) => {
-    reportRow.forEach((col, colIndex) => {
+  colNodes.forEach((reportRow, rowIndex) => {
+    reportRow.forEach((cols, colIndex) => {
+      let col = cols.innerText;
       let cell = colNodes[rowIndex][colIndex]; //qs(`.preview-table tr:nth-of-type(${rowIndex}) td:nth-of-type(${colIndex+1})`);
       // _(cell == colNodes[rowIndex][colIndex]);
 
@@ -1074,10 +1077,14 @@ const postProcessData = () => {
             nCell = cell.nextSibling,
             nCellVal = nCell.innerText;
 
-        while (nCellVal === '' || nCellVal === '---') {
-          // _(nCell, nCellVal);
-          nCell = nCell.nextSibling;
-          nCellVal = nCell.innerText;
+        while (nCell && nCellVal === '' || nCellVal === '---') {
+          if (nCell && nCell.innerText) {
+            nCell = nCell.nextSibling;
+            nCellVal = nCell.innerText;
+          } else {
+            nCell = void 0;
+            nCellVal = '';
+          }
         }
 
         nCellVal = nCellVal.replace(/h/g, '') / 1;
@@ -1088,20 +1095,20 @@ const postProcessData = () => {
         if (!isNaN(itpValue)) {
           opString = opString === '0h' ? '<i>0h</i>' : '<strong><em>' + opString + '</em></strong>';
           cell.innerHTML = opString;
-          RPTDATA[rowIndex][colIndex] = itpValue;
         }
       }
     });
   }); // Now for the flag processing.
 
-  numericTotals.length = colNodes[1].length;
+  numericTotals.length = colNodes[1].length + 1;
   numericTotals.fill(0, 2, colNodes[1].length);
   RPTDATA.forEach((reportRow, rowIndex) => {
-    for (var t = 2; t < numericTotals.length; t++) {
+    for (var t = 1; t < numericTotals.length; t++) {
       let newVal = ('' + reportRow[t]).replace(/h/gi, '') / 1;
       if (!isNaN(newVal)) numericTotals[t] = numericTotals[t] / 1 + newVal;
     }
   });
+  qs('.preview-table').insertAdjacentHTML('beforeEnd', '<tr class="total-row"><td>' + numericTotals.slice(0, -1).join('</td><td>') + '</td></tr>');
 };
 
 const trg = document.querySelector('.picker-panel-presenter');
