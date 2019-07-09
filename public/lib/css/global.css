@@ -2,8 +2,7 @@
 *,
 html,
 body {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 html,
@@ -16,8 +15,7 @@ body {
 
 html {
   font-size: calc(10px + 6 * ((100vw - 768px) / 512));
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   font-family: Helvetica, 'Niramit', sans-serif;
 }
 
@@ -34,7 +32,6 @@ html {
 }
 
 body {
-  background: -webkit-gradient(linear, left top, left bottom, from(#d2d2d2), color-stop(25%, white));
   background: linear-gradient(180deg, #d2d2d2 0%, white 25%);
   background-repeat: repeat-x;
 }
@@ -74,7 +71,6 @@ main > aside li {
 
 main > aside li > button {
   padding: 3px 0;
-  background: -webkit-gradient(linear, left top, left bottom, from(#aaaaaa), color-stop(25%, #eeeeee), to(#aaaaaa));
   background: linear-gradient(180deg, #aaaaaa 0%, #eeeeee 25%, #aaaaaa 100%);
   width: calc(100% - 1rem);
   border: 1px solid rgba(0, 0, 0, 0.25);
@@ -220,7 +216,6 @@ section .rule-count::after {
   border-radius: 50%;
   text-align: center;
   opacity: 1;
-  -webkit-transition: all 0.5s ease-in;
   transition: all 0.5s ease-in;
 }
 
@@ -378,8 +373,7 @@ table th span:empty {
 }
 
 table:hover {
-  -webkit-box-shadow: inset 0 0 6.25rem rgba(0, 209, 255, 0.2);
-          box-shadow: inset 0 0 6.25rem rgba(0, 209, 255, 0.2);
+  box-shadow: inset 0 0 6.25rem rgba(0, 209, 255, 0.2);
 }
 
 table tr + tr {
@@ -410,12 +404,10 @@ table td + td {
 button {
   color: #CCC;
   cursor: pointer;
-  -webkit-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
 }
 
 button:active {
-  -webkit-transition: -webkit-transform 0.1s ease-in-out;
   transition: -webkit-transform 0.1s ease-in-out;
   transition: transform 0.1s ease-in-out;
   transition: transform 0.1s ease-in-out, -webkit-transform 0.1s ease-in-out;
@@ -473,7 +465,6 @@ button.remove:hover, button.remove:focus, button.remove:active {
 }
 
 button.save, button.undo {
-  -webkit-transition: all .1s ease-in;
   transition: all .1s ease-in;
   max-height: 0;
   max-width: 0;
@@ -511,7 +502,6 @@ button.save, button.undo {
   text-align: center;
   color: #FFF;
   padding: 3px;
-  -webkit-transition: all .1s ease-in;
   transition: all .1s ease-in;
   max-width: none;
   max-height: none;
@@ -519,8 +509,7 @@ button.save, button.undo {
 
 .altered button.save {
   border: 1px solid #030;
-  -webkit-box-shadow: inset 0 6px 12px lime;
-          box-shadow: inset 0 6px 12px lime;
+  box-shadow: inset 0 6px 12px lime;
   background: radial-gradient(circle, lime 0%, #006600 50%);
   text-shadow: -1px 0 0 #060, 0 -1px 0 #060, -1px -1px 0 #060, 0 1px 0 #0F0, 1px 0 0 #0F0, 1px 1px 0 #0F0;
 }
@@ -535,8 +524,7 @@ button.save, button.undo {
   border: 1px solid #00A;
   padding: 0 3px 6px;
   margin-top: 3px;
-  -webkit-box-shadow: inset 0 6px 12px #3366ff;
-          box-shadow: inset 0 6px 12px #3366ff;
+  box-shadow: inset 0 6px 12px #3366ff;
   background: radial-gradient(circle, #3366ff 0%, #0000aa 50%);
   text-shadow: -1px  0   0 #00A, 0   -1px 0 #00A, -1px -1px 0 #00A, 0    1px 0 #36F, 1px  0   0 #36F, 1px  1px 0 #36F;
 }
@@ -574,8 +562,7 @@ label span.header::before {
   position: absolute;
   width: 1.33333rem;
   height: 1.66667rem;
-  -webkit-box-shadow: 0 0.5rem 0.66667rem rgba(0, 0, 0, 0.5);
-          box-shadow: 0 0.5rem 0.66667rem rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0.5rem 0.66667rem rgba(0, 0, 0, 0.5);
   z-index: -1;
   left: 0.33333rem;
   top: 0;
@@ -625,8 +612,7 @@ label span.header {
 label span.header::before {
   width: 2rem;
   height: 2.5rem;
-  -webkit-box-shadow: 0 0.75rem 1rem rgba(0, 0, 0, 0.5);
-          box-shadow: 0 0.75rem 1rem rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0.75rem 1rem rgba(0, 0, 0, 0.5);
   left: 0.5rem;
 }
 
@@ -648,39 +634,33 @@ label span.header::after {
 
 [type='checkbox'] ~ div {
   overflow: hidden;
-  -webkit-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
   max-height: 0;
   min-height: 0;
 }
 
 [type='checkbox'] ~ div > button {
-  -webkit-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
   opacity: 0;
 }
 
 [type='checkbox']:checked ~ div {
-  -webkit-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
   max-height: 100rem;
 }
 
 [type='checkbox']:checked ~ div > button {
-  -webkit-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
   opacity: 1;
 }
 
 [type='checkbox']:checked ~ span.rule-count::after {
   opacity: 0;
-  -webkit-transition: all 1s ease-out;
   transition: all 1s ease-out;
 }
 
 [type='checkbox']:checked + label > span::before {
-  -webkit-box-shadow: 0 0.5rem 0.66667rem rgba(0, 0, 0, 0.5), 0 0.5rem 1rem #00D1FF;
-          box-shadow: 0 0.5rem 0.66667rem rgba(0, 0, 0, 0.5), 0 0.5rem 1rem #00D1FF;
+  box-shadow: 0 0.5rem 0.66667rem rgba(0, 0, 0, 0.5), 0 0.5rem 1rem #00D1FF;
 }
 
 [type='checkbox']:checked + label > span::after {
@@ -694,8 +674,7 @@ label span.header::after {
 }
 
 [type='checkbox']:active + label > span::before {
-  -webkit-box-shadow: none;
-          box-shadow: none;
+  box-shadow: none;
   z-index: auto;
 }
 
@@ -707,15 +686,12 @@ label span.header::after {
   max-height: 0;
   overflow: hidden;
   border: 0 none;
-  -webkit-box-shadow: none;
-          box-shadow: none;
-  -webkit-transition: all 0.5s ease-in-out;
+  box-shadow: none;
   transition: all 0.5s ease-in-out;
 }
 
 html.nolabels td label {
   font-size: 0;
-  -webkit-transition: all 0.2s ease-out;
   transition: all 0.2s ease-out;
 }
 
@@ -786,8 +762,7 @@ html.license-visible #license {
   bottom: 10%;
   left: 25%;
   right: 25%;
-  -webkit-box-shadow: 0 1rem 4rem rgba(0, 0, 0, 0.75);
-          box-shadow: 0 1rem 4rem rgba(0, 0, 0, 0.75);
+  box-shadow: 0 1rem 4rem rgba(0, 0, 0, 0.75);
   max-height: 1000rem;
   overflow: visible;
 }
@@ -865,7 +840,6 @@ html.license-visible #license footer a {
 }
 
 dialog {
-  -webkit-transition: all .2s ease-out;
   transition: all .2s ease-out;
   z-index: 100;
   position: fixed;
@@ -876,8 +850,7 @@ dialog {
   padding: 0;
   border-radius: 1rem;
   border: 2px double #1B92FC;
-  -webkit-box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.5);
-          box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.5);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.5);
 }
 
 dialog .dialog-msg {
@@ -917,7 +890,6 @@ dialog::before {
 }
 
 .programmatically-destroyed {
-  -webkit-transition: all 0.65s ease-in-out;
   transition: all 0.65s ease-in-out;
   opacity: 0;
 }
@@ -1055,15 +1027,12 @@ body > footer a:last-child {
   right: 0;
   top: 40%;
   bottom: 40%;
-  display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: center;
+      justify-content: center;
   text-align: center;
 }
 
@@ -1071,8 +1040,7 @@ body > footer a:last-child {
   background-color: #9BCFFC;
   padding: 2rem 2rem 3rem;
   border-radius: 2rem;
-  -webkit-box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.65);
-          box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.65);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.65);
 }
 
 #instructionLayer nav div button {

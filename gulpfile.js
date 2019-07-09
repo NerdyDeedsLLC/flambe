@@ -60,7 +60,11 @@ function build_css(){
             errLogToConsole: true
         };
     var autoprefixerSettings = {
-            browsers: 'last 2 versions'
+        "overrideBrowserslist": [
+            "last 1 version",
+            "> 1%",
+            "IE 10"
+          ]
         };
     var rucksackSettings = {
             responsiveType:    true,    // Def: true
@@ -89,6 +93,7 @@ function build_css(){
 function build_js(){
     return gulp.src(PATHS.js.source)
     .pipe(babel())
+    .on('error', onError)
     .pipe(gulp.dest(PATHS.js.dest))
     .on('change', bigBrother.reload);
 }
@@ -101,7 +106,12 @@ gulp.task('css', function() {
 
 gulp.task('js', function() {
     return build_js();
-}); 
+});
+
+function onError(err) {
+    console.log(err);
+    this.emit('end');
+  }
 
 const shellSettings = {
     PATH: process.env.PATH,

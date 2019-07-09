@@ -495,23 +495,29 @@ button.add-record {
     margin:0 auto;
 
     aside.status-filters {
-        background: #fff;
+        background: #ffe;
         border: 1px solid #bbb;
-        border-radius: 10px;
-        line-height: 1.7;
-        top: -10px;
+        border-radius: 10px 10px 0 0;
+        line-height: 1;
+        top: -50px;
         right: 0;
         max-width: 200px;
         font-size: 14px;
         position: absolute;
         box-shadow: 0 15px 15px #0000, 10px 10px 10px #0000, -10px 10px 10px #0000;
-        overflow:hidden;
-        max-height:55px;
+        overflow: hidden;
+        max-height: 50px;
+        padding: 10px 0 5px 0;
+        transition: 0.3s all ease-in-out;
+        
+            &:hover {
+                box-shadow: 0 15px 15px #0003, 10px 10px 10px #0003, -10px 10px 10px #0003;
+                max-height: 350px;
+                border-radius: 10px 10px 10px 10px;
+        background: #ffc;
+    }
 
-        &:hover {
-            box-shadow: 0 15px 15px #0006, 10px 10px 10px #0006, -10px 10px 10px #0006;
-            max-height:295px;
-        }
+    
 
         span {
             display: block;
@@ -682,6 +688,7 @@ tr.total-row {
 
     td {
         padding:8px;
+        text-align:right;
     }
 }
 

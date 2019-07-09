@@ -778,7 +778,7 @@ const constructPreviewAndReportData = () => {                                   
             dayCt++;                                                                                   // Increment the day counter whether we added to stack or not (since we skip over weekends and holidays)
         }
     } else {
-        for(i=1; i<= namedFiles.length; i++) 
+        for(i=1; i<= namedFiles.length-1; i++) 
         if(i > safeBuffer.length-1) 
             dateArr.push('XXXDay ' + i)
         else
@@ -854,97 +854,99 @@ let colNodes       = [];
 let hdrRowNode     = [];
 let hdrColNodes    = [];
 let numericTotals = ['',''];
+let totalRow = [];
+
 const postProcessData = () => {
-    rowNodes           = [...qsa('.preview-table tr')];
     let rptStatuses    = {};
     let dispCkBoxes    = '';
     let uniqueStatuses = []
-    let RPTString      = JSON.stringify(RPTDATA);
+    let RPTString = "";
     
-    rowNodes.forEach((rows, idx)=>{
-        let row = [...rows.querySelectorAll('td')];
-        colNodes.push(row);
-        if(row && row[0] && row[0].innerText !== '') {
-            rowNodes[idx].className = 'row-status-' + row[0].innerText.replace(/\s+/g, '_');
-            uniqueStatuses.push(row[0].innerText);
-        }
-        return rows;
-    })
-    hdrRowNode  = rowNodes.shift();
-    // hdrColNodes = colNodes.shift();
+    Promise.resolve().then(()=>{
+        rowNodes           = [...qsa('.preview-table tr')];
+        RPTString      = JSON.stringify(RPTDATA);
+        rowNodes.forEach((rows, idx)=>{
+            let row = [...rows.querySelectorAll('td')];
+            colNodes.push(row);
+            if(row && row[0] && row[0].innerText !== '') {
+                rowNodes[idx].className = 'row-status-' + row[0].innerText.replace(/\s+/g, '_');
+                uniqueStatuses.push(row[0].innerText);
+            }
+            return rows;
+        })
+    }).then(()=>{
+        hdrRowNode  = rowNodes.splice(0,1)[0];
+        console.log('hdrRowNode', hdrRowNode);
+        hdrColNodes = [...hdrRowNode.childNodes];
+        console.log('hdrColNodes', hdrColNodes);
+        // _(hdrRowNode)
+        // hdrColNodes = colNodes.shift();
 
-    console.log('hdrRowNode', hdrRowNode);
-    console.log('rowNodes', rowNodes);
-    console.log('hdrColNodes', hdrColNodes);
-    console.log('colNodes', colNodes);
-    
-    
-    // Extarct the unique statuses and generate their respective checkboxes for the display filtes.
-    [...new Set(uniqueStatuses)].sort().forEach(status=>{
-        let muStatus = status.replace(/\s+/g, '_');
-        let statusRE = new RegExp(status, 'g');
-        rptStatuses[muStatus] = RPTString.match(statusRE).length;
-        dispCkBoxes += `<input name="chk-${muStatus}" id="chk-${muStatus}" class='status-filter-checkboxes' type="checkbox" value="${rptStatuses[muStatus]}" checked="true" onChange="reFilterPreview(this)" /><label for="chk-${muStatus}">${status} (${rptStatuses[muStatus]})</label><br>`;
-    });
-    document.getElementById('output-panels').insertAdjacentHTML('beforeEnd', '<aside id="filter-ckbox-panel" class="status-filters"><h2>Currently Showing:</h2><span id="record-ct"></span>' + dispCkBoxes + '</aside>');
-    reFilterPreview();
-
-    // Interpolate any missing data into its respective columns, from left to right, top to bottom.
-        colNodes.forEach((reportRow, rowIndex) => {
-            reportRow.forEach((cols, colIndex)=>{
-                let col = cols.innerText;
-                let cell = colNodes[rowIndex][colIndex];//qs(`.preview-table tr:nth-of-type(${rowIndex}) td:nth-of-type(${colIndex+1})`);
-                // _(cell == colNodes[rowIndex][colIndex]);
-                if(col==='---'){
-                cell.className = 'interpolated-value'
-                let p = cell.previousSiblingElement;
-                var pCell 	 = cell.previousSibling,
-                    pCellVal = pCell.innerText.replace(/h/g, '') / 1,
-                    nCell 	 = cell.nextSibling,
-                    nCellVal = nCell.innerText;
-                while(nCell && nCellVal === '' || nCellVal === '---'){ 
-                    if(nCell && nCell.innerText) {
-                        nCell = nCell.nextSibling; 
+        console.log('hdrRowNode', hdrRowNode);
+        console.log('rowNodes', rowNodes);
+        console.log('hdrColNodes', hdrColNodes);
+        console.log('colNodes', colNodes);
+        
+        
+        // Extarct the unique statuses and generate their respective checkboxes for the display filtes.
+        [...new Set(uniqueStatuses)].sort().forEach(status=>{
+            let muStatus = status.replace(/\s+/g, '_');
+            let statusRE = new RegExp(status, 'g');
+            rptStatuses[muStatus] = RPTString.match(statusRE).length;
+            dispCkBoxes += `<input name="chk-${muStatus}" id="chk-${muStatus}" class='status-filter-checkboxes' type="checkbox" value="${rptStatuses[muStatus]}" checked="true" onChange="reFilterPreview(this)" /><label for="chk-${muStatus}">${status} (${rptStatuses[muStatus]})</label><br>`;
+        });
+        document.getElementById('output-panels').insertAdjacentHTML('beforeEnd', '<aside id="filter-ckbox-panel" class="status-filters"><h2>Currently Showing:</h2><span id="record-ct"></span>' + dispCkBoxes + '</aside>');
+        reFilterPreview();
+    }).then(()=>{
+        // Interpolate any missing data into its respective columns, from left to right, top to bottom.
+            colNodes.forEach((reportRow, rowIndex) => {
+                reportRow.forEach((cols, colIndex)=>{
+                    let col = cols.innerText;
+                    let cell = colNodes[rowIndex][colIndex];//qs(`.preview-table tr:nth-of-type(${rowIndex}) td:nth-of-type(${colIndex+1})`);
+                    // _(cell == colNodes[rowIndex][colIndex]);
+                    if(col==='---'){
+                    cell.className = 'interpolated-value'
+                    let p = cell.previousSiblingElement;
+                    var pCell 	 = cell.previousSibling,
+                        pCellVal = pCell.innerText.replace(/h/g, '') / 1,
+                        nCell 	 = cell.nextSibling,
                         nCellVal = nCell.innerText;
-                    }else {
-                        nCell    = void(0);
-                        nCellVal = '';
+                    while(nCell && nCellVal === '' || nCellVal === '---'){ 
+                        if(nCell && nCell.innerText) {
+                            nCell = nCell.nextSibling; 
+                            nCellVal = nCell.innerText;
+                        }else {
+                            nCell    = void(0);
+                            nCellVal = '';
+                        }
+                    }
+                    nCellVal = nCellVal.replace(/h/g, '') / 1;
+                    var cellDiff = pCellVal - nCellVal,
+                        itpValue = nCellVal + cellDiff/2,
+                        opString = (itpValue.toPrecision(3).replace(/0+$/g, '') + 'h').replace('.h','h');
+
+                    if(!isNaN(itpValue)) {
+                        opString = (opString === '0h') ? '<i>0h</i>' : '<strong><em>' + opString + '</em></strong>';
+                        cell.innerHTML = opString;
                     }
                 }
-                nCellVal = nCellVal.replace(/h/g, '') / 1;
-                var cellDiff = pCellVal - nCellVal,
-                    itpValue = nCellVal + cellDiff/2,
-                    opString = (itpValue.toPrecision(3).replace(/0+$/g, '') + 'h').replace('.h','h');
-
-                if(!isNaN(itpValue)) {
-                    opString = (opString === '0h') ? '<i>0h</i>' : '<strong><em>' + opString + '</em></strong>';
-                    cell.innerHTML = opString;
-                }
-            }
+            });
         });
-    });
-
-    // Now for the flag processing.
-    numericTotals.length = colNodes[1].length + 1;
-    numericTotals.fill(0, 2, colNodes[1].length)
-    cols.forEach((reportRow, rowIndex) => {
-        for(var t=1; t<numericTotals.length; t++) {
-            let newVal = ('' + reportRow[t]).replace(/h/gi, '') / 1;
-            if(!isNaN(newVal))
-			numericTotals[t] = (numericTotals[t] / 1) + newVal;
+    }).then(()=>{
+        totalRow.length = hdrColNodes.length;
+        totalRow = totalRow.fill(0, 2, hdrColNodes.length)
+        for(var c=2; c<hdrColNodes.length; c++){
+            rowNodes.forEach((row, rowIdx) => {
+                let cell = row.childNodes
+                if(cell != null && cell[c] != null && cell[c].innerText){
+                    cell = cell[c].innerText.replace(/h/g, '');
+                    totalRow[c] = (totalRow[c] / 1) + (cell / 1);
+                }
+            });
         }
 
+        qs('.preview-table').insertAdjacentHTML('beforeEnd', '<tr class="total-row"><td colspan="2" class="total-label">TOTAL:</td><td>' + totalRow.slice(2).join('h</td><td>') + 'h</td></tr>');
     });
-
-    let totalRow = [cols[1].length-2].fill(0)
-    for(var c=2, c<cols[1].length; c++){
-        cols.forEach(row => {
-            totalRow[c] = (totalRow[c] / 1) + (row[c] / 1);
-        });
-
-    }
-
-    qs('.preview-table').insertAdjacentHTML('beforeEnd', '<tr class="total-row"><td>' + numericTotals.slice(0,-1).join('</td><td>') + '</td></tr>');
 }
 
 

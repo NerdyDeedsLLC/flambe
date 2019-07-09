@@ -3,8 +3,7 @@
 *::before,
 *::after {
   font-family: sans-serif;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 html,
@@ -50,7 +49,6 @@ main#iteration-info section.form-fields div.itr-form-field input {
   width: 100%;
   height: 30px;
   padding: 0 0 2px 8px;
-  -webkit-transition: color 0.15s ease-out;
   transition: color 0.15s ease-out;
   color: white;
 }
@@ -75,9 +73,7 @@ main#iteration-info section.form-fields div.itr-form-field label {
   padding-left: 5px;
   color: #aaa;
   width: 500px;
-  -webkit-transition: all 0.15s ease-out;
   transition: all 0.15s ease-out;
-  -webkit-transition-property: font-size,margin-top;
   transition-property: font-size,margin-top;
 }
 
@@ -94,9 +90,8 @@ main#iteration-info section.form-fields .full-width {
 main#iteration-info section.form-fields .half-width {
   width: 100%;
   max-width: 49%;
-  -webkit-box-flex: 1;
-      -ms-flex: 1 1 48%;
-          flex: 1 1 48%;
+  -ms-flex: 1 1 48%;
+      flex: 1 1 48%;
   display: inline-block;
 }
 
@@ -107,9 +102,8 @@ main#iteration-info section.form-fields .half-width {
 
 .picker {
   font-family: monospace;
-  -webkit-box-flex: 1;
-      -ms-flex: 1 1 46%;
-          flex: 1 1 46%;
+  -ms-flex: 1 1 46%;
+      flex: 1 1 46%;
   max-width: 46%;
   display: inline-block;
   vertical-align: bottom;
@@ -124,8 +118,7 @@ main#iteration-info section.form-fields .half-width {
   overflow: hidden;
   max-height: 30px;
   border: 1px solid #888;
-  -webkit-box-shadow: inset 3px 3px 6px #0002;
-          box-shadow: inset 3px 3px 6px #0002;
+  box-shadow: inset 3px 3px 6px #0002;
   line-height: 12px;
   font-size: 12px;
   text-align: center;
@@ -160,7 +153,6 @@ main#iteration-info section.form-fields .half-width {
   content: "S  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59";
   top: var(--value);
   left: 0;
-  -webkit-transition: all 0.15s ease-in-out;
   transition: all 0.15s ease-in-out;
   z-index: -1;
 }
@@ -216,8 +208,7 @@ main#iteration-info section.form-fields .half-width {
   padding: 0;
   border-radius: 0 3px 3px 0;
   background-color: #ddd;
-  -webkit-box-shadow: inset 2px 2px 2px #eee, inset -2px -2px 2px #ccc;
-          box-shadow: inset 2px 2px 2px #eee, inset -2px -2px 2px #ccc;
+  box-shadow: inset 2px 2px 2px #eee, inset -2px -2px 2px #ccc;
   margin: 0 0 0 -8px;
 }
 
@@ -255,8 +246,7 @@ main#iteration-info section.form-fields .half-width {
   position: relative;
   overflow: hidden;
   background: var(--bar-color) repeating-linear-gradient(45deg, #ffffff88 0, #ffffff88 10px, #ffffffbb 10px, #ffffffbb 20px);
-  -webkit-box-shadow: inset 2px 2px 0 #fff, inset 2px -2px 0 #fff, inset -2px 2px 0 #fff, inset -2px -2px 0 #fff;
-          box-shadow: inset 2px 2px 0 #fff, inset 2px -2px 0 #fff, inset -2px 2px 0 #fff, inset -2px -2px 0 #fff;
+  box-shadow: inset 2px 2px 0 #fff, inset 2px -2px 0 #fff, inset -2px 2px 0 #fff, inset -2px -2px 0 #fff;
   opacity: 0;
   -webkit-transform: scale(0);
           transform: scale(0);
@@ -294,8 +284,7 @@ main#iteration-info section.form-fields .half-width {
   max-width: calc(100% - 3px);
   top: 1.5px;
   left: 1.5px;
-  -webkit-box-shadow: 1px 1px 10px var(--bar-color);
-          box-shadow: 1px 1px 10px var(--bar-color);
+  box-shadow: 1px 1px 10px var(--bar-color);
 }
 
 div.sort-order ul.has-draggable-children {
@@ -339,7 +328,6 @@ div.sort-order ul.has-draggable-children li::before {
   border: 2px solid #aaa;
   cursor: -webkit-grabbing;
   cursor: grabbing;
-  -webkit-transition: 0.3s all ease-in-out;
   transition: 0.3s all ease-in-out;
   position: absolute;
   z-index: -1;
@@ -372,7 +360,6 @@ div.sort-order ul.has-draggable-children li.drag-sort-active {
   background: #eee6;
   color: #3333;
   border: 2px dashed #aaa6;
-  -webkit-transition: 0.3s all ease-in-out;
   transition: 0.3s all ease-in-out;
   -webkit-transform: scale(0.95);
           transform: scale(0.95);
@@ -388,12 +375,10 @@ div.sort-order ul.has-draggable-children li[data-value='stored']::before {
 
 div.sort-order ul.has-draggable-children:hover li {
   padding: 0 0 40px;
-  -webkit-transition: 0.1s all ease-in-out;
   transition: 0.1s all ease-in-out;
 }
 
 div.sort-order ul.has-draggable-children:hover li::after {
-  -webkit-transition: 0.1s all ease-in-out;
   transition: 0.1s all ease-in-out;
 }
 
@@ -422,7 +407,6 @@ div.sort-order ul.has-draggable-children:hover li:hover + li::after {
 
 div.sort-order:hover {
   padding-bottom: 30px;
-  -webkit-transition: 0.1s all ease-in-out;
   transition: 0.1s all ease-in-out;
 }
 
@@ -441,28 +425,24 @@ button.add-record {
   -webkit-transform: translateX(-7px);
           transform: translateX(-7px);
   display: block;
-  -webkit-transition: 0.1s all ease-in-out;
   transition: 0.1s all ease-in-out;
   opacity: 0.25;
 }
 
 .button-row {
   height: 40px;
-  display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -ms-flex-wrap: nowrap;
       flex-wrap: nowrap;
   width: 100%;
-  -webkit-box-align: end;
-      -ms-flex-align: end;
-          align-items: flex-end;
+  -ms-flex-align: end;
+      align-items: flex-end;
 }
 
 .button-row > div {
-  -webkit-box-flex: 1;
-      -ms-flex: 1 1 0%;
-          flex: 1 1 0%;
+  -ms-flex: 1 1 0%;
+      flex: 1 1 0%;
   text-align: center;
 }
 
@@ -656,8 +636,7 @@ td.dim {
 }
 
 td.interpolated-value {
-  -webkit-box-shadow: inset 1px 1px 10px #ece7ff, inset 1px -1px 10px #ece7ff, inset -1px 1px 10px #ece7ff, inset -1px -1px 10px #ece7ff;
-          box-shadow: inset 1px 1px 10px #ece7ff, inset 1px -1px 10px #ece7ff, inset -1px 1px 10px #ece7ff, inset -1px -1px 10px #ece7ff;
+  box-shadow: inset 1px 1px 10px #ece7ff, inset 1px -1px 10px #ece7ff, inset -1px 1px 10px #ece7ff, inset -1px -1px 10px #ece7ff;
 }
 
 td i {
@@ -795,13 +774,11 @@ div.extra-details {
   position: absolute;
   width: 400px;
   margin-top: 16px;
-  display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
-  -webkit-box-shadow: -10px 10px 10px #0006, 10px 10px 10px #0006, 0px 20px 20px #0006;
-          box-shadow: -10px 10px 10px #0006, 10px 10px 10px #0006, 0px 20px 20px #0006;
+  box-shadow: -10px 10px 10px #0006, 10px 10px 10px #0006, 0px 20px 20px #0006;
   font-size: 13px;
 }
 
@@ -810,17 +787,15 @@ div.extra-details span {
 }
 
 div.extra-details span:nth-of-type(2n - 1) {
-  -webkit-box-flex: 1;
-      -ms-flex: 1 1 35%;
-          flex: 1 1 35%;
+  -ms-flex: 1 1 35%;
+      flex: 1 1 35%;
   max-width: 33%;
   border-bottom: 1px solid #bbb;
 }
 
 div.extra-details span:nth-of-type(2n) {
-  -webkit-box-flex: 1;
-      -ms-flex: 1 1 35%;
-          flex: 1 1 35%;
+  -ms-flex: 1 1 35%;
+      flex: 1 1 35%;
   max-width: 67%;
   border-bottom: 1px solid #bbb;
 }
