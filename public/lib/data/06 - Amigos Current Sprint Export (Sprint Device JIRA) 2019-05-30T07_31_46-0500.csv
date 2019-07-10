@@ -1,0 +1,38 @@
+Issue key,Issue id,Parent id,Summary,Assignee,Remaining Estimate,,Status
+DIGTDEV-12041,619752,,POST : TESTING - Automated testing discovery and initial phases ,Manasa.Gottipati@sprint.com,50400,14,In Development
+DIGTDEV-11382,611067,,POST : Review MTV140 - Notification Service (POST) Outbound Transmission Capability,Sairaghu.Uppala@sprint.com,18000,5,Solution Definition
+DIGTDEV-11385,611083,,POST : Review MTV141 - Notification Service (POST) Template Management Capability,Sairaghu.Uppala@sprint.com,18000,5,Solution Definition
+DIGTDEV-11386,611084,,POST : Review MTV142 - Notification Service (POST) Front end application,Sairaghu.Uppala@sprint.com,25200,7,Solution Definition
+DIGTDEV-12087,620166,,POST : SPIKE - Sprint's SMTP server information,Sairaghu.Uppala@sprint.com,0,0,Solution Definition
+DIGTDEV-12085,620155,,SPIKE: Identify Role Information (Template Management),Sairaghu.Uppala@sprint.com,28800,8,Solution Definition
+DIGTDEV-12074,620039,,POST : DEFECTRACK - ITR16 Amigo Maintenance,Sairaghu.Uppala@sprint.com,54000,15,Definition
+DIGTDEV-12743,628208,620039,Testing,jason.jurusz@sprint.com,,0,Completed
+DIGTDEV-12036,619745,,POST : CICD - Pipeline for POST Microservices (ITR16),Deepak.Ganta@sprint.com,86400,24,Definition
+DIGTDEV-12038,619747,619745,"Obtain environments for Dev/QA/Pre-Staging, Prod corresponding to their respective branches",,,0,Definition
+DIGTDEV-12037,619746,,"POST : CICD - Refactor BitBucket for implementation of Dev, QA, and Staging branches (in addition to Master)",Deepak.Ganta@sprint.com,,0,Definition
+DIGTDEV-12004,619471,,POST : JAVA BE - Pull template from database/service (response to come in the form of a stub until 141),saisurya.pamidipati@sprint.com,151200,42,In Development
+DIGTDEV-12022,619719,,POST : JAVA BE - Configure Data Schema in Couchbase for Logging,,28800,8,Definition
+DIGTDEV-11993,619455,,POST : JAVA BE - Construct Email Message to be Sent From Template/Metadata,,144000,40,Definition
+DIGTDEV-11992,619454,,POST : JAVA BE - Send SMTP Message,Harika.Kopparapu@sprint.com,115200,32,Definition
+DIGTDEV-12496,624221,,POST : ADMINISTRATIVE - Conract Management Process Document,Sairaghu.Uppala@sprint.com,10800,3,In Development
+DIGTDEV-12557,626186,,POST : JAVA BE - Create Template ,Joseph.Chantiny@sprint.com,115200,32,Definition
+DIGTDEV-12558,626187,,POST : JAVA BE - Delete Template,Joseph.Chantiny@sprint.com,115200,32,Definition
+DIGTDEV-12560,626265,,POST : JAVA BE - Create API endpoints for 2 CRUD Ops: Tags,Anil.Reddy@sprint.com,50400,14,In Development
+DIGTDEV-12561,626266,626265,Delete and a POST for Tags,Anil.Reddy@sprint.com,,0,In Progress
+DIGTDEV-11080,604890,,POST : PMGUI - GLOBAL : Implement Grid for Each Section,Pavankumar.Durgempudi@sprint.com,,0,In Development
+DIGTDEV-11180,608504,604890,Retrieve template data from store for active CategoryID,jason.jurusz@sprint.com,0,0,Completed
+DIGTDEV-11083,604972,604890,POST : ADHOC : Select Template to Send Ad-Hoc Messages UI,vivekreddy.doma@sprint.com,35940,9.983333333,Definition
+DIGTDEV-12630,626712,604890,POST : BULK : Select Template to Send Bulk Messages UI,Pavankumar.Durgempudi@sprint.com,28800,8,Definition
+DIGTDEV-12099,620434,,POST : PMGUI - TEMPL - Top Form on Page,Pavankumar.Durgempudi@sprint.com,46800,13,In Development
+DIGTDEV-12046,619763,620434,POST : TEMPL - Linguistic support,,,0,Definition
+DIGTDEV-12047,619764,620434,POST : TEMPL - Date range,Pavankumar.Durgempudi@sprint.com,,0,Definition
+DIGTDEV-12601,626379,,POST : PMGUI - ADHOC : Dynamic Field List,jason.jurusz@sprint.com,0,0,In Development
+DIGTDEV-12602,626380,,POST : PMGUI - ADHOC : Telemetry between field list and preview,jason.jurusz@sprint.com,0,0,Definition
+DIGTDEV-12603,626381,,POST : PMGUI - ADHOC : Submit Data from Field List to Tramitter,jason.jurusz@sprint.com,39600,11,Definition
+DIGTDEV-12604,626382,,POST : PMGUI - ADHOC : Send Mail (Back-end interactivity),jason.jurusz@sprint.com,86400,24,Definition
+DIGTDEV-12055,619773,,POST : PMGUI - GLOBAL COMPONENT - Modal Screen Component,Mounika.Giraboina@sprint.com,21600,6,Definition
+DIGTDEV-12045,619762,,POST : PMGUI - TEMPL (Component) - Drag-Drop Tag Insertion (Sidebar),Mounika.Giraboina@sprint.com,75600,21,In Development
+DIGTDEV-12605,626383,,POST : PMGUI - ADHOC : Confirmation/Warning Dialog,Mounika.Giraboina@sprint.com,10800,3,Definition
+DIGTDEV-12725,627397,,Fixing issues releated to Sonarqube for Notifications Template management and Outbound sevices,saisurya.pamidipati@sprint.com,0,0,Demo
+DIGTDEV-12726,627398,627397,Fixing Sonar issues from MS side,saisurya.pamidipati@sprint.com,0,0,Completed
+DIGTDEV-12727,627528,627397,Fixing Sonarqube issues for templatemanagement and outbound ms,Deepak.Ganta@sprint.com,0,0,Completed

@@ -1,0 +1,66 @@
+<html>
+
+<head>
+    <title>Flambé :: BURNIN' DOWN THE HOUSE!</title>
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Karla:400,400i,700,700i&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="lib/css/flambe.css">
+</head>
+
+<body>
+    <main id='iteration-info'>
+        <section class="form-fields">
+            <div class='full-width itr-form-field'>
+                <input id="iteration-name" name="iteration-name" type="text" required class="input-field"
+                    autocomplete="false" placeholder="" />
+                <label for="iteration-name" class="iteration-name-label">Iteration Name <em>(this is a label that
+                        will appled to reports in this iteration)</em></label>
+            </div>
+            <div class='half-width itr-form-field'>
+                <input id="report-start-date" name="report-start-date" type="date" required class="datepicker"
+                    autocomplete="false" placeholder="" />
+                <label for="report-start-date" class="report-start-date-label">Burndown Start Date <em>(The
+                        day Iteration began)</em></label>
+            </div>
+            <div class="half-width picker">
+                <span>Days in iteration:</span>
+                <button id="picker-dec" class="picker-pushers" onmousedown='incDec(-1);' onmouseup='released();'></button>
+                <div class="picker-panel" style="--value:-250px">
+                    <input id="days-in-iteration" class="picker-panel-presenter" type="text" placeholder="" maxlength="2" onfocus="this.value=this.placeholder" onblur="this.placeholder=this.value; this.value=''; syncSpinner();" onInput="this.value=this.value.replace(/\D/,'')" required />
+                    <label class="picker-panel-plate"></label>
+                </div>
+                <button id="picker-inc" class="picker-pushers" onmousedown='incDec(1);' onmouseup='released()'></button>
+            </div>
+        </section>
+        <div class="pbars"></div>
+        <div class="sort-order">
+            <aside class="color-key sort-key">
+                <h2>KEY</h2>
+                <span class="key-item-1 key-items"><b>Empty File Slot</b><em>Click this slot to add a file containing the day's burned hours at this location.</em></span>
+                <span class="key-item-2 key-items"><b>Completed File Slot</b><em>File has been added, and parsed without issue, and will be added to the report.</em></span>
+                <span class="key-item-3 key-items"><b>Interpolated File</b><em>Because this file omitted mid-structure, Flambe will attempt to interpolate its data.</em></span>
+                <span class="key-item-4 key-items"><b>Unusable File</b><em>File is of the wrong type, structure, or cannot be interpreted. Try a .CSV file.</em></span>
+                <span class="key-item-5 key-items"><b>Errored File</b><em>File is corrupt, unreadable, or the retained copy has been damaged. Please re-add.</em></span>
+                
+            </aside>
+            <ul class="has-draggable-children"></ul>
+            <button class="add-record" onclick="incDec(1); released();"></button>
+        </div>
+        <div class="button-row">
+            <div><button class="start-new cta-button"    onclick="fugue(); location=location;">Discard Stored Data & Begin Anew</button></div>
+            <div><button class="done-sorting cta-button" onclick="runReport(this)"   >Preview Output Using Above Data</button></div>
+        </div>
+    </main>
+    <section id="output-panels">
+        <div class="output-table">
+          
+        </div>
+    </section>
+    <section class="file-drop-target">
+            <label id="file-dropzone" class="file-dropzone" for="input">
+                <input type="file" id="input" name="input" multiple>
+            </label>
+        </section>
+    <script src="lib/js/flambe.js"></script>
+</body>
+</html>
