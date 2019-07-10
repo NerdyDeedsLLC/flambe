@@ -404,7 +404,7 @@ insertFileNodeBetween = (e, trgObj=e.target) => {
     
 }
 
-removeFileAtIndex = (trgBtn) => {
+removeFileAtIndex = (trgBtn, isFilled) => {
     ind = trgBtn.dataset.index;
     if(findLastIndexOf(namedFiles, /.+/) === 0) {
         namedFiles[0]=retain('namedFiles', '');
@@ -412,8 +412,14 @@ removeFileAtIndex = (trgBtn) => {
         return resizeBufferArraysAndRebuildSlots();
     }
     console.log(ind, trgBtn)
-    namedFiles.splice(ind, 1);
-    fileBuffer.splice(ind, 1);
+    if(isFilled){
+        namedFiles.splice(ind, 1, "");
+        fileBuffer.splice(ind, 1, "");
+    }else{
+        namedFiles.splice(ind, 1);
+        fileBuffer.splice(ind, 1);
+        incDec(1)
+    }
     return resizeBufferArraysAndRebuildSlots();
 }
 

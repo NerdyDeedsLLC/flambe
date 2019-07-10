@@ -299,7 +299,6 @@ new Promise(conclude => {
 let fileBuffer = [] // Stores copies of the file input's data collection (req'd in case the user maskes multiple sets of selections)
 ,
     safeBuffer = [],
-    fileCount = 0,
     namedFiles = [] // Array containing just the names of the files contained within fileBuffer (used for sequencing the read order)
 ,
     COMBD_DATA = [] // COMBINED DATA from all the files ingested
@@ -542,7 +541,7 @@ insertFileNodeBetween = (e, trgObj = e.target) => {
   resizeBufferArraysAndRebuildSlots();
 };
 
-removeFileAtIndex = trgBtn => {
+removeFileAtIndex = (trgBtn, isFilled) => {
   ind = trgBtn.dataset.index;
 
   if (findLastIndexOf(namedFiles, /.+/) === 0) {
@@ -552,8 +551,16 @@ removeFileAtIndex = trgBtn => {
   }
 
   console.log(ind, trgBtn);
-  namedFiles.splice(ind, 1);
-  fileBuffer.splice(ind, 1);
+
+  if (isFilled) {
+    namedFiles.splice(ind, 1, "");
+    fileBuffer.splice(ind, 1, "");
+  } else {
+    namedFiles.splice(ind, 1);
+    fileBuffer.splice(ind, 1);
+    incDec(1);
+  }
+
   return resizeBufferArraysAndRebuildSlots();
 };
 
@@ -579,7 +586,7 @@ resizeBufferArraysAndRebuildSlots = (newLen = trg.placeholder / 1 + 1) => {
         dSlot = ` data-slot="${i > 0 ? i : 'S'}" `,
         fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
                               ${namedFiles[i]}
-                              <button class="remove-buttons" data-index="${1}" onMouseUp="removeFileAtIndex(this)" />
+                              <button class="remove-buttons" data-index="${i}" onMouseUp="removeFileAtIndex(this, true)" />
                            </label>`,
         arrID = ` id="file-slot-${i}" `;
 
@@ -587,13 +594,13 @@ resizeBufferArraysAndRebuildSlots = (newLen = trg.placeholder / 1 + 1) => {
       if (i < interpolated) {
         fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
                                 No file specified (click to add, or leave blank to interpolate data from neighbors)
-                                <button class="remove-buttons" data-index="${1}" onMouseUp="removeFileAtIndex(this)" />
+                                <button class="remove-buttons" data-index="${i}" onMouseUp="removeFileAtIndex(this, false)" />
                               </label>`;
         pList += ' data-value="interpolated"';
       } else {
         fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
                                 No file specified (click to add!)
-                               <button class="remove-buttons" data-index="${1}" onMouseUp="incDec(-1); released();" />
+                               <button class="remove-buttons" data-index="${i}" onMouseUp="incDec(-1); released();" />
 
                             </label>`;
       }
@@ -1032,10 +1039,12 @@ let numericTotals = ['', ''];
 let totalRow = [];
 
 const postProcessData = () => {
-  let rptStatuses = {};
-  let dispCkBoxes = '';
-  let uniqueStatuses = [];
-  let RPTString = "";
+  let rptStatuses = {},
+      dispCkBoxes = '',
+      uniqueStatuses = [],
+      RPTString = "",
+      dataColCount = 0,
+      nonDataColCount = 2;
   Promise.resolve().then(() => {
     rowNodes = [...qsa('.preview-table tr')];
     RPTString = JSON.stringify(RPTDATA);
@@ -1109,8 +1118,12 @@ const postProcessData = () => {
       });
     });
   }).then(() => {
+    let opStr = "";
+    let idealRow = [];
     totalRow.length = hdrColNodes.length;
+    idealRow.length = hdrColNodes.length;
     totalRow = totalRow.fill(0, 2, hdrColNodes.length);
+    idealRow = idealRow.fill(0, 2, hdrColNodes.length);
 
     for (var c = 2; c < hdrColNodes.length; c++) {
       rowNodes.forEach((row, rowIdx) => {
@@ -1121,9 +1134,17 @@ const postProcessData = () => {
           totalRow[c] = totalRow[c] / 1 + cell / 1;
         }
       });
+
+      if (c === 2) {
+        // Meaning we're working on the seed file...
+        let seedTotal = totalRow[c];
+      }
     }
 
-    qs('.preview-table').insertAdjacentHTML('beforeEnd', '<tr class="total-row"><td colspan="2" class="total-label">TOTAL:</td><td>' + totalRow.slice(2).join('h</td><td>') + 'h</td></tr>');
+    opStr += '<tr class="total-row"><td colspan="2" class="total-label">TOTAL (Actual):</td>';
+    opStr += '  <td>' + totalRow.slice(2).join('h</td><td>') + 'h</td>';
+    opStr += '</tr>';
+    qs('.preview-table').insertAdjacentHTML('beforeEnd', opStr);
   });
 };
 
