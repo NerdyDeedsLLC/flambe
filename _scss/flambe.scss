@@ -499,7 +499,7 @@ button.add-record {
         border: 1px solid #bbb;
         border-radius: 10px 10px 0 0;
         line-height: 1;
-        top: -50px;
+        top: -2px;
         right: 0;
         max-width: 200px;
         font-size: 14px;
@@ -682,16 +682,26 @@ tr.obfuscated {
     display: none;
 }
 
-tr.total-row {
-    background-color:#FCC;
+tr.total-row, tr.ideal-row {
+    background-color:#CCC;
     font-weight: bold;
 
     td {
         padding:8px;
         text-align:right;
+        &.over {
+            box-shadow:inset 1px 1px 5px red, inset -1px 1px 5px red, inset 1px -1px 5px red, inset -1px -1px 5px red;
+            background-color: #FCC;
+        }
+        
+        &.under {
+            box-shadow:inset 1px 1px 5px green, inset -1px 1px 5px green, inset 1px -1px 5px green, inset -1px -1px 5px green;
+            background-color: #CFC;
+        }
     }
 }
-
+    
+    
 /* ANIMATIONS AND @-RULES */
 @keyframes progress {
     0% {

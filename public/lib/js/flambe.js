@@ -1118,6 +1118,11 @@ const postProcessData = () => {
       });
     });
   }).then(() => {
+    function round_to_precision(x, precision) {
+      var y = +x + (precision === undefined ? 0.5 : precision / 2);
+      return y - y % (precision === undefined ? 1 : +precision);
+    }
+
     let opStr = "";
     let idealRow = [];
     totalRow.length = hdrColNodes.length;
@@ -1134,17 +1139,50 @@ const postProcessData = () => {
           totalRow[c] = totalRow[c] / 1 + cell / 1;
         }
       });
-
-      if (c === 2) {
-        // Meaning we're working on the seed file...
-        let seedTotal = totalRow[c];
-      }
     }
 
+    let seedTotal = totalRow[2];
+    let daysToDiv = hdrColNodes.length - 2;
+    if (seedTotal && !isNaN(seedTotal)) daysToDiv = round_to_precision(seedTotal / (daysToDiv - 0.5), 0.25);
+
+    for (var c = 2; c < idealRow.length; c++) {
+      idealRow[c] = seedTotal;
+      seedTotal -= daysToDiv;
+    }
+
+    opStr += '<tr class="ideal-row"><td colspan="2" class="ideal-label">TOTAL (Ideal):</td>';
+    opStr += '  <td>' + idealRow.slice(2).join('h</td><td>') + 'h</td>';
+    opStr += '</tr>';
     opStr += '<tr class="total-row"><td colspan="2" class="total-label">TOTAL (Actual):</td>';
     opStr += '  <td>' + totalRow.slice(2).join('h</td><td>') + 'h</td>';
     opStr += '</tr>';
-    qs('.preview-table').insertAdjacentHTML('beforeEnd', opStr);
+    qs('.preview-table tbody').insertAdjacentHTML('beforeEnd', opStr);
+  }).then(() => {
+    totalRow = [...qs('.total-row').childNodes];
+    console.log('totalRow', totalRow);
+    idealRow = [...qs('.ideal-row').childNodes];
+    console.log('idealRow', idealRow);
+  }).then(() => {
+    for (var c = 2; c < idealRow.length; c++) {
+      console.log('idealRow', idealRow[c]);
+
+      if (totalRow[c].innerText !== null && idealRow[c].innerText !== null) {
+        let totalCell = totalRow[c],
+            totalVals = totalCell.innerText.replace(/h/g, '') / 1,
+            idealCell = idealRow[c],
+            idealVals = idealCell.innerText.replace(/h/g, '') / 1;
+
+        if (totalVals > idealVals) {
+          totalCell.className = "over";
+          idealCell.className = "over";
+        }
+
+        if (totalVals < idealVals) {
+          totalCell.className = "under";
+          idealCell.className = "under";
+        }
+      }
+    }
   });
 };
 

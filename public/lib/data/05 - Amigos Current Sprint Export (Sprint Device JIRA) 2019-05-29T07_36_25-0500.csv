@@ -1,3 +1,4 @@
+Issue key,Issue id,Parent id,Summary,Assignee,Remaining Estimate,,Status
 DIGTDEV-11080,604890,,POST : PMGUI - GLOBAL : Implement Grid for Each Section,Pavankumar.Durgempudi@sprint.com,,0,In Development
 DIGTDEV-11083,604972,604890,POST : ADHOC : Select Template to Send Ad-Hoc Messages UI,vivekreddy.doma@sprint.com,53940,14.98333333,Definition
 DIGTDEV-11180,608504,604890,Retrieve template data from store for active CategoryID,jason.jurusz@sprint.com,0,0,Completed
@@ -35,4 +36,3 @@ DIGTDEV-12725,627397,,Fixing issues releated to Sonarqube for Notifications Temp
 DIGTDEV-12726,627398,627397,Fixing Sonar issues from MS side,saisurya.pamidipati@sprint.com,0,0,Completed
 DIGTDEV-12727,627528,627397,Fixing Sonarqube issues for templatemanagement and outbound ms,Deepak.Ganta@sprint.com,0,0,Completed
 DIGTDEV-12743,628208,620039,Testing,jason.jurusz@sprint.com,,0,Completed
-Issue key,Issue id,Parent id,Summary,Assignee,Remaining Estimate,,Status

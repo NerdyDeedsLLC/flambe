@@ -277,7 +277,6 @@ const d = document                                       // ⥱ Alias - document
 // Global Variables --------------------------------------------------------------------------------------------------------------
 let   fileBuffer    = []                                                                            // Stores copies of the file input's data collection (req'd in case the user maskes multiple sets of selections)
     , safeBuffer    = []
-    , fileCount     = 0
     , namedFiles    = []                                                                            // Array containing just the names of the files contained within fileBuffer (used for sequencing the read order)
     , COMBD_DATA    = []                                                                            // COMBINED DATA from all the files ingested
     , ISSUE_KEYS    = []                                                                            // LIST OF ALL THE ISSUES from all the files ingested
@@ -445,7 +444,7 @@ resizeBufferArraysAndRebuildSlots = (newLen = ((trg.placeholder / 1) + 1)) => {
                 ,dSlot = ` data-slot="${(i > 0) ? i : 'S'}" `
                 ,fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
                               ${namedFiles[i]}
-                              <button class="remove-buttons" data-index="${1}" onMouseUp="removeFileAtIndex(this)" />
+                              <button class="remove-buttons" data-index="${i}" onMouseUp="removeFileAtIndex(this, true)" />
                            </label>`
                 ,arrID = ` id="file-slot-${i}" `;
 
@@ -453,13 +452,13 @@ resizeBufferArraysAndRebuildSlots = (newLen = ((trg.placeholder / 1) + 1)) => {
                 if(i < interpolated){
                     fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
                                 No file specified (click to add, or leave blank to interpolate data from neighbors)
-                                <button class="remove-buttons" data-index="${1}" onMouseUp="removeFileAtIndex(this)" />
+                                <button class="remove-buttons" data-index="${i}" onMouseUp="removeFileAtIndex(this, false)" />
                               </label>`;
                     pList += ' data-value="interpolated"';
                 } else {
                     fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
                                 No file specified (click to add!)
-                               <button class="remove-buttons" data-index="${1}" onMouseUp="incDec(-1); released();" />
+                               <button class="remove-buttons" data-index="${i}" onMouseUp="incDec(-1); released();" />
 
                             </label>`;
                 }
@@ -862,11 +861,13 @@ let hdrColNodes    = [];
 let numericTotals = ['',''];
 let totalRow = [];
 
-const postProcessData = () => {
-    let rptStatuses    = {};
-    let dispCkBoxes    = '';
-    let uniqueStatuses = []
-    let RPTString = "";
+const postProcessData   = () => {
+    let rptStatuses     = {}
+      , dispCkBoxes     = ''
+      , uniqueStatuses  = []
+      , RPTString       = ""
+      , dataColCount    = 0
+      , nonDataColCount = 2;
     
     Promise.resolve().then(()=>{
         rowNodes           = [...qsa('.preview-table tr')];
@@ -939,8 +940,16 @@ const postProcessData = () => {
             });
         });
     }).then(()=>{
+        function round_to_precision(x, precision) {
+            var y = +x + (precision === undefined ? 0.5 : precision/2);
+            return y - (y % (precision === undefined ? 1 : +precision));
+        }
+        let opStr = "";
+        let idealRow = [];
         totalRow.length = hdrColNodes.length;
+        idealRow.length = hdrColNodes.length
         totalRow = totalRow.fill(0, 2, hdrColNodes.length)
+        idealRow = idealRow.fill(0, 2, hdrColNodes.length)
         for(var c=2; c<hdrColNodes.length; c++){
             rowNodes.forEach((row, rowIdx) => {
                 let cell = row.childNodes
@@ -949,9 +958,48 @@ const postProcessData = () => {
                     totalRow[c] = (totalRow[c] / 1) + (cell / 1);
                 }
             });
+
+        }
+        let seedTotal = totalRow[2];
+        let daysToDiv = hdrColNodes.length - 2;
+        if(seedTotal && !isNaN(seedTotal)) daysToDiv = round_to_precision(seedTotal / (daysToDiv - 0.5), 0.25);
+        for(var c=2; c<idealRow.length; c++){
+            idealRow[c] = seedTotal;
+            seedTotal  -= daysToDiv;
         }
 
-        qs('.preview-table').insertAdjacentHTML('beforeEnd', '<tr class="total-row"><td colspan="2" class="total-label">TOTAL:</td><td>' + totalRow.slice(2).join('h</td><td>') + 'h</td></tr>');
+        opStr += '<tr class="ideal-row"><td colspan="2" class="ideal-label">TOTAL (Ideal):</td>';
+        opStr += '  <td>' + idealRow.slice(2).join('h</td><td>') + 'h</td>';
+        opStr += '</tr>';
+        opStr += '<tr class="total-row"><td colspan="2" class="total-label">TOTAL (Actual):</td>';
+        opStr += '  <td>' + totalRow.slice(2).join('h</td><td>') + 'h</td>';
+        opStr += '</tr>';
+        qs('.preview-table tbody').insertAdjacentHTML('beforeEnd', opStr);
+    }).then(()=>{
+        totalRow = [...qs('.total-row').childNodes];
+        console.log('totalRow', totalRow);
+        idealRow = [...qs('.ideal-row').childNodes];
+        console.log('idealRow', idealRow);
+    }).then(()=>{
+        for(var c=2; c<idealRow.length; c++){
+            console.log('idealRow', idealRow[c]);
+            if(totalRow[c].innerText !== null && idealRow[c].innerText !== null){
+                let totalCell = totalRow[c]
+                   ,totalVals = totalCell.innerText.replace(/h/g, '') / 1
+                   ,idealCell = idealRow[c]
+                   ,idealVals = idealCell.innerText.replace(/h/g, '') / 1;
+                
+                if(totalVals > idealVals){ 
+                    totalCell.className = "over";
+                    idealCell.className = "over";
+                }
+                if(totalVals < idealVals){ 
+                    totalCell.className = "under";
+                    idealCell.className = "under";
+                }
+            }
+        }
+
     });
 }
 

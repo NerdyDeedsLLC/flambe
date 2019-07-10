@@ -384,7 +384,7 @@ div.sort-order ul.has-draggable-children li.drag-sort-active {
 }
 
 div.sort-order ul.has-draggable-children li[data-value="interpolated"]::before {
-  background-color: #ece7ff;
+  background-color: #EECCFFCC;
 }
 
 div.sort-order ul.has-draggable-children li[data-value="stored"]::before {
@@ -519,7 +519,7 @@ button.add-record {
   border: 1px solid #bbb;
   border-radius: 10px 10px 0 0;
   line-height: 1;
-  top: -50px;
+  top: -2px;
   right: 0;
   max-width: 200px;
   font-size: 14px;
@@ -709,14 +709,24 @@ tr.obfuscated {
   display: none;
 }
 
-tr.total-row {
-  background-color: #FCC;
+tr.total-row, tr.ideal-row {
+  background-color: #CCC;
   font-weight: bold;
 }
 
-tr.total-row td {
+tr.total-row td, tr.ideal-row td {
   padding: 8px;
   text-align: right;
+}
+
+tr.total-row td.over, tr.ideal-row td.over {
+  box-shadow: inset 1px 1px 5px red, inset -1px 1px 5px red, inset 1px -1px 5px red, inset -1px -1px 5px red;
+  background-color: #FCC;
+}
+
+tr.total-row td.under, tr.ideal-row td.under {
+  box-shadow: inset 1px 1px 5px green, inset -1px 1px 5px green, inset 1px -1px 5px green, inset -1px -1px 5px green;
+  background-color: #CFC;
 }
 
 /* ANIMATIONS AND @-RULES */
