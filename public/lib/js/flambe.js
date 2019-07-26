@@ -1118,6 +1118,28 @@ const postProcessData = () => {
       });
     });
   }).then(() => {
+    // Analysis
+    const num = val => val ? parseInt(val.replace(/\D/gi, '')) : 0;
+
+    rowNodes.forEach((rowObj, rowIdx) => {
+      let row = rowObj.children;
+      let devHasBegun = false;
+      let seedStatus = row[0].innerText;
+      let seedStoryNumber = row[1].innerText;
+      let seedHours = num(row[2].innerText);
+      let info = warn = error = critical = '';
+
+      for (var colIdx = 2; colIdx < row.length; colIdx++) {
+        let col = row[colIdx];
+        console.log(row.length, seedHours, num(col.innerText));
+        if (!devHasBegun && seedHours !== num(col.innerText)) devHasBegun = true;
+      }
+
+      if (devHasBegun && /definition/i.test(seedStatus)) info += 'Wrong Status';
+      if (info !== '') row[0].innerHTML += `<a href="#" class="info-icon" data-text="${seedStoryNumber + ': ' + info}">i</a>`;
+    });
+  }).then(() => {
+    // Sum up our totals
     function round_to_precision(x, precision) {
       var y = +x + (precision === undefined ? 0.5 : precision / 2);
       return y - y % (precision === undefined ? 1 : +precision);

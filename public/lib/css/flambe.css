@@ -665,6 +665,35 @@ button.add-record {
   text-align: center;
 }
 
+tr.row-status-Definition td:first-child {
+  border-left: 1px solid #000;
+  padding-left: 12px;
+}
+
+tr.row-status-Solution_Definition td:first-child {
+  border-left: 8px solid #AAA;
+}
+
+tr.row-status-In_Development td:first-child {
+  border-left: 8px solid #00F;
+}
+
+tr.row-status-In_Progress td:first-child {
+  border-left: 8px solid #0FF;
+}
+
+tr.row-status-Completed td:first-child {
+  border-left: 8px solid #0F0;
+}
+
+tr.row-status-Blocked td:first-child {
+  border-left: 8px solid #0FF;
+}
+
+tr.row-status-Demo td:first-child {
+  border-left: 8px solid #ff0;
+}
+
 td:nth-child(-n + 2) {
   text-align: left;
 }
@@ -1009,4 +1038,31 @@ aside.sort-key span.key-items.key-item-5 em {
   background: #f00;
   border-color: #ff7777;
   color: #ffa;
+}
+
+.info-icon {
+  background-color: #00F;
+  color: #FFF;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  text-align: center;
+  text-decoration: none;
+  font: bold 16px serif;
+  margin: 2px;
+  float: right;
+}
+
+.info-icon:hover::after {
+  content: attr(data-text);
+  position: absolute;
+  width: 300px;
+  padding: 20px;
+  border: 2px solid blue;
+  border-radius: 20px;
+  box-shadow: 0 10px 10px #000;
+  color: black;
+  background-color: white;
+  font-weight: normal;
 }
