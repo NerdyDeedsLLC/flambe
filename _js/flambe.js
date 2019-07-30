@@ -8,6 +8,7 @@
      * Split CSV text into an array of lines.
      */
     function splitLines(text, lineEnding) {
+        console.info("ES5 FUNCTION: splitLines", "text", text, "lineEnding", lineEnding);
         var strLineEnding = lineEnding.toString(),
             bareRegExp    = strLineEnding.substring(1, strLineEnding.lastIndexOf('/')),
             modifiers     = strLineEnding.substring(strLineEnding.lastIndexOf('/') + 1);
@@ -24,6 +25,7 @@
      * If the line is empty (including all-whitespace lines), returns true. Otherwise, returns false.
      */
     function isEmptyLine(line) {
+        console.info("ES5 FUNCTION: isEmptyLine", "line", line);
         return (line.replace(/^[\s]*|[\s]*$/g, '') === '');
     }
 
@@ -31,6 +33,7 @@
      * Removes all empty lines from the given array of lines.
      */
     function removeEmptyLines(lines) {
+        console.info("ES5 FUNCTION: removeEmptyLines", "lines", lines);
         var i;
 
         for (i = 0; i < lines.length; i++) {
@@ -45,6 +48,7 @@
      * For example: "foo, bar", baz
      */
     function defragmentLineTokens(lineTokens, delimiter) {
+        console.info("ES5 FUNCTION: defragmentLineTokens", "lineTokens", lineTokens, "delimiter", delimiter);
         var i, j,
             token, quote;
 
@@ -79,6 +83,7 @@
      * Removes leading and trailing whitespace from each token.
      */
     function trimWhitespace(lineTokens) {
+        console.info("ES5 FUNCTION: trimWhitespace", "lineTokens", lineTokens);
         var i;
 
         for (i = 0; i < lineTokens.length; i++) {
@@ -90,6 +95,7 @@
      * Removes leading and trailing quotes from each token.
      */
     function trimQuotes(lineTokens) {
+        console.info("ES5 FUNCTION: trimQuotes", "lineTokens", lineTokens);
         var i;
 
         // TODO: allow for escaped quotes
@@ -106,6 +112,7 @@
      * Converts a single line into a list of tokens, separated by the given delimiter.
      */
     function tokenizeLine(line, delimiter) {
+        console.info("ES5 FUNCTION: tokenizeLine", "line", line, "delimiter", delimiter);
         var lineTokens = line.split(delimiter);
 
         defragmentLineTokens(lineTokens, delimiter);
@@ -119,6 +126,7 @@
      * Converts an array of lines into an array of tokenized lines.
      */
     function tokenizeLines(lines, delimiter) {
+        console.info("ES5 FUNCTION: tokenizeLines", "lines", lines, "delimiter", delimiter);
         var i,
             tokenizedLines = [];
 
@@ -133,6 +141,7 @@
      * Converts an array of tokenized lines into an array of object literals, using the header's tokens for each object's keys.
      */
     function assembleObjects(tokenizedLines) {
+        console.info("ES5 FUNCTION: assembleObjects", "tokenizedLines", tokenizedLines);
         var i, j,
             tokenizedLine, obj, key,
             objects = [],
@@ -169,6 +178,7 @@
      * Parses CSV text and returns an array of objects, using the first CSV row's fields as keys for each object's values.
      */
     CSV.parse = function (text, lineEnding, delimiter, ignoreEmptyLines) {
+        console.info("ES5 FUNCTION: CSV.parse", "text", text, "lineEnding", lineEnding, "delimiter", delimiter, "ignoreEmptyLines", ignoreEmptyLines);
         var config = {
                 lineEnding:       /[\r\n]/,
                 delimiter:        ',',
@@ -243,6 +253,7 @@ const d = document                                       // ⥱ Alias - document
     , _ = (...args) => console.log.call(this, ...args)     // ⥱ Alias - _
     , pBar = (id, title, barColor, processor = 1, seq = 0, bc = 0) =>     // ⍟ HLPfn - Generates a progress bar
         new Promise(conclude => {
+            console.info("PROMISE FUNCTION...");
             id = 'pbar-' + id;
             let oldBar = qs('#' + id);
             if (oldBar) oldBar.remove();
@@ -272,7 +283,7 @@ const d = document                                       // ⥱ Alias - document
         for (var i = arr ? arr.length - 1 : 0; arr !== void(0) && val !== void(0) && i >= 0; i--)
             if (((val.constructor + '').match(/RegExp/) && arr[i].match(val)) || (val + '' == arr[i])) return (i);
         return -1;
-    }
+    };
 
 // Global Variables --------------------------------------------------------------------------------------------------------------
 let   fileBuffer    = []                                                                            // Stores copies of the file input's data collection (req'd in case the user maskes multiple sets of selections)
@@ -309,7 +320,7 @@ let   fileBuffer    = []                                                        
                         "SCR":    {"weight": 2, "concern": "Scope Creep" },                         // "Hey, so marketing wants to add one more little thing to the user-facing cart portal"
                         "ASS":    {"weight": 2, "concern": "Improperly Assigned" },                 // Likely curprits: "Oh, THAT Deepak?!" and "Why is this assigned to ME!? Stupid JIRA."
                         "PID":    {"weight": 2, "concern": "Parent ID Changed" },                   // "IO-11110 DOES look an awful lot like IO-11101"... mistakes happen.
-                        "PID":    {"weight": 2, "concern": "Inconsistent Status" },                 // Status makes no sense (e.g. task In Definition, but hours burned).
+                        "ICS":    {"weight": 2, "concern": "Inconsistent Status" },                 // Status makes no sense (e.g. task In Definition, but hours burned).
 
                         // MEDIUM CONCERN: Issues weighted at 3+ indicate an issue who is
                         // out of place, whose hours aren't (or, temporarily, CANNOT) get
@@ -338,30 +349,31 @@ let   fileBuffer    = []                                                        
                         "UNCHGD": {"weight": 2, "collection": "XXX,NPR,STK,HOL,ATT,HRS",     "concern": "No changes made to story for current iteration" },
                         "HRSINC": {"weight": 3, "collection": "EST,UER,SCR,STR,STK,NEW,ASS", "concern": "Hours increased from day prior!" },
                         "UNCHG3": {"weight": 4, "collection": "XXX,NPR,STK,HOL,ATT,HRS",     "concern": "No changes made to story for 3 days!" }
-                    }
+                    };
 
        // APPLICATION SOURCE ===================================================================== 🅔🅧🅔🅒🅤🅣🅘🅞🅝 🅢🅔🅠🅤🅔🅝🅒🅔 indicated by encircled digits (➀-➈)
 init = () => {                                                                                      // ⓿ Initiate application, chaining steps 1-3 above to file input's onChange
+    console.info("\n\n====== INIT ======\n");
     iterationName.value    = recall('iterationName', '');                                           // Seed the value set for the iteration's name (or blank if none is stored)...
-    iterationName.onkeyup  = ()=>{retain('iterationName', iterationName.value); }                   // ... and set up the field's onKeyUp handler to save any changes henceforth.
-    iterationName.onchangd = ()=>{retain('iterationName', iterationName.value); }                   // ... aaaand again, some more, for onChange.
+    iterationName.onkeyup  = ()=>{retain('iterationName', iterationName.value); };                   // ... and set up the field's onKeyUp handler to save any changes henceforth.
+    iterationName.onchangd = ()=>{retain('iterationName', iterationName.value); };                   // ... aaaand again, some more, for onChange.
     dateField.value        = recall('reportStartDate', '');                                               // Do the same for the Start Date value, seeding it (or blank) if set...
-    dateField.onkeyup      = ()=>{retain('reportStartDate', dateField.value); }                       // ... and establishing the onKeyUp listener to store any updates.
-    dateField.onchange     = ()=>{retain('reportStartDate', dateField.value); }                       // ... and establishing the onChange listener to store any updates.
+    dateField.onkeyup      = ()=>{retain('reportStartDate', dateField.value); };                       // ... and establishing the onKeyUp listener to store any updates.
+    dateField.onchange     = ()=>{retain('reportStartDate', dateField.value); };                       // ... and establishing the onChange listener to store any updates.
 
     fileBuffer             = recall('fileBuffer', null);                                            // Try and retrieve the fileBuffer in one exisits in Rote memories...
     fileBuffer             = (fileBuffer == null) ? [] : JSON.parse(fileBuffer);                    // ... and, if one does, rehydrate it. Otherwise, establish it as a new array.
-    console.log('fileBuffer', fileBuffer);
+    // console.log('fileBuffer', fileBuffer);
 
     let startingLength = 1;
     
-    console.log('fileBuffer', typeof(fileBuffer), fileBuffer, fileBuffer.length);
+    // console.log('fileBuffer', typeof(fileBuffer), fileBuffer, fileBuffer.length);
 
     if(fileBuffer.length > 0) {                                                                     // If we DID manage to restore a previous buffer...
-        startingLength = fileBuffer.length -1;
+        startingLength = fileBuffer.length - 1;
         namedFiles  = retain('namedFiles', fileBuffer.flatMap(f=>(f && f.fileName)                  //    ... and, should it prove that we have a valid file for each (filled) index... ********
                                                                ?  f.fileName                        //    ... reconstuct the list of previously-provided file names...
-                                                               :  ''))                              //    ... otherwise, flag the individual record as having errored out.
+                                                               :  ''));                              //    ... otherwise, flag the individual record as having errored out.
     }
 
     if(fileBuffer.length <= 1){                                                                     // If we FAILED to restore a previous buffer (or the one we DID errored out)...
@@ -376,6 +388,7 @@ init = () => {                                                                  
     syncSpinner();
     
     input.addEventListener('change', e => {
+        console.info("EVENT: input.addEventListener('change') e", e);
         if(targetSlot == null || input.files.length > 1){                                                                        // (Indicating we're dealing with a BULK upload)
             return pBar(1, "READING...✓", "teal", 0.1, 0, 0)
                   .then(() => pBar(2, 'PARSING...✓', 'DarkTurquoise', 0.1, 0.1, 0.1))
@@ -390,6 +403,7 @@ init = () => {                                                                  
 }; 
 
 insertFileNodeBetween = (e, trgObj=e.target) => {
+    console.info("FUNCTION: insertFileNodeBetween", "e", e, "trgObj", trgObj);
     console.log(e, trgObj);
     if  (trgObj.tagName !== 'LI') {
                    // e.preventDefault();
@@ -398,31 +412,33 @@ insertFileNodeBetween = (e, trgObj=e.target) => {
     let targetIndex = trgObj.dataset.slot;
     fileBuffer.splice(targetIndex, 0, '');
     namedFiles.splice(targetIndex, 0, '');
-    syncSpinner(((trg.placeholder / 1) + 1))
-    resizeBufferArraysAndRebuildSlots()
+    syncSpinner(((trg.placeholder / 1) + 1));
+    resizeBufferArraysAndRebuildSlots();
     
-}
+};
 
 removeFileAtIndex = (trgBtn, isFilled) => {
+    console.info("FUNCTION: removeFileAtIndex", "trgBtn", trgBtn, "isFilled", isFilled);
     ind = trgBtn.dataset.index;
     if(findLastIndexOf(namedFiles, /.+/) === 0) {
         namedFiles[0]=retain('namedFiles', '');
         fileBuffer[0]=retain('fileBuffer', '');
         return resizeBufferArraysAndRebuildSlots();
     }
-    console.log(ind, trgBtn)
+    console.log(ind, trgBtn);
     if(isFilled){
         namedFiles.splice(ind, 1, "");
         fileBuffer.splice(ind, 1, "");
     }else{
         namedFiles.splice(ind, 1);
         fileBuffer.splice(ind, 1);
-        incDec(1)
+        incDec(1);
     }
     return resizeBufferArraysAndRebuildSlots();
-}
+};
 
 resizeBufferArraysAndRebuildSlots = (newLen = ((trg.placeholder / 1) + 1)) => {
+        console.info("FUNCTION: resizeBufferArraysAndRebuildSlots", newLen );
         if(typeof(namedFiles)=='undefined' || isNaN(newLen) || newLen<0) return false;
         let oldLen = (namedFiles && namedFiles.length) ? namedFiles.length / 1 : 0,
             opStr = '';
@@ -430,10 +446,10 @@ resizeBufferArraysAndRebuildSlots = (newLen = ((trg.placeholder / 1) + 1)) => {
         namedFiles.length = newLen;
         fileBuffer.length = newLen;
         if(oldLen < newLen) {
-            namedFiles.fill('', oldLen)
-            fileBuffer.fill('', oldLen)
+            namedFiles.fill('', oldLen);
+            fileBuffer.fill('', oldLen);
         }
-        retain('namedFiles',namedFiles)
+        retain('namedFiles',namedFiles);
         retain('fileBuffer',JSON.stringify(fileBuffer));
 
         let interpolated = findLastIndexOf(namedFiles, /.+/);
@@ -484,12 +500,14 @@ addOrReplaceSingleFileAndParse = (slotId=targetSlot, liObj=qs('#file-slot-'+slot
         if(namedFiles.indexOf(fileName) != -1) return(alert('This file is already in use!'));
         _("WORKING WITH PROVIDED FILE ", fileName, namedFiles.indexOf(fileName));
         const readUploadedFileAsText = (fileObj) => {
+            console.info("FUNCTION: readUploadedFileAsText", "fileObj", fileObj);
             _("readUploadedFileAsText");
             let reader   = new FileReader();
             
             return new Promise((resolve) => {
                 reader.onload = () => {
-                    _('onload Event fired...')
+                    console.info("FUNCTION: onload");
+                    _('onload Event fired...');
                     resolve(reader.result);
                 };
               reader.readAsText(fileObj);
@@ -501,7 +519,7 @@ addOrReplaceSingleFileAndParse = (slotId=targetSlot, liObj=qs('#file-slot-'+slot
             new Promise(resolve=>{
                 _('...resolved\n".then()" #1');
                     var opJSON         = CSV.parse(result);                                                         //    Parse the .CSV file input, ...
-                    _(opJSON)
+                    _(opJSON);
                     let newJSONData    = { fileName: fileName, fileData: opJSON };
                     fileBuffer[slotId] = newJSONData;
                     namedFiles[slotId] = fileName;
@@ -526,6 +544,7 @@ parseFilesAndGenerateDragDrop = response =>                                     
                 if (namedFiles.indexOf(fileName) !== -1) return fulfill(this);
                 namedFiles.push(fileName);
                 const appendToBuffer = (JSONObj, fileName = null) => {
+                    console.info("FUNCTION: appendToBuffer", "JSONObj", JSONObj, fileName );
                     let extantIndex = fileBuffer.find(b => b.fileName === fileName);
                     if (extantIndex) fileBuffer[extantIndex] = JSONObj;
                     else fileBuffer.push(JSON.stringify({ fileName: fileName, fileData: JSONObj }));
@@ -548,7 +567,7 @@ parseFilesAndGenerateDragDrop = response =>                                     
                     let dataSlot = !i ? "S" : i;
                     if (i < namedFiles.length) {
                         let fileName = namedFiles[i];
-                        opStr += `<li data-slot="${dataSlot}" class="drag-drop" draggable="true">${fileName}</li>`
+                        opStr += `<li data-slot="${dataSlot}" class="drag-drop" draggable="true">${fileName}</li>`;
                     } else {
                         opStr += `<li data-slot="${dataSlot}"><label for="input" onMouseDown="setTargetSlot(${i})">No file specified (click to add!)</label></li>`;
                     }
@@ -560,9 +579,11 @@ parseFilesAndGenerateDragDrop = response =>                                     
 
 const primeDragDropListBehaviors = (listClass = 'drag-drop') => {                                  // ⓶ iterate UL and set up drag/drop on its children
     const bindDragDropListeners = (obj) => {
+        console.info("FUNCTION: bindDragDropListeners", "obj", obj);
         try {
 
             const drag = (e, trg = e.target, parList = trg.parentNode) => {
+                console.info("FUNCTION: drag", "e", e, "trg", trg, parList );
                 trg.className += " drag-sort-active";
                 let swapobj = document.elementFromPoint(event.clientX, event.clientY) || trg;
                 if (parList === swapobj.parentNode) {
@@ -571,7 +592,7 @@ const primeDragDropListBehaviors = (listClass = 'drag-drop') => {               
                     parList.insertBefore(trg, swapobj);
                 }
             };
-            const drop = (e, trg = e.target) => { e.preventDefault(); trg.className = trg.className.replace(/(\s+)?drag-sort-active(\s+)?/g, ""); }
+            const drop = (e, trg = e.target) => { e.preventDefault(); trg.className = trg.className.replace(/(\s+)?drag-sort-active(\s+)?/g, ""); };
 
             obj.addEventListener("drag", drag);
             obj.addEventListener("drop", drop);
@@ -580,7 +601,7 @@ const primeDragDropListBehaviors = (listClass = 'drag-drop') => {               
         } catch (err) {
             return false;
         }
-    }
+    };
     let ddObjects = sortableList.getElementsByClassName(listClass);
     Array.prototype.map.call(ddObjects,
         list => {
@@ -592,7 +613,7 @@ const primeDragDropListBehaviors = (listClass = 'drag-drop') => {               
     [...ddObjects].forEach(o => bindDragDropListeners(o));
     doneButton.disabled = false;
            // retain(
-}
+};
 
 const runReport = (obj) => {                                                                       // ⓷ user clicks Run It!; orchastrate remaining steps
     if (obj.disabled == true) return false;
@@ -600,7 +621,7 @@ const runReport = (obj) => {                                                    
     ISSUE_KEYS = [];
     DEBUG_DATA = [];
     getDistinctKeysFromFiles();
-}
+};
 
 const getDistinctKeysFromFiles = () => {                                                            // ⓸ iterate files in buffer create promise chain to read each in sequence
                // pBar(3, 'PROCESSING', 'aquamarine', 1, 0, 0);
@@ -609,16 +630,16 @@ const getDistinctKeysFromFiles = () => {                                        
             safeBuffer.pop();
         while(safeBuffer.indexOf('') != -1) 
             safeBuffer[safeBuffer.indexOf('')] = 'INTERPOLATED';
-        for (files in safeBuffer) {
-            let file = safeBuffer[files]
+        for (let files in safeBuffer) {
+            let file = safeBuffer[files];
             if(file !== 'INTERPOLATED'){
                 let keySet = JSON.stringify(file.fileData, ['Issue key'])              //    ... convert the resultant JSON to a string containing ONLY the 'Issue key' column...
-                    .match(/DIGTDEV-\d{4,6}/g)                                         //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
-                ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])]                  //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
+                    .match(/DIGTDEV-\d{4,6}/g);                                         //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
+                ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])];                  //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
             } else INTERPOL8D.push(files);
         }
 
-        concatinateDataFromSequencedFiles()
+        concatinateDataFromSequencedFiles();
     };
 
 const concatinateDataFromSequencedFiles = () => {                                                  // ⓹ iterate finalized buffer, and concatinated generate output data
@@ -631,7 +652,7 @@ const concatinateDataFromSequencedFiles = () => {                               
     
     let prevDay, prevData;
 
-    for (files in safeBuffer) {
+    for (let files in safeBuffer) {
         let file = safeBuffer[files];
         console.log('file', file);
         console.log('safeBuffer[files]', safeBuffer[files]);
@@ -646,40 +667,44 @@ const concatinateDataFromSequencedFiles = () => {                               
             });
             prevDay  = files;
             prevData = file;
-            prevData = Object.assign([], safeBuffer[files])
+            prevData = Object.assign([], safeBuffer[files]);
         }
     }
     Object.keys(COMBD_DATA).forEach(cbd=>{
-        INTERPOL8D.forEach(itp=>COMBD_DATA[cbd][itp] = '---')
+        INTERPOL8D.forEach(itp=>COMBD_DATA[cbd][itp] = '---');
     });
     
     processParentChildRelationships();
-}
+};
 
 const showRecordDetails = (e, targetLink=e.target) => {
+    console.info("FUNCTION: showRecordDetails", "e", e, "targetLink", targetLink);
     if(targetLink.tagName != 'A') targetLink = targetLink.parentNode;
     if(targetLink.tagName != 'A') return false;
     e.preventDefault(true);
     const destroyExtantDetailPreviewers = () => [...qsa('.extra-details')].forEach(pp=>pp.remove());
     destroyExtantDetailPreviewers();
-    window.addEventListener('click', destroyExtantDetailPreviewers)
+    window.addEventListener('click', destroyExtantDetailPreviewers);
     let gatheredDetails = quickIndex.getLatestDetails(targetLink.innerText);
-    flatData = '<div class="extra-details"><span>' + Object.entries(gatheredDetails).flat().join('</span><span>') + '</span></div>'
+    flatData = '<div class="extra-details"><span>' + Object.entries(gatheredDetails).flat().join('</span><span>') + '</span></div>';
     targetLink.insertAdjacentHTML('afterEnd', flatData);
-}
+};
 
 const processParentChildRelationships = () => {
+    console.info("FUNCTION: processParentChildRelationships");
     const createJIRALink = (IssueId, isParent=false) => {
+        // console.info("FUNCTION: createJIRALink", "IssueId", IssueId, "isParent", isParent);
         let hrefUrl = `href="https:       //jira.sprintdd.com/browse/${ IssueId }"' `;
         let clsName = `class="issue-${isParent ? 'parent-' : ''}link iss-hvr-lnk" `;
         let wndoTrg = `target="_blank" `;
         let issueID = IssueId.replace(/(\d+)/gi, '<b>$1</b>');
         
         return `<a ${hrefUrl + clsName + wndoTrg}>${issueID}</a>`;
-    }
+    };
 
     var toc = {};
     quickIndex = Object.entries(COMBD_DATA).map(e=>{
+        // console.info("FUNCTION: quickIndex");
         let  opIssueObj = {}
             ,issueKey   = e[0]
             ,issueData  = e[1]
@@ -692,36 +717,40 @@ const processParentChildRelationships = () => {
              key: issueKey
             ,iid: toc[validRow['Issue id']]
             ,pid: toc[validRow['Parent id']] || ''
-            ,sts: validRow['Status']
-            ,ass: validRow['Assignee']
-            ,sum: validRow['Summary']
+            ,sts: validRow.Status
+            ,ass: validRow.Assignee
+            ,sum: validRow.Summary
             ,vld: validRow
-        }
-        opIssueObj['pathLinks'] = (opIssueObj.pid === '') 
-                                ? createJIRALink(opIssueObj.iid) 
-                                : createJIRALink(opIssueObj.pid, true) 
-                                    + ' / ' + createJIRALink(opIssueObj.iid);
+        };
+        opIssueObj.pathLinks = (opIssueObj.pid === '') 
+                             ? createJIRALink(opIssueObj.iid) 
+                             : createJIRALink(opIssueObj.pid, true) 
+                                + ' / ' + createJIRALink(opIssueObj.iid);
         return opIssueObj;
     });
     quickIndex.toc = toc;
     quickIndex.pathedName = (key) => {
+        // console.info("FUNCTION: pathedName", "key", key);
         let results = quickIndex.find(qI => qI.key === key);
         return (results && results.pathLinks) ? results.pathLinks : key;
-    }
+    };
     quickIndex.lastStatus = (key) => {
+        // console.info("FUNCTION: lastStatus", "key", key);
         let results = quickIndex.find(qI => qI.key === key);
         return (results && results.sts) ? results.sts : '';
-    }
+    };
     quickIndex.getLatestDetails = (key) => {
+        // console.info("FUNCTION: getLatestDetails", "key", key);
         let results = quickIndex.find(qI => qI.key === key);
         return (results && results.vld) ? results.vld : false;
-    }
+    };
 
     constructPreviewAndReportData();
     
-}
+};
 const constructPreviewAndReportData = () => {                                                         // ⓺ iterate concatinated output data, look for concern-suggestive trends and build our markup
     const ensureValidValue = (variable, value, altVal=value, tolerateEmptyStr=false) => {
+        console.info("FUNCTION: ensureValidValue", "variable", variable, "value", value, "altVal", altVal, "tolerateEmptyStr", tolerateEmptyStr);
         return  (  
                     typeof(value) === undefined 
                     || value == null 
@@ -730,10 +759,10 @@ const constructPreviewAndReportData = () => {                                   
                 ) ? ((altVal !== value) ? altVal : variable)
                   : value;
 
-    }
+    };
     console.log('constructPreviewAndReportData', COMBD_DATA);
     let MRKUP = [],                                                                                    // Collection of markup that'll we'll used to render both the HTML preview and the ultimate XLSX file output
-        _I_  = '||--||'                                                                                // The string delimiter we're using to distinguish one chunk of data from another. Our "Split-target"
+        _I_  = '||--||';                                                                                // The string delimiter we're using to distinguish one chunk of data from another. Our "Split-target"
     Object.entries(COMBD_DATA).forEach((dataRecord, ind) => {                                          // Iterate across each Issue (the "rows") that we've ingested data for, to extract the following data:
 
                // _(dataRecord);
@@ -755,7 +784,7 @@ const constructPreviewAndReportData = () => {                                   
             ,newST = '';                                                                                //   - Current Status (in this case, we don't care what the previous one was, but need it at the issue scope)
 
         issueData.forEach((datRec, ix) => {                                                            // ...Iterate the issue's collected data (the "columns"), gathering...
-            newRE = (datRec === '---') ? '---' : (datRec['Remaining Estimate']  || '');           
+            newRE = (datRec === '---') ? '---' : (datRec['Remaining Estimate']  || '---?');           
             if(newRE === '---'){
                 ROWOP = ROWOP + _I_ + '---' ;                                               // Tack the current day being iterated past's Est. hours remaining onto the end of the issue being iterated past
             }else
@@ -766,28 +795,28 @@ const constructPreviewAndReportData = () => {                                   
             ROWOP += _I_ + 'XxXxX';
         }
         MRKUP.push(ROWOP.split(_I_));                                                                  // Convert it to an iterable collection and push it onto the bottom of the output markup stack
-    })
+    });
 
     pBar(4, 'GENERATING OUTPUT... DONE!', 'LimeGreen', 0.1, 0.1, 0.1);                                 // Show generating output progress meter
     let colHeaders  = ['Current Status','Issue ID', 'Seed Day']                  // Define always-present column headers (| Current Status | JIRA ID | Parent ID | Issue ID | Seed Day |)
         ,dateArr     = [];                                                                               // Array holding the labels for each column, each of which represent the file being examined
     if (dateField.checkValidity()) {                                                                   // Since we can't date-stamp a column if the user didn't give us a date, see if they did. IF they did...
-        if(colHeaders[4] === 'Seed Day') colHeaders[4] += "<br>" + dateField.value                     // Append the Seed Date to the seed column header (if currently unset)
+        if(colHeaders[4] === 'Seed Day') colHeaders[4] += "<br>" + dateField.value;                     // Append the Seed Date to the seed column header (if currently unset)
         let startDate = new Date(dateField.value).getTime();                                           // Get the epoch value of the StartDate
         let dayCt = 1;                                                                                 // Increment the number of days we're venturing forth from the start date. This is used to ignore weekends
         while (dateArr.length < namedFiles.length - 1 && dayCt < namedFiles.length * 2) {                                                    // Keep going until we have at least 10 days
             let incrementedDate = new Date(startDate + (dayCt * 86400000));                            // Add 24 hours to the daying bering iterated across
             if (incrementedDate.getDay() > 0 && incrementedDate.getDay() < 6)                          // If the now-incremented date falls on a M-F...
                 dateArr.push('Day ' + (dateArr.length + 1) + '<br />' +                                //    ... add both the day number... 
-                                incrementedDate.toLocaleDateString())                                  //    ... and the date that works out to to the stack.
+                                incrementedDate.toLocaleDateString());                                  //    ... and the date that works out to to the stack.
             dayCt++;                                                                                   // Increment the day counter whether we added to stack or not (since we skip over weekends and holidays)
         }
     } else {
         for(i=1; i<= namedFiles.length-1; i++) 
         if(i > safeBuffer.length-1) 
-            dateArr.push('XXXDay ' + i)
+            dateArr.push('XXXDay ' + i);
         else
-            dateArr.push('Day ' + i)
+            dateArr.push('Day ' + i);
     }
     
     colHeaders = [...colHeaders, ...dateArr];
@@ -795,19 +824,20 @@ const constructPreviewAndReportData = () => {                                   
                                 '<table class="preview-table" cellspacing="0">'
         ,hdrMarkup =                '<thead><tr><th>' + colHeaders.join('</th><th>').replace(/>XXXDay/g, ' class="dim">Day') + 
                                     '</th>'
-        ,rowMarkup =                '</tr></thead><tbody>'
+        ,rowMarkup =                '</tr></thead><tbody>';
     MRKUP.forEach(o => rowMarkup +=    '<tr><td>' + 
                                             o.join('</td><td>').replace(/\.00h|\.0h/g, 'h').replace(/>XxXxX/g, ' class="dim">') + 
                                         '</td></tr>');
     rowMarkup +=                   '</tbody>';
     tblMarkup +=                    hdrMarkup + rowMarkup + 
-                                '</tbody>'
+                                '</tbody>';
     
-    while (previewPanel.childElementCount > 0){ previewPanel.childNodes[0].remove() }
+    while (previewPanel.childElementCount > 0){ previewPanel.childNodes[0].remove(); }
     let cbPanel = document.getElementById('filter-ckbox-panel');
     if(cbPanel) cbPanel.remove();
 
-    previewPanel.insertAdjacentHTML('beforeEnd', tblMarkup);
+    previewPanel.insertAdjacentHTML('beforeEnd', tblMarkup.replace(/<td>0\*h<\/td>/g, '<td class="major-alert">0*h</td>'));
+    // previewPanel.insertAdjacentHTML('beforeEnd', tblMarkup.replace(/<td>0\*h<\/td>/g, '<td class="major-alert">0*h</td>'));
 
     let linkHandlers = [...qsa('a.iss-hvr-lnk')].forEach(lnk=>lnk.addEventListener('contextmenu', showRecordDetails));
 
@@ -815,21 +845,22 @@ const constructPreviewAndReportData = () => {                                   
 
 
 
-    postProcessData()
+    postProcessData();
 
 
 
 
     let interpString = '', 
         genLength = RPTDATA[0].length;
-    INTERPOL8D.forEach(itpCol=>interpString += `td:nth-of-type(-n + ${itpCol - -3}):nth-last-of-type(-n + ${genLength - 2 - itpCol}),`);
+    INTERPOL8D.forEach(itpCol=>interpString += `td:nth-of-type(-n + ${itpCol + 3}):nth-last-of-type(-n + ${genLength - 2 - itpCol}),`);
            // interpString += `td:nth-of-type(-n + ${INTERPOL8D[0] - -3}):nth-last-of-type(-n + ${genLength - 2 - INTERPOL8D[0]}),`;
-    _(interpString)
+    _(interpString);
     //let fx=[...qsa((interpString.slice(0,-1)))].forEach(itpCell=>itpCell.className+=' interpolated-value');
     return true;
-}
+};
 
 const createReportData = () => {
+    console.info("FUNCTION: createReportData");
     tableNode = document.querySelector('.preview-table');
     tHead = [...tableNode.querySelectorAll('th')].map(th=>th.innerText);
     tBody = [...tableNode.querySelectorAll('tr')].map(tr=>{
@@ -837,12 +868,13 @@ const createReportData = () => {
         opObj = opObj.flatMap(f=>f.innerText);
         
         return opObj;
-    })
+    });
     tBody[0]=tHead;
     RPTDATA = Object.assign([], tBody);
-}
+};
 
 const reFilterPreview = (obj) => {
+    console.info("FUNCTION: reFilterPreview", "obj", obj);
     if(obj != null){
         let targetClass = obj.id.replace('chk-','.row-status-');
         [...document.querySelectorAll(targetClass)].forEach(row=>{
@@ -850,9 +882,9 @@ const reFilterPreview = (obj) => {
         });
     }
     let totDisp = 0;
-    [...qsa('.status-filter-checkboxes')].forEach(cb => { totDisp += cb.checked ? (cb.value / 1) : 0});
+    [...qsa('.status-filter-checkboxes')].forEach(cb => { totDisp += cb.checked ? (cb.value / 1) : 0;});
     document.getElementById('record-ct').innerText = totDisp + ' records shown.';
-}
+};
 
 let rowNodes       = [];
 let colNodes       = [];
@@ -880,15 +912,11 @@ const postProcessData   = () => {
                 uniqueStatuses.push(row[0].innerText);
             }
             return rows;
-        })
-    }).then(()=>{
+        });
+    }).then((res)=>{
+        console.info("THENABLE -> ", "res", res);
         hdrRowNode  = rowNodes.splice(0,1)[0];
-        console.log('hdrRowNode', hdrRowNode);
         hdrColNodes = [...hdrRowNode.childNodes];
-        console.log('hdrColNodes', hdrColNodes);
-        // _(hdrRowNode)
-        // hdrColNodes = colNodes.shift();
-
         console.log('hdrRowNode', hdrRowNode);
         console.log('rowNodes', rowNodes);
         console.log('hdrColNodes', hdrColNodes);
@@ -904,7 +932,8 @@ const postProcessData   = () => {
         });
         document.getElementById('output-panels').insertAdjacentHTML('beforeEnd', '<aside id="filter-ckbox-panel" class="status-filters"><h2>Currently Showing:</h2><span id="record-ct"></span>' + dispCkBoxes + '</aside>');
         reFilterPreview();
-    }).then(()=>{
+    }).then((res)=>{
+        console.info("THENABLE -> ", "res", res);
         // Interpolate any missing data into its respective columns, from left to right, top to bottom.
             colNodes.forEach((reportRow, rowIndex) => {
                 reportRow.forEach((cols, colIndex)=>{
@@ -912,11 +941,11 @@ const postProcessData   = () => {
                     let cell = colNodes[rowIndex][colIndex];//qs(`.preview-table tr:nth-of-type(${rowIndex}) td:nth-of-type(${colIndex+1})`);
                     // _(cell == colNodes[rowIndex][colIndex]);
                     if(col==='---'){
-                    cell.className = 'interpolated-value'
+                    cell.className = 'interpolated-value';
                     let p = cell.previousSiblingElement;
-                    var pCell 	 = cell.previousSibling,
+                    var pCell    = cell.previousSibling,
                         pCellVal = pCell.innerText.replace(/h/g, '') / 1,
-                        nCell 	 = cell.nextSibling,
+                        nCell    = cell.nextSibling,
                         nCellVal = nCell.innerText;
                     while(nCell && nCellVal === '' || nCellVal === '---'){ 
                         if(nCell && nCell.innerText) {
@@ -941,39 +970,126 @@ const postProcessData   = () => {
         });
     }).then(()=>{ // Analysis
         const num = val => val ? parseInt(val.replace(/\D/gi, '')) : 0;
-
+        const formatFlags = (type, flagColl) => (!Array.isArray(flagColl) || flagColl.length === 0) ? '' : '<a href="#" class="flag-icons ' + type + '-icon"></a><dl><dt>' + flagColl.join('</dd><dt>').replace(/\|/g, '</dt><dd>') + '</dd></dl>';
+        
+        
         rowNodes.forEach((rowObj, rowIdx) => {
-            let row = rowObj.children;
-            let devHasBegun = false;
-            let seedStatus = row[0].innerText;
-            let seedStoryNumber = row[1].innerText;
-            let seedHours = num(row[2].innerText);
-            let info = warn = error = critical = '';
-            for(var colIdx=2; colIdx<row.length; colIdx++){
-                let col = row[colIdx];
-                console.log(row.length, seedHours, num(col.innerText));
-                if(!devHasBegun && seedHours !== num(col.innerText)) devHasBegun = true;
-            }
-            if(devHasBegun && /definition/i.test(seedStatus)) info += 'Wrong Status';
+            let minor           = [],
+                medium          = [],
+                major           = [],
+                critical        = [];
 
-            if(info !== '') row[0].innerHTML += `<a href="#" class="info-icon" data-text="${seedStoryNumber + ': ' + info}">i</a>`;
+            let row             = rowObj.children,                                                                              // NodeList of the cells' DOM objects for the row being examined
+                rowHrs          = rowObj.innerText.replace(/[A-Z-]{8}\d{5}/gi, '').replace(/(\d+)h/gi, '$1 ').match(/\d+/gi),  // Array of hours representing all columns in this row (ex: [8, 8, 7, 6, 4, 2, 0, 0, 0, 0, 0])
+                totHrsCols      = rowHrs.length,                                                                                // Number of hours columns being examined (ex: 11, for a std length itr)
+                seedHours       = num(rowHrs[0]),                                                                               // Number of hours in seed column (ex: 8, for an 8h seed)
+                rowHoursFlat    = rowHrs.join('').replace(/ /g,''),
+                last72HoursFlat = rowHrs.slice(-3).join('').replace(/ /g,''),
+                allZeroes       = new Array(totHrsCols).fill(0).join(''),                                                       // String of zeroes whose length is number of hours cols (ex: "00000000000" if a std length itr)
+                allSeedValue    = new Array(totHrsCols).fill(seedHours).join(''),                                               // String of seed values whose length is number of hours cols (ex: "88888888888" for an 8h seed)
+                allItrZeroedOut = rowHoursFlat === allZeroes;
+                
+
+            let finalDaysHours  = num(rowHrs[totHrsCols-1]),
+                seedStoryNumber = row[1].innerText,
+                seedStatus      = row[0].innerText;
+
+            let devHasBegun     = false,
+                newStoryMidItr  = false,
+                delStoryFromItr = false,
+                noChangeFor72   = rowHrs.slice(-3).join('') === new Array(3).fill(finalDaysHours).join(''),
+                noChangeInItr   = rowHoursFlat === new Array(totHrsCols).fill(finalDaysHours).join('').replace(/ /g, ''),
+                zeroesAllItr    = parseInt(rowHrs.join('')) === 0;
+                runningValues   = seedHours;
+
+            //console.log("|||", seedStoryNumber, "rowHrs:", rowHrs,  "totHrsCols:", totHrsCols,  "seedHours:", seedHours,  "allZeroes:", allZeroes, "rowHoursFlat:", rowHoursFlat,  "last72HoursFlat:", last72HoursFlat,  "allSeedValue:", allSeedValue, "finalDaysHours:", finalDaysHours,  "seedStatus:", seedStatus,  "devHasBegun:", devHasBegun,  "noChangeFor72:", noChangeFor72,  "noChangeInItr:", noChangeInItr,  "zeroesAllItr:", zeroesAllItr,  "runningValues:", runningValues)
+
+            /*
+            , concernColors = ['Transparent', 'DimGray', 'GreenYellow', 'Gold', 'Orange', 'Red']            // 0-indexed Color-Codings used for the 
+    , concernFlags  = { // CONCERN CODEX
+                        // TRIVIAL CONCERN: An issue weighted 0-1 indicate anomolies that
+                        // are visible within the data that are known and being accounted
+                        // for. Scrum masters may need to explain the blip to THEIR boss.
+                        "HID":    {"weight": 0, "concern": "Hidden By ScrumMaster" },               // Employed at scrum master's discretion to remove a concern from being flagged
+                        "ATT":    {"weight": 1, "concern": "Related to Attendance" },               // Assigned developer is AWOL/MIA/on leave/in the med bay. Occasionally presumed dead.
+                        "HOL":    {"weight": 1, "concern": "Related to Holiday" },                  // Excluding a day iteration-wide for company holiday/operational shutdown
+
+                        // MINOR CONCERN: Issues weighted at 2- less usually indicates an
+                        // error in procedure, in JIRA operation, or on the dev, assigned
+                        // the issue. Scrum masters should inquire if it keeps happening.
+                        "EST":    {"weight": 2, "concern": "Bad Estimate" },                        // "Build a global satellite network, huh? No problem. 9 lines of code, 16 hours, tops."
+                        "AUC":    {"weight": 2, "concern": "Assigned User Changed" },               // "Huh? Bob made an unsubstantiated, unreported offer to handle it while I was in Figi!" 
+                        "UER":    {"weight": 2, "concern": "User Error" },                          // "Yeah, lemme just open the story real qui- SH*T! Where did it go!? ^&*%$^%$&* JIRA!"
+                        "SCR":    {"weight": 2, "concern": "Scope Creep" },                         // "Hey, so marketing wants to add one more little thing to the user-facing cart portal"
+                        "ASS":    {"weight": 2, "concern": "Improperly Assigned" },                 // Likely curprits: "Oh, THAT Deepak?!" and "Why is this assigned to ME!? Stupid JIRA."
+                        "PID":    {"weight": 2, "concern": "Parent ID Changed" },                   // "IO-11110 DOES look an awful lot like IO-11101"... mistakes happen.
+                        "PID":    {"weight": 2, "concern": "Inconsistent Status" },                 // Status makes no sense (e.g. task In Definition, but hours burned).
+
+                        // MEDIUM CONCERN: Issues weighted at 3+ indicate an issue who is
+                        // out of place, whose hours aren't (or, temporarily, CANNOT) get
+                        // burned down, or admin error. These MAY/MAY NOT be impactful on
+                        // the burndown. Scrum master should investigate & maybe inquire.
+                        "USS":    {"weight": 3, "concern": "Unestimated at Sprint Start" },         // Story had no hour estimate when Sprint began
+                        "STK":    {"weight": 3, "concern": "Unable to Begin" },                     // Story is precluded from even getting started, Maybe prematurely added to iteration?
+                        "STR":    {"weight": 3, "concern": "Bad/Mistaken Story Inclusion" },        // Almost always user error. Story got added to iteration on accident. 
+                        "HRS":    {"weight": 3, "concern": "Hours Not Being Burned" },              // Almost always user error. Developer working a story simply hasn't reported the work/
+                        "NPR":    {"weight": 3, "concern": "No Progress Reported" },                // Developer has reported no progress on an issue for 3+ days. COULD be a warning flag
+                        "DEP":    {"weight": 3, "concern": "Unsatisfied Dependency" },              // Basically, the developer must complete another task first, and is blocking himself. 
+                        "TOS":    {"weight": 3, "concern": "Issue Changed to Subtask" },            // Former Issue downgraded to subtask.
+
+                        // HIGH CONCERN: Issues weighted 4+ indicate a change in the tot.
+                        // estimated hours for the iteration, and therefore have a DIRECT 
+                        // impact on the burndown. Scrum master needs to perform inquiry.
+                        "TOI":    {"weight": 4, "concern": "Subtask Changed to Issue" },            // Former Subtask elevated to full Issue.
+                        "NEW":    {"weight": 4, "concern": "New Story Added to Iteration" },        // Issue just appeared in iteration.
+                        "DEL":    {"weight": 4, "concern": "Story Deleted" },                       // Issue deleted/removed from iteration.
+
+                        // CRITICAL CONCERN: Issues weighted at 5 typically indicate some
+                        // flavor of impending disaster or serious problem on the flagged
+                        // issue. Scrum masters should be loaded for bear & hunting fixes
+                        "XXX":    {"weight": 5, "concern": "Blocking Issue" },                      // ISSUE BLOCKED FROM FURTHER PROGRESS. Highest source of concern
+                        // BUNDLES
+                        "UNCHGD": {"weight": 2, "collection": "XXX,NPR,STK,HOL,ATT,HRS",     "concern": "No changes made to story for current iteration" },
+                        "HRSINC": {"weight": 3, "collection": "EST,UER,SCR,STR,STK,NEW,ASS", "concern": "Hours increased from day prior!" },
+                        "UNCHG3": {"weight": 4, "collection": "XXX,NPR,STK,HOL,ATT,HRS",     "concern": "No changes made to story for 3 days!" }
+                    }
+                    */
+            for(var colIdx=row.length-1; colIdx>=2; colIdx--){
+                let col = row[colIdx];
+
+                if(colIdx==row.length-1 && col.innerText.indexOf('*') !== -1) delStoryFromItr = true;
+                if (!delStoryFromItr   && col.innerText.indexOf('*') !== -1) newStoryMidItr  = true;
+
+                if(!devHasBegun && seedHours !== num(col.innerText))         devHasBegun     = true;
+            }
+            if(!noChangeInItr && devHasBegun && /DEFINITION/i.test(seedStatus)) minor.push('Wrong Status|Work has begun on this story, therefore it must be out of definition phase!');
+            if(seedHours === 0 && !/COMPLETED|DEMO/i.test(seedStatus)) medium.push('Horus not set!|The iteration was begin without an hour estimate being set for this story!');
+            else if(noChangeInItr && !/COMPLETED|DEMO/i.test(seedStatus)) medium.push('No movement!|There has been no change in the status/hours burned for this story for the full period of the iteration!');
+            if(!noChangeInItr && noChangeFor72) medium.push('Development Stalled!|There has been no change in the status/hours burned for this story in the last 3 days!');
+            if(newStoryMidItr) major.push('Story added mid-iteration!|This story which did not exist on the Seed Day has appeared in the iteration!');
+            if(delStoryFromItr) major.push('Story removed from iteration!|This story, which has been tracked from the Seed Day no longer appears in the iteration!');
+
+            row[0].innerHTML += formatFlags('major', major);
+            if(major && major.length == 0) row[0].innerHTML += formatFlags('medium', medium);
+            if(major && major.length == 0 && medium && medium.length == 0) row[0].innerHTML += formatFlags('minor', minor);
         });
     }).then(()=>{ // Sum up our totals
         function round_to_precision(x, precision) {
+            console.info("ES5 FUNCTION: round_to_precision", "x", x, "precision", precision);
             var y = +x + (precision === undefined ? 0.5 : precision/2);
             return y - (y % (precision === undefined ? 1 : +precision));
         }
         let opStr = "";
         let idealRow = [];
         totalRow.length = hdrColNodes.length;
-        idealRow.length = hdrColNodes.length
-        totalRow = totalRow.fill(0, 2, hdrColNodes.length)
-        idealRow = idealRow.fill(0, 2, hdrColNodes.length)
+        idealRow.length = hdrColNodes.length;
+        totalRow = totalRow.fill(0, 2, hdrColNodes.length);
+        idealRow = idealRow.fill(0, 2, hdrColNodes.length);
         for(var c=2; c<hdrColNodes.length; c++){
             rowNodes.forEach((row, rowIdx) => {
-                let cell = row.childNodes
+                let cell = row.childNodes;
                 if(cell != null && cell[c] != null && cell[c].innerText){
-                    cell = cell[c].innerText.replace(/h/g, '');
+                    cell = cell[c].innerText.replace(/\D/g, '');
                     totalRow[c] = (totalRow[c] / 1) + (cell / 1);
                 }
             });
@@ -982,7 +1098,7 @@ const postProcessData   = () => {
         let seedTotal = totalRow[2];
         let daysToDiv = hdrColNodes.length - 2;
         if(seedTotal && !isNaN(seedTotal)) daysToDiv = round_to_precision(seedTotal / (daysToDiv - 0.5), 0.25);
-        for(var c=2; c<idealRow.length; c++){
+        for(c=2; c<idealRow.length; c++){
             idealRow[c] = seedTotal;
             seedTotal  -= daysToDiv;
         }
@@ -994,14 +1110,13 @@ const postProcessData   = () => {
         opStr += '  <td>' + totalRow.slice(2).join('h</td><td>') + 'h</td>';
         opStr += '</tr>';
         qs('.preview-table tbody').insertAdjacentHTML('beforeEnd', opStr);
-    }).then(()=>{
+    }).then((res)=>{
+        console.info("THENABLE -> ", "res", res);
         totalRow = [...qs('.total-row').childNodes];
-        console.log('totalRow', totalRow);
         idealRow = [...qs('.ideal-row').childNodes];
-        console.log('idealRow', idealRow);
-    }).then(()=>{
+    }).then((res)=>{
+        console.info("THENABLE -> ", "res", res);
         for(var c=2; c<idealRow.length; c++){
-            console.log('idealRow', idealRow[c]);
             if(totalRow[c].innerText !== null && idealRow[c].innerText !== null){
                 let totalCell = totalRow[c]
                    ,totalVals = totalCell.innerText.replace(/h/g, '') / 1
@@ -1020,7 +1135,7 @@ const postProcessData   = () => {
         }
 
     });
-}
+};
 
 
 
@@ -1029,26 +1144,28 @@ let ongoing = false, ongoingtimer=null,
     offset  = (trg.getBoundingClientRect().height - 2);
 
 const syncSpinner = (hardValue=null) => {
+    console.info("FUNCTION: syncSpinner", "hardValue", hardValue);
     if(hardValue != null && !isNaN(hardValue)) trg.placeholder = hardValue;
     let newVal    = trg.placeholder / 1, 
         control   = trg.parentElement;
     offset        =(trg.getBoundingClientRect().height + 2);
     control.style = "--value:" + (trg.placeholder * offset * -1) + "px";
     resizeBufferArraysAndRebuildSlots();
-}
+};
 
 const incDec = (dir, mechanical=true, dly=750, scale=1) => {
+   console.info("FUNCTION: incDec", "dir", dir, "mechanical", mechanical, "dly", dly, "scale", scale);
    
    ongoing=true;
    dly = (dly<50) ? 50 : Math.log2(dly) * dly/10.4;
    let adjVal = dir * scale + parseInt(trg.placeholder);
    if(adjVal <= 1) adjVal = 1;
-   if(adjVal > 60) adjVal=60;;
+   if(adjVal > 60) adjVal=60;
    trg.placeholder = adjVal;
    syncSpinner();
    mechanical = false;
-   if(ongoing && !mechanical) ongoingtimer=window.setTimeout(()=>incDec(dir, false, dly, scale), dly)
-}
+   if(ongoing && !mechanical) ongoingtimer=window.setTimeout(()=>incDec(dir, false, dly, scale), dly);
+};
 
 const released = () => window.clearTimeout(ongoingtimer);
 

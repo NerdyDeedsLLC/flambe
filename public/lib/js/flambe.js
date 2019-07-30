@@ -7,6 +7,7 @@
    */
 
   function splitLines(text, lineEnding) {
+    console.info("ES5 FUNCTION: splitLines", "text", text, "lineEnding", lineEnding);
     var strLineEnding = lineEnding.toString(),
         bareRegExp = strLineEnding.substring(1, strLineEnding.lastIndexOf('/')),
         modifiers = strLineEnding.substring(strLineEnding.lastIndexOf('/') + 1);
@@ -24,6 +25,7 @@
 
 
   function isEmptyLine(line) {
+    console.info("ES5 FUNCTION: isEmptyLine", "line", line);
     return line.replace(/^[\s]*|[\s]*$/g, '') === '';
   }
   /**
@@ -32,6 +34,7 @@
 
 
   function removeEmptyLines(lines) {
+    console.info("ES5 FUNCTION: removeEmptyLines", "lines", lines);
     var i;
 
     for (i = 0; i < lines.length; i++) {
@@ -47,6 +50,7 @@
 
 
   function defragmentLineTokens(lineTokens, delimiter) {
+    console.info("ES5 FUNCTION: defragmentLineTokens", "lineTokens", lineTokens, "delimiter", delimiter);
     var i, j, token, quote;
 
     for (i = 0; i < lineTokens.length; i++) {
@@ -81,6 +85,7 @@
 
 
   function trimWhitespace(lineTokens) {
+    console.info("ES5 FUNCTION: trimWhitespace", "lineTokens", lineTokens);
     var i;
 
     for (i = 0; i < lineTokens.length; i++) {
@@ -93,6 +98,7 @@
 
 
   function trimQuotes(lineTokens) {
+    console.info("ES5 FUNCTION: trimQuotes", "lineTokens", lineTokens);
     var i; // TODO: allow for escaped quotes
 
     for (i = 0; i < lineTokens.length; i++) {
@@ -109,6 +115,7 @@
 
 
   function tokenizeLine(line, delimiter) {
+    console.info("ES5 FUNCTION: tokenizeLine", "line", line, "delimiter", delimiter);
     var lineTokens = line.split(delimiter);
     defragmentLineTokens(lineTokens, delimiter);
     trimWhitespace(lineTokens);
@@ -121,6 +128,7 @@
 
 
   function tokenizeLines(lines, delimiter) {
+    console.info("ES5 FUNCTION: tokenizeLines", "lines", lines, "delimiter", delimiter);
     var i,
         tokenizedLines = [];
 
@@ -136,6 +144,7 @@
 
 
   function assembleObjects(tokenizedLines) {
+    console.info("ES5 FUNCTION: assembleObjects", "tokenizedLines", tokenizedLines);
     var i,
         j,
         tokenizedLine,
@@ -176,6 +185,7 @@
 
 
   CSV.parse = function (text, lineEnding, delimiter, ignoreEmptyLines) {
+    console.info("ES5 FUNCTION: CSV.parse", "text", text, "lineEnding", lineEnding, "delimiter", delimiter, "ignoreEmptyLines", ignoreEmptyLines);
     var config = {
       lineEnding: /[\r\n]/,
       delimiter: ',',
@@ -251,6 +261,7 @@ const d = document // ⥱ Alias - document
 ,
       pBar = (id, title, barColor, processor = 1, seq = 0, bc = 0) => // ⍟ HLPfn - Generates a progress bar
 new Promise(conclude => {
+  console.info("PROMISE FUNCTION...");
   id = 'pbar-' + id;
   let oldBar = qs('#' + id);
   if (oldBar) oldBar.remove();
@@ -374,7 +385,7 @@ let fileBuffer = [] // Stores copies of the file input's data collection (req'd 
     "concern": "Parent ID Changed"
   },
   // "IO-11110 DOES look an awful lot like IO-11101"... mistakes happen.
-  "PID": {
+  "ICS": {
     "weight": 2,
     "concern": "Inconsistent Status"
   },
@@ -459,12 +470,12 @@ let fileBuffer = [] // Stores copies of the file input's data collection (req'd 
     "weight": 4,
     "collection": "XXX,NPR,STK,HOL,ATT,HRS",
     "concern": "No changes made to story for 3 days!"
-  } // APPLICATION SOURCE ===================================================================== 🅔🅧🅔🅒🅤🅣🅘🅞🅝 🅢🅔🅠🅤🅔🅝🅒🅔 indicated by encircled digits (➀-➈)
-
-};
+  }
+}; // APPLICATION SOURCE ===================================================================== 🅔🅧🅔🅒🅤🅣🅘🅞🅝 🅢🅔🅠🅤🅔🅝🅒🅔 indicated by encircled digits (➀-➈)
 
 init = () => {
   // ⓿ Initiate application, chaining steps 1-3 above to file input's onChange
+  console.info("\n\n====== INIT ======\n");
   iterationName.value = recall('iterationName', ''); // Seed the value set for the iteration's name (or blank if none is stored)...
 
   iterationName.onkeyup = () => {
@@ -492,10 +503,9 @@ init = () => {
   fileBuffer = recall('fileBuffer', null); // Try and retrieve the fileBuffer in one exisits in Rote memories...
 
   fileBuffer = fileBuffer == null ? [] : JSON.parse(fileBuffer); // ... and, if one does, rehydrate it. Otherwise, establish it as a new array.
+  // console.log('fileBuffer', fileBuffer);
 
-  console.log('fileBuffer', fileBuffer);
-  let startingLength = 1;
-  console.log('fileBuffer', typeof fileBuffer, fileBuffer, fileBuffer.length);
+  let startingLength = 1; // console.log('fileBuffer', typeof(fileBuffer), fileBuffer, fileBuffer.length);
 
   if (fileBuffer.length > 0) {
     // If we DID manage to restore a previous buffer...
@@ -517,6 +527,8 @@ init = () => {
   resizeBufferArraysAndRebuildSlots();
   syncSpinner();
   input.addEventListener('change', e => {
+    console.info("EVENT: input.addEventListener('change') e", e);
+
     if (targetSlot == null || input.files.length > 1) {
       // (Indicating we're dealing with a BULK upload)
       return pBar(1, "READING...✓", "teal", 0.1, 0, 0).then(() => pBar(2, 'PARSING...✓', 'DarkTurquoise', 0.1, 0.1, 0.1)).then(parseFilesAndGenerateDragDrop).then(primeDragDropListBehaviors);
@@ -527,6 +539,7 @@ init = () => {
 };
 
 insertFileNodeBetween = (e, trgObj = e.target) => {
+  console.info("FUNCTION: insertFileNodeBetween", "e", e, "trgObj", trgObj);
   console.log(e, trgObj);
 
   if (trgObj.tagName !== 'LI') {
@@ -542,6 +555,7 @@ insertFileNodeBetween = (e, trgObj = e.target) => {
 };
 
 removeFileAtIndex = (trgBtn, isFilled) => {
+  console.info("FUNCTION: removeFileAtIndex", "trgBtn", trgBtn, "isFilled", isFilled);
   ind = trgBtn.dataset.index;
 
   if (findLastIndexOf(namedFiles, /.+/) === 0) {
@@ -565,6 +579,7 @@ removeFileAtIndex = (trgBtn, isFilled) => {
 };
 
 resizeBufferArraysAndRebuildSlots = (newLen = trg.placeholder / 1 + 1) => {
+  console.info("FUNCTION: resizeBufferArraysAndRebuildSlots", newLen);
   if (typeof namedFiles == 'undefined' || isNaN(newLen) || newLen < 0) return false;
   let oldLen = namedFiles && namedFiles.length ? namedFiles.length / 1 : 0,
       opStr = '';
@@ -629,11 +644,15 @@ addOrReplaceSingleFileAndParse = (slotId = targetSlot, liObj = qs('#file-slot-' 
   _("WORKING WITH PROVIDED FILE ", fileName, namedFiles.indexOf(fileName));
 
   const readUploadedFileAsText = fileObj => {
+    console.info("FUNCTION: readUploadedFileAsText", "fileObj", fileObj);
+
     _("readUploadedFileAsText");
 
     let reader = new FileReader();
     return new Promise(resolve => {
       reader.onload = () => {
+        console.info("FUNCTION: onload");
+
         _('onload Event fired...');
 
         resolve(reader.result);
@@ -674,6 +693,7 @@ new Promise(conclude => {
     namedFiles.push(fileName);
 
     const appendToBuffer = (JSONObj, fileName = null) => {
+      console.info("FUNCTION: appendToBuffer", "JSONObj", JSONObj, fileName);
       let extantIndex = fileBuffer.find(b => b.fileName === fileName);
       if (extantIndex) fileBuffer[extantIndex] = JSONObj;else fileBuffer.push(JSON.stringify({
         fileName: fileName,
@@ -719,8 +739,11 @@ new Promise(conclude => {
 const primeDragDropListBehaviors = (listClass = 'drag-drop') => {
   // ⓶ iterate UL and set up drag/drop on its children
   const bindDragDropListeners = obj => {
+    console.info("FUNCTION: bindDragDropListeners", "obj", obj);
+
     try {
       const drag = (e, trg = e.target, parList = trg.parentNode) => {
+        console.info("FUNCTION: drag", "e", e, "trg", trg, parList);
         trg.className += " drag-sort-active";
         let swapobj = document.elementFromPoint(event.clientX, event.clientY) || trg;
 
@@ -773,7 +796,7 @@ const getDistinctKeysFromFiles = () => {
 
   while (safeBuffer.indexOf('') != -1) safeBuffer[safeBuffer.indexOf('')] = 'INTERPOLATED';
 
-  for (files in safeBuffer) {
+  for (let files in safeBuffer) {
     let file = safeBuffer[files];
 
     if (file !== 'INTERPOLATED') {
@@ -797,7 +820,7 @@ const concatinateDataFromSequencedFiles = () => {
   });
   let prevDay, prevData;
 
-  for (files in safeBuffer) {
+  for (let files in safeBuffer) {
     let file = safeBuffer[files];
     console.log('file', file);
     console.log('safeBuffer[files]', safeBuffer[files]);
@@ -824,6 +847,7 @@ const concatinateDataFromSequencedFiles = () => {
 };
 
 const showRecordDetails = (e, targetLink = e.target) => {
+  console.info("FUNCTION: showRecordDetails", "e", e, "targetLink", targetLink);
   if (targetLink.tagName != 'A') targetLink = targetLink.parentNode;
   if (targetLink.tagName != 'A') return false;
   e.preventDefault(true);
@@ -838,7 +862,10 @@ const showRecordDetails = (e, targetLink = e.target) => {
 };
 
 const processParentChildRelationships = () => {
+  console.info("FUNCTION: processParentChildRelationships");
+
   const createJIRALink = (IssueId, isParent = false) => {
+    // console.info("FUNCTION: createJIRALink", "IssueId", IssueId, "isParent", isParent);
     let hrefUrl = `href="https:       //jira.sprintdd.com/browse/${IssueId}"' `;
     let clsName = `class="issue-${isParent ? 'parent-' : ''}link iss-hvr-lnk" `;
     let wndoTrg = `target="_blank" `;
@@ -848,6 +875,7 @@ const processParentChildRelationships = () => {
 
   var toc = {};
   quickIndex = Object.entries(COMBD_DATA).map(e => {
+    // console.info("FUNCTION: quickIndex");
     let opIssueObj = {},
         issueKey = e[0],
         issueData = e[1],
@@ -859,27 +887,30 @@ const processParentChildRelationships = () => {
       key: issueKey,
       iid: toc[validRow['Issue id']],
       pid: toc[validRow['Parent id']] || '',
-      sts: validRow['Status'],
-      ass: validRow['Assignee'],
-      sum: validRow['Summary'],
+      sts: validRow.Status,
+      ass: validRow.Assignee,
+      sum: validRow.Summary,
       vld: validRow
     };
-    opIssueObj['pathLinks'] = opIssueObj.pid === '' ? createJIRALink(opIssueObj.iid) : createJIRALink(opIssueObj.pid, true) + ' / ' + createJIRALink(opIssueObj.iid);
+    opIssueObj.pathLinks = opIssueObj.pid === '' ? createJIRALink(opIssueObj.iid) : createJIRALink(opIssueObj.pid, true) + ' / ' + createJIRALink(opIssueObj.iid);
     return opIssueObj;
   });
   quickIndex.toc = toc;
 
   quickIndex.pathedName = key => {
+    // console.info("FUNCTION: pathedName", "key", key);
     let results = quickIndex.find(qI => qI.key === key);
     return results && results.pathLinks ? results.pathLinks : key;
   };
 
   quickIndex.lastStatus = key => {
+    // console.info("FUNCTION: lastStatus", "key", key);
     let results = quickIndex.find(qI => qI.key === key);
     return results && results.sts ? results.sts : '';
   };
 
   quickIndex.getLatestDetails = key => {
+    // console.info("FUNCTION: getLatestDetails", "key", key);
     let results = quickIndex.find(qI => qI.key === key);
     return results && results.vld ? results.vld : false;
   };
@@ -890,6 +921,7 @@ const processParentChildRelationships = () => {
 const constructPreviewAndReportData = () => {
   // ⓺ iterate concatinated output data, look for concern-suggestive trends and build our markup
   const ensureValidValue = (variable, value, altVal = value, tolerateEmptyStr = false) => {
+    console.info("FUNCTION: ensureValidValue", "variable", variable, "value", value, "altVal", altVal, "tolerateEmptyStr", tolerateEmptyStr);
     return typeof value === undefined || value == null || !tolerateEmptyStr && value === '' || value === '---' ? altVal !== value ? altVal : variable : value;
   };
 
@@ -933,7 +965,7 @@ const constructPreviewAndReportData = () => {
 
     issueData.forEach((datRec, ix) => {
       // ...Iterate the issue's collected data (the "columns"), gathering...
-      newRE = datRec === '---' ? '---' : datRec['Remaining Estimate'] || '';
+      newRE = datRec === '---' ? '---' : datRec['Remaining Estimate'] || '---?';
 
       if (newRE === '---') {
         ROWOP = ROWOP + _I_ + '---'; // Tack the current day being iterated past's Est. hours remaining onto the end of the issue being iterated past
@@ -990,13 +1022,14 @@ const constructPreviewAndReportData = () => {
 
   let cbPanel = document.getElementById('filter-ckbox-panel');
   if (cbPanel) cbPanel.remove();
-  previewPanel.insertAdjacentHTML('beforeEnd', tblMarkup);
+  previewPanel.insertAdjacentHTML('beforeEnd', tblMarkup.replace(/<td>0\*h<\/td>/g, '<td class="major-alert">0*h</td>')); // previewPanel.insertAdjacentHTML('beforeEnd', tblMarkup.replace(/<td>0\*h<\/td>/g, '<td class="major-alert">0*h</td>'));
+
   let linkHandlers = [...qsa('a.iss-hvr-lnk')].forEach(lnk => lnk.addEventListener('contextmenu', showRecordDetails));
   createReportData();
   postProcessData();
   let interpString = '',
       genLength = RPTDATA[0].length;
-  INTERPOL8D.forEach(itpCol => interpString += `td:nth-of-type(-n + ${itpCol - -3}):nth-last-of-type(-n + ${genLength - 2 - itpCol}),`); // interpString += `td:nth-of-type(-n + ${INTERPOL8D[0] - -3}):nth-last-of-type(-n + ${genLength - 2 - INTERPOL8D[0]}),`;
+  INTERPOL8D.forEach(itpCol => interpString += `td:nth-of-type(-n + ${itpCol + 3}):nth-last-of-type(-n + ${genLength - 2 - itpCol}),`); // interpString += `td:nth-of-type(-n + ${INTERPOL8D[0] - -3}):nth-last-of-type(-n + ${genLength - 2 - INTERPOL8D[0]}),`;
 
   _(interpString); //let fx=[...qsa((interpString.slice(0,-1)))].forEach(itpCell=>itpCell.className+=' interpolated-value');
 
@@ -1005,6 +1038,7 @@ const constructPreviewAndReportData = () => {
 };
 
 const createReportData = () => {
+  console.info("FUNCTION: createReportData");
   tableNode = document.querySelector('.preview-table');
   tHead = [...tableNode.querySelectorAll('th')].map(th => th.innerText);
   tBody = [...tableNode.querySelectorAll('tr')].map(tr => {
@@ -1017,6 +1051,8 @@ const createReportData = () => {
 };
 
 const reFilterPreview = obj => {
+  console.info("FUNCTION: reFilterPreview", "obj", obj);
+
   if (obj != null) {
     let targetClass = obj.id.replace('chk-', '.row-status-');
     [...document.querySelectorAll(targetClass)].forEach(row => {
@@ -1059,13 +1095,10 @@ const postProcessData = () => {
 
       return rows;
     });
-  }).then(() => {
+  }).then(res => {
+    console.info("THENABLE -> ", "res", res);
     hdrRowNode = rowNodes.splice(0, 1)[0];
-    console.log('hdrRowNode', hdrRowNode);
     hdrColNodes = [...hdrRowNode.childNodes];
-    console.log('hdrColNodes', hdrColNodes); // _(hdrRowNode)
-    // hdrColNodes = colNodes.shift();
-
     console.log('hdrRowNode', hdrRowNode);
     console.log('rowNodes', rowNodes);
     console.log('hdrColNodes', hdrColNodes);
@@ -1079,8 +1112,9 @@ const postProcessData = () => {
     });
     document.getElementById('output-panels').insertAdjacentHTML('beforeEnd', '<aside id="filter-ckbox-panel" class="status-filters"><h2>Currently Showing:</h2><span id="record-ct"></span>' + dispCkBoxes + '</aside>');
     reFilterPreview();
-  }).then(() => {
-    // Interpolate any missing data into its respective columns, from left to right, top to bottom.
+  }).then(res => {
+    console.info("THENABLE -> ", "res", res); // Interpolate any missing data into its respective columns, from left to right, top to bottom.
+
     colNodes.forEach((reportRow, rowIndex) => {
       reportRow.forEach((cols, colIndex) => {
         let col = cols.innerText;
@@ -1121,26 +1155,106 @@ const postProcessData = () => {
     // Analysis
     const num = val => val ? parseInt(val.replace(/\D/gi, '')) : 0;
 
-    rowNodes.forEach((rowObj, rowIdx) => {
-      let row = rowObj.children;
-      let devHasBegun = false;
-      let seedStatus = row[0].innerText;
-      let seedStoryNumber = row[1].innerText;
-      let seedHours = num(row[2].innerText);
-      let info = warn = error = critical = '';
+    const formatFlags = (type, flagColl) => !Array.isArray(flagColl) || flagColl.length === 0 ? '' : '<a href="#" class="flag-icons ' + type + '-icon"></a><dl><dt>' + flagColl.join('</dd><dt>').replace(/\|/g, '</dt><dd>') + '</dd></dl>';
 
-      for (var colIdx = 2; colIdx < row.length; colIdx++) {
+    rowNodes.forEach((rowObj, rowIdx) => {
+      let minor = [],
+          medium = [],
+          major = [],
+          critical = [];
+      let row = rowObj.children,
+          // NodeList of the cells' DOM objects for the row being examined
+      rowHrs = rowObj.innerText.replace(/[A-Z-]{8}\d{5}/gi, '').replace(/(\d+)h/gi, '$1 ').match(/\d+/gi),
+          // Array of hours representing all columns in this row (ex: [8, 8, 7, 6, 4, 2, 0, 0, 0, 0, 0])
+      totHrsCols = rowHrs.length,
+          // Number of hours columns being examined (ex: 11, for a std length itr)
+      seedHours = num(rowHrs[0]),
+          // Number of hours in seed column (ex: 8, for an 8h seed)
+      rowHoursFlat = rowHrs.join('').replace(/ /g, ''),
+          last72HoursFlat = rowHrs.slice(-3).join('').replace(/ /g, ''),
+          allZeroes = new Array(totHrsCols).fill(0).join(''),
+          // String of zeroes whose length is number of hours cols (ex: "00000000000" if a std length itr)
+      allSeedValue = new Array(totHrsCols).fill(seedHours).join(''),
+          // String of seed values whose length is number of hours cols (ex: "88888888888" for an 8h seed)
+      allItrZeroedOut = rowHoursFlat === allZeroes;
+      let finalDaysHours = num(rowHrs[totHrsCols - 1]),
+          seedStoryNumber = row[1].innerText,
+          seedStatus = row[0].innerText;
+      let devHasBegun = false,
+          newStoryMidItr = false,
+          delStoryFromItr = false,
+          noChangeFor72 = rowHrs.slice(-3).join('') === new Array(3).fill(finalDaysHours).join(''),
+          noChangeInItr = rowHoursFlat === new Array(totHrsCols).fill(finalDaysHours).join('').replace(/ /g, ''),
+          zeroesAllItr = parseInt(rowHrs.join('')) === 0;
+      runningValues = seedHours; //console.log("|||", seedStoryNumber, "rowHrs:", rowHrs,  "totHrsCols:", totHrsCols,  "seedHours:", seedHours,  "allZeroes:", allZeroes, "rowHoursFlat:", rowHoursFlat,  "last72HoursFlat:", last72HoursFlat,  "allSeedValue:", allSeedValue, "finalDaysHours:", finalDaysHours,  "seedStatus:", seedStatus,  "devHasBegun:", devHasBegun,  "noChangeFor72:", noChangeFor72,  "noChangeInItr:", noChangeInItr,  "zeroesAllItr:", zeroesAllItr,  "runningValues:", runningValues)
+
+      /*
+      , concernColors = ['Transparent', 'DimGray', 'GreenYellow', 'Gold', 'Orange', 'Red']            // 0-indexed Color-Codings used for the 
+      , concernFlags  = { // CONCERN CODEX
+                  // TRIVIAL CONCERN: An issue weighted 0-1 indicate anomolies that
+                  // are visible within the data that are known and being accounted
+                  // for. Scrum masters may need to explain the blip to THEIR boss.
+                  "HID":    {"weight": 0, "concern": "Hidden By ScrumMaster" },               // Employed at scrum master's discretion to remove a concern from being flagged
+                  "ATT":    {"weight": 1, "concern": "Related to Attendance" },               // Assigned developer is AWOL/MIA/on leave/in the med bay. Occasionally presumed dead.
+                  "HOL":    {"weight": 1, "concern": "Related to Holiday" },                  // Excluding a day iteration-wide for company holiday/operational shutdown
+                   // MINOR CONCERN: Issues weighted at 2- less usually indicates an
+                  // error in procedure, in JIRA operation, or on the dev, assigned
+                  // the issue. Scrum masters should inquire if it keeps happening.
+                  "EST":    {"weight": 2, "concern": "Bad Estimate" },                        // "Build a global satellite network, huh? No problem. 9 lines of code, 16 hours, tops."
+                  "AUC":    {"weight": 2, "concern": "Assigned User Changed" },               // "Huh? Bob made an unsubstantiated, unreported offer to handle it while I was in Figi!" 
+                  "UER":    {"weight": 2, "concern": "User Error" },                          // "Yeah, lemme just open the story real qui- SH*T! Where did it go!? ^&*%$^%$&* JIRA!"
+                  "SCR":    {"weight": 2, "concern": "Scope Creep" },                         // "Hey, so marketing wants to add one more little thing to the user-facing cart portal"
+                  "ASS":    {"weight": 2, "concern": "Improperly Assigned" },                 // Likely curprits: "Oh, THAT Deepak?!" and "Why is this assigned to ME!? Stupid JIRA."
+                  "PID":    {"weight": 2, "concern": "Parent ID Changed" },                   // "IO-11110 DOES look an awful lot like IO-11101"... mistakes happen.
+                  "PID":    {"weight": 2, "concern": "Inconsistent Status" },                 // Status makes no sense (e.g. task In Definition, but hours burned).
+                   // MEDIUM CONCERN: Issues weighted at 3+ indicate an issue who is
+                  // out of place, whose hours aren't (or, temporarily, CANNOT) get
+                  // burned down, or admin error. These MAY/MAY NOT be impactful on
+                  // the burndown. Scrum master should investigate & maybe inquire.
+                  "USS":    {"weight": 3, "concern": "Unestimated at Sprint Start" },         // Story had no hour estimate when Sprint began
+                  "STK":    {"weight": 3, "concern": "Unable to Begin" },                     // Story is precluded from even getting started, Maybe prematurely added to iteration?
+                  "STR":    {"weight": 3, "concern": "Bad/Mistaken Story Inclusion" },        // Almost always user error. Story got added to iteration on accident. 
+                  "HRS":    {"weight": 3, "concern": "Hours Not Being Burned" },              // Almost always user error. Developer working a story simply hasn't reported the work/
+                  "NPR":    {"weight": 3, "concern": "No Progress Reported" },                // Developer has reported no progress on an issue for 3+ days. COULD be a warning flag
+                  "DEP":    {"weight": 3, "concern": "Unsatisfied Dependency" },              // Basically, the developer must complete another task first, and is blocking himself. 
+                  "TOS":    {"weight": 3, "concern": "Issue Changed to Subtask" },            // Former Issue downgraded to subtask.
+                   // HIGH CONCERN: Issues weighted 4+ indicate a change in the tot.
+                  // estimated hours for the iteration, and therefore have a DIRECT 
+                  // impact on the burndown. Scrum master needs to perform inquiry.
+                  "TOI":    {"weight": 4, "concern": "Subtask Changed to Issue" },            // Former Subtask elevated to full Issue.
+                  "NEW":    {"weight": 4, "concern": "New Story Added to Iteration" },        // Issue just appeared in iteration.
+                  "DEL":    {"weight": 4, "concern": "Story Deleted" },                       // Issue deleted/removed from iteration.
+                   // CRITICAL CONCERN: Issues weighted at 5 typically indicate some
+                  // flavor of impending disaster or serious problem on the flagged
+                  // issue. Scrum masters should be loaded for bear & hunting fixes
+                  "XXX":    {"weight": 5, "concern": "Blocking Issue" },                      // ISSUE BLOCKED FROM FURTHER PROGRESS. Highest source of concern
+                  // BUNDLES
+                  "UNCHGD": {"weight": 2, "collection": "XXX,NPR,STK,HOL,ATT,HRS",     "concern": "No changes made to story for current iteration" },
+                  "HRSINC": {"weight": 3, "collection": "EST,UER,SCR,STR,STK,NEW,ASS", "concern": "Hours increased from day prior!" },
+                  "UNCHG3": {"weight": 4, "collection": "XXX,NPR,STK,HOL,ATT,HRS",     "concern": "No changes made to story for 3 days!" }
+              }
+              */
+
+      for (var colIdx = row.length - 1; colIdx >= 2; colIdx--) {
         let col = row[colIdx];
-        console.log(row.length, seedHours, num(col.innerText));
+        if (colIdx == row.length - 1 && col.innerText.indexOf('*') !== -1) delStoryFromItr = true;
+        if (!delStoryFromItr && col.innerText.indexOf('*') !== -1) newStoryMidItr = true;
         if (!devHasBegun && seedHours !== num(col.innerText)) devHasBegun = true;
       }
 
-      if (devHasBegun && /definition/i.test(seedStatus)) info += 'Wrong Status';
-      if (info !== '') row[0].innerHTML += `<a href="#" class="info-icon" data-text="${seedStoryNumber + ': ' + info}">i</a>`;
+      if (!noChangeInItr && devHasBegun && /DEFINITION/i.test(seedStatus)) minor.push('Wrong Status|Work has begun on this story, therefore it must be out of definition phase!');
+      if (seedHours === 0 && !/COMPLETED|DEMO/i.test(seedStatus)) medium.push('Horus not set!|The iteration was begin without an hour estimate being set for this story!');else if (noChangeInItr && !/COMPLETED|DEMO/i.test(seedStatus)) medium.push('No movement!|There has been no change in the status/hours burned for this story for the full period of the iteration!');
+      if (!noChangeInItr && noChangeFor72) medium.push('Development Stalled!|There has been no change in the status/hours burned for this story in the last 3 days!');
+      if (newStoryMidItr) major.push('Story added mid-iteration!|This story which did not exist on the Seed Day has appeared in the iteration!');
+      if (delStoryFromItr) major.push('Story removed from iteration!|This story, which has been tracked from the Seed Day no longer appears in the iteration!');
+      row[0].innerHTML += formatFlags('major', major);
+      if (major && major.length == 0) row[0].innerHTML += formatFlags('medium', medium);
+      if (major && major.length == 0 && medium && medium.length == 0) row[0].innerHTML += formatFlags('minor', minor);
     });
   }).then(() => {
     // Sum up our totals
     function round_to_precision(x, precision) {
+      console.info("ES5 FUNCTION: round_to_precision", "x", x, "precision", precision);
       var y = +x + (precision === undefined ? 0.5 : precision / 2);
       return y - y % (precision === undefined ? 1 : +precision);
     }
@@ -1157,7 +1271,7 @@ const postProcessData = () => {
         let cell = row.childNodes;
 
         if (cell != null && cell[c] != null && cell[c].innerText) {
-          cell = cell[c].innerText.replace(/h/g, '');
+          cell = cell[c].innerText.replace(/\D/g, '');
           totalRow[c] = totalRow[c] / 1 + cell / 1;
         }
       });
@@ -1167,7 +1281,7 @@ const postProcessData = () => {
     let daysToDiv = hdrColNodes.length - 2;
     if (seedTotal && !isNaN(seedTotal)) daysToDiv = round_to_precision(seedTotal / (daysToDiv - 0.5), 0.25);
 
-    for (var c = 2; c < idealRow.length; c++) {
+    for (c = 2; c < idealRow.length; c++) {
       idealRow[c] = seedTotal;
       seedTotal -= daysToDiv;
     }
@@ -1179,15 +1293,14 @@ const postProcessData = () => {
     opStr += '  <td>' + totalRow.slice(2).join('h</td><td>') + 'h</td>';
     opStr += '</tr>';
     qs('.preview-table tbody').insertAdjacentHTML('beforeEnd', opStr);
-  }).then(() => {
+  }).then(res => {
+    console.info("THENABLE -> ", "res", res);
     totalRow = [...qs('.total-row').childNodes];
-    console.log('totalRow', totalRow);
     idealRow = [...qs('.ideal-row').childNodes];
-    console.log('idealRow', idealRow);
-  }).then(() => {
-    for (var c = 2; c < idealRow.length; c++) {
-      console.log('idealRow', idealRow[c]);
+  }).then(res => {
+    console.info("THENABLE -> ", "res", res);
 
+    for (var c = 2; c < idealRow.length; c++) {
       if (totalRow[c].innerText !== null && idealRow[c].innerText !== null) {
         let totalCell = totalRow[c],
             totalVals = totalCell.innerText.replace(/h/g, '') / 1,
@@ -1214,6 +1327,7 @@ let ongoing = false,
     offset = trg.getBoundingClientRect().height - 2;
 
 const syncSpinner = (hardValue = null) => {
+  console.info("FUNCTION: syncSpinner", "hardValue", hardValue);
   if (hardValue != null && !isNaN(hardValue)) trg.placeholder = hardValue;
   let newVal = trg.placeholder / 1,
       control = trg.parentElement;
@@ -1223,12 +1337,12 @@ const syncSpinner = (hardValue = null) => {
 };
 
 const incDec = (dir, mechanical = true, dly = 750, scale = 1) => {
+  console.info("FUNCTION: incDec", "dir", dir, "mechanical", mechanical, "dly", dly, "scale", scale);
   ongoing = true;
   dly = dly < 50 ? 50 : Math.log2(dly) * dly / 10.4;
   let adjVal = dir * scale + parseInt(trg.placeholder);
   if (adjVal <= 1) adjVal = 1;
   if (adjVal > 60) adjVal = 60;
-  ;
   trg.placeholder = adjVal;
   syncSpinner();
   mechanical = false;
