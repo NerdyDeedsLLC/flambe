@@ -866,7 +866,7 @@ const processParentChildRelationships = () => {
 
   const createJIRALink = (IssueId, isParent = false) => {
     // console.info("FUNCTION: createJIRALink", "IssueId", IssueId, "isParent", isParent);
-    let hrefUrl = `href="https:       //jira.sprintdd.com/browse/${IssueId}"' `;
+    let hrefUrl = `href="https://jira.sprintdd.com/browse/${IssueId}"' `;
     let clsName = `class="issue-${isParent ? 'parent-' : ''}link iss-hvr-lnk" `;
     let wndoTrg = `target="_blank" `;
     let issueID = IssueId.replace(/(\d+)/gi, '<b>$1</b>');
@@ -1197,7 +1197,7 @@ const postProcessData = () => {
                   "HID":    {"weight": 0, "concern": "Hidden By ScrumMaster" },               // Employed at scrum master's discretion to remove a concern from being flagged
                   "ATT":    {"weight": 1, "concern": "Related to Attendance" },               // Assigned developer is AWOL/MIA/on leave/in the med bay. Occasionally presumed dead.
                   "HOL":    {"weight": 1, "concern": "Related to Holiday" },                  // Excluding a day iteration-wide for company holiday/operational shutdown
-                   // MINOR CONCERN: Issues weighted at 2- less usually indicates an
+                    // MINOR CONCERN: Issues weighted at 2- less usually indicates an
                   // error in procedure, in JIRA operation, or on the dev, assigned
                   // the issue. Scrum masters should inquire if it keeps happening.
                   "EST":    {"weight": 2, "concern": "Bad Estimate" },                        // "Build a global satellite network, huh? No problem. 9 lines of code, 16 hours, tops."
@@ -1207,7 +1207,7 @@ const postProcessData = () => {
                   "ASS":    {"weight": 2, "concern": "Improperly Assigned" },                 // Likely curprits: "Oh, THAT Deepak?!" and "Why is this assigned to ME!? Stupid JIRA."
                   "PID":    {"weight": 2, "concern": "Parent ID Changed" },                   // "IO-11110 DOES look an awful lot like IO-11101"... mistakes happen.
                   "PID":    {"weight": 2, "concern": "Inconsistent Status" },                 // Status makes no sense (e.g. task In Definition, but hours burned).
-                   // MEDIUM CONCERN: Issues weighted at 3+ indicate an issue who is
+                    // MEDIUM CONCERN: Issues weighted at 3+ indicate an issue who is
                   // out of place, whose hours aren't (or, temporarily, CANNOT) get
                   // burned down, or admin error. These MAY/MAY NOT be impactful on
                   // the burndown. Scrum master should investigate & maybe inquire.
@@ -1218,13 +1218,13 @@ const postProcessData = () => {
                   "NPR":    {"weight": 3, "concern": "No Progress Reported" },                // Developer has reported no progress on an issue for 3+ days. COULD be a warning flag
                   "DEP":    {"weight": 3, "concern": "Unsatisfied Dependency" },              // Basically, the developer must complete another task first, and is blocking himself. 
                   "TOS":    {"weight": 3, "concern": "Issue Changed to Subtask" },            // Former Issue downgraded to subtask.
-                   // HIGH CONCERN: Issues weighted 4+ indicate a change in the tot.
+                    // HIGH CONCERN: Issues weighted 4+ indicate a change in the tot.
                   // estimated hours for the iteration, and therefore have a DIRECT 
                   // impact on the burndown. Scrum master needs to perform inquiry.
                   "TOI":    {"weight": 4, "concern": "Subtask Changed to Issue" },            // Former Subtask elevated to full Issue.
                   "NEW":    {"weight": 4, "concern": "New Story Added to Iteration" },        // Issue just appeared in iteration.
                   "DEL":    {"weight": 4, "concern": "Story Deleted" },                       // Issue deleted/removed from iteration.
-                   // CRITICAL CONCERN: Issues weighted at 5 typically indicate some
+                    // CRITICAL CONCERN: Issues weighted at 5 typically indicate some
                   // flavor of impending disaster or serious problem on the flagged
                   // issue. Scrum masters should be loaded for bear & hunting fixes
                   "XXX":    {"weight": 5, "concern": "Blocking Issue" },                      // ISSUE BLOCKED FROM FURTHER PROGRESS. Highest source of concern

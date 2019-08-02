@@ -694,7 +694,7 @@ const processParentChildRelationships = () => {
     console.info("FUNCTION: processParentChildRelationships");
     const createJIRALink = (IssueId, isParent=false) => {
         // console.info("FUNCTION: createJIRALink", "IssueId", IssueId, "isParent", isParent);
-        let hrefUrl = `href="https:       //jira.sprintdd.com/browse/${ IssueId }"' `;
+        let hrefUrl = `href="https://jira.sprintdd.com/browse/${ IssueId }"' `;
         let clsName = `class="issue-${isParent ? 'parent-' : ''}link iss-hvr-lnk" `;
         let wndoTrg = `target="_blank" `;
         let issueID = IssueId.replace(/(\d+)/gi, '<b>$1</b>');

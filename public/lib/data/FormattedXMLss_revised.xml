@@ -1,0 +1,321 @@
+<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  <Author>Microsoft Office User</Author>
+  <LastAuthor>Jason Jurusz</LastAuthor>
+  <Created>2019-07-31T06:51:11Z</Created>
+  <LastSaved>2019-07-31T13:52:09Z</LastSaved>
+  <Version>15.00</Version>
+ </DocumentProperties>
+ <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
+  <AllowPNG/>
+ </OfficeDocumentSettings>
+ <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+  <WindowHeight>5760</WindowHeight>
+  <WindowWidth>15210</WindowWidth>
+  <WindowTopX>0</WindowTopX>
+  <WindowTopY>0</WindowTopY>
+  <ProtectStructure>False</ProtectStructure>
+  <ProtectWindows>False</ProtectWindows>
+ </ExcelWorkbook>
+ <Styles>
+  <Style ss:ID="Default" ss:Name="Normal">
+   <Alignment ss:Vertical="Bottom"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D0CECE"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D0CECE"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D0CECE"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D0CECE"/>
+   </Borders>
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#000000"/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
+  <Style ss:ID="s62" ss:Name="Hyperlink">
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#0066CC"
+    ss:Underline="Single"/>
+  </Style>
+  <Style ss:ID="s63">
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#FFFFFF"
+    ss:Bold="1"/>
+   <Interior ss:Color="#3A3838" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s64">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Bottom"/>
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#FFFFFF"
+    ss:Bold="1"/>
+   <Interior ss:Color="#3A3838" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s65">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Bottom"/>
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#FFFFFF"
+    ss:Bold="1"/>
+   <Interior ss:Color="#808080" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s66">
+   <Interior ss:Color="#548235" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s67">
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#000000"
+    ss:Bold="1"/>
+   <Interior ss:Color="#E2EFDA" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s68" ss:Parent="s62">
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D0CECE"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D0CECE"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D0CECE"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D0CECE"/>
+   </Borders>
+  </Style>
+  <Style ss:ID="s69">
+   <Alignment ss:Horizontal="Right" ss:Vertical="Bottom"/>
+  </Style>
+  <Style ss:ID="s70">
+   <Alignment ss:Horizontal="Right" ss:Vertical="Bottom"/>
+   <Interior ss:Color="#DBDBDB" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s71">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Bottom"/>
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#808080"/>
+  </Style>
+  <Style ss:ID="s72">
+   <Interior ss:Color="#305496" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s73">
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#000000"
+    ss:Bold="1"/>
+  </Style>
+  <Style ss:ID="s74">
+   <Interior ss:Color="#A6A6A6" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s75">
+   <Interior ss:Color="#FFE699" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s76">
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#FFFFFF"/>
+   <Interior ss:Color="#ED7D31" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s77">
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#FFFF00"/>
+   <Interior ss:Color="#FF0000" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s78">
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#000000"
+    ss:Bold="1"/>
+   <Interior ss:Color="#FFDFDF" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s79">
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#FFFF00"
+    ss:Bold="1"/>
+   <Interior ss:Color="#C00000" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s83">
+   <Alignment ss:Horizontal="Right" ss:Vertical="Bottom"/>
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#FF0000"
+    ss:Bold="1" ss:Italic="1"/>
+  </Style>
+  <Style ss:ID="s156">
+   <Alignment ss:Horizontal="Right" ss:Vertical="Bottom"/>
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#FFFF00"
+    ss:Bold="1" ss:Italic="1"/>
+   <Interior ss:Color="#C00000" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s157">
+   <Alignment ss:Horizontal="Right" ss:Vertical="Bottom"/>
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#FFFF00"
+    ss:Bold="1" ss:Italic="1"/>
+   <Interior ss:Color="#660020" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s181">
+   <Alignment ss:Horizontal="Right" ss:Vertical="Bottom"/>
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#3B0076"
+    ss:Italic="1"/>
+   <Interior ss:Color="#CC99FF" ss:Pattern="Solid"/>
+  </Style>
+ </Styles>
+ <Worksheet ss:Name="Sheet1">
+  <Table ss:ExpandedColumnCount="15" ss:ExpandedRowCount="8" x:FullColumns="1"
+   x:FullRows="1" ss:DefaultColumnWidth="65.25" ss:DefaultRowHeight="15.9375">
+   <Column ss:AutoFitWidth="0" ss:Width="20.25"/>
+   <Column ss:AutoFitWidth="0" ss:Width="125.25"/>
+   <Column ss:AutoFitWidth="0" ss:Width="185.25"/>
+   <Column ss:AutoFitWidth="0" ss:Width="59.25" ss:Span="10"/>
+   <Column ss:Index="15" ss:AutoFitWidth="0" ss:Width="63.75"/>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s63"/>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">Status</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">Story Number</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Seed Day</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Day 1</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Day 2</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Day 3</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Day 4</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Day 5</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Day 6</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Day 7</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Day 8</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Day 9</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Day 10</Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">Info</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s66"/>
+    <Cell ss:StyleID="s67"><Data ss:Type="String">COMPLETED</Data></Cell>
+    <Cell ss:StyleID="s68" ss:HRef="http://www.example.com/"><Data ss:Type="String">DIGITDEV-12345</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">20h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">16h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">12h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">8h</Data></Cell>
+    <Cell ss:StyleID="s181"><Data ss:Type="String">6h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">4h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s71"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s72"/>
+    <Cell ss:StyleID="s73"><Data ss:Type="String">In Progress</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="String">DIGITDEV-12345</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">20h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">18h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">16h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">14h</Data></Cell>
+    <Cell ss:StyleID="s181"><Data ss:Type="String">13h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">12h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">10h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">8h</Data></Cell>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s71"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s74"/>
+    <Cell ss:StyleID="s73"><Data ss:Type="String">Definition</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="String">DIGITDEV-12345 / DIGTDEV-12038</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">8h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">8h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">8h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">8h</Data></Cell>
+    <Cell ss:StyleID="s181"><Data ss:Type="String">8h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">8h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">8h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">8h</Data></Cell>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s71"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s75"/>
+    <Cell ss:StyleID="s73"><Data ss:Type="String">Definition</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="String">DIGITDEV-12345</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">8h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">6h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">6h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">6h</Data></Cell>
+    <Cell ss:StyleID="s181"><Data ss:Type="String">6h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">6h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">6h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">6h</Data></Cell>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s71"><Data ss:Type="String">STL</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s76"/>
+    <Cell ss:StyleID="s73"><Data ss:Type="String">In Progress</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="String">DIGITDEV-12345</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">4h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">4h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">10h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">8h</Data></Cell>
+    <Cell ss:StyleID="s181"><Data ss:Type="String">7h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">6h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">4h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">13h</Data></Cell>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s71"><Data ss:Type="String">INC</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s77"/>
+    <Cell ss:StyleID="s78"><Data ss:Type="String">BLOCKED!</Data></Cell>
+    <Cell ss:StyleID="s68" ss:HRef="http://www.example.com/"><Data ss:Type="String">DIGITDEV-12345</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">16h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">16h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">14h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">14h</Data></Cell>
+    <Cell ss:StyleID="s181"><Data ss:Type="String">14h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">14h</Data></Cell>
+    <Cell ss:StyleID="s83"><Data ss:Type="String">14*h</Data></Cell>
+    <Cell ss:StyleID="s83"><Data ss:Type="String">14*h</Data></Cell>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s71"><Data ss:Type="String">XXX</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="17.0625">
+    <Cell ss:StyleID="s79"/>
+    <Cell ss:StyleID="s79"><Data ss:Type="String">STORY REMOVED!</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="String">DIGITDEV-12345</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">24h</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">22h</Data></Cell>
+    <Cell ss:StyleID="s156"><Data ss:Type="String">0*h</Data></Cell>
+    <Cell ss:StyleID="s156"><Data ss:Type="String">0*h</Data></Cell>
+    <Cell ss:StyleID="s157"><Data ss:Type="String">0*h</Data></Cell>
+    <Cell ss:StyleID="s156"><Data ss:Type="String">0*h</Data></Cell>
+    <Cell ss:StyleID="s156"><Data ss:Type="String">0*h</Data></Cell>
+    <Cell ss:StyleID="s156"><Data ss:Type="String">0*h</Data></Cell>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s71"><Data ss:Type="String">REM</Data></Cell>
+   </Row>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <PageSetup>
+    <Header x:Margin="0.3"/>
+    <Footer x:Margin="0.3"/>
+    <PageMargins x:Bottom="0.75" x:Left="0.7" x:Right="0.7" x:Top="0.75"/>
+   </PageSetup>
+   <Unsynced/>
+   <Print>
+    <ValidPrinterInfo/>
+    <HorizontalResolution>600</HorizontalResolution>
+    <VerticalResolution>600</VerticalResolution>
+   </Print>
+   <Zoom>75</Zoom>
+   <Selected/>
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+     <ActiveRow>11</ActiveRow>
+     <ActiveCol>6</ActiveCol>
+    </Pane>
+   </Panes>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+</Workbook>

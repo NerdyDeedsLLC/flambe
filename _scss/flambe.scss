@@ -500,7 +500,7 @@ button.add-record {
         border: 1px solid #bbb;
         border-radius: 10px 10px 0 0;
         line-height: 1;
-        top: -2px;
+        top: -50px;
         right: 0;
         max-width: 200px;
         font-size: 14px;
@@ -767,6 +767,7 @@ div.extra-details {
     flex-wrap: wrap;
     box-shadow: -10px 10px 10px #0006, 10px 10px 10px #0006, 0px 20px 20px #0006;
     font-size: 13px;
+    z-index:100;
 
     span {
         padding: 1px 3px;
