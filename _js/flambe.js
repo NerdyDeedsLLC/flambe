@@ -1085,29 +1085,59 @@ const postProcessData   = () => {
         idealRow.length = hdrColNodes.length;
         totalRow = totalRow.fill(0, 2, hdrColNodes.length);
         idealRow = idealRow.fill(0, 2, hdrColNodes.length);
+
+
+
         for(var c=2; c<hdrColNodes.length; c++){
             rowNodes.forEach((row, rowIdx) => {
                 let cell = row.childNodes;
                 if(cell != null && cell[c] != null && cell[c].innerText){
-                    cell = cell[c].innerText.replace(/\D/g, '');
+                    cell = cell[c].innerText.replace(/[h\* ]/gi, '');
                     totalRow[c] = (totalRow[c] / 1) + (cell / 1);
                 }
             });
-
+            
+        }
+        //FIXME
+        for(var c=2; c<hdrColNodes.length; c++){
+            if(isNaN(totalRow[c]) || totalRow[c] == NaN|| totalRow[c] == "NaN"){
+                console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~' + c)
+                let s=c, vS, vE;
+                while(s>=0){
+                    console.log(s);
+                    if(isNaN(totalRow[s])) vS = s;
+                    s--;
+                }
+                s=c;
+                while(s < totalRow.length){
+                    console.log(s);
+                    if(isNaN(totalRow[s])) vE = s;;
+                    s++;
+                }
+                if(vS != null && vE !=null){
+                    let valPers = (totalRow[vE] - totalRow[vS]) / (vE - vS);
+                    for(var l = vS; l <= vE; l++){
+                        totalRow[l] = totalRow[l-1] + valPers
+                    }
+                }
+            }
         }
         let seedTotal = totalRow[2];
-        let daysToDiv = hdrColNodes.length - 2;
-        if(seedTotal && !isNaN(seedTotal)) daysToDiv = round_to_precision(seedTotal / (daysToDiv - 0.5), 0.25);
+        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + seedTotal);
+        let idealDaysExamined = hdrColNodes.length - 3;
+        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + idealDaysExamined);
         for(c=2; c<idealRow.length; c++){
-            idealRow[c] = seedTotal;
-            seedTotal  -= daysToDiv;
+            idealRow[c] = c===2 ? seedTotal: Math.round((10 * (idealRow[c-1] - (seedTotal/idealDaysExamined)))) / 10;
+         
         }
 
+
+
         opStr += '<tr class="ideal-row"><td colspan="2" class="ideal-label">TOTAL (Ideal):</td>';
-        opStr += '  <td>' + idealRow.slice(2).join('h</td><td>') + 'h</td>';
+        opStr += '  <td>' + idealRow.slice(2).join('</td><td>') + '</td>';
         opStr += '</tr>';
         opStr += '<tr class="total-row"><td colspan="2" class="total-label">TOTAL (Actual):</td>';
-        opStr += '  <td>' + totalRow.slice(2).join('h</td><td>') + 'h</td>';
+        opStr += '  <td>' + totalRow.slice(2).join('</td><td>') + '</td>';
         opStr += '</tr>';
         qs('.preview-table tbody').insertAdjacentHTML('beforeEnd', opStr);
     }).then((res)=>{
