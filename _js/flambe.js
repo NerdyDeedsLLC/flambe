@@ -1091,37 +1091,28 @@ const postProcessData   = () => {
         for(var c=2; c<hdrColNodes.length; c++){
             rowNodes.forEach((row, rowIdx) => {
                 let cell = row.childNodes;
+                if(cell.className === 'interpolated-value'){
+                }
                 if(cell != null && cell[c] != null && cell[c].innerText){
-                    cell = cell[c].innerText.replace(/[h\* ]/gi, '');
+                    cell = cell[c].innerText.replace(/[h\* ]/gi, '').replace(/---/g, 0);
                     totalRow[c] = (totalRow[c] / 1) + (cell / 1);
                 }
             });
-            
         }
         //FIXME
         for(var c=2; c<hdrColNodes.length; c++){
             if(isNaN(totalRow[c]) || totalRow[c] == NaN|| totalRow[c] == "NaN"){
-                console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~' + c)
-                let s=c, vS, vE;
-                while(s>=0){
-                    console.log(s);
-                    if(isNaN(totalRow[s])) vS = s;
-                    s--;
-                }
-                s=c;
-                while(s < totalRow.length){
-                    console.log(s);
-                    if(isNaN(totalRow[s])) vE = s;;
-                    s++;
-                }
-                if(vS != null && vE !=null){
-                    let valPers = (totalRow[vE] - totalRow[vS]) / (vE - vS);
-                    for(var l = vS; l <= vE; l++){
-                        totalRow[l] = totalRow[l-1] + valPers
-                    }
-                }
-            }
+                
+            }        
         }
+        //         if(vS != null && vE !=null){
+        //             let valPers = (totalRow[vE] - totalRow[vS]) / (vE - vS);
+        //             for(var l = vS; l <= vE; l++){
+        //                 totalRow[l] = totalRow[l-1] + valPers
+        //             }
+        //         }
+        //     }
+        // }
         let seedTotal = totalRow[2];
         console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + seedTotal);
         let idealDaysExamined = hdrColNodes.length - 3;
