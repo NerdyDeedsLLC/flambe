@@ -178,45 +178,50 @@ var saveAs = _global.saveAs || (
 
 _global.saveAs = saveAs.saveAs = saveAs
 
-if (typeof module !== 'undefined') {
-  module.exports = saveAs;
-}
 
+  const validator = (exportCfg, fName=exportCfg.filename||null) => {
+            const childValidator = (array) => array.every(index => Array.isArray(index));
+            let errorOp='';
+            if (fName == null || typeof(fName) !== 'string') errorOp = "Required property 'filename' is missing or not a string!";
+            if (!Array.isArray(exportCfg.sheet.data))        errorOp = "Sheet data is missing or not a valid Array!";
+            if (!childValidator(exportCfg.sheet.data))       errorOp = "Sheet data property 'childs' is missing or not a valid Array!"
+            return (errorOp === '') || !!(console.log(errorOp));
+        },
 
+        getColLetter = (colIndex) => {
+            if (isNaN(colIndex)) return '';
+            const prefix = ~~(colIndex / 26);
+            const letter = String.fromCharCode(97 + (colIndex % 26)).toUpperCase();
+            return (0 === prefix) ? letter : getColLetter(prefix - 1) + letter;
+        },
 
-
-
-
-var validator = (exportCfg, fName=exportCfg.filename||null) => {
-    const childValidator = (array) => array.every(index => Array.isArray(index));
-    let errorOp='';
-    if (fName == null || typeof(fName) !== 'string') errorOp = "Required property 'filename' is missing or not a string!";
-    if (!Array.isArray(exportCfg.sheet.data))        errorOp = "Sheet data is missing or not a valid Array!";
-    if (!childValidator(exportCfg.sheet.data))       errorOp = "Sheet data property 'childs' is missing or not a valid Array!"
-    return (errorOp === '') || !!(console.log(errorOp));
-    };
-
-const getColLetter = (colIndex) => {
-  if (typeof colIndex !== 'number') return '';
-
-  const prefix = ~~(colIndex / 26);
-  const letter = String.fromCharCode(97 + (colIndex % 26)).toUpperCase();
-
-  return (0 === prefix) ? letter : getColLetter(prefix - 1) + letter;
-};
-
-var getCellNumber = (index, rowNumber)               => '' + getColLetter(index) + rowNumber;
-    strCellFormat = (index, value, rowIndex)         => `<c r="${getCellNumber(index, rowIndex)}" t="inlineStr"><is><t>${escapeString(value)}</t></is></c>`,
-    numCellFormat = (index, value, rowIndex)         => `<c r="${getCellNumber(index, rowIndex)}"><v>${value}</v></c>`,
-    formatCell    = (cell,  index, rowIndex)         => ("string" === cell.type) ? strCellFormat(index, cell.value, rowIndex) : numCellFormat(index, cell.value, rowIndex),
-    formatRow     = (row,   index, rowIndex=index+1) => `<row r="${rowIndex}">${row.map((cell, cellIndex) => formatCell(cell, cellIndex, rowIndex)).join('')}</row>`,
-    
-    generatorRows = e => e.map((e, t) => formatRow(e, t)).join(""),
+        getCellNumber = (index, rowNumber)               => '' + getColLetter(index) + rowNumber,
+        strCellFormat = (index, value, rowIndex)         => `<c r="${getCellNumber(index, rowIndex)}" t="inlineStr"><is><t>${escapeString(value)}</t></is></c>`,
+        numCellFormat = (index, value, rowIndex)         => `<c r="${getCellNumber(index, rowIndex)}"><v>${value}</v></c>`,
+        formatCell    = (cell,  index, rowIndex)         => ("string" === cell.type) ? strCellFormat(index, cell.value, rowIndex) : numCellFormat(index, cell.value, rowIndex),
+        formatRow     = (row,   index, rowIndex=index+1) => `<row r="${rowIndex}">${row.map((cell, cellIndex) => formatCell(cell, cellIndex, rowIndex)).join('')}</row>`,
+        generateRows  = (rowObj) => rowObj.map((row, i)  => formatRow(row, i)).join("");
     workbookXML = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mx="http://schemas.microsoft.com/office/mac/excel/2008/main" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mv="urn:schemas-microsoft-com:mac:vml" xmlns:x14="http://schemas.microsoft.com/office/spreadsheetml/2009/9/main" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac" xmlns:xm="http://schemas.microsoft.com/office/excel/2006/main"><workbookPr/><sheets><sheet state="visible" name="Sheet1" sheetId="1" r:id="rId3"/></sheets><definedNames/><calcPr/></workbook>',
     workbookXMLRels = '<?xml version="1.0" ?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">\n<Relationship Id="rId3" Target="worksheets/sheet1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet"/>\n</Relationships>',
     rels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>',
     contentTypes = '<?xml version="1.0" ?>\n<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">\n<Default ContentType="application/xml" Extension="xml"/>\n<Default ContentType="application/vnd.openxmlformats-package.relationships+xml" Extension="rels"/>\n<Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml" PartName="/xl/worksheets/sheet1.xml"/>\n<Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml" PartName="/xl/workbook.xml"/>\n</Types>',
     templateSheet = '<?xml version="1.0" ?>\n<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mv="urn:schemas-microsoft-com:mac:vml" xmlns:mx="http://schemas.microsoft.com/office/mac/excel/2008/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:x14="http://schemas.microsoft.com/office/spreadsheetml/2009/9/main" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac" xmlns:xm="http://schemas.microsoft.com/office/excel/2006/main"><sheetData>{placeholder}</sheetData></worksheet>';
-const generateXMLWorksheet = e => { const t = generatorRows(e); return templateSheet.replace("{placeholder}", t) };
+const generateXMLWorksheet = e => { const t = generateRows(e); return templateSheet.replace("{placeholder}", t) };
 var JSXLSX = e => { if (!validator(e)) throw new Error("Validation failed."); const r = generateXMLWorksheet(e.sheet.data); return o.file("worksheets/sheet1.xml", r), t.generateAsync({ type: "blob", mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }).then(t => { FileSaver.saveAs(t, `${e.filename}.xlsx`) }) };
 exports.generateXMLWorksheet = generateXMLWorksheet, exports.default = JSXLSX;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

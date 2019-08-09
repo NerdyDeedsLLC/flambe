@@ -38,6 +38,11 @@
     <Style ss:ID="IndicatorCritical"><Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#FFFF00"/><Interior ss:Color="#FF0000" ss:Pattern="Solid"/></Style>
     <Style ss:ID="IndicatorOrange"><Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#FFFFFF"/><Interior ss:Color="#ED7D31" ss:Pattern="Solid"/></Style>
     <Style ss:ID="IndicatorGrey"><Interior ss:Color="#A6A6A6" ss:Pattern="Solid"/></Style>
+    
+    <Style ss:ID="InterpolatedHeader"><Alignment ss:Horizontal="Center"/><Interior ss:Color="#06000d" ss:Pattern="Solid"/><Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#FFFFFF" ss:Bold="1"/></Style>
+    <Style ss:ID="InterpolatedData"><Alignment ss:Horizontal="Right"/><Interior ss:Color="#cc99ff" ss:Pattern="Solid"/></Style>
+    <Style ss:ID="InterpolatedCritcal"><Alignment ss:Horizontal="Right"/><Interior ss:Color="#3c0045" ss:Pattern="Solid"/><Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#FFFFFF" ss:Bold="1"/></Style>
+
     <Style ss:ID="StatusDefault"><Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#000000" ss:Bold="1"/></Style>
     <Style ss:ID="StatusGreen"><Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#000000" ss:Bold="1"/><Interior ss:Color="#E2EFDA" ss:Pattern="Solid"/></Style>
     <Style ss:ID="StatusRed"><Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#000000" ss:Bold="1"/><Interior ss:Color="#FFDFDF" ss:Pattern="Solid"/></Style>
@@ -49,7 +54,7 @@
     <Style ss:ID="FlagHeader"><Alignment ss:Horizontal="Center"/><Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#FFFFFF" ss:Bold="1"/><Interior ss:Color="#808080" ss:Pattern="Solid"/></Style>
     <Style ss:ID="FlagCodes"><Alignment ss:Horizontal="Center"/><Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#757171"/></Style>
   </Styles>
-  <Worksheet ss:Name="Sheet1">
+  <Worksheet ss:Name="ITERATION_NAME">
     <Table ss:ExpandedColumnCount="15" ss:ExpandedRowCount="9" x:FullColumns="1" x:FullRows="1" ss:DefaultColumnWidth="65" ss:DefaultRowHeight="16">
       <Column ss:AutoFitWidth="0" ss:Width="20"/>
       <Column ss:AutoFitWidth="0" ss:Width="125"/>
@@ -63,7 +68,7 @@
         <Cell ss:StyleID="HeaderRowCentered"><Data ss:Type="String">Seed Day</Data></Cell>
         <Cell ss:StyleID="HeaderRowCentered"><Data ss:Type="String">Day 1</Data></Cell>
         <Cell ss:StyleID="HeaderRowCentered"><Data ss:Type="String">Day 2</Data></Cell>
-        <Cell ss:StyleID="HeaderRowCentered"><Data ss:Type="String">Day 3</Data></Cell>
+        <Cell ss:StyleID="InterpolatedHeader"><Data ss:Type="String">Day 3</Data></Cell>
         <Cell ss:StyleID="HeaderRowCentered"><Data ss:Type="String">Day 4</Data></Cell>
         <Cell ss:StyleID="HeaderRowCentered"><Data ss:Type="String">Day 5</Data></Cell>
         <Cell ss:StyleID="HeaderRowCentered"><Data ss:Type="String">Day 6</Data></Cell>
@@ -77,9 +82,11 @@
         <Cell ss:StyleID="IndicatorGreen"/>
         <Cell ss:StyleID="StatusGreen"><Data ss:Type="String">COMPLETED</Data></Cell>
         <Cell ss:StyleID="StoryLink" ss:HRef="http://www.example.com/"><Data ss:Type="String">DIGITDEV-12345</Data></Cell>
+        <Cell ss:StyleID="StoryLink" ss:HRef="http://www.example.com/"><Data ss:Type="String">DIGITDEV-12345</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">20h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">16h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">12h</Data></Cell>
+        <Cell ss:StyleID="InterpolatedData"><Data ss:Type="String">10h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">8h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">4h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="Number">0</Data></Cell>
@@ -87,8 +94,7 @@
         <Cell ss:StyleID="ForthcomingDay"/>
         <Cell ss:StyleID="ForthcomingDay"/>
         <Cell ss:StyleID="ForthcomingDay"/>
-        <Cell ss:StyleID="ForthcomingDay"/>
-        <Cell ss:StyleID="FlagCodes"/>
+        <cell ss:StyleID="FlagCodes"/>
       </Row>
       <Row>
         <Cell ss:StyleID="IndicatorBlue"/>
@@ -97,6 +103,7 @@
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">20h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">18h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">16h</Data></Cell>
+        <Cell ss:StyleID="InterpolatedData"><Data ss:Type="String">15h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">14h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">12h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">10h</Data></Cell>
@@ -104,8 +111,7 @@
         <Cell ss:StyleID="ForthcomingDay"/>
         <Cell ss:StyleID="ForthcomingDay"/>
         <Cell ss:StyleID="ForthcomingDay"/>
-        <Cell ss:StyleID="ForthcomingDay"/>
-        <Cell ss:StyleID="FlagCodes"/>
+        <cell ss:StyleID="FlagCodes"/>
       </Row>
       <Row>
         <Cell ss:StyleID="IndicatorGrey"/>
@@ -114,6 +120,7 @@
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">8h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">8h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">8h</Data></Cell>
+        <Cell ss:StyleID="InterpolatedData"><Data ss:Type="String">8h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">8h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">8h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">8h</Data></Cell>
@@ -121,8 +128,7 @@
         <Cell ss:StyleID="ForthcomingDay"/>
         <Cell ss:StyleID="ForthcomingDay"/>
         <Cell ss:StyleID="ForthcomingDay"/>
-        <Cell ss:StyleID="ForthcomingDay"/>
-        <Cell ss:StyleID="FlagCodes"/>
+        <cell ss:StyleID="FlagCodes"/>
       </Row>
       <Row>
         <Cell ss:StyleID="IndicatorWheat"/>
@@ -131,11 +137,11 @@
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">8h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">6h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">6h</Data></Cell>
+        <Cell ss:StyleID="InterpolatedData"><Data ss:Type="String">6h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">6h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">6h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">6h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">6h</Data></Cell>
-        <Cell ss:StyleID="ForthcomingDay"/>
         <Cell ss:StyleID="ForthcomingDay"/>
         <Cell ss:StyleID="ForthcomingDay"/>
         <Cell ss:StyleID="ForthcomingDay"/>
@@ -148,11 +154,11 @@
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">4h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">4h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">10h</Data></Cell>
+        <Cell ss:StyleID="InterpolatedData"><Data ss:Type="String">9h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">8h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">6h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">4h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">13h</Data></Cell>
-        <Cell ss:StyleID="ForthcomingDay"/>
         <Cell ss:StyleID="ForthcomingDay"/>
         <Cell ss:StyleID="ForthcomingDay"/>
         <Cell ss:StyleID="ForthcomingDay"/>
@@ -165,11 +171,11 @@
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">16h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">16h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">14h</Data></Cell>
+        <Cell ss:StyleID="InterpolatedData"><Data ss:Type="String">14h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">14h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">14h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">14*h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">14*h</Data></Cell>
-        <Cell ss:StyleID="ForthcomingDay"/>
         <Cell ss:StyleID="ForthcomingDay"/>
         <Cell ss:StyleID="ForthcomingDay"/>
         <Cell ss:StyleID="ForthcomingDay"/>
@@ -182,11 +188,11 @@
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">24h</Data></Cell>
         <Cell ss:StyleID="HoursCellDefault"><Data ss:Type="String">22h</Data></Cell>
         <Cell ss:StyleID="HoursCritical"><Data ss:Type="String">0*h</Data></Cell>
+        <Cell ss:StyleID="InterpolatedCritcal"><Data ss:Type="String">0*h</Data></Cell>
         <Cell ss:StyleID="HoursCritical"><Data ss:Type="String">0*h</Data></Cell>
         <Cell ss:StyleID="HoursCritical"><Data ss:Type="String">0*h</Data></Cell>
         <Cell ss:StyleID="HoursCritical"><Data ss:Type="String">0*h</Data></Cell>
         <Cell ss:StyleID="HoursCritical"><Data ss:Type="String">0*h</Data></Cell>
-        <Cell ss:StyleID="ForthcomingDay"/>
         <Cell ss:StyleID="ForthcomingDay"/>
         <Cell ss:StyleID="ForthcomingDay"/>
         <Cell ss:StyleID="ForthcomingDay"/>
