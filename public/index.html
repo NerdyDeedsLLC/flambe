@@ -8,10 +8,6 @@
 </head>
 
 <body>
-    
-    
-    
-    
     <main id='iteration-info'>
         <section class="form-fields">
             <div class='full-width itr-form-field'>
@@ -66,5 +62,52 @@
             </label>
         </section>
     <script src="lib/js/flambe.js"></script>
+    <article id="burndown-chart-panel" style="--cols:11">
+        <input type="checkbox" name="settings-panel" class="settings-panel" id="settings-panel">
+        <aside id="hamburger-settings-menu">
+           <label class="hamburger" for="settings-panel">
+              <span></span>
+              <span></span>
+           </label>
+           <nav class="grid-options-menu" id="grid-control-form">
+              <form action="" class="grid-controls" id="grid-controls">
+                 <input type="checkbox" name="showLineGraph" class="settings-chk" id="grf-line" checked>
+                 <label for="grf-line" id="showLineGraphLbl" class="settings-chks show-graph" title="Set Graph Mode: Burndown Line Graph"></label>
+                 <input type="checkbox" name="showBarGraph" class="settings-chk" id="grf-bar">
+                 <label for="grf-bar" id="showBarGraphLbl" class="settings-chks show-graph" title="Set Graph Mode: Ideal Bar Comparison Graph"></label>
+                 <br>
+
+                 <input type="radio" name="color-options" class="settings-rdo" id="clr-grad" checked>
+                 <label for="clr-grad" id="color-gradient-lbl" class="settings-colors" title="Set Graph Color Mode: Dynamic based on values"></label>
+                 <input type="radio" name="color-options" class="settings-rdo" id="clr-swatch">
+                 <label for="clr-swatch" id="color-swatches-lbl" class="settings-colors" title="Set Graph Color Mode: Above/Below/Equivalent Swatches"></label>
+                 <input type="radio" name="color-options" class="settings-rdo" id="clr-bandw">
+                 <label for="clr-bandw" id="color-blk-whit-lbl" class="settings-colors" title="Set Graph Color Mode: Black & White (Printer Friendly)"></label>
+                 <br>
+                 <input type="checkbox" name="showTextLabels" class="settings-chk" id="txt-vis" checked>
+                 <label for="txt-vis" id="show-text-lbl" class="settings-chks show-text" title="Show Text Labels on Plotted Points"></label>
+                 <input type="checkbox" name="showPopoverWindow" class="settings-chk" id="use-pop" checked>
+                 <label for="use-pop" id="show-popover-window" class="settings-chks show-pop" title="Show Additional Info in Popover Window"></label>
+                 <output class="status-messages">
+                    <div id="grf-line-on" class="status-msg">Line Graph: ON</div>
+                    <div id="grf-line-off" class="status-msg">Line Graph: OFF</div>
+                    <div id="grf-bar-on" class="status-msg">Bar Graph: ON</div>
+                    <div id="grf-bar-off" class="status-msg">Bar Graph: OFF</div>
+                    <div id="clrmd-grad" class="status-msg">Color Mode: Dynamic</div>
+                    <div id="clrmd-swatch" class="status-msg">Color Mode: Static</div>
+                    <div id="clrmd-bandw" class="status-msg">Color Mode: B & W</div>
+                    <div id="txt-lbls-on" class="status-msg">Text labels: ON</div>
+                    <div id="txt-lbls-off" class="status-msg">Text labels: OFF</div>
+                    <div id="use-pop-on" class="status-msg">Popover window: ON</div>
+                    <div id="use-pop-off" class="status-msg">Popover window: OFF</div>
+                 </output>
+              </form>
+           </nav>
+        </aside>
+        <canvas id="burndownOutput" width="1100" height="800">Unsupported. May we suggest upgrading to a real browser?</canvas>
+       <div id='yaxis'></div>
+    </article>
+    <span id="popover" class="popover"></span>
+
 </body>
 </html>

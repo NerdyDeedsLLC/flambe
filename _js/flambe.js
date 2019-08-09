@@ -1,6 +1,8 @@
 (function (window, undefined) {
     'use strict';
 
+    
+
     // Define local CSV object.
     var CSV = {};
 
@@ -299,6 +301,8 @@ let   fileBuffer    = []                                                        
     , doneButton    = qs('.done-sorting')                                                           // "Run report" button
     , iterationName = qs("#iteration-name")
     , previewPanel  = qs('.output-table')
+    , dataToGraph   = null
+    , idealDayCount = null
     , targetSlot    = null
     , dayCtPicker   = qs('#days-in-iteration')
 
@@ -1099,30 +1103,23 @@ const postProcessData   = () => {
                 }
             });
         }
-        //FIXME
+
         for(var c=2; c<hdrColNodes.length; c++){
             if(isNaN(totalRow[c]) || totalRow[c] == NaN|| totalRow[c] == "NaN"){
                 
             }        
         }
-        //         if(vS != null && vE !=null){
-        //             let valPers = (totalRow[vE] - totalRow[vS]) / (vE - vS);
-        //             for(var l = vS; l <= vE; l++){
-        //                 totalRow[l] = totalRow[l-1] + valPers
-        //             }
-        //         }
-        //     }
-        // }
+       
         let seedTotal = totalRow[2];
         console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + seedTotal);
-        let idealDaysExamined = hdrColNodes.length - 3;
-        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + idealDaysExamined);
+        idealDayCount = hdrColNodes.length - 3;
+        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + idealDayCount);
         for(c=2; c<idealRow.length; c++){
-            idealRow[c] = c===2 ? seedTotal: Math.round((10 * (idealRow[c-1] - (seedTotal/idealDaysExamined)))) / 10;
+            idealRow[c] = c===2 ? seedTotal: Math.round((10 * (idealRow[c-1] - (seedTotal/idealDayCount)))) / 10;
          
         }
 
-
+        dataToGraph = totalRow.slice(2);
 
         opStr += '<tr class="ideal-row"><td colspan="2" class="ideal-label">TOTAL (Ideal):</td>';
         opStr += '  <td>' + idealRow.slice(2).join('</td><td>') + '</td>';
@@ -1155,8 +1152,11 @@ const postProcessData   = () => {
             }
         }
 
+    }).then((res)=>{
+        renderCHARt(idealDayCount, dataToGraph);
     });
 };
+
 
 
 
@@ -1187,6 +1187,406 @@ const incDec = (dir, mechanical=true, dly=750, scale=1) => {
    mechanical = false;
    if(ongoing && !mechanical) ongoingtimer=window.setTimeout(()=>incDec(dir, false, dly, scale), dly);
 };
+
+function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
+   console.clear();
+                        // 500, 450, 400, 350, 300, 250, 200, 150, 100, 50*, 0*
+   // totalDaysInIteration = 10;
+   // remainingHoursPerDay = [500,475,375,450,200,250];
+   iterationStartingHrs = remainingHoursPerDay[0];
+   idealPlottedPtValues = [iterationStartingHrs];
+   interpolatedIndicies = [];
+   colorsForActualHours = ["#FFFF00"];
+   // pageSettings = document.getElementById('grid-settings-panel').elements;
+   let pageSettings = {};
+   pageSettings.elements = {
+      showPopover: {
+         checked: true
+      }
+   }
+
+   const readableRound = (val=parseFloat(val), precision=0, trimTrailing0s=1) => {
+      if(val == null || isNaN(val) || val == Infinity) return false;
+      if(!isNaN(precision) && precision > 0 && trimTrailing0s === 1) trimTrailing0s = val.toString().indexOf('.') !== -1
+      let moddedPrecision = (isNaN(precision) || precision < 0) ? 1 : precision;      
+      let fltPtAdjustment = (1 + new Array(moddedPrecision).fill(0).join('')) * 1;
+
+      val = Math.round(val * fltPtAdjustment) / fltPtAdjustment;
+      let valS = (trimTrailing0s) ? val : val.toPrecision(val.toString().split('.')[0].length + precision);
+      return trimTrailing0s ? val : valS;
+   }
+
+
+   const c              = document.getElementById("burndownOutput"),
+         popoverObj     = document.getElementById("popover"),
+   wholePi              = Math.PI *  2;
+   largestActualHrValue = Math.max(...remainingHoursPerDay);
+   adjustedRowUnitValue = largestActualHrValue / 10;
+   gridScaleMultipliers = 50/adjustedRowUnitValue;
+   gridSideMargins      = 50; //(canvasWidth - (gridColWidth * totalDaysInIteration)) / 2;
+   gridVertMargins      = 50;
+   canvasHeight         = 550;
+   canvasWidth          = 1050;
+   gridRowScale         = 50/(Math.max(...remainingHoursPerDay)/10);
+   gridColWidth         = Math.round(canvasWidth/(totalDaysInIteration + 1));
+   canvasWidth          = (1 + totalDaysInIteration) * gridColWidth;
+   gridRowHeight        = 50;
+
+   let plot             = (day, val) => [plotX(day), plotY(val)];
+   let plotX            = (day) => readableRound(gridSideMargins + (gridColWidth * day) + (gridColWidth/2));
+   let plotY            = (val) => canvasHeight - (gridScaleMultipliers * val) + gridVertMargins;
+
+
+   // COLOR Helper Functions
+
+   const LightenDarkenColor = (colStr,amt,col=parseInt(colStr,16)) => (((col & 0x0000FF) + amt) | ((((col>> 8) & 0x00FF) + amt) << 8) | (((col >> 16) + amt) << 16)).toString(16);
+
+   posNegPrcntToGYRHex = (val, saturation=1, intensity=1) => {
+      let minMaxed = 2 * (Math.round(Math.min(Math.max(val, -50), 50)));
+      let hVal = Math.round(60 * (minMaxed / 100) + 60);
+      let hex = RGBtoHEX(...HSVtoRGB(hVal,saturation,intensity));
+      return hex;
+   }
+
+   let HSVtoRGB    = (h,s,v,f=(n,k=(n+h/60)%6)=>v-v*s*Math.max(Math.min(k,4-k,1),0))=>[f(5),f(3),f(1)];
+   let RGBtoHEX    = (r,g,b) => "#"+[r,g,b].map(x=>Math.round(x*255).toString(16).padStart(2,0)).join('');
+   let HSVtoHEX    = (h=0,s=1,v=1) => RGBtoHEX(...HSVtoRGB(h,s,v))
+   let rgbStrToHex = (rgbStr) => rgbStr && '#'+rgbStr.slice(4,-1).split(', ').map(x => (+x).toString(16).padStart(2, '0')).join('');
+
+
+      // Fill in any gaps in our data for the graph.
+      const interpolateMissingDays = (() => {
+         for(let i=1; i<remainingHoursPerDay.length-2; i++){
+            if(remainingHoursPerDay[i] == -1){
+               let bgnIndex = null,
+                   endIndex = null;
+               for(b=i; b>=0 && bgnIndex===null; b--) if(remainingHoursPerDay[b] != -1) bgnIndex=b;
+               for(e=i; e>=0 && endIndex===null; e++) if(remainingHoursPerDay[e] != -1) endIndex=e;
+               if(bgnIndex != null && endIndex != null){
+                  let interpRange = endIndex - bgnIndex ;
+                  let perDiemVals = ((remainingHoursPerDay[endIndex] - remainingHoursPerDay[bgnIndex]) / interpRange);
+                  for(let v=bgnIndex+1; v<endIndex; v++) {
+                     if(remainingHoursPerDay[v] == -1)  remainingHoursPerDay[v] = readableRound((remainingHoursPerDay[v - 1] + perDiemVals), 2, true);
+                     interpolatedIndicies.push(v);
+                  }
+               }
+            }
+         }
+      })()
+      const seedIdealPoints = (() => {
+         let idealHoursPerDay = readableRound(iterationStartingHrs / (totalDaysInIteration), 2, true);
+
+         for(let i=1; i<totalDaysInIteration; i++){
+            idealPlottedPtValues.push(idealPlottedPtValues[i-1] - idealHoursPerDay); 
+         }
+      })()
+
+      const clearGrid = () => {
+         ctx.clearRect(0, 0, c.width, c.height);
+      }
+
+      const drawBGGridPanel = () => {
+         ctx.lineWidth = "2";
+         ctx.fillStyle='#999';
+         ctx.strokeStyle = "#000";
+         ctx.fillRect(gridVertMargins, gridVertMargins, canvasWidth, canvasHeight);
+         ctx.strokeRect(gridVertMargins, gridVertMargins, canvasWidth, canvasHeight);
+      }
+
+      const drawColPanels = () => {
+         for(let i=0; i<=totalDaysInIteration; i++){
+            let disabled=i>=remainingHoursPerDay.length;
+            let interped=interpolatedIndicies.indexOf(i) !== -1;
+
+            ctx.fillStyle=disabled ? '#eaeaea' : (interped) ? '#FAEFFF' : '#fff';
+            ctx.fillRect(gridSideMargins+(gridColWidth * i),  gridVertMargins, gridColWidth, canvasHeight);
+
+            let lblVals = (i===0) ? 'ITR' : i;
+            let lblOSet = (i===0) ? 21 : (i >= 10) ? 13 : 15;
+            let lblUnit = (i===0) ? 'start' : 'day';
+
+            // if(disabled) ctx.globalAlpha = 0.4
+            ctx.fillStyle='#333';
+            ctx.font = 'bold 25px monospace';
+            ctx.fillText(lblVals, plotX(i) - (lblVals.toString().length * 7), canvasHeight + 80);
+            ctx.fillStyle='#666';
+            ctx.font = '16px monospace';
+            ctx.fillText(lblUnit, plotX(i) - lblOSet, canvasHeight + 95);
+         }
+      }
+      const drawGridLines = () => {
+         // seedHoverTriggers();
+         ctx.beginPath();
+         ctx.lineWidth = "1";
+         ctx.setLineDash([2, 2]);
+         ctx.strokeStyle = "#DDD";
+         for(let i=0; i<totalDaysInIteration; i++){
+            ctx.moveTo(plotX(i) + (gridColWidth/2), gridVertMargins);
+            ctx.lineTo(plotX(i) + (gridColWidth/2), canvasHeight + gridVertMargins);
+         }
+         ctx.stroke();
+         ctx.beginPath();
+
+         for(let i=1; i<=10; i++){
+            ctx.moveTo(gridSideMargins, i * gridRowHeight + gridVertMargins);
+            ctx.lineTo(canvasWidth + gridSideMargins,  i * gridRowHeight + gridVertMargins);
+         }
+         ctx.stroke();
+      }
+
+      const generateYAxis = () => {
+         let yAxis = document.getElementById('yaxis');
+         for(var i=0; i<=11; i++){
+            yAxis.innerText = i * readableRound(adjustedRowUnitValue) + ' ' + yAxis.innerText;
+         }
+      }
+
+
+      let plotIdealPoints = () => {
+         for(let i=0; i<=idealPlottedPtValues.length; i++){
+            ctx.beginPath();
+            ctx.lineWidth = "2";
+            ctx.setLineDash([]);
+            ctx.fillStyle='#fff';
+            // ctx.strokeStyle = "#08b2ed";
+            ctx.strokeStyle = interpolatedIndicies.indexOf(i) !== -1 ? "#AA66AA" : "#08b2ed";
+
+            ctx.arc(plotX(i), plotY(idealPlottedPtValues[i]), 6, 0, wholePi)
+            ctx.fill();
+            ctx.stroke();
+         }
+      }
+
+      let drawIdealLine = () => {
+         ctx.beginPath();
+         ctx.strokeStyle = "#08b2ed";
+         ctx.moveTo(plotX(0), plotY(idealPlottedPtValues[0]));
+         ctx.lineTo(plotX(idealPlottedPtValues.length), plotY(0));
+         ctx.lineWidth = "3";
+         ctx.setLineDash([5, 4]);
+         ctx.stroke();
+      }
+
+      let preSeedPointColors = (dataObj=remainingHoursPerDay) => {
+         for(let i=1; i<=dataObj.length; i++){
+            let ideal = idealPlottedPtValues[i-1],
+            actual = dataObj[i-1],
+            hourDifference = ideal - actual,
+            dotColor = posNegPrcntToGYRHex(hourDifference);
+            colorsForActualHours.push(dotColor);
+         }
+      }
+
+      let drawBaseGrid = () => {
+         clearGrid();
+         drawBGGridPanel();
+         drawColPanels();
+         drawGridLines();
+         generateYAxis();
+         preSeedPointColors();
+      }
+
+      var ctx = c.getContext("2d");
+      drawBaseGrid();
+      drawIdealLine()
+      plotIdealPoints();
+
+      let drawBarGraph = (dataObj=remainingHoursPerDay, showIdealBars=true) => {
+         var bar = c.getContext("2d");
+         bar.globalAlpha = 0.4
+         bar.beginPath();
+         let barShift = gridColWidth * -0.4;
+         let barWidth = gridColWidth * 0.80;
+
+         for(let i=0; i<idealPlottedPtValues.length; i++){
+            bar.fillStyle="#08b2ed";
+            bar.lineWidth = "2";
+            bar.strokeStyle = "#000";
+            let ideal = idealPlottedPtValues[i];
+            if(i > dataObj.length-1 || (dataObj[i] && dataObj[i] === ideal)){
+               bar.fillRect(plotX(i) + barShift, plotY(ideal), barWidth, canvasHeight + gridVertMargins - plotY(ideal));
+            }else{
+               let actual = dataObj[i];
+
+               let hourDifference = ideal - actual;
+
+               // console.log(ideal, actual, hourDifference)
+               if(actual < ideal){
+                  bar.fillRect(plotX(i)+barShift,   canvasHeight + gridVertMargins, barWidth, (-actual * gridRowScale));
+                  bar.fillStyle=colorsForActualHours[i +1];
+                  bar.fillRect(plotX(i)+barShift,   (canvasHeight + gridVertMargins) + (-actual * gridRowScale), barWidth, (gridRowScale * -hourDifference));
+               }else if (actual > ideal){
+                  bar.fillRect(plotX(i)+barShift,    canvasHeight + gridVertMargins, barWidth, -gridRowScale * ideal);
+                  bar.fillStyle=colorsForActualHours[i +1];
+
+                  bar.fillRect(plotX(i)+barShift,   (canvasHeight - (gridRowScale * ideal)) + gridVertMargins, barWidth, (gridRowScale * hourDifference));
+               }
+            }
+         }
+      }
+
+      let plotActualPoints = (dataObj=remainingHoursPerDay) => {
+         let plotPt = (startX, startY, radius = 10) => {
+            let point = new Path2D();
+            point.moveTo(startX, (startY + radius));
+            point.lineTo((startX + radius), startY);
+            point.lineTo(startX, (startY - radius));
+            point.lineTo((startX - radius), startY);
+            point.closePath();
+            return point;
+         }
+
+         let pts  = c.getContext("2d");
+         for(let i=1; i<=dataObj.length-1; i++){
+            let ideal = idealPlottedPtValues[i-1],
+            actual = dataObj[i-1],
+            hourDifference = ideal - actual,
+            plottedPt = plotPt(plotX(i-1), plotY(dataObj[i-1])),
+            dotColor  = colorsForActualHours[i];
+            lineColor = colorsForActualHours[i];
+
+            pts.globalAlpha = 0.95;
+            pts.strokeStyle = lineColor;
+            pts.setLineDash([]);
+            pts.lineWidth = "2";
+            pts.fillStyle = dotColor;
+            pts.fill(plottedPt, 'evenodd');
+            pts.stroke(plottedPt);
+            colorsForActualHours.push(dotColor);
+         }
+      }
+
+    let drawActualLabels = (dayIndex) => {
+         
+//remainingHoursPerDay[day]
+         
+         
+         let actual = remainingHoursPerDay[dayIndex];
+         let ideal  = idealPlottedPtValues[dayIndex];
+         let overUnder = ideal-actual;
+         if(overUnder === 0) return
+         let direction = overUnder < 0 ? -1 : 1;
+         let pointOffset = overUnder < 0 ? 5 : 60;
+         let newLine  = overUnder < 0 ? -10 : -40;
+         let plusMinus  = overUnder < 0 ?"AHEAD":"BEHIND";
+         let xOffset = -30;
+         let percentage = readableRound(ideal/actual, 1) + '%';
+         let hours = "(" + readableRound(overUnder, 2, true) + " hrs)"
+         
+         if(overUnder < 0){
+            console.log('' + colorsForActualHours[dayIndex + 1])
+         ctx.font = 'bold 16px monospace';
+                     ctx.fillStyle=LightenDarkenColor(colorsForActualHours[dayIndex + 1], 1/100);
+         ctx.fillText("BEHIND!", plotX(dayIndex) + xOffset, plotY(remainingHoursPerDay[dayIndex]) - 15);
+         ctx.font = '12px monospace';
+                     ctx.fillStyle='#666';
+         ctx.fillText(hours, plotX(dayIndex) + xOffset - 5,plotY(remainingHoursPerDay[dayIndex]) - 30);
+         
+         ctx.font = 'bold 22px monospace';
+                     ctx.fillStyle='#000';
+         ctx.fillText(percentage, plotX(dayIndex) + xOffset + 5, plotY(remainingHoursPerDay[dayIndex]) - 40);
+            
+         }else{
+          ctx.font = '20px monospace';
+                     ctx.fillStyle=colorsForActualHours[dayIndex + 1];
+         ctx.fillText("AHEAD!", plotX(dayIndex) + xOffset, plotY(remainingHoursPerDay[dayIndex]) + 30);
+         ctx.font = '14px monospace';
+                     ctx.fillStyle='#666';
+         ctx.fillText(hours, plotX(dayIndex) + xOffset -2,plotY(remainingHoursPerDay[dayIndex]) +45);
+         
+         ctx.font = '26px monospace';
+                     ctx.fillStyle='#000';
+         ctx.fillText(percentage, plotX(dayIndex) + xOffset + 5, plotY(remainingHoursPerDay[dayIndex]) +70);
+            
+         }
+//           
+      }
+
+
+      let drawLineGraph = (dataObj=remainingHoursPerDay) => {
+         let segs  = c.getContext("2d"),
+             prev = dataObj[0];
+
+         segs.strokeStyle = "#000";
+         segs.setLineDash([]);
+         segs.globalAlpha = 1
+
+
+         for(let i=0; i<=dataObj.length; i++){
+            let ideal = idealPlottedPtValues[i-1],
+                actual = dataObj[i-1],
+                hourDifference = ideal - actual;
+            if(dataObj[i+1]) {
+               segs.beginPath();
+               let segment = new Path2D();
+               let sX = plotX(i), 
+                   sY = plotY(dataObj[i]),
+                   eX = plotX(i+1), 
+                   eY = plotY(dataObj[i+1]);
+               segment.moveTo(sX, sY);
+               segment.lineTo(eX, eY);
+
+               let gradient = ctx.createLinearGradient(sX, sY, eX, eY);
+               gradient.addColorStop(0, colorsForActualHours[i+1]);
+               gradient.addColorStop(1, colorsForActualHours[i+2]);
+               segs.strokeStyle = gradient;
+               segs.lineWidth = "3";
+               segs.filter = 'brightness(0.9)';
+               segs.stroke(segment);
+               segs.fill(segment);
+            }
+            drawActualLabels(i);
+         }
+      }
+
+      let shadeLineGraph = (dataObj=remainingHoursPerDay) => {
+         let segs  = c.getContext("2d");
+         let linePath = new Path2D();
+         let i;
+            segs.beginPath();
+         for(i=0; i<=dataObj.length; i++){
+            let sX = 100 + (i * 100), 
+                sY = 650 - dataObj[i],
+                eX = 200 + (i * 100), 
+                eY = 650 - dataObj[i+1];
+            if(dataObj[i+1]) {
+               linePath.moveTo(sX, sY);
+               linePath.lineTo(eX, eY);
+               //console.log('linePath.lineTo(',eX, eY,')');
+            } else {
+
+            }
+         }
+         linePath.lineTo(100 + ((dataObj.length - 1) * 100), 650 - idealPlottedPtValues[(dataObj.length - 1)]);
+         linePath.lineTo(100, 150);
+         linePath.closePath();
+
+         // let gradient = ctx.createLinearGradient(100,650 - idealPlottedPtValues[0],200,650 - idealPlottedPtValues[1]);
+         // gradient.addColorStop(0, colorsForActualHours[i]);
+         // gradient.addColorStop(1, colorsForActualHours[i+1]);
+         segs.strokeStyle = '#000';
+         segs.lineWidth = "3";
+         segs.stroke(linePath);
+         segs.fillRule = "evenodd"
+         segs.fill(linePath);
+         // segs.stroke();
+
+      }
+
+      let renderPopOvers = (dataObj=remainingHoursPerDay) => {
+         for(let i=0; i<=dataObj.length; i++){
+
+         }
+      }
+
+      drawBarGraph();
+      plotActualPoints()
+      drawLineGraph()  // plotActualPoints()
+      plotActualPoints()
+      // shadeLineGraph()
+}
+setTimeout(()=>{window.scrollTo(0,0)}, 500);
+
 
 const released = () => window.clearTimeout(ongoingtimer);
 
