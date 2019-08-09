@@ -1460,17 +1460,17 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
          
 //remainingHoursPerDay[day]
          
-         
+         if(dayIndex > remainingHoursPerDay.length - 1) return ''; 
          let actual = remainingHoursPerDay[dayIndex];
          let ideal  = idealPlottedPtValues[dayIndex];
          let overUnder = ideal-actual;
-         if(overUnder === 0) return
+         if(overUnder === 0) return '';
          let direction = overUnder < 0 ? -1 : 1;
          let pointOffset = overUnder < 0 ? 5 : 60;
          let newLine  = overUnder < 0 ? -10 : -40;
          let plusMinus  = overUnder < 0 ?"AHEAD":"BEHIND";
          let xOffset = -30;
-         let percentage = readableRound(ideal/actual, 1) + '%';
+         let percentage = readableRound((ideal/actual) * 100, 1) + '%';
          let hours = "(" + readableRound(overUnder, 2, true) + " hrs)"
          
          if(overUnder < 0){
