@@ -273,11 +273,10 @@ const d = document                                       // ⥱ Alias - document
     , fugue    = ()             => rote.clear()                                                     // Purges all memories... as though they'd NEVER. BEEN. FORMED. AT. ALL!
 
 
-    , toHours = (val = null) => {
-        // _(val);
-        if (val === '---'){ return val; }
-        if (val == null || isNaN((val / 1))){ return '0*'; }
-        return (val / 1 <= 0) ? 0 : (val / 3600).toPrecision(3);
+    , toHours = (val = null) => {                                                                   // Converts the asinine JIRA output we're currently getting (seconds, across the board) to hours
+        if (val === '---'){ return val; }                                                           //  ... (except in the case of the starting value being '---' whereupon...
+        if (val == null || isNaN((val / 1))){ return '0*'; }                                        //  ... we convert the value to something that still signifies the special case, but can also...
+        return (val / 1 <= 0) ? 0 : (val / 3600).toPrecision(3);                                    //  ... still be coerced back into a number type by the interpreter)
     }
     , setTargetSlot = (slotIndex) => (targetSlot = slotIndex)
 
@@ -295,6 +294,8 @@ let   fileBuffer    = []                                                        
     , ISSUE_KEYS    = []                                                                            // LIST OF ALL THE ISSUES from all the files ingested
     , INTERPOL8D    = []
     , RPTDATA       = []
+    , DAYSLOADED    = 0
+    , FILESLOADED   = 0
     , input         = document.getElementById('input')                                              // HTML file <INPUT> field/drop target for uploading XLSX files into the system
     , dateField     = qs("#report-start-date")                                                      // HTML date <INPUT> field representing the start of the iteration
     , sortableList  = qs('.has-draggable-children')                                                 // The <UL> containing the drag-drop-sortable list of files provided by the user
@@ -628,7 +629,7 @@ const runReport = (obj) => {                                                    
 };
 
 const getDistinctKeysFromFiles = () => {                                                            // ⓸ iterate files in buffer create promise chain to read each in sequence
-               // pBar(3, 'PROCESSING', 'aquamarine', 1, 0, 0);
+        
         safeBuffer = Object.assign([], fileBuffer);
         while(safeBuffer.lastIndexOf('') === (safeBuffer.length - 1)) 
             safeBuffer.pop();
@@ -642,6 +643,11 @@ const getDistinctKeysFromFiles = () => {                                        
                 ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])];                  //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
             } else INTERPOL8D.push(files);
         }
+
+        FILESLOADED = safeBuffer.length;
+        DAYSLOADED  = FILESLOADED - 1;
+        _('FILESLOADED', FILESLOADED);
+        _('DAYSLOADED', DAYSLOADED);
 
         concatinateDataFromSequencedFiles();
     };
@@ -1141,13 +1147,15 @@ const postProcessData   = () => {
                    ,idealCell = idealRow[c]
                    ,idealVals = idealCell.innerText.replace(/h/g, '') / 1;
                 
-                if(totalVals > idealVals){ 
-                    totalCell.className = "over";
-                    idealCell.className = "over";
-                }
-                if(totalVals < idealVals){ 
-                    totalCell.className = "under";
-                    idealCell.className = "under";
+                if(c <= DAYSLOADED + 2){
+                    if(totalVals > idealVals){ 
+                        totalCell.className = "over";
+                        idealCell.className = "over";
+                    }
+                    if(totalVals < idealVals){ 
+                        totalCell.className = "under";
+                        idealCell.className = "under";
+                    }
                 }
             }
         }
@@ -1189,7 +1197,7 @@ const incDec = (dir, mechanical=true, dly=750, scale=1) => {
 };
 
 function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
-   console.clear();
+//    console.clear();
                         // 500, 450, 400, 350, 300, 250, 200, 150, 100, 50*, 0*
    // totalDaysInIteration = 10;
    // remainingHoursPerDay = [500,475,375,450,200,250];
@@ -1399,6 +1407,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
          let barWidth = gridColWidth * 0.80;
 
          for(let i=0; i<idealPlottedPtValues.length; i++){
+            if(i > DAYSLOADED) return false;
             bar.fillStyle="#08b2ed";
             bar.lineWidth = "2";
             bar.strokeStyle = "#000";
@@ -1438,6 +1447,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
 
          let pts  = c.getContext("2d");
          for(let i=1; i<=dataObj.length-1; i++){
+            if(i > DAYSLOADED + 1) return false;
             let ideal = idealPlottedPtValues[i-1],
             actual = dataObj[i-1],
             hourDifference = ideal - actual,
@@ -1458,9 +1468,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
 
     let drawActualLabels = (dayIndex) => {
          
-//remainingHoursPerDay[day]
-         
-         if(dayIndex > remainingHoursPerDay.length - 1) return ''; 
+         if(dayIndex > remainingHoursPerDay.length - 1 || dayIndex > DAYSLOADED) return ''; 
          let actual = remainingHoursPerDay[dayIndex];
          let ideal  = idealPlottedPtValues[dayIndex];
          let overUnder = ideal-actual;
@@ -1470,8 +1478,8 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
          let newLine  = overUnder < 0 ? -10 : -40;
          let plusMinus  = overUnder < 0 ?"AHEAD":"BEHIND";
          let xOffset = -30;
-         let percentage = readableRound((ideal/actual) * 100, 1) + '%';
-         let hours = "(" + readableRound(overUnder, 2, true) + " hrs)"
+         let percentage = -readableRound(100 - ((ideal/actual) * 100), 1) + '%';
+         let hours = "(" + readableRound(overUnder, 2, true) + " hrs)";
          
          if(overUnder < 0){
             console.log('' + colorsForActualHours[dayIndex + 1])
@@ -1509,7 +1517,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
 
          segs.strokeStyle = "#000";
          segs.setLineDash([]);
-         segs.globalAlpha = 1
+         segs.globalAlpha = 1;
 
 
          for(let i=0; i<=dataObj.length; i++){
