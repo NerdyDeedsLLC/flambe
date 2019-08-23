@@ -1,3 +1,7 @@
+//@@ =====================================================================================================================================
+//@@ ========================================================= .CSV PARSER ===============================================================
+//@@ =====================================================================================================================================
+
 (function (window, undefined) {
     'use strict';
 
@@ -246,37 +250,36 @@
         window.CSV = CSV;
     }
 }(typeof window !== 'undefined' ? window : {}));
+//@@ =====================================================================================================================================
 
-// DECLARATIONS ==================================================================================================================
-// Shortcut aliases and Helper functions -----------------------------------------------------------------------------------------
-const d = document                                       // ⥱ Alias - document
-    , qs = (s) => d.querySelector(s)                        // ⥱ Alias - querySelector
-    , qsa = (s) => [...d.querySelectorAll(s)]                // ⥱ Alias - querySelectorAll
-    , _ = (...args) => console.log.call(this, ...args)     // ⥱ Alias - _
-    , pBar = (id, title, barColor, processor = 1, seq = 0, bc = 0) =>     // ⍟ HLPfn - Generates a progress bar
-        new Promise(conclude => {
-            console.info("PROMISE FUNCTION...");
-            id = 'pbar-' + id;
-            let oldBar = qs('#' + id);
-            if (oldBar) oldBar.remove();
-            let pb = qs('.pbars');
-            pb.insertAdjacentHTML('beforeEnd', `<div id="${id}" class="progress-bar" title="${title}" style="--bar-color:${barColor}; --process:${processor}s; --seq:${seq}; --bc:${bc}"></div>`);
-            return conclude(qs('#' + id));
-        })
+//!! =====================================================================================================================================
+//!! ======================================================== FLAMBE PROPER ==============================================================
+//!! =====================================================================================================================================
+// DECLARATIONS //==================================================================================================================
+// Shortcut aliases and Helper functions //-----------------------------------------------------------------------------------------
+const DEBUG_MODE = true;    //--> NOT TO BE SET TO 'TRUE' IN PRODUCTION USE - CONTROLS CONSOLE LOGS AND EXCESSIVE MEMORY CONSUMPTION
+
+const d   = document                                       // ⥱ Alias - document
+    , qs  = (s)       => d.querySelector(s)                        // ⥱ Alias - querySelector
+    , qsa = (s)       => [...d.querySelectorAll(s)]                // ⥱ Alias - querySelectorAll
+    , _   = (...args) => (DEBUG_MODE) ? console.log.call(this, ...args)  : false     // ⥱ Alias - _
+    , _I  = (...args) => (DEBUG_MODE) ? console.info.call(this, ...args) : false     // ⥱ Alias - _
+    , _T  = (...args) => (DEBUG_MODE) ? console.table.call(this, ...args): false     // ⥱ Alias - _
+    
     // Rote memory's storage
-    , rote = window.localStorage                                                                    // Alias to the window's localStorage. Really these are all just helper functions that amuse me.
-    , memories = ()             => rote.length                                                      // Returns the count of how many memories are being held in rote storage
-    , recall   = (k, def=null)  => {k=rote.getItem(k); return k ? k : (def ? def : null);}          // Returns a memory value if present. If not, returns def if provided, null if not
-    , retain   = (k,v)          => rote.setItem(k,v) ? v : v                                        // Creates a new memory for key k with value v, then returns v
-    , reflect  = (k, def=null)  => retain(k, recall(k, def))                                        // Runs a recall for a memory (value at key or null), then immediately retains it in memories
-    , forget   = (k)            => rote.removeItem(k)                                               // Discrads the memories at key k
-    , fugue    = ()             => rote.clear()                                                     // Purges all memories... as though they'd NEVER. BEEN. FORMED. AT. ALL!
+    , rote = window.localStorage                                                                	       	// Alias to the window's localStorage. Really these are all just helper functions that amuse me.
+    , memories = ()             => rote.length                                                      		// Returns the count of how many memories are being held in rote storage
+    , recall   = (k, def=null)  => {k=rote.getItem(k); return k ? k : (def ? def : null);}            		// Returns a memory value if present. If not, returns def if provided, null if not
+    , retain   = (k,v)          => rote.setItem(k,v) ? v : v                                        		// Creates a new memory for key k with value v, then returns v
+    , reflect  = (k, def=null)  => retain(k, recall(k, def))                                        		// Runs a recall for a memory (value at key or null), then immediately retains it in memories
+    , forget   = (k)            => rote.removeItem(k)                                                  		// Discrads the memories at key k
+    , fugue    = ()             => rote.clear()                                                      		// Purges all memories... as though they'd NEVER. BEEN. FORMED. AT. ALL!
 
-
-    , toHours = (val = null) => {                                                                   // Converts the asinine JIRA output we're currently getting (seconds, across the board) to hours
-        if (val === '---'){ return val; }                                                           //  ... (except in the case of the starting value being '---' whereupon...
-        if (val == null || isNaN((val / 1))){ return '0*'; }                                        //  ... we convert the value to something that still signifies the special case, but can also...
-        return (val / 1 <= 0) ? 0 : (val / 3600).toPrecision(3);                                    //  ... still be coerced back into a number type by the interpreter)
+    
+    , toHours = (val = null) => {                                                                   		// Converts the asinine JIRA output we're currently getting (seconds, across the board) to hours
+        if (val === '---'){ return val; }                                                           		//  ... (except in the case of the starting value being '---' whereupon...
+        if (val == null || isNaN((val / 1))){ return '0*'; }                                        		//  ... we convert the value to something that still signifies the special case, but can also...
+        return (val / 1 <= 0) ? 0 : (val / 3600).toPrecision(3);                                       		//  ... still be coerced back into a number type by the interpreter)
     }
     , setTargetSlot = (slotIndex) => (targetSlot = slotIndex)
 
@@ -286,129 +289,75 @@ const d = document                                       // ⥱ Alias - document
         return -1;
     };
 
+    const totalItrDayPicker=document.querySelector('.picker-panel-presenter')
+
+    
+    ,getDayCountFromPicker = () => (totalItrDayPicker.placeholder / 1);
+
 // Global Variables --------------------------------------------------------------------------------------------------------------
-let   fileBuffer    = []                                                                            // Stores copies of the file input's data collection (req'd in case the user maskes multiple sets of selections)
+let   fileBuffer    = []                                                                            		// Stores copies of the file input's data collection (req'd in case the user maskes multiple sets of selections)
     , safeBuffer    = []
-    , namedFiles    = []                                                                            // Array containing just the names of the files contained within fileBuffer (used for sequencing the read order)
-    , COMBD_DATA    = []                                                                            // COMBINED DATA from all the files ingested
-    , ISSUE_KEYS    = []                                                                            // LIST OF ALL THE ISSUES from all the files ingested
-    , INTERPOL8D    = []
-    , RPTDATA       = []
-    , DAYSLOADED    = 0
-    , FILESLOADED   = 0
-    , input         = document.getElementById('input')                                              // HTML file <INPUT> field/drop target for uploading XLSX files into the system
-    , dateField     = qs("#report-start-date")                                                      // HTML date <INPUT> field representing the start of the iteration
-    , sortableList  = qs('.has-draggable-children')                                                 // The <UL> containing the drag-drop-sortable list of files provided by the user
-    , doneButton    = qs('.done-sorting')                                                           // "Run report" button
+    , namedFiles    = []                                                                            		// Array containing just the names of the files contained within fileBuffer (used for sequencing the read order)
+    , COMBD_DATA    = []                                                                            		// COMBINED DATA from all the files ingested
+    , ISSUE_KEYS    = []                                                                            		// LIST OF ALL THE ISSUES from all the files ingested
+    , INTERPOL8D    = []                                                                            		// ARRAY OF ALL THE DATES that needed to be interpolated
+    , RPTDATA       = []                                                                            		//
+    , TOTALITRDAYS  = getDayCountFromPicker()
+    , DAYSLOADED    = 0                                                                             		// THE NUMBER OF ACTUAL DAYS we have data for (basically lumps Seed and Day One into a single day)
+    , FILESLOADED   = 0                                                                             		// THE NUMBER OF FILES entered into the system, regardless of the number of DAYS in the iteration
+    , input         = document.getElementById('input')                                              		// HTML file <INPUT> field/drop target for uploading XLSX files into the system
+    
+    , dateField     = qs("#report-start-date")                                                      		// HTML date <INPUT> field representing the start of the iteration
+    , sortableList  = qs('.has-draggable-children')                                                 		// The <UL> containing the drag-drop-sortable list of files provided by the user
+    , doneButton    = qs('.done-sorting')                                                        		    // "Run report" button
     , iterationName = qs("#iteration-name")
     , previewPanel  = qs('.output-table')
     , dataToGraph   = null
     , idealDayCount = null
-    , targetSlot    = null
-    , dayCtPicker   = qs('#days-in-iteration')
+    , targetSlot    = null;
 
-    , concernColors = ['Transparent', 'DimGray', 'GreenYellow', 'Gold', 'Orange', 'Red']            // 0-indexed Color-Codings used for the 
-    , concernFlags  = { // CONCERN CODEX
-                        // TRIVIAL CONCERN: An issue weighted 0-1 indicate anomolies that
-                        // are visible within the data that are known and being accounted
-                        // for. Scrum masters may need to explain the blip to THEIR boss.
-                        "HID":    {"weight": 0, "concern": "Hidden By ScrumMaster" },               // Employed at scrum master's discretion to remove a concern from being flagged
-                        "ATT":    {"weight": 1, "concern": "Related to Attendance" },               // Assigned developer is AWOL/MIA/on leave/in the med bay. Occasionally presumed dead.
-                        "HOL":    {"weight": 1, "concern": "Related to Holiday" },                  // Excluding a day iteration-wide for company holiday/operational shutdown
-
-                        // MINOR CONCERN: Issues weighted at 2- less usually indicates an
-                        // error in procedure, in JIRA operation, or on the dev, assigned
-                        // the issue. Scrum masters should inquire if it keeps happening.
-                        "EST":    {"weight": 2, "concern": "Bad Estimate" },                        // "Build a global satellite network, huh? No problem. 9 lines of code, 16 hours, tops."
-                        "AUC":    {"weight": 2, "concern": "Assigned User Changed" },               // "Huh? Bob made an unsubstantiated, unreported offer to handle it while I was in Figi!" 
-                        "UER":    {"weight": 2, "concern": "User Error" },                          // "Yeah, lemme just open the story real qui- SH*T! Where did it go!? ^&*%$^%$&* JIRA!"
-                        "SCR":    {"weight": 2, "concern": "Scope Creep" },                         // "Hey, so marketing wants to add one more little thing to the user-facing cart portal"
-                        "ASS":    {"weight": 2, "concern": "Improperly Assigned" },                 // Likely curprits: "Oh, THAT Deepak?!" and "Why is this assigned to ME!? Stupid JIRA."
-                        "PID":    {"weight": 2, "concern": "Parent ID Changed" },                   // "IO-11110 DOES look an awful lot like IO-11101"... mistakes happen.
-                        "ICS":    {"weight": 2, "concern": "Inconsistent Status" },                 // Status makes no sense (e.g. task In Definition, but hours burned).
-
-                        // MEDIUM CONCERN: Issues weighted at 3+ indicate an issue who is
-                        // out of place, whose hours aren't (or, temporarily, CANNOT) get
-                        // burned down, or admin error. These MAY/MAY NOT be impactful on
-                        // the burndown. Scrum master should investigate & maybe inquire.
-                        "USS":    {"weight": 3, "concern": "Unestimated at Sprint Start" },         // Story had no hour estimate when Sprint began
-                        "STK":    {"weight": 3, "concern": "Unable to Begin" },                     // Story is precluded from even getting started, Maybe prematurely added to iteration?
-                        "STR":    {"weight": 3, "concern": "Bad/Mistaken Story Inclusion" },        // Almost always user error. Story got added to iteration on accident. 
-                        "HRS":    {"weight": 3, "concern": "Hours Not Being Burned" },              // Almost always user error. Developer working a story simply hasn't reported the work/
-                        "NPR":    {"weight": 3, "concern": "No Progress Reported" },                // Developer has reported no progress on an issue for 3+ days. COULD be a warning flag
-                        "DEP":    {"weight": 3, "concern": "Unsatisfied Dependency" },              // Basically, the developer must complete another task first, and is blocking himself. 
-                        "TOS":    {"weight": 3, "concern": "Issue Changed to Subtask" },            // Former Issue downgraded to subtask.
-
-                        // HIGH CONCERN: Issues weighted 4+ indicate a change in the tot.
-                        // estimated hours for the iteration, and therefore have a DIRECT 
-                        // impact on the burndown. Scrum master needs to perform inquiry.
-                        "TOI":    {"weight": 4, "concern": "Subtask Changed to Issue" },            // Former Subtask elevated to full Issue.
-                        "NEW":    {"weight": 4, "concern": "New Story Added to Iteration" },        // Issue just appeared in iteration.
-                        "DEL":    {"weight": 4, "concern": "Story Deleted" },                       // Issue deleted/removed from iteration.
-
-                        // CRITICAL CONCERN: Issues weighted at 5 typically indicate some
-                        // flavor of impending disaster or serious problem on the flagged
-                        // issue. Scrum masters should be loaded for bear & hunting fixes
-                        "XXX":    {"weight": 5, "concern": "Blocking Issue" },                      // ISSUE BLOCKED FROM FURTHER PROGRESS. Highest source of concern
-                        // BUNDLES
-                        "UNCHGD": {"weight": 2, "collection": "XXX,NPR,STK,HOL,ATT,HRS",     "concern": "No changes made to story for current iteration" },
-                        "HRSINC": {"weight": 3, "collection": "EST,UER,SCR,STR,STK,NEW,ASS", "concern": "Hours increased from day prior!" },
-                        "UNCHG3": {"weight": 4, "collection": "XXX,NPR,STK,HOL,ATT,HRS",     "concern": "No changes made to story for 3 days!" }
-                    };
-
-       // APPLICATION SOURCE ===================================================================== 🅔🅧🅔🅒🅤🅣🅘🅞🅝 🅢🅔🅠🅤🅔🅝🅒🅔 indicated by encircled digits (➀-➈)
-init = () => {                                                                                      // ⓿ Initiate application, chaining steps 1-3 above to file input's onChange
+		// APPLICATION SOURCE ============================================================================ 🅔🅧🅔🅒🅤🅣🅘🅞🅝 🅢🅔🅠🅤🅔🅝🅒🅔 indicated by encircled digits (➀-➈)
+init = () => {                                                                                      		// ⓿ Initiate application, chaining steps 1-3 above to file input's onChange
     console.info("\n\n====== INIT ======\n");
-    iterationName.value    = recall('iterationName', '');                                           // Seed the value set for the iteration's name (or blank if none is stored)...
-    iterationName.onkeyup  = ()=>{retain('iterationName', iterationName.value); };                   // ... and set up the field's onKeyUp handler to save any changes henceforth.
-    iterationName.onchangd = ()=>{retain('iterationName', iterationName.value); };                   // ... aaaand again, some more, for onChange.
-    dateField.value        = recall('reportStartDate', '');                                               // Do the same for the Start Date value, seeding it (or blank) if set...
-    dateField.onkeyup      = ()=>{retain('reportStartDate', dateField.value); };                       // ... and establishing the onKeyUp listener to store any updates.
-    dateField.onchange     = ()=>{retain('reportStartDate', dateField.value); };                       // ... and establishing the onChange listener to store any updates.
+    iterationName.value    = recall('iterationName', '');                                       	    	// Seed the value set for the iteration's name (or blank if none is stored)...
+    iterationName.onkeyup  = ()=>{retain('iterationName', iterationName.value); };                    		// ... and set up the field's onKeyUp handler to save any changes henceforth.
+    iterationName.onchangd = ()=>{retain('iterationName', iterationName.value); };                  		// ... aaaand again, some more, for onChange.
+    dateField.value        = recall('reportStartDate', '');                                         		// Do the same for the Start Date value, seeding it (or blank) if set...
+    dateField.onkeyup      = ()=>{retain('reportStartDate', dateField.value); };                	    	// ... and establishing the onKeyUp listener to store any updates.
+    dateField.onchange     = ()=>{retain('reportStartDate', dateField.value); };                		    // ... and establishing the onChange listener to store any updates.
+    fileBuffer             = recall('fileBuffer', null);                                             		// Try and retrieve the fileBuffer in one exisits in Rote memories...
+    fileBuffer             = (fileBuffer == null) ? [] : JSON.parse(fileBuffer);                    		// ... and, if one does, rehydrate it. Otherwise, establish it as a new array.
 
-    fileBuffer             = recall('fileBuffer', null);                                            // Try and retrieve the fileBuffer in one exisits in Rote memories...
-    fileBuffer             = (fileBuffer == null) ? [] : JSON.parse(fileBuffer);                    // ... and, if one does, rehydrate it. Otherwise, establish it as a new array.
-    // console.log('fileBuffer', fileBuffer);
+    let startingLength     = 1;
 
-    let startingLength = 1;
-    
-    // console.log('fileBuffer', typeof(fileBuffer), fileBuffer, fileBuffer.length);
-
-    if(fileBuffer.length > 0) {                                                                     // If we DID manage to restore a previous buffer...
-        startingLength = fileBuffer.length - 1;
-        namedFiles  = retain('namedFiles', fileBuffer.flatMap(f=>(f && f.fileName)                  //    ... and, should it prove that we have a valid file for each (filled) index... ********
-                                                               ?  f.fileName                        //    ... reconstuct the list of previously-provided file names...
-                                                               :  ''));                              //    ... otherwise, flag the individual record as having errored out.
+    if(fileBuffer.length > 0) {                                                                     		// If we DID manage to restore a previous buffer...
+        namedFiles     = retain('namedFiles', fileBuffer.flatMap(f=>(f && f.fileName)               		//    ... and, should it prove that we have a valid file for each (filled) index... ********
+                                                                       ?  f.fileName            	    	//    ... reconstuct the list of previously-provided file names...
+                                                                       :  ''));                 		    //    ... otherwise, flag the individual record as having errored out.
+        startingLength = fileBuffer.length - 1;                                                     		//    .. Finally, while we're at it, let's grab the number of files we're starting with.
     }
 
-    if(fileBuffer.length <= 1){                                                                     // If we FAILED to restore a previous buffer (or the one we DID errored out)...
-        namedFiles  = reflect('namedFiles', []);                                                    //    ... grab theb previous buffer from rote memories (defaulting to [] if not present)...
-        if(typeof(namedFiles) === 'string') namedFiles=retain('namedFiles', namedFiles.split(',')); //    ... break our namedFiles back out too.
+    if(fileBuffer.length <= 1){                                                                        		// If we FAILED to restore a previous buffer (or the one we DID errored out)...
+        namedFiles  = reflect('namedFiles', []);                                                    		//    ... grab theb previous buffer from rote memories (defaulting to [] if not present)...
+        if(typeof(namedFiles) === 'string') namedFiles=retain('namedFiles', namedFiles.split(','));         //    ... break our namedFiles back out too.
     }
 
-    trg.placeholder = startingLength;
-    syncSpinner(startingLength);
+    totalItrDayPicker.placeholder = startingLength;
+    syncSpinner(startingLength);                                                                            //## ➜➜➜ 🅒 
     
-    resizeBufferArraysAndRebuildSlots();
-    syncSpinner();
+    resizeBufferArraysAndRebuildSlots();                                                                    //@@ ➜➜➜ ︎🅑 
+    syncSpinner();                                                                                          //## ➜➜➜ 🅒 
     
-    input.addEventListener('change', e => {
+    input.addEventListener('change', e => {                                                                 //$ onChange Event handler for the individual <LI>'s; Allows files ot be added
         console.info("EVENT: input.addEventListener('change') e", e);
-        if(targetSlot == null || input.files.length > 1){                                                                        // (Indicating we're dealing with a BULK upload)
-            return pBar(1, "READING...✓", "teal", 0.1, 0, 0)
-                  .then(() => pBar(2, 'PARSING...✓', 'DarkTurquoise', 0.1, 0.1, 0.1))
-                  .then(parseFilesAndGenerateDragDrop)
-                  .then(primeDragDropListBehaviors);
-        }else{
-            return pBar(1, "READING...✓", "teal", 0.1, 0, 0)
-                  .then(() => pBar(2, 'PARSING...✓', 'DarkTurquoise', 0.1, 0.1, 0.1))
-                  .then(() => addOrReplaceSingleFileAndParse());
+        if(targetSlot != null && input.files.length === 1){                                                 // (Since, in the case of a bulk upload attempt, we'd have no slot and more than 1 file)
+            return addOrReplaceSingleFileAndParse();                                                       //!! ➜➜➜ 🅐 
         }
     });
 }; 
 
 insertFileNodeBetween = (e, trgObj=e.target) => {
-    console.info("FUNCTION: insertFileNodeBetween", "e", e, "trgObj", trgObj);
+    console.info("FUNCTION: insertFileNodeBetween", "e", e, "trgObj", trgObj);                              //$$ Ⓓ ⬅⬅⬅︎ 
     console.log(e, trgObj);
     if  (trgObj.tagName !== 'LI') {
                    // e.preventDefault();
@@ -417,18 +366,17 @@ insertFileNodeBetween = (e, trgObj=e.target) => {
     let targetIndex = trgObj.dataset.slot;
     fileBuffer.splice(targetIndex, 0, '');
     namedFiles.splice(targetIndex, 0, '');
-    syncSpinner(((trg.placeholder / 1) + 1));
-    resizeBufferArraysAndRebuildSlots();
-    
+    syncSpinner(((totalItrDayPicker.placeholder / 1) + 1));                                                               //## ➜➜➜ 🅒 
+    resizeBufferArraysAndRebuildSlots();                                                                    //@@ ➜➜➜ 🅑 
 };
 
-removeFileAtIndex = (trgBtn, isFilled) => {
+removeFileAtIndex = (trgBtn, isFilled) => {                                                                 //%% Ⓔ ⬅⬅⬅︎  Remove the file from the slot whose trashcan was clicked (both in the buffer and the UI)
     console.info("FUNCTION: removeFileAtIndex", "trgBtn", trgBtn, "isFilled", isFilled);
     ind = trgBtn.dataset.index;
     if(findLastIndexOf(namedFiles, /.+/) === 0) {
         namedFiles[0]=retain('namedFiles', '');
         fileBuffer[0]=retain('fileBuffer', '');
-        return resizeBufferArraysAndRebuildSlots();
+        return resizeBufferArraysAndRebuildSlots();                                                         //@@ ➜➜➜ 🅑 
     }
     console.log(ind, trgBtn);
     if(isFilled){
@@ -439,10 +387,11 @@ removeFileAtIndex = (trgBtn, isFilled) => {
         fileBuffer.splice(ind, 1);
         incDec(1);
     }
-    return resizeBufferArraysAndRebuildSlots();
+    return resizeBufferArraysAndRebuildSlots();                                                             //@@ ➜➜➜ 🅑 
 };
 
-resizeBufferArraysAndRebuildSlots = (newLen = ((trg.placeholder / 1) + 1)) => {
+                                                                                                            
+resizeBufferArraysAndRebuildSlots = (newLen = ((totalItrDayPicker.placeholder / 1) + 1)) => {                             //@@ Ⓑ ⬅⬅⬅︎ Destroys the current buffer and UI, rebuilding them to reflect new state
         console.info("FUNCTION: resizeBufferArraysAndRebuildSlots", newLen );
         if(typeof(namedFiles)=='undefined' || isNaN(newLen) || newLen<0) return false;
         let oldLen = (namedFiles && namedFiles.length) ? namedFiles.length / 1 : 0,
@@ -465,21 +414,25 @@ resizeBufferArraysAndRebuildSlots = (newLen = ((trg.placeholder / 1) + 1)) => {
                 ,dSlot = ` data-slot="${(i > 0) ? i : 'S'}" `
                 ,fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
                               ${namedFiles[i]}
-                              <button class="remove-buttons" data-index="${i}" onMouseUp="removeFileAtIndex(this, true)" />
+                              <button class="remove-buttons" data-index="${i}" 
+                                    onMouseUp="removeFileAtIndex(this, true)" />                            //%% ➜➜➜ 🅔 
                            </label>`
                 ,arrID = ` id="file-slot-${i}" `;
 
             if(namedFiles[i] == ''){
                 if(i < interpolated){
                     fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
-                                No file specified (click to add, or leave blank to interpolate data from neighbors)
-                                <button class="remove-buttons" data-index="${i}" onMouseUp="removeFileAtIndex(this, false)" />
+                                No file specified (click to add, or leave blank to 
+                                    interpolate data from neighbors)
+                                <button class="remove-buttons" data-index="${i}" 
+                                    onMouseUp="removeFileAtIndex(this, false)" />                           //%% ➜➜➜ 🅔 
                               </label>`;
                     pList += ' data-value="interpolated"';
                 } else {
                     fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
                                 No file specified (click to add!)
-                               <button class="remove-buttons" data-index="${i}" onMouseUp="incDec(-1); released();" />
+                               <button class="remove-buttons" data-index="${i}" 
+                                    onMouseUp="incDec(-1); released();" />
 
                             </label>`;
                 }
@@ -492,13 +445,10 @@ resizeBufferArraysAndRebuildSlots = (newLen = ((trg.placeholder / 1) + 1)) => {
         }
         while(sortableList.childElementCount>0) sortableList.childNodes[0].remove();
         sortableList.insertAdjacentHTML('beforeEnd', opStr);
-        qsa('li').forEach(li=>li.addEventListener('click', insertFileNodeBetween));
+        qsa('li').forEach(li=>li.addEventListener('click', insertFileNodeBetween));                         //$$ ➜➜➜ 🅓 
     };
-
-addOrReplaceSingleFileAndParse = (slotId=targetSlot, liObj=qs('#file-slot-'+slotId)) =>                                                               // Called when a LI slot is clicked to load a single file
-       //    new Promise(conclude => {
+addOrReplaceSingleFileAndParse = (slotId=targetSlot, liObj=qs('#file-slot-'+slotId)) =>                     //!! Ⓐ ⬅⬅⬅︎ Inserts (or updates) a file at the specified slot (in both the buffer and the UI)
     {
-        _("\"Yay promises!\"");
         let fileObj  = input.files[0],
             fileName = fileObj.name;
             
@@ -533,131 +483,45 @@ addOrReplaceSingleFileAndParse = (slotId=targetSlot, liObj=qs('#file-slot-'+slot
             )
         .then(()=>{
             _('...resolved\n".then()" #2');
-            resizeBufferArraysAndRebuildSlots();
+            resizeBufferArraysAndRebuildSlots();                                                            //@@ ➜➜➜ ︎🅑 
             doneButton.disabled = false;
+            doneButton.addEventListener('click', runReport)                                                 //** ➜➜➜ ︎🅗 
             return ;
         });
     };
 
-         
-parseFilesAndGenerateDragDrop = response =>                                                        // ⓵ onChange of file input box, iterate namedFiles and generate Drag/Drop UL
-    new Promise(conclude => {
-        
-        const bufferFile = (fileObj, fileIndex, fileName) =>
-            new Promise(fulfill => {
-                fileName = fileObj.name;
-                if (namedFiles.indexOf(fileName) !== -1) return fulfill(this);
-                namedFiles.push(fileName);
-                const appendToBuffer = (JSONObj, fileName = null) => {
-                    console.info("FUNCTION: appendToBuffer", "JSONObj", JSONObj, fileName );
-                    let extantIndex = fileBuffer.find(b => b.fileName === fileName);
-                    if (extantIndex) fileBuffer[extantIndex] = JSONObj;
-                    else fileBuffer.push(JSON.stringify({ fileName: fileName, fileData: JSONObj }));
-                };
-                var reader = new FileReader();                                      // Instantiate a new file reader...
-                       //   ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  ⌢  
-                reader.onloadend = (progressEvent) => {                              //    ... Add a listener to observe once it's finished loading.
-                    var opJSON = CSV.parse(reader.result);                               //    Parse the .CSV file input...
-                    appendToBuffer(opJSON, fileName);                                            //    ... and add it to the global variable containing file data,
-                    return fulfill(this);
-                };                                                                     // ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  ⌣  
-                reader.readAsText(fileObj);                                            // ... And read the file specified.
-            });
-        var bufferedFiles = Promise.all([...input.files].map((file, ind) => bufferFile(file, ind, file.name)))
-        .then(() => {
-                namedFiles = [...new Set(namedFiles)];
-
-                let opStr = '';
-                for (var i = 0; i < 11; i++) {
-                    let dataSlot = !i ? "S" : i;
-                    if (i < namedFiles.length) {
-                        let fileName = namedFiles[i];
-                        opStr += `<li data-slot="${dataSlot}" class="drag-drop" draggable="true">${fileName}</li>`;
-                    } else {
-                        opStr += `<li data-slot="${dataSlot}"><label for="input" onMouseDown="setTargetSlot(${i})">No file specified (click to add!)</label></li>`;
-                    }
-                }
-                
-                return conclude(response);
-            });
-    });
-
-const primeDragDropListBehaviors = (listClass = 'drag-drop') => {                                  // ⓶ iterate UL and set up drag/drop on its children
-    const bindDragDropListeners = (obj) => {
-        console.info("FUNCTION: bindDragDropListeners", "obj", obj);
-        try {
-
-            const drag = (e, trg = e.target, parList = trg.parentNode) => {
-                console.info("FUNCTION: drag", "e", e, "trg", trg, parList );
-                trg.className += " drag-sort-active";
-                let swapobj = document.elementFromPoint(event.clientX, event.clientY) || trg;
-                if (parList === swapobj.parentNode) {
-                           // Thereby constraining the drop to the same list
-                    swapobj = (swapobj !== trg.nextSibling) ? swapobj : swapobj.nextSibling;
-                    parList.insertBefore(trg, swapobj);
-                }
-            };
-            const drop = (e, trg = e.target) => { e.preventDefault(); trg.className = trg.className.replace(/(\s+)?drag-sort-active(\s+)?/g, ""); };
-
-            obj.addEventListener("drag", drag);
-            obj.addEventListener("drop", drop);
-            obj.addEventListener("dragend", drop);
-            return true;
-        } catch (err) {
-            return false;
-        }
-    };
-    let ddObjects = sortableList.getElementsByClassName(listClass);
-    Array.prototype.map.call(ddObjects,
-        list => {
-            Array.prototype.map.call(list.children, item => {
-                bindDragDropListeners(item);
-            });
-        }
-    );
-    [...ddObjects].forEach(o => bindDragDropListeners(o));
-    doneButton.disabled = false;
-           // retain(
-};
-
-const runReport = (obj) => {                                                                       // ⓷ user clicks Run It!; orchastrate remaining steps
+ const runReport = (obj=doneButton) => {                                                                    //** ⬅⬅⬅︎ Ⓗ    Execute the preview grid and graphing methods 
     if (obj.disabled == true) return false;
     COMBD_DATA = [];
     ISSUE_KEYS = [];
     DEBUG_DATA = [];
-    getDistinctKeysFromFiles();
+    getDistinctKeysFromFiles();                                                                             //^^ ➜➜➜ 🅕 
 };
 
-const getDistinctKeysFromFiles = () => {                                                            // ⓸ iterate files in buffer create promise chain to read each in sequence
-        
-        safeBuffer = Object.assign([], fileBuffer);
-        while(safeBuffer.lastIndexOf('') === (safeBuffer.length - 1)) 
-            safeBuffer.pop();
-        while(safeBuffer.indexOf('') != -1) 
-            safeBuffer[safeBuffer.indexOf('')] = 'INTERPOLATED';
-        for (let files in safeBuffer) {
-            let file = safeBuffer[files];
-            if(file !== 'INTERPOLATED'){
-                let keySet = JSON.stringify(file.fileData, ['Issue key'])              //    ... convert the resultant JSON to a string containing ONLY the 'Issue key' column...
-                    .match(/DIGTDEV-\d{4,6}/g);                                         //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
-                ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])];                  //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
-            } else INTERPOL8D.push(files);
+const getDistinctKeysFromFiles = () => {                                                                    //^^ ⬅⬅⬅︎ Ⓕ    Iterate through our files, constructing a unique JSON structure from them 
+        safeBuffer = Object.assign([], fileBuffer);                                                         // Duplicate the file buffer (so we're not mucking up our original, "pure" copy. This one's "safe" to screw with
+        while(safeBuffer.lastIndexOf('') === (safeBuffer.length - 1)) safeBuffer.pop();                     // Discard any blank indicies And the END of the stack. Those are "missing" days.
+        while(safeBuffer.indexOf('') != -1)  safeBuffer[safeBuffer.indexOf('')] = 'INTERPOLATED';           // (...since any blanks in the middle of the stack get flagged as needing to be interpolated)
+        for (let files in safeBuffer) {                                                                     // Iterate all the files we've collected into the buffer...
+            let file = safeBuffer[files];                                                                   //  ... Alias the file (for convenience).
+            if(file !== 'INTERPOLATED'){                                                                    //  ... Assuming it's not flagged for interpolation, 
+                let keySet = JSON.stringify(file.fileData, ['Issue key'])                                   //    ... pull out a flattened string containing ONLY the 'Issue key' columns
+                    .match(/DIGTDEV-\d{4,6}/g);                                                             //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
+                ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])];                                      //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
+            } else INTERPOL8D.push(files);                                                                  //  ... UNLESS it IS flagged for interpolation, in which case add it to that collection  
         }
-
-        FILESLOADED = safeBuffer.length;
-        DAYSLOADED  = FILESLOADED - 1;
-        _('FILESLOADED', FILESLOADED);
-        _('DAYSLOADED', DAYSLOADED);
-
-        concatinateDataFromSequencedFiles();
+        FILESLOADED = safeBuffer.length;                                                                    // Increment our "number of files we've read" counter...
+        DAYSLOADED  = FILESLOADED - 1;                                                                      // ... and the number of days that equates out to.
+        remapDataSoIssueIDIsPrimaryKey();                                                                   //&& ➜➜➜ 🅖
     };
 
-const concatinateDataFromSequencedFiles = () => {                                                  // ⓹ iterate finalized buffer, and concatinated generate output data
-    temp_store = [];
-    ISSUE_KEYS.forEach(r => {
-        temp_store.push(r['Issue key']);
-        COMBD_DATA[r] = new Array(safeBuffer.length).fill('');
-        DEBUG_DATA[r] = new Array(safeBuffer.length).fill('');
+const remapDataSoIssueIDIsPrimaryKey = () => {                                                              //&& Ⓖ ⬅︎⬅︎⬅︎    Iterate finalized buffer, and concatinated generate output data
+    console.info("FUNCTION: remapDataSoIssueIDIsPrimaryKey");
+    temp_store = [];                                                                                        // Create a temporary, empty collection...
+    ISSUE_KEYS.forEach(r => {                                                                               //    ... Iterate through our unique keys from all files (from getDistinctKeysFromFiles)...
+        temp_store.push(r['Issue key']);                                                                    //    ... stuff 'em into said temp array...
+        COMBD_DATA[r] = new Array(safeBuffer.length).fill('');                                              //    ... and create an index to house the data within our Combined Data collection
+        if(DEBUG_MODE) DEBUG_DATA[r] = new Array(safeBuffer.length).fill('');                               //    (... and if we're debugging, may as well make a slot a flattened string copy too)
     });
     
     let prevDay, prevData;
@@ -672,7 +536,7 @@ const concatinateDataFromSequencedFiles = () => {                               
             file.forEach(f => {
                 if (f && f['Issue key'] && f['Issue key'] != null && f['Issue key'] !== '') {
                     COMBD_DATA[f['Issue key']][files] = f;
-                    DEBUG_DATA[f['Issue key']][files] = JSON.stringify(f);
+                    if(DEBUG_MODE) DEBUG_DATA[f['Issue key']][files] = JSON.stringify(f);
                 }
             });
             prevDay  = files;
@@ -684,7 +548,7 @@ const concatinateDataFromSequencedFiles = () => {                               
         INTERPOL8D.forEach(itp=>COMBD_DATA[cbd][itp] = '---');
     });
     
-    processParentChildRelationships();
+    processParentChildRelationships();                                                                      //⦾! ➜➜➜ 🅘
 };
 
 const showRecordDetails = (e, targetLink=e.target) => {
@@ -700,7 +564,7 @@ const showRecordDetails = (e, targetLink=e.target) => {
     targetLink.insertAdjacentHTML('afterEnd', flatData);
 };
 
-const processParentChildRelationships = () => {
+const processParentChildRelationships = () => {                                                             //⦾! Ⓘ ⬅︎⬅︎⬅︎ Correllates the parent tasks to their corresponding sub-tasks 
     console.info("FUNCTION: processParentChildRelationships");
     const createJIRALink = (IssueId, isParent=false) => {
         // console.info("FUNCTION: createJIRALink", "IssueId", IssueId, "isParent", isParent);
@@ -807,7 +671,6 @@ const constructPreviewAndReportData = () => {                                   
         MRKUP.push(ROWOP.split(_I_));                                                                  // Convert it to an iterable collection and push it onto the bottom of the output markup stack
     });
 
-    pBar(4, 'GENERATING OUTPUT... DONE!', 'LimeGreen', 0.1, 0.1, 0.1);                                 // Show generating output progress meter
     let colHeaders  = ['Current Status','Issue ID', 'Seed Day']                  // Define always-present column headers (| Current Status | JIRA ID | Parent ID | Issue ID | Seed Day |)
         ,dateArr     = [];                                                                               // Array holding the labels for each column, each of which represent the file being examined
     if (dateField.checkValidity()) {                                                                   // Since we can't date-stamp a column if the user didn't give us a date, see if they did. IF they did...
@@ -868,6 +731,35 @@ const constructPreviewAndReportData = () => {                                   
     //let fx=[...qsa((interpString.slice(0,-1)))].forEach(itpCell=>itpCell.className+=' interpolated-value');
     return true;
 };
+
+const offerToPerformDayOneOverrideAdjustment = () => {
+    if(confirm('Ruh-roH! Looks like one or more of your scrumbags either failed to seed their hours before the start of the iteration, or "remembered" one or more stories just after the iteration started. \n\nWould you like me to correct that for you?')){
+        let seededSet   = fileBuffer[0]["fileData"];
+        let dayOneSet   = fileBuffer[1]["fileData"];
+        let revisedSeed = Object.assign([], seededSet);
+        let seededFlat  = seededSet.flatMap(s=>s["Issue key"]) // https://stackoverflow.com/questions/9736804/find-missing-element-by-comparing-2-arrays-in-javascript
+        let lastMinAdds = '';
+        let lastMinHrs  = '';
+        fileBuffer[0]["fileData"].filter((r,i)=>fileBuffer[1]["fileData"].find(rf=>r["Issue key"]
+        dayOneSet.forEach(storyRec=>{
+            if(null == seededSet.find(r=>r["Issue key"] === storyRec["Issue key"])) {
+                lastMinAdds += "\n  - " + storyRec["Issue key"] + " (story added since Seed)";
+            } else if(seededSet["Remaining Estimate"] < storyRec["Remaining Estimate"]) {
+                lastMinHrs  += "\n  - " + storyRec["Issue key"] + " (was " + toHours(seededSet["Remaining Estimate"]) + ", now estimated at " + toHours(storyRec["Remaining Estimate"]) + ")";
+            }
+        });
+
+        if(confirm("You got it boss! Looks like that'll mean I'll make these adjustments:" + 
+        "\n\nThe following stories' hours have INcreased since the seed: " + 
+        lastMinHrs + 
+        "\n\nThe following stories got added to this iteration since the seed:" +
+        lastMinAdds +
+        "\n\nYou still want I should proceed?")){
+            alert(".('-'}ゞ -(YES SIR!)");
+            runReport()
+        }
+    }
+}
 
 const createReportData = () => {
     console.info("FUNCTION: createReportData");
@@ -1012,58 +904,6 @@ const postProcessData   = () => {
                 zeroesAllItr    = parseInt(rowHrs.join('')) === 0;
                 runningValues   = seedHours;
 
-            //console.log("|||", seedStoryNumber, "rowHrs:", rowHrs,  "totHrsCols:", totHrsCols,  "seedHours:", seedHours,  "allZeroes:", allZeroes, "rowHoursFlat:", rowHoursFlat,  "last72HoursFlat:", last72HoursFlat,  "allSeedValue:", allSeedValue, "finalDaysHours:", finalDaysHours,  "seedStatus:", seedStatus,  "devHasBegun:", devHasBegun,  "noChangeFor72:", noChangeFor72,  "noChangeInItr:", noChangeInItr,  "zeroesAllItr:", zeroesAllItr,  "runningValues:", runningValues)
-
-            /*
-            , concernColors = ['Transparent', 'DimGray', 'GreenYellow', 'Gold', 'Orange', 'Red']            // 0-indexed Color-Codings used for the 
-    , concernFlags  = { // CONCERN CODEX
-                        // TRIVIAL CONCERN: An issue weighted 0-1 indicate anomolies that
-                        // are visible within the data that are known and being accounted
-                        // for. Scrum masters may need to explain the blip to THEIR boss.
-                        "HID":    {"weight": 0, "concern": "Hidden By ScrumMaster" },               // Employed at scrum master's discretion to remove a concern from being flagged
-                        "ATT":    {"weight": 1, "concern": "Related to Attendance" },               // Assigned developer is AWOL/MIA/on leave/in the med bay. Occasionally presumed dead.
-                        "HOL":    {"weight": 1, "concern": "Related to Holiday" },                  // Excluding a day iteration-wide for company holiday/operational shutdown
-
-                        // MINOR CONCERN: Issues weighted at 2- less usually indicates an
-                        // error in procedure, in JIRA operation, or on the dev, assigned
-                        // the issue. Scrum masters should inquire if it keeps happening.
-                        "EST":    {"weight": 2, "concern": "Bad Estimate" },                        // "Build a global satellite network, huh? No problem. 9 lines of code, 16 hours, tops."
-                        "AUC":    {"weight": 2, "concern": "Assigned User Changed" },               // "Huh? Bob made an unsubstantiated, unreported offer to handle it while I was in Figi!" 
-                        "UER":    {"weight": 2, "concern": "User Error" },                          // "Yeah, lemme just open the story real qui- SH*T! Where did it go!? ^&*%$^%$&* JIRA!"
-                        "SCR":    {"weight": 2, "concern": "Scope Creep" },                         // "Hey, so marketing wants to add one more little thing to the user-facing cart portal"
-                        "ASS":    {"weight": 2, "concern": "Improperly Assigned" },                 // Likely curprits: "Oh, THAT Deepak?!" and "Why is this assigned to ME!? Stupid JIRA."
-                        "PID":    {"weight": 2, "concern": "Parent ID Changed" },                   // "IO-11110 DOES look an awful lot like IO-11101"... mistakes happen.
-                        "PID":    {"weight": 2, "concern": "Inconsistent Status" },                 // Status makes no sense (e.g. task In Definition, but hours burned).
-
-                        // MEDIUM CONCERN: Issues weighted at 3+ indicate an issue who is
-                        // out of place, whose hours aren't (or, temporarily, CANNOT) get
-                        // burned down, or admin error. These MAY/MAY NOT be impactful on
-                        // the burndown. Scrum master should investigate & maybe inquire.
-                        "USS":    {"weight": 3, "concern": "Unestimated at Sprint Start" },         // Story had no hour estimate when Sprint began
-                        "STK":    {"weight": 3, "concern": "Unable to Begin" },                     // Story is precluded from even getting started, Maybe prematurely added to iteration?
-                        "STR":    {"weight": 3, "concern": "Bad/Mistaken Story Inclusion" },        // Almost always user error. Story got added to iteration on accident. 
-                        "HRS":    {"weight": 3, "concern": "Hours Not Being Burned" },              // Almost always user error. Developer working a story simply hasn't reported the work/
-                        "NPR":    {"weight": 3, "concern": "No Progress Reported" },                // Developer has reported no progress on an issue for 3+ days. COULD be a warning flag
-                        "DEP":    {"weight": 3, "concern": "Unsatisfied Dependency" },              // Basically, the developer must complete another task first, and is blocking himself. 
-                        "TOS":    {"weight": 3, "concern": "Issue Changed to Subtask" },            // Former Issue downgraded to subtask.
-
-                        // HIGH CONCERN: Issues weighted 4+ indicate a change in the tot.
-                        // estimated hours for the iteration, and therefore have a DIRECT 
-                        // impact on the burndown. Scrum master needs to perform inquiry.
-                        "TOI":    {"weight": 4, "concern": "Subtask Changed to Issue" },            // Former Subtask elevated to full Issue.
-                        "NEW":    {"weight": 4, "concern": "New Story Added to Iteration" },        // Issue just appeared in iteration.
-                        "DEL":    {"weight": 4, "concern": "Story Deleted" },                       // Issue deleted/removed from iteration.
-
-                        // CRITICAL CONCERN: Issues weighted at 5 typically indicate some
-                        // flavor of impending disaster or serious problem on the flagged
-                        // issue. Scrum masters should be loaded for bear & hunting fixes
-                        "XXX":    {"weight": 5, "concern": "Blocking Issue" },                      // ISSUE BLOCKED FROM FURTHER PROGRESS. Highest source of concern
-                        // BUNDLES
-                        "UNCHGD": {"weight": 2, "collection": "XXX,NPR,STK,HOL,ATT,HRS",     "concern": "No changes made to story for current iteration" },
-                        "HRSINC": {"weight": 3, "collection": "EST,UER,SCR,STR,STK,NEW,ASS", "concern": "Hours increased from day prior!" },
-                        "UNCHG3": {"weight": 4, "collection": "XXX,NPR,STK,HOL,ATT,HRS",     "concern": "No changes made to story for 3 days!" }
-                    }
-                    */
             for(var colIdx=row.length-1; colIdx>=2; colIdx--){
                 let col = row[colIdx];
 
@@ -1072,11 +912,18 @@ const postProcessData   = () => {
 
                 if(!devHasBegun && seedHours !== num(col.innerText))         devHasBegun     = true;
             }
+
+
             if(!noChangeInItr && devHasBegun && /DEFINITION/i.test(seedStatus)) minor.push('Wrong Status|Work has begun on this story, therefore it must be out of definition phase!');
             if(seedHours === 0 && !/COMPLETED|DEMO/i.test(seedStatus)) medium.push('Horus not set!|The iteration was begin without an hour estimate being set for this story!');
             else if(noChangeInItr && !/COMPLETED|DEMO/i.test(seedStatus)) medium.push('No movement!|There has been no change in the status/hours burned for this story for the full period of the iteration!');
             if(!noChangeInItr && noChangeFor72) medium.push('Development Stalled!|There has been no change in the status/hours burned for this story in the last 3 days!');
-            if(newStoryMidItr) major.push('Story added mid-iteration!|This story which did not exist on the Seed Day has appeared in the iteration!');
+            if(newStoryMidItr){
+                if(FILESLOADED > 2)
+                    major.push('Story added mid-iteration!|This story which did not exist on the Seed Day has appeared in the iteration!');
+                else
+                    offerToPerformDayOneOverrideAdjustment()
+            }
             if(delStoryFromItr) major.push('Story removed from iteration!|This story, which has been tracked from the Seed Day no longer appears in the iteration!');
 
             row[0].innerHTML += formatFlags('major', major);
@@ -1164,38 +1011,57 @@ const postProcessData   = () => {
         renderCHARt(idealDayCount, dataToGraph);
     });
 };
+//!! =====================================================================================================================================
 
 
 
 
-const trg=document.querySelector('.picker-panel-presenter');
+
+
+const released = () => {
+    window.clearTimeout(ongoingtimer);
+    ongoing=false;
+}
+
 let ongoing = false, ongoingtimer=null, 
-    offset  = (trg.getBoundingClientRect().height - 2);
+    offset  = (totalItrDayPicker.getBoundingClientRect().height - 2),
+    activeInteraction = false;
 
-const syncSpinner = (hardValue=null) => {
+    totalItrDayPicker.addEventListener('mouseOver', ()=>{activeInteraction=true;});
+    totalItrDayPicker.addEventListener('mouseOut',  ()=>{activeInteraction=false; ongoing=false});
+    totalItrDayPicker.addEventListener('blur',      ()=>{activeInteraction=false; ongoing=false});
+    window.addEventListener('click', released);
+
+const syncSpinner = (hardValue=null) => {                                                                   //## Ⓒ ⬅⬅⬅︎ 
     console.info("FUNCTION: syncSpinner", "hardValue", hardValue);
-    if(hardValue != null && !isNaN(hardValue)) trg.placeholder = hardValue;
-    let newVal    = trg.placeholder / 1, 
-        control   = trg.parentElement;
-    offset        =(trg.getBoundingClientRect().height + 2);
-    control.style = "--value:" + (trg.placeholder * offset * -1) + "px";
-    resizeBufferArraysAndRebuildSlots();
+    if(hardValue != null && !isNaN(hardValue)) totalItrDayPicker.placeholder = hardValue;
+    TOTALITRDAYS  = getDayCountFromPicker()
+    let control   = totalItrDayPicker.parentElement;
+    offset        =(totalItrDayPicker.getBoundingClientRect().height + 2);
+    control.style = "--value:" + (TOTALITRDAYS * offset * -1) + "px";
+    resizeBufferArraysAndRebuildSlots();                                                                    //@@ ➜➜➜ ︎🅑 
 };
+
 
 const incDec = (dir, mechanical=true, dly=750, scale=1) => {
    console.info("FUNCTION: incDec", "dir", dir, "mechanical", mechanical, "dly", dly, "scale", scale);
    
    ongoing=true;
    dly = (dly<50) ? 50 : Math.log2(dly) * dly/10.4;
-   let adjVal = dir * scale + parseInt(trg.placeholder);
+   let adjVal = dir * scale + parseInt(totalItrDayPicker.placeholder);
    if(adjVal <= 1) adjVal = 1;
    if(adjVal > 60) adjVal=60;
-   trg.placeholder = adjVal;
-   syncSpinner();
+   totalItrDayPicker.placeholder = adjVal;
+   syncSpinner();                                                                                           //## ➜➜➜ 🅒 
    mechanical = false;
    if(ongoing && !mechanical) ongoingtimer=window.setTimeout(()=>incDec(dir, false, dly, scale), dly);
 };
 
+
+
+//%% ====================================================================================================
+//%% ======================================== GRAPHING FUNCTIONS ========================================
+//%% ====================================================================================================
 function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
 //    console.clear();
                         // 500, 450, 400, 350, 300, 250, 200, 150, 100, 50*, 0*
@@ -1469,42 +1335,40 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
     let drawActualLabels = (dayIndex) => {
          
          if(dayIndex > remainingHoursPerDay.length - 1 || dayIndex > DAYSLOADED) return ''; 
-         let actual = remainingHoursPerDay[dayIndex];
-         let ideal  = idealPlottedPtValues[dayIndex];
-         let overUnder = ideal-actual;
+         let actual     = remainingHoursPerDay[dayIndex];
+         let ideal      = idealPlottedPtValues[dayIndex];
+         let overUnder  = ideal-actual;
          if(overUnder === 0) return '';
-         let direction = overUnder < 0 ? -1 : 1;
-         let pointOffset = overUnder < 0 ? 5 : 60;
-         let newLine  = overUnder < 0 ? -10 : -40;
-         let plusMinus  = overUnder < 0 ?"AHEAD":"BEHIND";
-         let xOffset = -30;
+         let xOffset    = -30;
          let percentage = -readableRound(100 - ((ideal/actual) * 100), 1) + '%';
-         let hours = "(" + readableRound(overUnder, 2, true) + " hrs)";
+         let hours      = "(" + readableRound(overUnder, 2, true) + " hrs)";
          
          if(overUnder < 0){
             console.log('' + colorsForActualHours[dayIndex + 1])
-         ctx.font = 'bold 16px monospace';
-                     ctx.fillStyle=LightenDarkenColor(colorsForActualHours[dayIndex + 1], 1/100);
-         ctx.fillText("BEHIND!", plotX(dayIndex) + xOffset, plotY(remainingHoursPerDay[dayIndex]) - 15);
-         ctx.font = '12px monospace';
-                     ctx.fillStyle='#666';
-         ctx.fillText(hours, plotX(dayIndex) + xOffset - 5,plotY(remainingHoursPerDay[dayIndex]) - 30);
-         
-         ctx.font = 'bold 22px monospace';
-                     ctx.fillStyle='#000';
-         ctx.fillText(percentage, plotX(dayIndex) + xOffset + 5, plotY(remainingHoursPerDay[dayIndex]) - 40);
+            ctx.font = 'bold 16px monospace';
+            ctx.fillStyle=LightenDarkenColor(colorsForActualHours[dayIndex + 1], 1/100);
+            ctx.fillText("BEHIND!", plotX(dayIndex) + xOffset, plotY(remainingHoursPerDay[dayIndex]) - 15);
+
+            ctx.font = '12px monospace';
+            ctx.fillStyle='#666';
+            ctx.fillText(hours, plotX(dayIndex) + xOffset - 5,plotY(remainingHoursPerDay[dayIndex]) - 30);
             
-         }else{
-          ctx.font = '20px monospace';
-                     ctx.fillStyle=colorsForActualHours[dayIndex + 1];
-         ctx.fillText("AHEAD!", plotX(dayIndex) + xOffset, plotY(remainingHoursPerDay[dayIndex]) + 30);
-         ctx.font = '14px monospace';
-                     ctx.fillStyle='#666';
-         ctx.fillText(hours, plotX(dayIndex) + xOffset -2,plotY(remainingHoursPerDay[dayIndex]) +45);
-         
-         ctx.font = '26px monospace';
-                     ctx.fillStyle='#000';
-         ctx.fillText(percentage, plotX(dayIndex) + xOffset + 5, plotY(remainingHoursPerDay[dayIndex]) +70);
+            ctx.font = 'bold 22px monospace';
+            ctx.fillStyle='#000';
+            ctx.fillText(percentage, plotX(dayIndex) + xOffset + 5, plotY(remainingHoursPerDay[dayIndex]) - 40);
+                
+        }else{
+            ctx.font = '20px monospace';
+            ctx.fillStyle=colorsForActualHours[dayIndex + 1];
+            ctx.fillText("AHEAD!", plotX(dayIndex) + xOffset, plotY(remainingHoursPerDay[dayIndex]) + 30);
+            
+            ctx.font = '14px monospace';
+            ctx.fillStyle='#666';
+            ctx.fillText(hours, plotX(dayIndex) + xOffset -2,plotY(remainingHoursPerDay[dayIndex]) +45);
+            
+            ctx.font = '26px monospace';
+            ctx.fillStyle='#000';
+            ctx.fillText(percentage, plotX(dayIndex) + xOffset + 5, plotY(remainingHoursPerDay[dayIndex]) +70);
             
          }
 //           
@@ -1594,8 +1458,5 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
       // shadeLineGraph()
 }
 setTimeout(()=>{window.scrollTo(0,0)}, 500);
-
-
-const released = () => window.clearTimeout(ongoingtimer);
 
 window.addEventListener('DOMContentLoaded', init);
