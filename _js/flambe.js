@@ -14,7 +14,7 @@
      * Split CSV text into an array of lines.
      */
     function splitLines(text, lineEnding) {
-        console.info("ES5 FUNCTION: splitLines", "text", text, "lineEnding", lineEnding);
+        _I("ES5 FUNCTION: splitLines", "text", text, "lineEnding", lineEnding);
         var strLineEnding = lineEnding.toString(),
             bareRegExp    = strLineEnding.substring(1, strLineEnding.lastIndexOf('/')),
             modifiers     = strLineEnding.substring(strLineEnding.lastIndexOf('/') + 1);
@@ -31,7 +31,7 @@
      * If the line is empty (including all-whitespace lines), returns true. Otherwise, returns false.
      */
     function isEmptyLine(line) {
-        console.info("ES5 FUNCTION: isEmptyLine", "line", line);
+        _I("ES5 FUNCTION: isEmptyLine", "line", line);
         return (line.replace(/^[\s]*|[\s]*$/g, '') === '');
     }
 
@@ -39,7 +39,7 @@
      * Removes all empty lines from the given array of lines.
      */
     function removeEmptyLines(lines) {
-        console.info("ES5 FUNCTION: removeEmptyLines", "lines", lines);
+        _I("ES5 FUNCTION: removeEmptyLines", "lines", lines);
         var i;
 
         for (i = 0; i < lines.length; i++) {
@@ -54,7 +54,7 @@
      * For example: "foo, bar", baz
      */
     function defragmentLineTokens(lineTokens, delimiter) {
-        console.info("ES5 FUNCTION: defragmentLineTokens", "lineTokens", lineTokens, "delimiter", delimiter);
+        _I("ES5 FUNCTION: defragmentLineTokens", "lineTokens", lineTokens, "delimiter", delimiter);
         var i, j,
             token, quote;
 
@@ -89,7 +89,7 @@
      * Removes leading and trailing whitespace from each token.
      */
     function trimWhitespace(lineTokens) {
-        console.info("ES5 FUNCTION: trimWhitespace", "lineTokens", lineTokens);
+        _I("ES5 FUNCTION: trimWhitespace", "lineTokens", lineTokens);
         var i;
 
         for (i = 0; i < lineTokens.length; i++) {
@@ -101,7 +101,7 @@
      * Removes leading and trailing quotes from each token.
      */
     function trimQuotes(lineTokens) {
-        console.info("ES5 FUNCTION: trimQuotes", "lineTokens", lineTokens);
+        _I("ES5 FUNCTION: trimQuotes", "lineTokens", lineTokens);
         var i;
 
         // TODO: allow for escaped quotes
@@ -118,7 +118,7 @@
      * Converts a single line into a list of tokens, separated by the given delimiter.
      */
     function tokenizeLine(line, delimiter) {
-        console.info("ES5 FUNCTION: tokenizeLine", "line", line, "delimiter", delimiter);
+        _I("ES5 FUNCTION: tokenizeLine", "line", line, "delimiter", delimiter);
         var lineTokens = line.split(delimiter);
 
         defragmentLineTokens(lineTokens, delimiter);
@@ -132,7 +132,7 @@
      * Converts an array of lines into an array of tokenized lines.
      */
     function tokenizeLines(lines, delimiter) {
-        console.info("ES5 FUNCTION: tokenizeLines", "lines", lines, "delimiter", delimiter);
+        _I("ES5 FUNCTION: tokenizeLines", "lines", lines, "delimiter", delimiter);
         var i,
             tokenizedLines = [];
 
@@ -147,7 +147,7 @@
      * Converts an array of tokenized lines into an array of object literals, using the header's tokens for each object's keys.
      */
     function assembleObjects(tokenizedLines) {
-        console.info("ES5 FUNCTION: assembleObjects", "tokenizedLines", tokenizedLines);
+        _I("ES5 FUNCTION: assembleObjects", "tokenizedLines", tokenizedLines);
         var i, j,
             tokenizedLine, obj, key,
             objects = [],
@@ -184,7 +184,7 @@
      * Parses CSV text and returns an array of objects, using the first CSV row's fields as keys for each object's values.
      */
     CSV.parse = function (text, lineEnding, delimiter, ignoreEmptyLines) {
-        console.info("ES5 FUNCTION: CSV.parse", "text", text, "lineEnding", lineEnding, "delimiter", delimiter, "ignoreEmptyLines", ignoreEmptyLines);
+        _I("ES5 FUNCTION: CSV.parse", "text", text, "lineEnding", lineEnding, "delimiter", delimiter, "ignoreEmptyLines", ignoreEmptyLines);
         var config = {
                 lineEnding:       /[\r\n]/,
                 delimiter:        ',',
@@ -257,7 +257,7 @@
 //!! =====================================================================================================================================
 // DECLARATIONS //==================================================================================================================
 // Shortcut aliases and Helper functions //-----------------------------------------------------------------------------------------
-const DEBUG_MODE = true;    //--> NOT TO BE SET TO 'TRUE' IN PRODUCTION USE - CONTROLS CONSOLE LOGS AND EXCESSIVE MEMORY CONSUMPTION
+const DEBUG_MODE = false;    //--> NOT TO BE SET TO 'TRUE' IN PRODUCTION USE - CONTROLS CONSOLE LOGS AND EXCESSIVE MEMORY CONSUMPTION
 
 const d   = document                                       // ⥱ Alias - document
     , qs  = (s)       => d.querySelector(s)                        // ⥱ Alias - querySelector
@@ -318,7 +318,7 @@ let   fileBuffer    = []                                                        
 
 		// APPLICATION SOURCE ============================================================================ 🅔🅧🅔🅒🅤🅣🅘🅞🅝 🅢🅔🅠🅤🅔🅝🅒🅔 indicated by encircled digits (➀-➈)
 init = () => {                                                                                      		// ⓿ Initiate application, chaining steps 1-3 above to file input's onChange
-    console.info("\n\n====== INIT ======\n");
+    _I("\n\n====== INIT ======\n");
     iterationName.value    = recall('iterationName', '');                                       	    	// Seed the value set for the iteration's name (or blank if none is stored)...
     iterationName.onkeyup  = ()=>{retain('iterationName', iterationName.value); };                    		// ... and set up the field's onKeyUp handler to save any changes henceforth.
     iterationName.onchangd = ()=>{retain('iterationName', iterationName.value); };                  		// ... aaaand again, some more, for onChange.
@@ -349,16 +349,16 @@ init = () => {                                                                  
     syncSpinner();                                                                                          //## ➜➜➜ 🅒 
     
     input.addEventListener('change', e => {                                                                 //$ onChange Event handler for the individual <LI>'s; Allows files ot be added
-        console.info("EVENT: input.addEventListener('change') e", e);
+        _I("EVENT: input.addEventListener('change') e", e);
         if(targetSlot != null && input.files.length === 1){                                                 // (Since, in the case of a bulk upload attempt, we'd have no slot and more than 1 file)
-            return addOrReplaceSingleFileAndParse();                                                       //!! ➜➜➜ 🅐 
+            return addOrReplaceSingleFileAndParse();                                                        //!! ➜➜➜ 🅐 
         }
     });
 }; 
 
 insertFileNodeBetween = (e, trgObj=e.target) => {
-    console.info("FUNCTION: insertFileNodeBetween", "e", e, "trgObj", trgObj);                              //$$ Ⓓ ⬅⬅⬅︎ 
-    console.log(e, trgObj);
+    _I("FUNCTION: insertFileNodeBetween", "e", e, "trgObj", trgObj);                                        //$$ Ⓓ ⬅⬅⬅︎ 
+    _(e, trgObj);
     if  (trgObj.tagName !== 'LI') {
                    // e.preventDefault();
             return (e.cancelBubble = true);
@@ -366,19 +366,19 @@ insertFileNodeBetween = (e, trgObj=e.target) => {
     let targetIndex = trgObj.dataset.slot;
     fileBuffer.splice(targetIndex, 0, '');
     namedFiles.splice(targetIndex, 0, '');
-    syncSpinner(((totalItrDayPicker.placeholder / 1) + 1));                                                               //## ➜➜➜ 🅒 
+    syncSpinner(((totalItrDayPicker.placeholder / 1) + 1));                                                 //## ➜➜➜ 🅒 
     resizeBufferArraysAndRebuildSlots();                                                                    //@@ ➜➜➜ 🅑 
 };
 
 removeFileAtIndex = (trgBtn, isFilled) => {                                                                 //%% Ⓔ ⬅⬅⬅︎  Remove the file from the slot whose trashcan was clicked (both in the buffer and the UI)
-    console.info("FUNCTION: removeFileAtIndex", "trgBtn", trgBtn, "isFilled", isFilled);
+    _I("FUNCTION: removeFileAtIndex", "trgBtn", trgBtn, "isFilled", isFilled);
     ind = trgBtn.dataset.index;
     if(findLastIndexOf(namedFiles, /.+/) === 0) {
         namedFiles[0]=retain('namedFiles', '');
         fileBuffer[0]=retain('fileBuffer', '');
         return resizeBufferArraysAndRebuildSlots();                                                         //@@ ➜➜➜ 🅑 
     }
-    console.log(ind, trgBtn);
+    _(ind, trgBtn);
     if(isFilled){
         namedFiles.splice(ind, 1, "");
         fileBuffer.splice(ind, 1, "");
@@ -391,8 +391,8 @@ removeFileAtIndex = (trgBtn, isFilled) => {                                     
 };
 
                                                                                                             
-resizeBufferArraysAndRebuildSlots = (newLen = ((totalItrDayPicker.placeholder / 1) + 1)) => {                             //@@ Ⓑ ⬅⬅⬅︎ Destroys the current buffer and UI, rebuilding them to reflect new state
-        console.info("FUNCTION: resizeBufferArraysAndRebuildSlots", newLen );
+resizeBufferArraysAndRebuildSlots = (newLen = ((totalItrDayPicker.placeholder / 1) + 1)) => {               //@@ Ⓑ ⬅⬅⬅︎ Destroys the current buffer and UI, rebuilding them to reflect new state
+        _I("FUNCTION: resizeBufferArraysAndRebuildSlots", newLen );
         if(typeof(namedFiles)=='undefined' || isNaN(newLen) || newLen<0) return false;
         let oldLen = (namedFiles && namedFiles.length) ? namedFiles.length / 1 : 0,
             opStr = '';
@@ -455,13 +455,13 @@ addOrReplaceSingleFileAndParse = (slotId=targetSlot, liObj=qs('#file-slot-'+slot
         if(namedFiles.indexOf(fileName) != -1) return(alert('This file is already in use!'));
         _("WORKING WITH PROVIDED FILE ", fileName, namedFiles.indexOf(fileName));
         const readUploadedFileAsText = (fileObj) => {
-            console.info("FUNCTION: readUploadedFileAsText", "fileObj", fileObj);
+            _I("FUNCTION: readUploadedFileAsText", "fileObj", fileObj);
             _("readUploadedFileAsText");
             let reader   = new FileReader();
             
             return new Promise((resolve) => {
                 reader.onload = () => {
-                    console.info("FUNCTION: onload");
+                    _I("FUNCTION: onload");
                     _('onload Event fired...');
                     resolve(reader.result);
                 };
@@ -491,6 +491,24 @@ addOrReplaceSingleFileAndParse = (slotId=targetSlot, liObj=qs('#file-slot-'+slot
     };
 
  const runReport = (obj=doneButton) => {                                                                    //** ⬅⬅⬅︎ Ⓗ    Execute the preview grid and graphing methods 
+    //  offerToPerformDayOneOverrideAdjustment()
+     FILESLOADED = fileBuffer.filter(fb => fb != '').length;                                                // Increment our "number of files we've read" counter...
+     DAYSLOADED = FILESLOADED - 1; 
+                                                                              // ... and the number of days that equates out to.
+    const sumHours = (hourColl) => 
+        hourColl.flatMap(s => { let sth=0; retVal = parseInt(s['Remaining Estimate']); retVal = isNaN(retVal) || retVal === NaN || retVal === 'NaN' ? 0 : retVal; sth += retVal; return sth; })
+    
+    if(TOTALITRDAYS > 2 && DAYSLOADED === 1){
+        let seedDataCount = fileBuffer[0].fileData.length;
+        let seedDatatotal = sumHours(fileBuffer[0].fileData)
+        let day1DataCount = fileBuffer[1].fileData.length;
+        let day1Datatotal = sumHours(fileBuffer[1].fileData)
+        if (day1DataCount > seedDataCount || day1Datatotal > seedDatatotal){ // 
+            offerToPerformDayOneOverrideAdjustment()
+        }
+    }
+
+
     if (obj.disabled == true) return false;
     COMBD_DATA = [];
     ISSUE_KEYS = [];
@@ -510,13 +528,12 @@ const getDistinctKeysFromFiles = () => {                                        
                 ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])];                                      //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
             } else INTERPOL8D.push(files);                                                                  //  ... UNLESS it IS flagged for interpolation, in which case add it to that collection  
         }
-        FILESLOADED = safeBuffer.length;                                                                    // Increment our "number of files we've read" counter...
-        DAYSLOADED  = FILESLOADED - 1;                                                                      // ... and the number of days that equates out to.
+        
         remapDataSoIssueIDIsPrimaryKey();                                                                   //&& ➜➜➜ 🅖
     };
 
 const remapDataSoIssueIDIsPrimaryKey = () => {                                                              //&& Ⓖ ⬅︎⬅︎⬅︎    Iterate finalized buffer, and concatinated generate output data
-    console.info("FUNCTION: remapDataSoIssueIDIsPrimaryKey");
+    _I("FUNCTION: remapDataSoIssueIDIsPrimaryKey");
     temp_store = [];                                                                                        // Create a temporary, empty collection...
     ISSUE_KEYS.forEach(r => {                                                                               //    ... Iterate through our unique keys from all files (from getDistinctKeysFromFiles)...
         temp_store.push(r['Issue key']);                                                                    //    ... stuff 'em into said temp array...
@@ -528,11 +545,11 @@ const remapDataSoIssueIDIsPrimaryKey = () => {                                  
 
     for (let files in safeBuffer) {
         let file = safeBuffer[files];
-        console.log('file', file);
-        console.log('safeBuffer[files]', safeBuffer[files]);
+        _('file', file);
+        _('safeBuffer[files]', safeBuffer[files]);
         if(file !== 'INTERPOLATED'){
             file = file.fileData;
-            console.log('file', file);
+            _('file', file);
             file.forEach(f => {
                 if (f && f['Issue key'] && f['Issue key'] != null && f['Issue key'] !== '') {
                     COMBD_DATA[f['Issue key']][files] = f;
@@ -552,7 +569,7 @@ const remapDataSoIssueIDIsPrimaryKey = () => {                                  
 };
 
 const showRecordDetails = (e, targetLink=e.target) => {
-    console.info("FUNCTION: showRecordDetails", "e", e, "targetLink", targetLink);
+    _I("FUNCTION: showRecordDetails", "e", e, "targetLink", targetLink);
     if(targetLink.tagName != 'A') targetLink = targetLink.parentNode;
     if(targetLink.tagName != 'A') return false;
     e.preventDefault(true);
@@ -565,9 +582,9 @@ const showRecordDetails = (e, targetLink=e.target) => {
 };
 
 const processParentChildRelationships = () => {                                                             //⦾! Ⓘ ⬅︎⬅︎⬅︎ Correllates the parent tasks to their corresponding sub-tasks 
-    console.info("FUNCTION: processParentChildRelationships");
+    _I("FUNCTION: processParentChildRelationships");
     const createJIRALink = (IssueId, isParent=false) => {
-        // console.info("FUNCTION: createJIRALink", "IssueId", IssueId, "isParent", isParent);
+        // _I("FUNCTION: createJIRALink", "IssueId", IssueId, "isParent", isParent);
         let hrefUrl = `href="https://jira.sprintdd.com/browse/${ IssueId }"' `;
         let clsName = `class="issue-${isParent ? 'parent-' : ''}link iss-hvr-lnk" `;
         let wndoTrg = `target="_blank" `;
@@ -578,7 +595,7 @@ const processParentChildRelationships = () => {                                 
 
     var toc = {};
     quickIndex = Object.entries(COMBD_DATA).map(e=>{
-        // console.info("FUNCTION: quickIndex");
+        // _I("FUNCTION: quickIndex");
         let  opIssueObj = {}
             ,issueKey   = e[0]
             ,issueData  = e[1]
@@ -604,17 +621,17 @@ const processParentChildRelationships = () => {                                 
     });
     quickIndex.toc = toc;
     quickIndex.pathedName = (key) => {
-        // console.info("FUNCTION: pathedName", "key", key);
+        // _I("FUNCTION: pathedName", "key", key);
         let results = quickIndex.find(qI => qI.key === key);
         return (results && results.pathLinks) ? results.pathLinks : key;
     };
     quickIndex.lastStatus = (key) => {
-        // console.info("FUNCTION: lastStatus", "key", key);
+        // _I("FUNCTION: lastStatus", "key", key);
         let results = quickIndex.find(qI => qI.key === key);
         return (results && results.sts) ? results.sts : '';
     };
     quickIndex.getLatestDetails = (key) => {
-        // console.info("FUNCTION: getLatestDetails", "key", key);
+        // _I("FUNCTION: getLatestDetails", "key", key);
         let results = quickIndex.find(qI => qI.key === key);
         return (results && results.vld) ? results.vld : false;
     };
@@ -624,7 +641,7 @@ const processParentChildRelationships = () => {                                 
 };
 const constructPreviewAndReportData = () => {                                                         // ⓺ iterate concatinated output data, look for concern-suggestive trends and build our markup
     const ensureValidValue = (variable, value, altVal=value, tolerateEmptyStr=false) => {
-        console.info("FUNCTION: ensureValidValue", "variable", variable, "value", value, "altVal", altVal, "tolerateEmptyStr", tolerateEmptyStr);
+        _I("FUNCTION: ensureValidValue", "variable", variable, "value", value, "altVal", altVal, "tolerateEmptyStr", tolerateEmptyStr);
         return  (  
                     typeof(value) === undefined 
                     || value == null 
@@ -634,7 +651,7 @@ const constructPreviewAndReportData = () => {                                   
                   : value;
 
     };
-    console.log('constructPreviewAndReportData', COMBD_DATA);
+    _('constructPreviewAndReportData', COMBD_DATA);
     let MRKUP = [],                                                                                    // Collection of markup that'll we'll used to render both the HTML preview and the ultimate XLSX file output
         _I_  = '||--||';                                                                                // The string delimiter we're using to distinguish one chunk of data from another. Our "Split-target"
     Object.entries(COMBD_DATA).forEach((dataRecord, ind) => {                                          // Iterate across each Issue (the "rows") that we've ingested data for, to extract the following data:
@@ -644,23 +661,23 @@ const constructPreviewAndReportData = () => {                                   
             ,issueData = dataRecord[1]                                                                 //   - The specific issue being examined (all the data for all the days for the files provided)
             ,colCt = issueData.length                                                                  //   - How many "columns" we're looking at
             ,opSts = ''
-            ,ROWOP = ''                                                                                //   - The iteratively-constructed markup for the "row" corresponding to the issue being examined
+            ,ROWOP = ''                                                                                 //   - The iteratively-constructed markup for the "row" corresponding to the issue being examined
             ,opHrs = 0
-            ,flags = ''                                                                                //   - The empty collection of flags, to be joined & processed later in the loop
-            ,reCtr = 1                                                                                 //   - Counter for how many consecutive days the Remaining Estimate has languished, unchanged
-            ,ctCtr = 1                                                                                 //   - Iteration-length counter for how many consecutive days the Remaining Estimate goes unchanged
-            ,oldRE = ''                                                                                //   - Previous (from the previous-iterated-over day in the row) Remaining Hours Estimate
-            ,oldPI = ''                                                                                //   - Previous (from the previous-iterated-over day in the row) Parent ID
-            ,oldII = ''                                                                                //   - Previous (from the previous-iterated-over day in the row) Issue ID
-            ,newRE = ''                                                                                //   - Current (from the currently-iterated-over day in the row) Remaining Hours Estimate
-            ,newPI = ''                                                                                //   - Current (from the currently-iterated-over day in the row) Parent ID
-            ,newII = ''                                                                                //   - Current (from the currently-iterated-over day in the row) Issue ID
+            ,flags = ''                                                                                 //   - The empty collection of flags, to be joined & processed later in the loop
+            ,reCtr = 1                                                                                  //   - Counter for how many consecutive days the Remaining Estimate has languished, unchanged
+            ,ctCtr = 1                                                                                  //   - Iteration-length counter for how many consecutive days the Remaining Estimate goes unchanged
+            ,oldRE = ''                                                                                 //   - Previous (from the previous-iterated-over day in the row) Remaining Hours Estimate
+            ,oldPI = ''                                                                                 //   - Previous (from the previous-iterated-over day in the row) Parent ID
+            ,oldII = ''                                                                                 //   - Previous (from the previous-iterated-over day in the row) Issue ID
+            ,newRE = ''                                                                                 //   - Current (from the currently-iterated-over day in the row) Remaining Hours Estimate
+            ,newPI = ''                                                                                 //   - Current (from the currently-iterated-over day in the row) Parent ID
+            ,newII = ''                                                                                 //   - Current (from the currently-iterated-over day in the row) Issue ID
             ,newST = '';                                                                                //   - Current Status (in this case, we don't care what the previous one was, but need it at the issue scope)
 
-        issueData.forEach((datRec, ix) => {                                                            // ...Iterate the issue's collected data (the "columns"), gathering...
+        issueData.forEach((datRec, ix) => {                                                             // ...Iterate the issue's collected data (the "columns"), gathering...
             newRE = (datRec === '---') ? '---' : (datRec['Remaining Estimate']  || '---?');           
             if(newRE === '---'){
-                ROWOP = ROWOP + _I_ + '---' ;                                               // Tack the current day being iterated past's Est. hours remaining onto the end of the issue being iterated past
+                ROWOP = ROWOP + _I_ + '---' ;                                                           // Tack the current day being iterated past's Est. hours remaining onto the end of the issue being iterated past
             }else
                 ROWOP = ROWOP + _I_ + toHours(newRE) + 'h' ;                                               // Tack the current day being iterated past's Est. hours remaining onto the end of the issue being iterated past
         });
@@ -732,23 +749,43 @@ const constructPreviewAndReportData = () => {                                   
     return true;
 };
 
+let offerPerformed = false, correctionMade=false;
+let seededSet, dayOneSet, revisedSeed, aleterdHours, seededFlat, lastMinAdds, seedFltKeys, missingStories, lastMinHrs;
 const offerToPerformDayOneOverrideAdjustment = () => {
+    if (offerPerformed || correctionMade) return false;
+    offerPerformed = true;
     if(confirm('Ruh-roH! Looks like one or more of your scrumbags either failed to seed their hours before the start of the iteration, or "remembered" one or more stories just after the iteration started. \n\nWould you like me to correct that for you?')){
-        let seededSet   = fileBuffer[0]["fileData"];
-        let dayOneSet   = fileBuffer[1]["fileData"];
-        let revisedSeed = Object.assign([], seededSet);
-        let seededFlat  = seededSet.flatMap(s=>s["Issue key"]) // https://stackoverflow.com/questions/9736804/find-missing-element-by-comparing-2-arrays-in-javascript
-        let lastMinAdds = '';
-        let lastMinHrs  = '';
-        fileBuffer[0]["fileData"].filter((r,i)=>fileBuffer[1]["fileData"].find(rf=>r["Issue key"]
-        dayOneSet.forEach(storyRec=>{
-            if(null == seededSet.find(r=>r["Issue key"] === storyRec["Issue key"])) {
-                lastMinAdds += "\n  - " + storyRec["Issue key"] + " (story added since Seed)";
-            } else if(seededSet["Remaining Estimate"] < storyRec["Remaining Estimate"]) {
-                lastMinHrs  += "\n  - " + storyRec["Issue key"] + " (was " + toHours(seededSet["Remaining Estimate"]) + ", now estimated at " + toHours(storyRec["Remaining Estimate"]) + ")";
-            }
-        });
+        lastMinAdds = '';
+        lastMinHrs  = '';
+        seededSet   = fileBuffer[0]["fileData"];
+        dayOneSet   = fileBuffer[1]["fileData"];
+        revisedSeed = Object.assign([], seededSet);
+        alterdHours = [];
+        seededFlat  = seededSet.flatMap(s=>s["Issue key"]) // https://stackoverflow.com/questions/9736804/find-missing-element-by-comparing-2-arrays-in-javascript
+        seedFltKeys = '|' + seededFlat.join('|') + '|';
+        missingStories = dayOneSet.filter(d1 => seedFltKeys.indexOf('|' + d1['Issue key'] + '|') == -1);
+        if(missingStories.length > 0) lastMinAdds = '\n  - ' + missingStories.flatMap(s => s['Issue key']).join(' (story added since Seed)\n  - ') + ' (story added since Seed)';
+        
+        dayOneSet.forEach((d1, i) => {
+            let activeStory = d1['Issue key'];
+            let day1Rec = dayOneSet.find(d   => d['Issue key'] === activeStory);
+            let seedRec = revisedSeed.find(s => s['Issue key'] === activeStory);
+            if (day1Rec && day1Rec['Remaining Estimate'] && seedRec && seedRec['Remaining Estimate'] && day1Rec['Remaining Estimate'] < seedRec['Remaining Estimate']){
+                console.log(activeStory, day1Rec, seedRec)
+                console.log(day1Rec['Remaining Estimate'], seedRec['Remaining Estimate'] )
+                let oldEst = seedRec['Remaining Estimate'];
+                let newEst = day1Rec['Remaining Estimate'];
+                seedRec['OldEstimate']        = oldEst;
+                seedRec['Remaining Estimate'] = newEst;
+                lastMinHrs += `\n  - ${activeStory} (hours increased; was: ${(toHours(newEst) + "").replace(/\.0+$/, '')}, would be: ${(toHours(oldEst) + "").replace(/\.0+$/, '')})`;
+            } 
+        })
 
+        missingStories.forEach(ms=>{
+            let editRec = revisedSeed.find(s => s['Issue key'] === ms['Issue key']);
+            editRec = ms;
+        })
+        
         if(confirm("You got it boss! Looks like that'll mean I'll make these adjustments:" + 
         "\n\nThe following stories' hours have INcreased since the seed: " + 
         lastMinHrs + 
@@ -756,13 +793,16 @@ const offerToPerformDayOneOverrideAdjustment = () => {
         lastMinAdds +
         "\n\nYou still want I should proceed?")){
             alert(".('-'}ゞ -(YES SIR!)");
-            runReport()
+           //fileBuffer[0] = revisedSeed;
+            retain('fileBuffer', fileBuffer);
+            correctionMade = true;
+            //runReport()
         }
     }
 }
 
 const createReportData = () => {
-    console.info("FUNCTION: createReportData");
+    _I("FUNCTION: createReportData");
     tableNode = document.querySelector('.preview-table');
     tHead = [...tableNode.querySelectorAll('th')].map(th=>th.innerText);
     tBody = [...tableNode.querySelectorAll('tr')].map(tr=>{
@@ -776,7 +816,7 @@ const createReportData = () => {
 };
 
 const reFilterPreview = (obj) => {
-    console.info("FUNCTION: reFilterPreview", "obj", obj);
+    _I("FUNCTION: reFilterPreview", "obj", obj);
     if(obj != null){
         let targetClass = obj.id.replace('chk-','.row-status-');
         [...document.querySelectorAll(targetClass)].forEach(row=>{
@@ -816,13 +856,13 @@ const postProcessData   = () => {
             return rows;
         });
     }).then((res)=>{
-        console.info("THENABLE -> ", "res", res);
+        _I("THENABLE -> ", "res", res);
         hdrRowNode  = rowNodes.splice(0,1)[0];
         hdrColNodes = [...hdrRowNode.childNodes];
-        console.log('hdrRowNode', hdrRowNode);
-        console.log('rowNodes', rowNodes);
-        console.log('hdrColNodes', hdrColNodes);
-        console.log('colNodes', colNodes);
+        _('hdrRowNode', hdrRowNode);
+        _('rowNodes', rowNodes);
+        _('hdrColNodes', hdrColNodes);
+        _('colNodes', colNodes);
         
         
         // Extarct the unique statuses and generate their respective checkboxes for the display filtes.
@@ -835,7 +875,7 @@ const postProcessData   = () => {
         document.getElementById('output-panels').insertAdjacentHTML('beforeEnd', '<aside id="filter-ckbox-panel" class="status-filters"><h2>Currently Showing:</h2><span id="record-ct"></span>' + dispCkBoxes + '</aside>');
         reFilterPreview();
     }).then((res)=>{
-        console.info("THENABLE -> ", "res", res);
+        _I("THENABLE -> ", "res", res);
         // Interpolate any missing data into its respective columns, from left to right, top to bottom.
             colNodes.forEach((reportRow, rowIndex) => {
                 reportRow.forEach((cols, colIndex)=>{
@@ -921,8 +961,8 @@ const postProcessData   = () => {
             if(newStoryMidItr){
                 if(FILESLOADED > 2)
                     major.push('Story added mid-iteration!|This story which did not exist on the Seed Day has appeared in the iteration!');
-                else
-                    offerToPerformDayOneOverrideAdjustment()
+                // else
+                    
             }
             if(delStoryFromItr) major.push('Story removed from iteration!|This story, which has been tracked from the Seed Day no longer appears in the iteration!');
 
@@ -932,7 +972,7 @@ const postProcessData   = () => {
         });
     }).then(()=>{ // Sum up our totals
         function round_to_precision(x, precision) {
-            console.info("ES5 FUNCTION: round_to_precision", "x", x, "precision", precision);
+            _I("ES5 FUNCTION: round_to_precision", "x", x, "precision", precision);
             var y = +x + (precision === undefined ? 0.5 : precision/2);
             return y - (y % (precision === undefined ? 1 : +precision));
         }
@@ -952,24 +992,17 @@ const postProcessData   = () => {
                 }
                 if(cell != null && cell[c] != null && cell[c].innerText){
                     cell = cell[c].innerText.replace(/[h\* ]/gi, '').replace(/---/g, 0);
-                    totalRow[c] = (totalRow[c] / 1) + (cell / 1);
+                    if (!isNaN(totalRow[c]) && totalRow[c] != NaN && totalRow[c] !== "NaN") {
+                        totalRow[c] = (totalRow[c] / 1) + (cell / 1);
+                    }
                 }
             });
         }
-
-        for(var c=2; c<hdrColNodes.length; c++){
-            if(isNaN(totalRow[c]) || totalRow[c] == NaN|| totalRow[c] == "NaN"){
-                
-            }        
-        }
        
         let seedTotal = totalRow[2];
-        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + seedTotal);
         idealDayCount = hdrColNodes.length - 3;
-        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + idealDayCount);
         for(c=2; c<idealRow.length; c++){
             idealRow[c] = c===2 ? seedTotal: Math.round((10 * (idealRow[c-1] - (seedTotal/idealDayCount)))) / 10;
-         
         }
 
         dataToGraph = totalRow.slice(2);
@@ -982,11 +1015,11 @@ const postProcessData   = () => {
         opStr += '</tr>';
         qs('.preview-table tbody').insertAdjacentHTML('beforeEnd', opStr);
     }).then((res)=>{
-        console.info("THENABLE -> ", "res", res);
+        _I("THENABLE -> ", "res", res);
         totalRow = [...qs('.total-row').childNodes];
         idealRow = [...qs('.ideal-row').childNodes];
     }).then((res)=>{
-        console.info("THENABLE -> ", "res", res);
+        _I("THENABLE -> ", "res", res);
         for(var c=2; c<idealRow.length; c++){
             if(totalRow[c].innerText !== null && idealRow[c].innerText !== null){
                 let totalCell = totalRow[c]
@@ -1033,7 +1066,7 @@ let ongoing = false, ongoingtimer=null,
     window.addEventListener('click', released);
 
 const syncSpinner = (hardValue=null) => {                                                                   //## Ⓒ ⬅⬅⬅︎ 
-    console.info("FUNCTION: syncSpinner", "hardValue", hardValue);
+    _I("FUNCTION: syncSpinner", "hardValue", hardValue);
     if(hardValue != null && !isNaN(hardValue)) totalItrDayPicker.placeholder = hardValue;
     TOTALITRDAYS  = getDayCountFromPicker()
     let control   = totalItrDayPicker.parentElement;
@@ -1044,7 +1077,7 @@ const syncSpinner = (hardValue=null) => {                                       
 
 
 const incDec = (dir, mechanical=true, dly=750, scale=1) => {
-   console.info("FUNCTION: incDec", "dir", dir, "mechanical", mechanical, "dly", dly, "scale", scale);
+   _I("FUNCTION: incDec", "dir", dir, "mechanical", mechanical, "dly", dly, "scale", scale);
    
    ongoing=true;
    dly = (dly<50) ? 50 : Math.log2(dly) * dly/10.4;
@@ -1285,7 +1318,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
 
                let hourDifference = ideal - actual;
 
-               // console.log(ideal, actual, hourDifference)
+               // _(ideal, actual, hourDifference)
                if(actual < ideal){
                   bar.fillRect(plotX(i)+barShift,   canvasHeight + gridVertMargins, barWidth, (-actual * gridRowScale));
                   bar.fillStyle=colorsForActualHours[i +1];
@@ -1344,7 +1377,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
          let hours      = "(" + readableRound(overUnder, 2, true) + " hrs)";
          
          if(overUnder < 0){
-            console.log('' + colorsForActualHours[dayIndex + 1])
+            _('' + colorsForActualHours[dayIndex + 1])
             ctx.font = 'bold 16px monospace';
             ctx.fillStyle=LightenDarkenColor(colorsForActualHours[dayIndex + 1], 1/100);
             ctx.fillText("BEHIND!", plotX(dayIndex) + xOffset, plotY(remainingHoursPerDay[dayIndex]) - 15);
@@ -1424,7 +1457,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
             if(dataObj[i+1]) {
                linePath.moveTo(sX, sY);
                linePath.lineTo(eX, eY);
-               //console.log('linePath.lineTo(',eX, eY,')');
+               //_('linePath.lineTo(',eX, eY,')');
             } else {
 
             }

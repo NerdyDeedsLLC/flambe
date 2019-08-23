@@ -1,0 +1,80 @@
+Issue key,Issue id,Parent id,Summary,Assignee,Remaining Estimate,,Status,Sprint,Custom field (Scrum Team)
+DIGTDEV-14984,650239,,Ginger Api Testing & Automation,vivekreddy.doma@sprint.com,28800,8,In Development,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-15202,666061,,POST : JAVA BE - Template Management - Department validation Tags,Joseph.Chantiny@sprint.com,0,0,Demo,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-15049,650935,,POST : JAVA BE - Template Management - Move validation up to delegate layer and enhance exception tests to be more specific.,Joseph.Chantiny@sprint.com,0,0,Demo,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-15173,665299,,PAYMENT: Connect Payment Domain MS to Payment Methods MS,Manjusha.Ramakrishnan@sprint.com,0,0,In Progress,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15237,671127,,PAYMENT: Payment Methods MS Connect to EPP Gateway Ms,Manjusha.Ramakrishnan@sprint.com,115200,32,Definition,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15250,671506,,PAYMENT: SPIKE EPP Mappers,Manjusha.Ramakrishnan@sprint.com,144000,40,Definition,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-14032,640224,,PAYMENT: SDK - Get Saved Payment Methods,Suraj.Eathalapaka@sprint.com,0,0,Definition,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15022,650498,640224,Determine relevant fields,Suraj.Eathalapaka@sprint.com,23400,6.5,In Progress,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15023,650499,640224,Filter the saved payment methods,Suraj.Eathalapaka@sprint.com,57600,16,Definition,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15267,671389,,SPIKE - PAYMENT: SDK - Payment Request API,Suraj.Eathalapaka@sprint.com,144000,40,Definition,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15225,666684,,ALM documentation ,Poojitha.Rayani@sprint.com,86400,24,Definition,Tapas ITR21 (PI10): 21/8-3/9,Koala Tea
+DIGTDEV-15257,671371,,SPIKE: MTV125 Journaling Requirements,Ashley.Barrow@sprint.com,144000,40,Preparing,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15198,666120,,ADMIN : MTV209 Manage Charge MS Creation,yaakov.slonimczyk@amdocs.com,230400,64,Definition,Tapas ITR22 (PI10): 4/9-17/9,Scrum n Coke
+DIGTDEV-14457,644048,,TEAM: Create Proposal for IntelliJ IDEA,Ashley.Barrow@sprint.com,57600,16,Definition,Tapas ITR22 (PI10): 4/9-17/9,Scrum n Coke
+DIGTDEV-14756,647724,,"PAYMENT: Payment Management MS - Implement ""captureOrderPayment"" - Reversal/Cancel",Ram.Gangineni@sprint.com,,0,Definition,Tapas ITR22 (PI10): 4/9-17/9,Scrum n Coke
+DIGTDEV-12928,630970,,"PAYMENT: Payment Management MS - Implement ""captureOrderPayment"" - Orchestration between capture vs authAndCapture",Jose.Tapias@sprint.com,,0,Definition,Tapas ITR22 (PI10): 4/9-17/9,Scrum n Coke
+DIGTDEV-13133,632590,630970,Define the Architecture of the rules,Jose.Tapias@sprint.com,86400,24,Definition,Tapas ITR22 (PI10): 4/9-17/9,Scrum n Coke
+DIGTDEV-13134,632591,630970,Review solution with the Architech,Jose.Tapias@sprint.com,57600,16,Definition,Tapas ITR22 (PI10): 4/9-17/9,Scrum n Coke
+DIGTDEV-13135,632592,630970,Implement the rules,Jose.Tapias@sprint.com,115200,32,Definition,Tapas ITR22 (PI10): 4/9-17/9,Scrum n Coke
+DIGTDEV-13136,632593,630970,Unit Tests,Jose.Tapias@sprint.com,28800,8,Definition,Tapas ITR22 (PI10): 4/9-17/9,Scrum n Coke
+DIGTDEV-14279,641807,,"PAYMENT: Payment Management MS - Implement ""captureOrderPayment"" - Update the Payment Persistence",Manjusha.Ramakrishnan@sprint.com,144000,40,Definition,Tapas ITR22 (PI10): 4/9-17/9,Scrum n Coke
+DIGTDEV-13669,638293,,POST : Part 2 - PMGUI - BULK : Send Bulk Mail UI (COLLECTION),jason.jurusz@sprint.com,0,0,In Development,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-13673,638297,638293,CLONE - POST : BULK : Send Bulk Mail UI (ME-TA-SK),jason.jurusz@sprint.com,28800,8,In Progress,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-13675,638299,638293,POST : BULK - Modal - Drag/Drop Header Mapping UI,jason.jurusz@sprint.com,14400,4,In Progress,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-13677,638324,638293,Preview Panel,jason.jurusz@sprint.com,21600,6,In Progress,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-13678,638326,638293,POST : PMGUI - BULK - Alternate UI Mechanisms for Data Mapping,jason.jurusz@sprint.com,43320,12.03333333,In Progress,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-13679,638327,638293,Implement Modal UI,jason.jurusz@sprint.com,10800,3,In Progress,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-12061,619780,638293,POST : BULK - Modal - Convert Input Bulk Data into Backend-Specified Format,jason.jurusz@sprint.com,86400,24,Definition,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-14379,642834,,ADMIN : MTV-125 Integration Plan,Poojitha.Rayani@sprint.com,21600,6,In Development,Tapas ITR21 (PI10): 21/8-3/9,Koala Tea
+DIGTDEV-14465,644166,,FOISTED UIUX: Collate data from form submission and send to back-end microservice,jason.jurusz@sprint.com,14400,4,In Development,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-14466,644167,,"FOISTED UIUX: Seed Extant User Data (""Edit"" Mode) & interact with Update MS",jason.jurusz@sprint.com,3600,1,In Development,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-14959,649432,,FOISTED UIUX: React Conversion,jason.jurusz@sprint.com,57600,16,In Progress,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-15292,671935,,FLAMBE : BUG FIXES & ENHANCEMENTS - UI revisions per requested upgrades,jason.jurusz@sprint.com,10800,3,Preparing,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-14985,650305,,TEST for POST : ADMIN - Category Management Page,Srilekha.Rajam@sprint.com,3600,1,In Development,Tapas ITR21 (PI10): 21/8-3/9,Koala Tea
+DIGTDEV-12049,619766,,POST : TEMPL - Versioning - Time Selection & Preview,Pavankumar.Durgempudi@sprint.com,64800,18,In Development,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-15009,650199,,POST : TEMPL - Versioning - Calendar,Mounika.Giraboina@sprint.com,36000,10,In Development,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-14641,646462,,Java BE Tags refinement in Template Managment ,Anil.Reddy@sprint.com,0,0,In Development,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-15066,652113,646462,Swagger change ,Anil.Reddy@sprint.com,0,0,Completed,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-15224,666514,646462,POST : JAVA BE - Create API endpoints for Get CRUD Ops: Tags,Anil.Reddy@sprint.com,100800,28,In Progress,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-11065,604737,,KeyExchange: send ephemeral key message to kafka,SusheelReddy.2.Kandakatla@sprint.com,64800,18,In Development,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15140,653348,,Spike for the EPP Gateway design ,Jose.Tapias@sprint.com,0,0,Completed,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15142,653357,,PAYMENT - Update YAML for Persistence MS,Jose.Tapias@sprint.com,0,0,Completed,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15240,671137,,PAYMENT: Payment Management MS connection to EPP Gateway Ms,Jose.Tapias@sprint.com,,0,Definition,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15247,671503,671137,Create gateway layer and mappers.,Jose.Tapias@sprint.com,57600,16,Definition,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15248,671504,671137,Create service and resource layer.,Jose.Tapias@sprint.com,57600,16,Definition,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15249,671505,671137,Unit tests and wiremock. ,Jose.Tapias@sprint.com,28800,8,Definition,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15239,671135,,PAYMENT: Payment Management MS update connection to new Persistence,Jose.Tapias@sprint.com,,0,In Development,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15244,671500,671135,Change  the persistence yaml on the Payment Management MS.,Jose.Tapias@sprint.com,28800,8,In Progress,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15245,671501,671135,Update the required mappers.,Jose.Tapias@sprint.com,57600,16,Definition,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15246,671502,671135,Unit tests and wiremock. ,Jose.Tapias@sprint.com,28800,8,Definition,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15241,671138,,PAYMENT: EPP Gateway MS Map Wallet Services to EPP Structure,Ram.Gangineni@sprint.com,115200,32,Definition,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15238,671133,,PAYMENT: EPP Gateway MS - Base Project,Ram.Gangineni@sprint.com,86400,24,Definition,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15141,653356,,PAYMENT: - Create YAML for EPP Gateway,Ashley.Barrow@sprint.com,75600,21,In Progress,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15162,653621,,Update Payment Persistence MS with new Yaml,Ram.Gangineni@sprint.com,201600,56,Preparing,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15253,671511,653621,Generate MS-Builder with new payment-Persistence.yaml,Ram.Gangineni@sprint.com,,0,Definition,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15303,672860,653621,Post call for payment-Pesistence,Ram.Gangineni@sprint.com,,0,Definition,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15226,666490,,MAINTENANCE : ITR21 ScrumRunners Maintenance,Scot.Mewbuorn@sprint.com,108000,30,Definition,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-15204,666066,,POST : JAVA BE - Template Management - Department validation Templates,Anil.Reddy@sprint.com,115200,32,In Development,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-15227,667604,,MAINTENANCE: ITR21 SnC Maintenance,Scot.Mewbuorn@sprint.com,57600,16,Definition,Tapas ITR21 (PI10): 21/8-3/9,Scrum n Coke
+DIGTDEV-15228,667605,,MAINTENANCE: ITR21 Techquilla Maintenance,Scot.Mewbuorn@sprint.com,57600,16,Definition,Tapas ITR21 (PI10): 21/8-3/9,Techquilla
+DIGTDEV-15229,667613,,POST : API (Adjust Polyfill for Interactivity) with Backend,jason.jurusz@sprint.com,144000,40,Definition,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-14757,647832,,KEYEXCHANGE: Create Keyexchange Mapping Request,ravivarma.kusthapuram@sprint.com,21600,6,In Development,Tapas ITR21 (PI10): 21/8-3/9,Techquilla
+DIGTDEV-15223,666677,,Generate Classes from EPP Wsdl and configure in Gateway module ,ravivarma.kusthapuram@sprint.com,136800,38,In Development,Tapas ITR21 (PI10): 21/8-3/9,Techquilla
+DIGTDEV-14256,641456,,POST : JAVA BE - Spike : Iterative Send for Bulk Mail Fallout,saisurya.pamidipati@sprint.com,28740,7.983333333,Definition,Tapas ITR21 (PI10): 21/8-3/9,Techquilla
+DIGTDEV-15230,667598,,POST : JAVA BE - Notifications TemplateManagement - Issue in GET requests when calling with FE or Testing tools ,saisurya.pamidipati@sprint.com,14400,4,Demo,Tapas ITR21 (PI10): 21/8-3/9,Techquilla
+DIGTDEV-15231,668508,,POST : JAVA BE - Notifications Outbound- Issue in GET requests when calling with FE or Testing tools ,saisurya.pamidipati@sprint.com,14400,4,In Development,Tapas ITR21 (PI10): 21/8-3/9,Techquilla
+DIGTDEV-15232,668509,,POST : JAVA BE - Notifications Outbound- Changes in Swagger of TemplateManagement,saisurya.pamidipati@sprint.com,57600,16,In Development,Tapas ITR21 (PI10): 21/8-3/9,Techquilla
+DIGTDEV-15269,671536,,POST : JAVA BE - Notifications Outbound- Email Should be of MIME message,saisurya.pamidipati@sprint.com,57600,16,Definition,Tapas ITR21 (PI10): 21/8-3/9,Techquilla
+DIGTDEV-14642,646463,,POST : Java BE Use refined Tag logic in Outbound Service,Harika.Kopparapu@sprint.com,0,0,Demo,Tapas ITR21 (PI10): 21/8-3/9,Techquilla
+DIGTDEV-15183,665568,,POST : JAVA BE - Template Management -Implement Department level SMS template limits ,Harika.Kopparapu@sprint.com,144000,40,Definition,Tapas ITR21 (PI10): 21/8-3/9,Techquilla
+DIGTDEV-15207,666082,,POST : JAVA BE - Outbound TO email of end user configuration,Harika.Kopparapu@sprint.com,115200,32,In Development,Tapas ITR21 (PI10): 21/8-3/9,Techquilla
+DIGTDEV-15206,666075,,POST : JAVABE - Edit Outbound Swagger to add example of request format ,Sairaghu.Uppala@sprint.com,57600,16,In Development,Tapas ITR21 (PI10): 21/8-3/9,Techquilla
+DIGTDEV-15203,666064,,POST : JAVA BE - Outbound - Full JavaDoc ,Sairaghu.Uppala@sprint.com,108000,30,In Development,Tapas ITR21 (PI10): 21/8-3/9,Techquilla
+DIGTDEV-15243,671151,,POST : JAVA BE - Notifications TemplateManagement - Retrieve tags not working,saisurya.pamidipati@sprint.com,18000,5,Fixed,Tapas ITR21 (PI10): 21/8-3/9,Techquilla
+DIGTDEV-15288,671920,,Testing-POST JAVA BE- CRUD operations for Template Management(Departments) ,Srilatha.2.Vemaraju@sprint.com,280440,77.9,Definition,Tapas ITR21 (PI10): 21/8-3/9,Koala Tea
+DIGTDEV-15289,671832,,Testing Template Management- Get Languages,Poojitha.Rayani@sprint.com,57600,16,Definition,Tapas ITR21 (PI10): 21/8-3/9,Koala Tea
+DIGTDEV-15290,671838,,Testing-POST JAVA BE- CRUD operations for Template Management (Templates) ,Srilekha.Rajam@sprint.com,252000,70,In Development,Tapas ITR21 (PI10): 21/8-3/9,Koala Tea
+DIGTDEV-15282,671693,,Dummy ticket ,Markquatt.Ford@sprint.com,,0,Open,Tapas ITR21 (PI10): 21/8-3/9,ScrumRunners
+DIGTDEV-15305,672862,,POST : JAVA BE - Notifications TemplateManagements-(DEPT)Post method failure,Sairaghu.Uppala@sprint.com,,0,Open,Tapas ITR21 (PI10): 21/8-3/9,Techquilla
