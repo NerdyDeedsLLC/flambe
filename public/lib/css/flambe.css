@@ -83,7 +83,24 @@ main#iteration-info section.form-fields div.itr-form-field select:valid + label 
 }
 
 main#iteration-info section.form-fields div.itr-form-field select {
-  color: grey;
+  height: auto;
+  position: absolute;
+  z-index: 100;
+  max-height: 0;
+  transition: 0.33s all ease-in-out;
+  margin-top: -3px;
+  border-top: 0px none;
+}
+
+main#iteration-info section.form-fields div.itr-form-field select option {
+  font-size: 14px;
+  padding: 5px 4px;
+}
+
+main#iteration-info section.form-fields div.itr-form-field select option:first-child {
+  padding-top: 8px;
+  border-top: 1px solid #DDD;
+  margin-top: 10px;
 }
 
 main#iteration-info section.form-fields div.itr-form-field label {
@@ -104,6 +121,26 @@ main#iteration-info section.form-fields div.itr-form-field label em {
   display: inline-block;
   vertical-align: baseline;
   font-size: 80%;
+}
+
+main#iteration-info section.form-fields div.itr-form-field .faux-select {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='16' fill='%23999' viewBox='-100 -100 800 600'%3E%3Cpath d='M250 360L100 100h300z'/%3E%3C/svg%3E") no-repeat right;
+  cursor: default;
+  border-bottom: 0px none;
+}
+
+main#iteration-info section.form-fields div.itr-form-field .faux-select:invalid {
+  color: #AAA;
+}
+
+main#iteration-info section.form-fields div.itr-form-field .faux-select:not(:invalid) {
+  color: #666;
+}
+
+main#iteration-info section.form-fields div.itr-form-field .faux-select:focus + select, main#iteration-info section.form-fields div.itr-form-field .faux-select:focus + label + select {
+  max-height: 500px;
+  display: block;
+  box-shadow: 0 10px 15px #0006;
 }
 
 main#iteration-info section.form-fields .full-width {
@@ -190,7 +227,7 @@ main#iteration-info section.form-fields .half-width {
   text-align: center;
 }
 
-.picker .picker-panel input:focus + label::after, .picker .picker-panel input:valid + label::after {
+.picker .picker-panel input:focus + label::after, .picker .picker-panel input:not(:invalid) + label::after, .picker .picker-panel input:valid + label::after {
   display: none;
 }
 

@@ -11,14 +11,12 @@
     <main id='iteration-info'>
         <section class="form-fields">
             <div class='full-width itr-form-field'>
-                <input id="iteration-name" name="iteration-name" type="text" required class="input-field"
-                    autocomplete="false" placeholder="" />
+                <input id="iteration-name" name="iteration-name" type="text" required class="input-field" autocomplete="false" placeholder="" />
                 <label for="iteration-name" class="iteration-name-label">Iteration Name <em>(this is a label that
                         will appled to reports in this iteration)</em></label>
             </div>
             <div class='half-width itr-form-field'>
-                <input id="report-start-date" name="report-start-date" type="date" required class="datepicker"
-                    autocomplete="false" placeholder="" />
+                <input id="report-start-date" name="report-start-date" type="date" required class="datepicker" autocomplete="false" placeholder="" />
                 <label for="report-start-date" class="report-start-date-label">Burndown Start Date <em>(The
                         day Iteration began)</em></label>
             </div>
@@ -33,17 +31,15 @@
             </div>
 
             <div class='half-width itr-form-field'>
-                <select id="selIteration" name="selIteration" placeholder="Select Iteration">
-                        <option value="">- Select Iteration -</option>
-                        <option value="20">Iteration 20</option>
-                </select>
+                <input id="txtIteration" name="txtIteration" type="text" required class="input-field faux-select" autocomplete="false" placeholder="" />
+                <label for="txtIteration" class="txtIteration-label">- Select Iteration -</label>
+                <select id="selIteration" name="selIteration" placeholder="Select Iteration" size="6"></select>
             </div>
             
             <div class='half-width itr-form-field'>
-                <select id="selTeam" name="selTeam" placeholder="Select Team">
-                    <option value="">- Select Team -</option>
-                    <option value="20">Iteration 20</option>
-                </select>
+                <input id="txtTeam" name="txtTeam" type="text" required class="input-field faux-select" autocomplete="false" placeholder="" />
+                <label for="txtTeam" class="txtTeam-label">- Select Team -</label>
+                <select id="selTeam" name="selTeam" placeholder="Select Team" size="6"></select>
             </div>
             
         </section>

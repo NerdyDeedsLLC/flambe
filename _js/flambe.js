@@ -370,6 +370,59 @@ insertFileNodeBetween = (e, trgObj=e.target) => {
     resizeBufferArraysAndRebuildSlots();                                                                    //@@ ➜➜➜ 🅑 
 };
 
+const syncSelect = (e, val) => {
+    trg=e.target;
+    console.log('v1', val)
+    val = (val != null) ? val : trg.value;
+    console.log('v2', val)
+    console.log('syncSelect', e, trg, val)
+    let txtBox = trg.previousElementSibling.previousElementSibling;
+    txtBox.value = val; 
+    retain(trg.id, val);
+    trg.blur();
+};
+
+const setSelect = (sel, val) => {
+    console.log('setSelect', sel, val)
+    if(sel == null || val == null) return false;
+    sel = (typeof(sel === 'string')) ? qs(sel) : sel;
+    sel.value = val;
+    syncSelect({target:sel}, val);
+}
+
+let ALLTEAMS = [];
+let ALLITRS  = [];
+const generateTeamsAndIterationLists = () => {
+    ALLTEAMS = [];
+    ALLITRS  = [];
+    for(let files in fileBuffer){
+        let file = fileBuffer[files];
+        if(file != null && file != '') {
+            let teamsInFile = JSON.stringify(file.fileData, ['Custom field (Scrum Team)']);                 // Rip out all the teams in each file...
+                teamsInFile = JSON.parse(teamsInFile).flatMap(d=>d['Custom field (Scrum Team)']);           // ... then flatten the results into a 1-dimensional array.
+            let itrsInFile  = JSON.stringify(file.fileData, ['Sprint']);                                    // ... then do the same for iterations.
+                itrsInFile  = JSON.parse(itrsInFile).flatMap(d=>d['Sprint']);
+            ALLTEAMS        = [...teamsInFile, ...ALLTEAMS];                                                // Append the new data to the running variable
+            ALLITRS         = [...itrsInFile,  ...ALLITRS];                                                 
+        }
+    }
+    
+    ALLTEAMS = [...new Set(ALLTEAMS)].sort();                                                               // Finally, reduce both to collections containing only unique elements
+    ALLITRS  = [...new Set(ALLITRS)].sort();
+
+
+    let teamsDD = qs('#selTeam');
+    let itrsDD  = qs('#selIteration');
+    
+    teamsDD.innerHTML = '<option>' + ALLTEAMS.join('</option><option>') + '</option>';
+    itrsDD.innerHTML  = '<option>' + ALLITRS.join('</option><option>') + '</option>';
+    teamsDD.addEventListener('change', syncSelect)
+    itrsDD.addEventListener('change', syncSelect)
+    
+}
+setSelect('#selTeam', recall('selTeam'));
+setSelect('#selIteration', recall('selIteration'));
+
 removeFileAtIndex = (trgBtn, isFilled) => {                                                                 //%% Ⓔ ⬅⬅⬅︎  Remove the file from the slot whose trashcan was clicked (both in the buffer and the UI)
     _I("FUNCTION: removeFileAtIndex", "trgBtn", trgBtn, "isFilled", isFilled);
     ind = trgBtn.dataset.index;
@@ -415,17 +468,17 @@ resizeBufferArraysAndRebuildSlots = (newLen = ((totalItrDayPicker.placeholder / 
                 ,fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
                               ${namedFiles[i]}
                               <button class="remove-buttons" data-index="${i}" 
-                                    onMouseUp="removeFileAtIndex(this, true)" />                            //%% ➜➜➜ 🅔 
-                           </label>`
+                                    onMouseUp="removeFileAtIndex(this, true)" />                            
+                           </label>`                                                                        //%% ➜➜➜ 🅔 
                 ,arrID = ` id="file-slot-${i}" `;
 
             if(namedFiles[i] == ''){
-                if(i < interpolated){
+                if(i < interpolated){                                                                       //%% ➜➜➜ 🅔 
                     fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
                                 No file specified (click to add, or leave blank to 
                                     interpolate data from neighbors)
                                 <button class="remove-buttons" data-index="${i}" 
-                                    onMouseUp="removeFileAtIndex(this, false)" />                           //%% ➜➜➜ 🅔 
+                                    onMouseUp="removeFileAtIndex(this, false)" />                           
                               </label>`;
                     pList += ' data-value="interpolated"';
                 } else {
@@ -446,6 +499,8 @@ resizeBufferArraysAndRebuildSlots = (newLen = ((totalItrDayPicker.placeholder / 
         while(sortableList.childElementCount>0) sortableList.childNodes[0].remove();
         sortableList.insertAdjacentHTML('beforeEnd', opStr);
         qsa('li').forEach(li=>li.addEventListener('click', insertFileNodeBetween));                         //$$ ➜➜➜ 🅓 
+
+        generateTeamsAndIterationLists()
     };
 addOrReplaceSingleFileAndParse = (slotId=targetSlot, liObj=qs('#file-slot-'+slotId)) =>                     //!! Ⓐ ⬅⬅⬅︎ Inserts (or updates) a file at the specified slot (in both the buffer and the UI)
     {

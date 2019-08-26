@@ -81,7 +81,23 @@ main#iteration-info {
             }
 
             select{
-                color:grey;
+                height:auto;
+                position:absolute;
+                z-index:100;
+                max-height:0;
+                transition:0.33s all ease-in-out;
+                margin-top:-3px;
+                border-top:0px none;
+
+                option {
+                    font-size:14px;
+                    padding: 5px 4px;
+                    &:first-child {
+                        padding-top:8px;
+                        border-top:1px solid #DDD;
+                        margin-top:10px;
+                    }
+                }
             }
             label {
                 display: inline-block;
@@ -100,6 +116,25 @@ main#iteration-info {
                     display: inline-block;
                     vertical-align: baseline;
                     font-size: 80%;
+                }
+            }
+
+            .faux-select {
+                background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='16' fill='%23999' viewBox='-100 -100 800 600'%3E%3Cpath d='M250 360L100 100h300z'/%3E%3C/svg%3E") no-repeat right;
+                cursor:default;
+                border-bottom:0px none;
+                &:invalid {
+                    color:#AAA;
+                }
+
+                &:not(:invalid){
+                    color:#666;
+                }
+
+                &:focus + select, &:focus + label + select {
+                    max-height:500px;
+                    display:block;
+                    box-shadow:0 10px 15px #0006;
                 }
             }
         }
@@ -190,6 +225,7 @@ $picker-dimensions: 30px;
             text-align: center;
 
             &:focus,
+            &:not(:invalid),
             &:valid {
                 & + label::after {
                     display: none;
