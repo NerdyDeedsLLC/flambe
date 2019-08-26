@@ -60,7 +60,7 @@ main#iteration-info section.form-fields div.itr-form-field + div {
   margin-top: 25px;
 }
 
-main#iteration-info section.form-fields div.itr-form-field input {
+main#iteration-info section.form-fields div.itr-form-field input, main#iteration-info section.form-fields div.itr-form-field select {
   border: 1px solid #aaa;
   border-radius: 6px;
   font-size: 18px;
@@ -71,14 +71,19 @@ main#iteration-info section.form-fields div.itr-form-field input {
   color: white;
 }
 
-main#iteration-info section.form-fields div.itr-form-field input:focus, main#iteration-info section.form-fields div.itr-form-field input:valid {
+main#iteration-info section.form-fields div.itr-form-field input:focus, main#iteration-info section.form-fields div.itr-form-field input:valid, main#iteration-info section.form-fields div.itr-form-field select:focus, main#iteration-info section.form-fields div.itr-form-field select:valid {
   color: black;
 }
 
 main#iteration-info section.form-fields div.itr-form-field input:focus + label,
-main#iteration-info section.form-fields div.itr-form-field input:valid + label {
+main#iteration-info section.form-fields div.itr-form-field input:valid + label, main#iteration-info section.form-fields div.itr-form-field select:focus + label,
+main#iteration-info section.form-fields div.itr-form-field select:valid + label {
   margin: -50px 0 0 -5px;
   font-size: 13px;
+}
+
+main#iteration-info section.form-fields div.itr-form-field select {
+  color: grey;
 }
 
 main#iteration-info section.form-fields div.itr-form-field label {
@@ -665,101 +670,270 @@ button.add-record {
   text-align: center;
 }
 
-tr.row-status-Definition td:first-child {
+.output-table tr.row-status-Definition td:first-child {
   border-left: 1px solid #000;
   padding-left: 12px;
 }
 
-tr.row-status-Solution_Definition td:first-child {
+.output-table tr.row-status-Solution_Definition td:first-child {
   border-left: 8px solid #AAA;
 }
 
-tr.row-status-In_Development td:first-child {
+.output-table tr.row-status-In_Development td:first-child {
   border-left: 8px solid #00F;
 }
 
-tr.row-status-In_Progress td:first-child {
+.output-table tr.row-status-In_Progress td:first-child {
   border-left: 8px solid #0FF;
 }
 
-tr.row-status-Completed td:first-child {
+.output-table tr.row-status-Completed td:first-child {
   border-left: 8px solid #0F0;
 }
 
-tr.row-status-Blocked td:first-child {
+.output-table tr.row-status-Blocked td:first-child {
   border-left: 8px solid #0FF;
 }
 
-tr.row-status-Demo td:first-child {
+.output-table tr.row-status-Demo td:first-child {
   border-left: 8px solid #ff0;
 }
 
-td {
+.output-table td {
   position: relative;
 }
 
-td:nth-child(-n + 2) {
+.output-table td:nth-child(-n + 2) {
   text-align: left;
 }
 
-td:nth-child(n + 3) {
+.output-table td:nth-child(n + 3) {
   width: 4%;
   text-align: right;
 }
 
-td.dim {
+.output-table td.dim {
   background: #ccc;
 }
 
-td.interpolated-value {
+.output-table td.interpolated-value {
   box-shadow: inset 1px 1px 10px #ece7ff, inset 1px -1px 10px #ece7ff, inset -1px 1px 10px #ece7ff, inset -1px -1px 10px #ece7ff;
 }
 
-td i {
+.output-table td i {
   color: #0005;
 }
 
-td em {
+.output-table td em {
   color: #0007;
 }
 
-th {
+.output-table th {
   border: 1px solid black;
   background-color: #eee;
 }
 
-th.dim {
+.output-table th.dim {
   background-color: #bbb;
 }
 
-tr > * {
+.output-table tr > * {
   border-bottom: 1px solid #000;
   border-right: 1px solid gray;
   padding: 1px 5px;
 }
 
-tr.obfuscated {
+.output-table tr.obfuscated {
   display: none;
 }
 
-tr.total-row, tr.ideal-row {
+.output-table tr.total-row, .output-table tr.ideal-row {
   background-color: #CCC;
   font-weight: bold;
 }
 
-tr.total-row td, tr.ideal-row td {
+.output-table tr.total-row td, .output-table tr.ideal-row td {
   padding: 8px;
   text-align: right;
 }
 
-tr.total-row td.over, tr.ideal-row td.over {
+.output-table tr.total-row td.over, .output-table tr.ideal-row td.over {
   box-shadow: inset 1px 1px 5px red, inset -1px 1px 5px red, inset 1px -1px 5px red, inset -1px -1px 5px red;
   background-color: #FCC;
 }
 
-tr.total-row td.under, tr.ideal-row td.under {
+.output-table tr.total-row td.under, .output-table tr.ideal-row td.under {
   box-shadow: inset 1px 1px 5px green, inset -1px 1px 5px green, inset 1px -1px 5px green, inset -1px -1px 5px green;
   background-color: #CFC;
+}
+
+#adjustement-panel {
+  border-radius: 10px;
+  display: inline-block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+  text-align: center;
+}
+
+#adjustement-panel::before {
+  content: '';
+  background: #000A;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+#adjustement-panel table {
+  border-spacing: 0;
+  border: 2px solid black;
+  background-color: #EEE;
+  border-radius: 10px;
+  overflow: hidden;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  box-shadow: 0 20px 40px #000A;
+  font-size: 14px;
+}
+
+#adjustement-panel table tr {
+  border-spacing: 0;
+}
+
+#adjustement-panel table tr.adjustment-total-row {
+  color: #600;
+  text-align: right;
+  font-weight: bold;
+}
+
+#adjustement-panel table tr.adjustment-total-row td {
+  border-top: 1px solid #aaa;
+  border-bottom: 2px solid black;
+}
+
+#adjustement-panel table th {
+  background-color: #666;
+  color: #CCC;
+  margin: 0;
+  border: 0 none;
+  padding: 7px 13px;
+  border-image-width: 0;
+  border-spacing: 0;
+}
+
+#adjustement-panel table th:first-child:last-child {
+  background-color: #000;
+  color: #FFF;
+  padding: 12px;
+  border-radius: 9px 9px 0 0;
+}
+
+#adjustement-panel table td {
+  white-space: nowrap;
+  vertical-align: top;
+  padding: 7px 13px;
+}
+
+#adjustement-panel table td:last-of-type {
+  text-align: right;
+}
+
+#adjustement-panel table td.adjustment-team-name {
+  font-weight: 900;
+  border-bottom: 2px solid black;
+}
+
+.cta-adjustment {
+  font-size: 14px;
+  width: 200px;
+  border: 2px solid #999;
+  padding: 5px 0;
+  margin-left: 10px;
+  border-radius: 10px;
+  background-color: #FFF;
+}
+
+.cta-adjustment:last-of-type {
+  background-color: #1992AC;
+  border-color: #115A6C;
+  font-weight: bold;
+  color: white;
+}
+
+#msgbox {
+  border-radius: 10px;
+  display: inline-block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+  text-align: center;
+}
+
+#msgbox::before {
+  content: '';
+  background: #000A;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+#msgbox-window {
+  border-spacing: 0;
+  border: 2px solid black;
+  background-color: #EEE;
+  border-radius: 10px;
+  overflow: hidden;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  box-shadow: 0 20px 40px #000A;
+  font-size: 14px;
+  text-align: right;
+  padding: 20px;
+  max-width: 30%;
+}
+
+#msgbox-window span, #msgbox-window h3 {
+  display: block;
+  text-align: left;
+  margin: 0 0 10px 0;
+}
+
+#msgbox-window button {
+  font-size: 14px;
+  width: 160px;
+  border: 2px solid #999;
+  padding: 5px 0;
+  margin-left: 10px;
+  margin: 20px 0 0 10px;
+  border-radius: 10px;
+  background-color: #FFF;
+}
+
+#msgbox-window button:last-of-type {
+  background-color: #1992AC;
+  border-color: #115A6C;
+  font-weight: bold;
+  color: white;
 }
 
 /* ANIMATIONS AND @-RULES */

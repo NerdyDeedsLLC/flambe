@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="lib/css/flambe.css">
 </head>
 
-<body>
+<body class="dark">
     <main id='iteration-info'>
         <section class="form-fields">
             <div class='full-width itr-form-field'>
@@ -31,6 +31,21 @@
                 </div>
                 <button id="picker-inc" class="picker-pushers" onmousedown="incDec(1);" onmouseup="released()"></button>
             </div>
+
+            <div class='half-width itr-form-field'>
+                <select id="selIteration" name="selIteration" placeholder="Select Iteration">
+                        <option value="">- Select Iteration -</option>
+                        <option value="20">Iteration 20</option>
+                </select>
+            </div>
+            
+            <div class='half-width itr-form-field'>
+                <select id="selTeam" name="selTeam" placeholder="Select Team">
+                    <option value="">- Select Team -</option>
+                    <option value="20">Iteration 20</option>
+                </select>
+            </div>
+            
         </section>
         <div class="pbars"></div>
         <div class="sort-order">

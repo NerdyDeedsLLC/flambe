@@ -59,7 +59,7 @@ main#iteration-info {
                 margin-top: 25px;
             }
 
-            input {
+            input, select {
                 border: 1px solid #aaa;
                 border-radius: 6px;
                 font-size: 18px;
@@ -78,6 +78,10 @@ main#iteration-info {
                     margin: -50px 0 0 -5px;
                     font-size: 13px;
                 }
+            }
+
+            select{
+                color:grey;
             }
             label {
                 display: inline-block;
@@ -634,86 +638,250 @@ button.add-record {
             }
         }
     }
-}
-
-tr.row-status-Definition td:first-child{ border-left: 1px solid #000; padding-left: 12px; }
-tr.row-status-Solution_Definition td:first-child{ border-left: 8px solid #AAA; }
-tr.row-status-In_Development td:first-child{ border-left: 8px solid #00F; }
-tr.row-status-In_Progress td:first-child{ border-left: 8px solid #0FF; }
-tr.row-status-Completed td:first-child{ border-left: 8px solid #0F0; }
-tr.row-status-Blocked td:first-child{ border-left: 8px solid #0FF; }
-tr.row-status-Demo td:first-child{ border-left: 8px solid #ff0; }
-
-td {
-    position: relative;
-
-    &:nth-child(-n + 2) {
-        text-align: left;
-    }
-
-    &:nth-child(n + 3) {
-        width: 4%;
-        text-align: right;
-    }
-
-    &.dim {
-        background: #ccc;
-    }
-
-    &.interpolated-value {
-        box-shadow: inset 1px 1px 10px #ece7ff, inset 1px -1px 10px #ece7ff, inset -1px 1px 10px #ece7ff, inset -1px -1px 10px #ece7ff;
-    }
-
-    i {
-        color: #0005;
-    }
-
-    em {
-        color: #0007;
-    }
-}
-
-th {
-    border: 1px solid black;
-    background-color: #eee;
-
-    &.dim {
-        background-color: #bbb;
-    }
-}
-
-
-
-tr > * {
-    border-bottom: 1px solid #000;
-    border-right: 1px solid gray;
-    padding: 1px 5px;
-}
-
-tr.obfuscated {
-    display: none;
-}
-
-tr.total-row, tr.ideal-row {
-    background-color:#CCC;
-    font-weight: bold;
-
+    tr.row-status-Definition td:first-child{ border-left: 1px solid #000; padding-left: 12px; }
+    tr.row-status-Solution_Definition td:first-child{ border-left: 8px solid #AAA; }
+    tr.row-status-In_Development td:first-child{ border-left: 8px solid #00F; }
+    tr.row-status-In_Progress td:first-child{ border-left: 8px solid #0FF; }
+    tr.row-status-Completed td:first-child{ border-left: 8px solid #0F0; }
+    tr.row-status-Blocked td:first-child{ border-left: 8px solid #0FF; }
+    tr.row-status-Demo td:first-child{ border-left: 8px solid #ff0; }
+    
     td {
-        padding: 8px;
-        text-align: right;
-        &.over {
-            box-shadow: inset 1px 1px 5px red, inset -1px 1px 5px red, inset 1px -1px 5px red, inset -1px -1px 5px red;
-            background-color: #FCC;
+        position: relative;
+    
+        &:nth-child(-n + 2) {
+            text-align: left;
         }
-        
-        &.under {
-            box-shadow: inset 1px 1px 5px green, inset -1px 1px 5px green, inset 1px -1px 5px green, inset -1px -1px 5px green;
-            background-color: #CFC;
+    
+        &:nth-child(n + 3) {
+            width: 4%;
+            text-align: right;
+        }
+    
+        &.dim {
+            background: #ccc;
+        }
+    
+        &.interpolated-value {
+            box-shadow: inset 1px 1px 10px #ece7ff, inset 1px -1px 10px #ece7ff, inset -1px 1px 10px #ece7ff, inset -1px -1px 10px #ece7ff;
+        }
+    
+        i {
+            color: #0005;
+        }
+    
+        em {
+            color: #0007;
+        }
+    }
+    
+    th {
+        border: 1px solid black;
+        background-color: #eee;
+    
+        &.dim {
+            background-color: #bbb;
+        }
+    }
+    
+    
+    
+    tr > * {
+        border-bottom: 1px solid #000;
+        border-right: 1px solid gray;
+        padding: 1px 5px;
+    }
+    
+    tr.obfuscated {
+        display: none;
+    }
+    
+    tr.total-row, tr.ideal-row {
+        background-color:#CCC;
+        font-weight: bold;
+    
+        td {
+            padding: 8px;
+            text-align: right;
+            &.over {
+                box-shadow: inset 1px 1px 5px red, inset -1px 1px 5px red, inset 1px -1px 5px red, inset -1px -1px 5px red;
+                background-color: #FCC;
+            }
+            
+            &.under {
+                box-shadow: inset 1px 1px 5px green, inset -1px 1px 5px green, inset 1px -1px 5px green, inset -1px -1px 5px green;
+                background-color: #CFC;
+            }
         }
     }
 }
+
+#adjustement-panel {
+    border-radius:10px;
+    display:inline-block;
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index: 10000;
+    text-align:center;
     
+    &::before {
+        content:'';
+        background: #000A;
+        width:100vw;
+        height:100vh;
+        display:block;
+        
+        position:absolute;
+        top:0;
+        left:0;
+        z-index:-1;
+    }
+    table {
+        // min-width:50vw;
+        border-spacing:0;
+        border:2px solid black;
+        background-color:#EEE;
+        border-radius:10px;
+        overflow:hidden;
+        position:absolute;
+        left:50%;
+        top:50%;
+        transform:translate(-50%, -50%);
+        box-shadow:0 20px 40px #000A;
+        font-size:14px;
+
+        tr {
+            border-spacing:0;
+            &.adjustment-total-row {
+                color:#600;
+                text-align:right;
+                font-weight:bold;
+                td{
+                    border-top: 1px solid #aaa;
+                    border-bottom:2px solid black;
+                }
+            }
+        }
+
+        th {
+            background-color:#666;
+            color:#CCC;
+            
+            &:first-child:last-child {
+                background-color:#000;
+                color:#FFF;
+                padding:12px;
+                border-radius:9px 9px 0 0;
+            }
+            margin:0;
+            border:0 none;
+            padding:7px 13px;
+            border-image-width:0;
+            border-spacing:0;
+        }
+
+        td {
+            white-space: nowrap;
+            vertical-align: top;
+            padding:7px 13px;
+
+            &:last-of-type{
+                text-align: right;
+            }
+
+            &.adjustment-team-name {
+                font-weight:900;
+                border-bottom:2px solid black;
+            }
+
+        }
+    }
+}
+.cta-adjustment {
+    font-size: 14px;
+    width:200px;
+    border:2px solid #999;
+    padding: 5px 0;
+    margin-left:10px;
+    border-radius:10px;
+    background-color:#FFF;
+
+    &:last-of-type {
+        background-color: #1992AC;
+        border-color: #115A6C;
+        font-weight:bold;
+        color:white;
+    }
+}
+
+#msgbox {
+    border-radius:10px;
+    display:inline-block;
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index: 10000;
+    text-align:center;
     
+    &::before {
+        content:'';
+        background: #000A;
+        width:100vw;
+        height:100vh;
+        display:block;
+        
+        position:absolute;
+        top:0;
+        left:0;
+        z-index:-1;
+    }
+
+    &-window {
+        border-spacing:0;
+        border:2px solid black;
+        background-color:#EEE;
+        border-radius:10px;
+        overflow:hidden;
+        position:absolute;
+        left:50%;
+        top:50%;
+        transform:translate(-50%, -50%);
+        box-shadow:0 20px 40px #000A;
+        font-size:14px;
+        text-align:right;
+        padding:20px;
+        max-width:30%;
+
+        span, h3 {
+            display:block;
+            text-align:left;
+            margin:0 0 10px 0;
+        }
+
+        button {
+            font-size: 14px;
+            width:160px;
+            border:2px solid #999;
+            padding: 5px 0;
+            margin-left:10px;
+            margin:20px 0 0 10px;
+            border-radius:10px;
+            background-color:#FFF;
+
+            &:last-of-type {
+                background-color: #1992AC;
+                border-color: #115A6C;
+                font-weight:bold;
+                color:white;
+            }
+        }
+    }
+}
 /* ANIMATIONS AND @-RULES */
 @keyframes progress {
     0% {

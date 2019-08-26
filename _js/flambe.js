@@ -731,6 +731,8 @@ const constructPreviewAndReportData = () => {                                   
 
     let linkHandlers = [...qsa('a.iss-hvr-lnk')].forEach(lnk=>lnk.addEventListener('contextmenu', showRecordDetails));
 
+    
+
     createReportData();
 
 
@@ -749,14 +751,73 @@ const constructPreviewAndReportData = () => {                                   
     return true;
 };
 
-let offerPerformed = false, correctionMade=false;
-let seededSet, dayOneSet, revisedSeed, aleterdHours, seededFlat, lastMinAdds, seedFltKeys, missingStories, lastMinHrs;
-const offerToPerformDayOneOverrideAdjustment = () => {
-    if (offerPerformed || correctionMade) return false;
+const msgBox = (title, msgText, callback=()=>{this.parentNode.parentNode.remove()}, type='yesno', buttonText='ok') => {
+    let boxUI = `<div id="msgbox"><div id="msgbox-window"><h3>${title}</h3><span>${msgText}</span>`;
+    if(type==='yesno') boxUI += `
+                                    <button onclick="this.parentNode.parentNode.remove()">No</button>
+                                    <button id="msgbox-prime">Yes</button>
+                                `;
+    else boxUI += `<button id="msgbox-prime">${buttonText}</button>`;
+    boxUI += `</div></div>`;
+    document.body.insertAdjacentHTML('afterBegin', boxUI)
+    qs("#msgbox-prime").addEventListener('click', ()=> { qs("#msgbox").remove(); callback()});
+    return;
+}
+
+const reloadPageAfterAdjustment = () => {
+    window.location.reload();
+}
+
+let offerPerformed = false, genModSeeds=recall('genModSeeds') || false;
+const closeWindow = () => qs('#adjustement-panel').remove();
+const reviseSeed = (newData) =>  {
+    let issueBoxes = qsa(".adjustment-issue-check:checked");
+        issueBoxes = '|' + issueBoxes.map(ib=>ib.id.replace('adjust-', '')).join('|') + '|';
+    
+    let adjusterVals = newRecVals.filter(nv=>issueBoxes.indexOf('|' + nv.issueID + '|') != -1);
+    adjusterVals.forEach(aV => {
+        let trgSeedRec = fileBuffer[0].fileData.find(fD=>fD['Issue key'] === aV.issueID);
+        if(trgSeedRec != null) trgSeedRec = aV.newRecord;
+        else fileBuffer[0].fileData.push(aV.newRecord);
+    })
+
+    retain('fileBuffer',JSON.stringify(fileBuffer));
+
+    genModSeeds = retain("genModSeeds", true);
+    msgBox('Done!', 'The data has been updated. The page will now refresh.', reloadPageAfterAdjustment  , 'OK');
+    
+    closeWindow();
+}
+
+const syncAdjCheckboxes = (fromMaster=false) => {
+    let masterBox  = qs("#adjustment-all");
+    let issueBoxes = qsa(".adjustment-issue-check");
+    masterBox.className = "adjustment-master";
+    if(fromMaster){
+        issueBoxes.forEach(b => { b.checked = masterBox.checked });
+    }else{
+        let checkCount=0;
+        issueBoxes.forEach(b=>checkCount += b.checked ? 1 : -1);
+        if(Math.abs(checkCount) === issueBoxes.length){
+            masterBox.checked = checkCount > 0;
+            // masterBox.className = (masterBox.checked) ? "adjustment-master on" : "adjustment-master off"
+        }else{
+            masterBox.checked = false;
+            masterBox.className += " partial";
+        }
+    }
+}
+
+let seededSet, dayOneSet, revisedSeed, newRecVals, summaryTxts, summaryTots, seededFlat, lastMinAdds, seedFltKeys, missingStories, lastMinHrs;
+    
+const performDayOneOverrideAdjustment = () => {
+    if (offerPerformed || genModSeeds) return false;
     offerPerformed = true;
-    if(confirm('Ruh-roH! Looks like one or more of your scrumbags either failed to seed their hours before the start of the iteration, or "remembered" one or more stories just after the iteration started. \n\nWould you like me to correct that for you?')){
         lastMinAdds = '';
         lastMinHrs  = '';
+        newRecVals  = [];
+        teamsNewRec = [];
+        summaryTxts = [];
         seededSet   = fileBuffer[0]["fileData"];
         dayOneSet   = fileBuffer[1]["fileData"];
         revisedSeed = Object.assign([], seededSet);
@@ -764,40 +825,91 @@ const offerToPerformDayOneOverrideAdjustment = () => {
         seededFlat  = seededSet.flatMap(s=>s["Issue key"]) // https://stackoverflow.com/questions/9736804/find-missing-element-by-comparing-2-arrays-in-javascript
         seedFltKeys = '|' + seededFlat.join('|') + '|';
         missingStories = dayOneSet.filter(d1 => seedFltKeys.indexOf('|' + d1['Issue key'] + '|') == -1);
-        if(missingStories.length > 0) lastMinAdds = '\n  - ' + missingStories.flatMap(s => s['Issue key']).join(' (story added since Seed)\n  - ') + ' (story added since Seed)';
-        
+
         dayOneSet.forEach((d1, i) => {
-            let activeStory = d1['Issue key'];
-            let day1Rec = dayOneSet.find(d   => d['Issue key'] === activeStory);
-            let seedRec = revisedSeed.find(s => s['Issue key'] === activeStory);
-            if (day1Rec && day1Rec['Remaining Estimate'] && seedRec && seedRec['Remaining Estimate'] && day1Rec['Remaining Estimate'] < seedRec['Remaining Estimate']){
-                console.log(activeStory, day1Rec, seedRec)
-                console.log(day1Rec['Remaining Estimate'], seedRec['Remaining Estimate'] )
-                let oldEst = seedRec['Remaining Estimate'];
-                let newEst = day1Rec['Remaining Estimate'];
+            let activeStory = d1['Issue key'],
+                day1Rec = dayOneSet.find(d   => d['Issue key'] === activeStory),
+                seedRec = revisedSeed.find(s => s['Issue key'] === activeStory);
+            if (day1Rec && seedRec && day1Rec['Remaining Estimate'] && seedRec['Remaining Estimate'] && ((day1Rec['Remaining Estimate'] < seedRec['Remaining Estimate']) || (!isNaN(day1Rec['Remaining Estimate']) && isNaN(seedRec['Remaining Estimate'])) )){
+                let oldEst = seedRec['Remaining Estimate'],
+                newEst = day1Rec['Remaining Estimate'];
                 seedRec['OldEstimate']        = oldEst;
                 seedRec['Remaining Estimate'] = newEst;
-                lastMinHrs += `\n  - ${activeStory} (hours increased; was: ${(toHours(newEst) + "").replace(/\.0+$/, '')}, would be: ${(toHours(oldEst) + "").replace(/\.0+$/, '')})`;
+                newRecVals.push({type: 'adj', issueID: activeStory, newRecord: day1Rec, oldVal:(toHours(newEst) + "").replace(/\.0+$/, ''), newVal: (toHours(oldEst) + "").replace(/\.0+$/, '')}); 
             } 
         })
 
         missingStories.forEach(ms=>{
-            let editRec = revisedSeed.find(s => s['Issue key'] === ms['Issue key']);
-            editRec = ms;
+            newRecVals.push({type:'add', issueID: ms['Issue key'], newRecord: ms, oldVal:0, newVal: (toHours(ms['Remaining Estimate']) + "").replace(/\.0+$/, '')}); 
         })
+        //teamsNewRec = [...new Set(newRecVals.flatMap
+        newRecVals.forEach(record=>{
+            let team = record.newRecord['Custom field (Scrum Team)'];
+            if(record.type == 'add') record.msg = `Story would be added to the iteration`;
+            else record.msg = `Story's hours will be increased (from ${record.oldVal} to ${record.newVal})`;
+            
+
+            if(summaryTxts[team] == null){
+                summaryTxts[team] = [record];
+            } else {
+                summaryTxts[team].push(record);
+            }
+        });
+
+
+        let summaryOPUI='';
+
+        summaryOPUI += `<div id='adjustement-panel'>
+                                <table cellpadding="0' cellspacing="0">
+                                    <thead>
+                                        <tr><th colspan="5">Optional Adjustments</th></tr>
+                                        <tr>
+                                            <th>Team</th>
+                                            <th><input id="adjustment-all" name="adjustment-all" class="adjustment-master on" type="checkbox" value="*" checked onclick="syncAdjCheckboxes(true)" /></th>
+                                            <th>Issue ID</th>
+                                            <th>Change that would be made</th>
+                                            <th>Impact on Itr.</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>`;
+        Object.keys(summaryTxts).forEach(key => {
+            summaryTxts[key] = [...summaryTxts[key]];
+            record = summaryTxts[key];
+            let teamTot = 0
+            for(let i=0; i<record.length; i++){
+                teamTot += (record[i].newVal - record[i].oldVal);
+                summaryOPUI += ` <tr class="adjustment-${record[i].type}">
+                                    ${(i===0) ? `<td rowspan="${summaryTxts[key].length + 1}" class="adjustment-team-name">${key}</td>` : ''}
+                                    <td><input id="adjust-${record[i].issueID}" name="adjust-${record[i].issueID}" class="adjustment-issue-check" type="checkbox" value="${record[i].issueID}" checked onclick="syncAdjCheckboxes()" /></td>
+                                    <td>${record[i].issueID}</td>
+                                    <td>${record[i].msg}</td>
+                                    <td><b>+${record[i].newVal - record[i].oldVal}</b> hrs.</td>
+                                </tr>`
+            }
+            summaryOPUI += ` <tr class='adjustment-total-row'>
+                <td colspan="3">For a total increase of: </td>
+                <td><b>${teamTot}</b> hrs.</td>
+            </tr>`
+            
+        });
+        summaryOPUI += `
+                                        <tr>
+                                            <td colspan="5">
+                                                <input class="cta-adjustment secondary" type="button" onclick="closeWindow()" value="Err... Never Mind" />
+                                                <input class="cta-adjustment primary" type="button" onclick="reviseSeed(newRecVals)" value="Adjust Seed Values" />
+                                            </td>
+                                        </tr>
+                                     </tbody>
+                                </table>
+                            </div>`
+
+        document.body.insertAdjacentHTML('afterBegin', summaryOPUI)
         
-        if(confirm("You got it boss! Looks like that'll mean I'll make these adjustments:" + 
-        "\n\nThe following stories' hours have INcreased since the seed: " + 
-        lastMinHrs + 
-        "\n\nThe following stories got added to this iteration since the seed:" +
-        lastMinAdds +
-        "\n\nYou still want I should proceed?")){
-            alert(".('-'}ゞ -(YES SIR!)");
-           //fileBuffer[0] = revisedSeed;
-            retain('fileBuffer', fileBuffer);
-            correctionMade = true;
-            //runReport()
-        }
+    // }
+}
+const offerToPerformDayOneOverrideAdjustment = () => {
+    if (!offerPerformed && !genModSeeds) {
+        msgBox('Ruh-roh!', 'Looks like one or more of your scrumbags either failed to seed their hours before the start of the iteration, or "remembered" one or more stories just after the iteration started. <br /><br />Would you like me to correct that for you?', performDayOneOverrideAdjustment);
     }
 }
 
@@ -850,7 +962,7 @@ const postProcessData   = () => {
             let row = [...rows.querySelectorAll('td')];
             colNodes.push(row);
             if(row && row[0] && row[0].innerText !== '') {
-                rowNodes[idx].className = 'row-status-' + row[0].innerText.replace(/\s+/g, '_');
+                rowNodes[idx].className = 'preview-row row-status-' + row[0].innerText.replace(/\s+/g, '_');
                 uniqueStatuses.push(row[0].innerText);
             }
             return rows;
@@ -955,7 +1067,7 @@ const postProcessData   = () => {
 
 
             if(!noChangeInItr && devHasBegun && /DEFINITION/i.test(seedStatus)) minor.push('Wrong Status|Work has begun on this story, therefore it must be out of definition phase!');
-            if(seedHours === 0 && !/COMPLETED|DEMO/i.test(seedStatus)) medium.push('Horus not set!|The iteration was begin without an hour estimate being set for this story!');
+            if(seedHours === 0 && !/COMPLETED|DEMO/i.test(seedStatus)) medium.push('Hours not set!|The iteration was begin without an hour estimate being set for this story!');
             else if(noChangeInItr && !/COMPLETED|DEMO/i.test(seedStatus)) medium.push('No movement!|There has been no change in the status/hours burned for this story for the full period of the iteration!');
             if(!noChangeInItr && noChangeFor72) medium.push('Development Stalled!|There has been no change in the status/hours burned for this story in the last 3 days!');
             if(newStoryMidItr){
