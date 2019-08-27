@@ -1371,7 +1371,7 @@ td.major-alert {
   position: relative;
   transition: all 0.2s ease-in;
   --col-width:calc(1100px / var(--cols));
-  z-index: 0;
+  z-index: -1;
   -webkit-transform: translatey(100px);
           transform: translatey(100px);
 }
@@ -1448,6 +1448,7 @@ td.major-alert {
   text-align: right;
   z-index: 10000;
   cursor: pointer;
+  display: none;
 }
 
 #hamburger-settings-menu span {
