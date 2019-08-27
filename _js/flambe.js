@@ -1405,6 +1405,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
       }
 
       const drawBGGridPanel = () => {
+        clearGrid()
          ctx.lineWidth = "2";
          ctx.fillStyle='#999';
          ctx.strokeStyle = "#000";
@@ -1455,6 +1456,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
 
       const generateYAxis = () => {
          let yAxis = document.getElementById('yaxis');
+         yAxis.innerText = "";
          for(var i=0; i<=11; i++){
             yAxis.innerText = i * readableRound(adjustedRowUnitValue) + ' ' + yAxis.innerText;
          }

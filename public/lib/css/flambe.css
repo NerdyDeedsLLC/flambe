@@ -157,7 +157,7 @@ main#iteration-info section.form-fields .half-width {
 
 .file-drop-target {
   position: fixed;
-  left: -1000px;
+  left: -10000px;
 }
 
 .picker {
@@ -1362,7 +1362,7 @@ td.major-alert {
   position: relative;
   transition: all 0.2s ease-in;
   --col-width:calc(1100px / var(--cols));
-  z-index: -1;
+  z-index: 0;
 }
 
 #burndown-chart-panel #yaxis {
@@ -1429,10 +1429,14 @@ td.major-alert {
 #hamburger-settings-menu {
   -webkit-animation: 1.65s initialLoad forwards;
           animation: 1.65s initialLoad forwards;
+  -webkit-animation: 0.65s initialLoad forwards;
+          animation: 0.65s initialLoad forwards;
   position: absolute;
-  right: 10px;
+  right: 0px;
   top: 20px;
   text-align: right;
+  z-index: 10000;
+  cursor: pointer;
 }
 
 #hamburger-settings-menu span {
@@ -1463,7 +1467,7 @@ td.major-alert {
   width: 21px;
   height: 17px;
   border-radius: 7px;
-  right: 0px;
+  right: 12px;
   top: 9px;
   text-align: center;
   z-index: 50;
@@ -1473,6 +1477,7 @@ td.major-alert {
   box-shadow: inset 6px 0 5px #FFF2, inset 0 5px 5px #FFF2, inset -6px 0 5px #FFF2, inset 0 -5px 5px #FFF2;
   transition: .2s all ease-out;
   transition-delay: 1.6s;
+  cursor: pointer;
 }
 
 #hamburger-settings-menu .grid-options-menu {
@@ -1482,8 +1487,6 @@ td.major-alert {
   padding-bottom: 0;
   padding: 0;
   max-width: 21px;
-  position: fixed;
-  width: 130px;
   border-top: 2px solid #CCC;
   border-bottom: 2px solid #CCC;
   background-color: #666;
@@ -1506,6 +1509,8 @@ form {
   transition-delay: 1.0s;
   -webkit-animation-duration: 0.8s;
           animation-duration: 0.8s;
+  z-index: 1000;
+  cursor: pointer;
 }
 
 #settings-panel:checked + aside span:nth-of-type(1) {
