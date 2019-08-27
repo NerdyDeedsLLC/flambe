@@ -742,6 +742,15 @@ button.add-record {
 
 .output-table td:nth-child(-n + 2) {
   text-align: left;
+  font-size: 12px;
+}
+
+.output-table td:nth-child(-n + 3) a {
+  font-size: 11px;
+}
+
+.output-table td:nth-child(-n + 4) a {
+  font-size: 11px;
 }
 
 .output-table td:nth-child(n + 3) {

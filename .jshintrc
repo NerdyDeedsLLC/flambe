@@ -1,0 +1,10 @@
+{
+    "esversion": 6,
+    "laxcomma": true,
+    "eqnull": true,
+    "funcscope": true,
+    "laxbreak": true,
+    "loopfunc": true,
+    "sub":true,
+    "maxerr":200
+}

@@ -1,10 +1,18 @@
 //@@ =====================================================================================================================================
 //@@ ========================================================= .CSV PARSER ===============================================================
 //@@ =====================================================================================================================================
+function round_to_precision(x, precision) {
+    _I("ES5 FUNCTION: round_to_precision", "x", x, "precision", precision);
+    var y = +x + (precision === undefined ? 0.5 : precision / 2);
+    return y - (y % (precision === undefined ? 1 : +precision));
+}
+
 
 (function (window, undefined) {
     'use strict';
 
+
+    
     
 
     // Define local CSV object.
@@ -319,7 +327,7 @@ let   fileBuffer    = []                                                        
 		// APPLICATION SOURCE ============================================================================ 🅔🅧🅔🅒🅤🅣🅘🅞🅝 🅢🅔🅠🅤🅔🅝🅒🅔 indicated by encircled digits (➀-➈)
 init = () => {                                                                                      		// ⓿ Initiate application, chaining steps 1-3 above to file input's onChange
     _I("\n\n====== INIT ======\n");
-    iterationName.value    = recall('iterationName', '');                                       	    	// Seed the value set for the iteration's name (or blank if none is stored)...
+    iterationName.value    = recall('iterationName', '') || "Team Byrnedown - Iteration ";                  // Seed the value set for the iteration's name (or blank if none is stored)...
     iterationName.onkeyup  = ()=>{retain('iterationName', iterationName.value); };                    		// ... and set up the field's onKeyUp handler to save any changes henceforth.
     iterationName.onchangd = ()=>{retain('iterationName', iterationName.value); };                  		// ... aaaand again, some more, for onChange.
     dateField.value        = recall('reportStartDate', '');                                         		// Do the same for the Start Date value, seeding it (or blank) if set...
@@ -328,7 +336,7 @@ init = () => {                                                                  
     fileBuffer             = recall('fileBuffer', null);                                             		// Try and retrieve the fileBuffer in one exisits in Rote memories...
     fileBuffer             = (fileBuffer == null) ? [] : JSON.parse(fileBuffer);                    		// ... and, if one does, rehydrate it. Otherwise, establish it as a new array.
 
-    let startingLength     = 1;
+    let startingLength     = 10;
 
     if(fileBuffer.length > 0) {                                                                     		// If we DID manage to restore a previous buffer...
         namedFiles     = retain('namedFiles', fileBuffer.flatMap(f=>(f && f.fileName)               		//    ... and, should it prove that we have a valid file for each (filled) index... ********
@@ -372,10 +380,10 @@ insertFileNodeBetween = (e, trgObj=e.target) => {
 
 const syncSelect = (e, val) => {
     trg=e.target;
-    console.log('v1', val)
+    console.log('v1', val);
     val = (val != null) ? val : trg.value;
-    console.log('v2', val)
-    console.log('syncSelect', e, trg, val)
+    console.log('v2', val);
+    console.log('syncSelect', e, trg, val);
     let txtBox = trg.previousElementSibling.previousElementSibling;
     txtBox.value = val; 
     retain(trg.id, val);
@@ -384,12 +392,12 @@ const syncSelect = (e, val) => {
 };
 
 const setSelect = (sel, val) => {
-    console.log('setSelect', sel, val)
+    console.log('setSelect', sel, val);
     if(sel == null || val == null) return false;
     sel = (typeof(sel === 'string')) ? qs(sel) : sel;
     sel.value = val;
     syncSelect({target:sel}, val);
-}
+};
 
 let ALLTEAMS = [];
 let ALLITRS  = [];
@@ -417,10 +425,10 @@ const generateTeamsAndIterationLists = () => {
     
     teamsDD.innerHTML = '<option>Show All Teams</option><option>' + ALLTEAMS.join('</option><option>') + '</option>';
     itrsDD.innerHTML  = '<option>Show All Iterations</option><option>' + ALLITRS.join('</option><option>') + '</option>';
-    teamsDD.addEventListener('change', syncSelect)
-    itrsDD.addEventListener('change', syncSelect)
+    teamsDD.addEventListener('change', syncSelect);
+    itrsDD.addEventListener('change', syncSelect);
     
-}
+};
 setSelect('#selTeam', recall('selTeam'));
 setSelect('#selIteration', recall('selIteration'));
 
@@ -501,7 +509,7 @@ resizeBufferArraysAndRebuildSlots = (newLen = ((totalItrDayPicker.placeholder / 
         sortableList.insertAdjacentHTML('beforeEnd', opStr);
         qsa('li').forEach(li=>li.addEventListener('click', insertFileNodeBetween));                         //$$ ➜➜➜ 🅓 
 
-        generateTeamsAndIterationLists()
+        generateTeamsAndIterationLists();
     };
 addOrReplaceSingleFileAndParse = (slotId=targetSlot, liObj=qs('#file-slot-'+slotId)) =>                     //!! Ⓐ ⬅⬅⬅︎ Inserts (or updates) a file at the specified slot (in both the buffer and the UI)
     {
@@ -541,7 +549,7 @@ addOrReplaceSingleFileAndParse = (slotId=targetSlot, liObj=qs('#file-slot-'+slot
             _('...resolved\n".then()" #2');
             resizeBufferArraysAndRebuildSlots();                                                            //@@ ➜➜➜ ︎🅑 
             doneButton.disabled = false;
-            doneButton.addEventListener('click', runReport)                                                 //** ➜➜➜ ︎🅗 
+            doneButton.addEventListener('click', runReport);                                                 //** ➜➜➜ ︎🅗 
             return ;
         });
     };
@@ -549,21 +557,21 @@ addOrReplaceSingleFileAndParse = (slotId=targetSlot, liObj=qs('#file-slot-'+slot
  const runReport = (obj=doneButton) => {                                                                    //** ⬅⬅⬅︎ Ⓗ    Execute the preview grid and graphing methods 
     //  offerToPerformDayOneOverrideAdjustment()
     // safeBuffer = Object.assign([], );
-    let pvTable = qs('.preview-table')
+    let pvTable = qs('.preview-table');
     if(pvTable) pvTable.remove();
      FILESLOADED = fileBuffer.filter(fb => fb != '').length;                                                // Increment our "number of files we've read" counter...
      DAYSLOADED = FILESLOADED - 1; 
                                                                               // ... and the number of days that equates out to.
     const sumHours = (hourColl) => 
-        hourColl.flatMap(s => { let sth=0; retVal = parseInt(s['Remaining Estimate']); retVal = isNaN(retVal) || retVal === NaN || retVal === 'NaN' ? 0 : retVal; sth += retVal; return sth; })
+        hourColl.flatMap(s => { let sth=0; retVal = parseInt(s['Remaining Estimate']); retVal = isNaN(retVal) || retVal === 'NaN' ? 0 : retVal; sth += retVal; return sth; });
     
     if(TOTALITRDAYS > 2 && DAYSLOADED === 1){
         let seedDataCount = fileBuffer[0].fileData.length;
-        let seedDatatotal = sumHours(fileBuffer[0].fileData)
+        let seedDatatotal = sumHours(fileBuffer[0].fileData);
         let day1DataCount = fileBuffer[1].fileData.length;
-        let day1Datatotal = sumHours(fileBuffer[1].fileData)
+        let day1Datatotal = sumHours(fileBuffer[1].fileData);
         if (day1DataCount > seedDataCount || day1Datatotal > seedDatatotal){ // 
-            offerToPerformDayOneOverrideAdjustment()
+            offerToPerformDayOneOverrideAdjustment();
         }
     }
 
@@ -600,12 +608,12 @@ function checkFilterMatch(fullDaysRecords, teamFilt, itrFilt){
         
         let filteredRecords = fullDaysRecords.filter(
             rtc => {
-                console.log(rtc['Sprint'])
+                console.log(rtc['Sprint']);
                 return (
                 (teamFilt && rtc['Custom field (Scrum Team)'] != null && rtc['Custom field (Scrum Team)'].match(teamFilt) ) 
                 &&
                 (itrFilt && rtc['Sprint'] != null && rtc['Sprint'].match(itrFilt) ) 
-                )
+                );
             }
         );
         console.log('fullDaysRecords', fullDaysRecords, 'filteredRecords', filteredRecords);
@@ -622,8 +630,8 @@ const getDistinctKeysFromFiles = () => {                                        
     for (let files in safeBuffer) {                                                                         // Iterate all the files we've collected into the buffer...
         let file = safeBuffer[files];                                                                       //  ... Alias the file (for convenience).
         if(file !== 'INTERPOLATED'){                                                                        //  ... Assuming it's not flagged for interpolation, 
-            safeBuffer[files].fileData = checkFilterMatch(file.fileData,recall('selTeam'),recall('selIteration'))            // PERFORM TEAM AND ITR FILTRATION HERE
-            let keySet = JSON.stringify(file.fileData, ['Issue key'])                                       //    ... pull out a flattened string containing ONLY the 'Issue key' columns
+            safeBuffer[files].fileData = checkFilterMatch(file.fileData,recall('selTeam'),recall('selIteration'));            // PERFORM TEAM AND ITR FILTRATION HERE
+            let keySet = JSON.stringify(file.fileData, ['Issue key']);                                       //    ... pull out a flattened string containing ONLY the 'Issue key' columns
             keySet = keySet.match(/DIGTDEV-\d{4,6}/g);                                                                 //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
             if(keySet != null && keySet !== '' && Array.isArray(keySet) && keySet.length > 0) ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])];                                          //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
         } else INTERPOL8D.push(files);                                                                      //  ... UNLESS it IS flagged for interpolation, in which case add it to that collection  
@@ -851,7 +859,7 @@ const constructPreviewAndReportData = () => {                                   
     return true;
 };
 
-const msgBox = (title, msgText, callback=()=>{this.parentNode.parentNode.remove()}, type='yesno', buttonText='ok') => {
+const msgBox = (title, msgText, callback=()=>{this.parentNode.parentNode.remove();}, type='yesno', buttonText='ok') => {
     let boxUI = `<div id="msgbox"><div id="msgbox-window"><h3>${title}</h3><span>${msgText}</span>`;
     if(type==='yesno') boxUI += `
                                     <button onclick="this.parentNode.parentNode.remove()">No</button>
@@ -859,14 +867,14 @@ const msgBox = (title, msgText, callback=()=>{this.parentNode.parentNode.remove(
                                 `;
     else boxUI += `<button id="msgbox-prime">${buttonText}</button>`;
     boxUI += `</div></div>`;
-    document.body.insertAdjacentHTML('afterBegin', boxUI)
-    qs("#msgbox-prime").addEventListener('click', ()=> { qs("#msgbox").remove(); callback()});
+    document.body.insertAdjacentHTML('afterBegin', boxUI);
+    qs("#msgbox-prime").addEventListener('click', ()=> { qs("#msgbox").remove(); callback();});
     return;
-}
+};
 
 const reloadPageAfterAdjustment = () => {
     window.location.reload();
-}
+};
 
 let offerPerformed = false, genModSeeds=recall('genModSeeds') || false;
 const closeWindow = () => qs('#adjustement-panel').remove();
@@ -879,7 +887,7 @@ const reviseSeed = (newData) =>  {
         let trgSeedRec = fileBuffer[0].fileData.find(fD=>fD['Issue key'] === aV.issueID);
         if(trgSeedRec != null) trgSeedRec = aV.newRecord;
         else fileBuffer[0].fileData.push(aV.newRecord);
-    })
+    });
 
     retain('fileBuffer',JSON.stringify(fileBuffer));
 
@@ -887,14 +895,14 @@ const reviseSeed = (newData) =>  {
     msgBox('Done!', 'The data has been updated. The page will now refresh.', reloadPageAfterAdjustment  , 'OK');
     
     closeWindow();
-}
+};
 
 const syncAdjCheckboxes = (fromMaster=false) => {
     let masterBox  = qs("#adjustment-all");
     let issueBoxes = qsa(".adjustment-issue-check");
     masterBox.className = "adjustment-master";
     if(fromMaster){
-        issueBoxes.forEach(b => { b.checked = masterBox.checked });
+        issueBoxes.forEach(b => { b.checked = masterBox.checked; });
     }else{
         let checkCount=0;
         issueBoxes.forEach(b=>checkCount += b.checked ? 1 : -1);
@@ -906,7 +914,7 @@ const syncAdjCheckboxes = (fromMaster=false) => {
             masterBox.className += " partial";
         }
     }
-}
+};
 
 let seededSet, dayOneSet, revisedSeed, newRecVals, summaryTxts, summaryTots, seededFlat, lastMinAdds, seedFltKeys, missingStories, lastMinHrs;
     
@@ -922,7 +930,7 @@ const performDayOneOverrideAdjustment = () => {
         dayOneSet   = fileBuffer[1]["fileData"];
         revisedSeed = Object.assign([], seededSet);
         alterdHours = [];
-        seededFlat  = seededSet.flatMap(s=>s["Issue key"]) // https://stackoverflow.com/questions/9736804/find-missing-element-by-comparing-2-arrays-in-javascript
+        seededFlat  = seededSet.flatMap(s=>s["Issue key"]); // https://stackoverflow.com/questions/9736804/find-missing-element-by-comparing-2-arrays-in-javascript
         seedFltKeys = '|' + seededFlat.join('|') + '|';
         missingStories = dayOneSet.filter(d1 => seedFltKeys.indexOf('|' + d1['Issue key'] + '|') == -1);
 
@@ -937,11 +945,11 @@ const performDayOneOverrideAdjustment = () => {
                 seedRec['Remaining Estimate'] = newEst;
                 newRecVals.push({type: 'adj', issueID: activeStory, newRecord: day1Rec, oldVal:(toHours(newEst) + "").replace(/\.0+$/, ''), newVal: (toHours(oldEst) + "").replace(/\.0+$/, '')}); 
             } 
-        })
+        });
 
         missingStories.forEach(ms=>{
             newRecVals.push({type:'add', issueID: ms['Issue key'], newRecord: ms, oldVal:0, newVal: (toHours(ms['Remaining Estimate']) + "").replace(/\.0+$/, '')}); 
-        })
+        });
         //teamsNewRec = [...new Set(newRecVals.flatMap
         newRecVals.forEach(record=>{
             let team = record.newRecord['Custom field (Scrum Team)'];
@@ -975,7 +983,7 @@ const performDayOneOverrideAdjustment = () => {
         Object.keys(summaryTxts).forEach(key => {
             summaryTxts[key] = [...summaryTxts[key]];
             record = summaryTxts[key];
-            let teamTot = 0
+            let teamTot = 0;
             for(let i=0; i<record.length; i++){
                 teamTot += (record[i].newVal - record[i].oldVal);
                 summaryOPUI += ` <tr class="adjustment-${record[i].type}">
@@ -984,12 +992,12 @@ const performDayOneOverrideAdjustment = () => {
                                     <td>${record[i].issueID}</td>
                                     <td>${record[i].msg}</td>
                                     <td><b>+${record[i].newVal - record[i].oldVal}</b> hrs.</td>
-                                </tr>`
+                                </tr>`;
             }
             summaryOPUI += ` <tr class='adjustment-total-row'>
                 <td colspan="3">For a total increase of: </td>
                 <td><b>${teamTot}</b> hrs.</td>
-            </tr>`
+            </tr>`;
             
         });
         summaryOPUI += `
@@ -1001,17 +1009,17 @@ const performDayOneOverrideAdjustment = () => {
                                         </tr>
                                      </tbody>
                                 </table>
-                            </div>`
+                            </div>`;
 
-        document.body.insertAdjacentHTML('afterBegin', summaryOPUI)
+        document.body.insertAdjacentHTML('afterBegin', summaryOPUI);
         
     // }
-}
+};
 const offerToPerformDayOneOverrideAdjustment = () => {
     if (!offerPerformed && !genModSeeds) {
         msgBox('Ruh-roh!', 'Looks like one or more of your scrumbags either failed to seed their hours before the start of the iteration, or "remembered" one or more stories just after the iteration started. <br /><br />Would you like me to correct that for you?', performDayOneOverrideAdjustment);
     }
-}
+};
 
 const createReportData = () => {
     _I("FUNCTION: createReportData");
@@ -1168,7 +1176,7 @@ const postProcessData   = () => {
 
             if(!noChangeInItr && devHasBegun && /DEFINITION/i.test(seedStatus)) minor.push('Wrong Status|Work has begun on this story, therefore it must be out of definition phase!');
             if(seedHours === 0 && !/COMPLETED|DEMO/i.test(seedStatus)) medium.push('Hours not set!|The iteration was begin without an hour estimate being set for this story!');
-            else if(noChangeInItr && !/COMPLETED|DEMO/i.test(seedStatus)) medium.push('No movement!|There has been no change in the status/hours burned for this story for the full period of the iteration!');
+            else if (noChangeInItr && noChangeFor72 && !/COMPLETED|DEMO/i.test(seedStatus)) medium.push('No movement!|There has been no change in the status/hours burned for this story for the full period of the iteration!');
             if(!noChangeInItr && noChangeFor72) medium.push('Development Stalled!|There has been no change in the status/hours burned for this story in the last 3 days!');
             if(newStoryMidItr){
                 if(FILESLOADED > 2)
@@ -1183,11 +1191,7 @@ const postProcessData   = () => {
             if(major && major.length == 0 && medium && medium.length == 0) row[0].innerHTML += formatFlags('minor', minor);
         });
     }).then(()=>{ // Sum up our totals
-        function round_to_precision(x, precision) {
-            _I("ES5 FUNCTION: round_to_precision", "x", x, "precision", precision);
-            var y = +x + (precision === undefined ? 0.5 : precision/2);
-            return y - (y % (precision === undefined ? 1 : +precision));
-        }
+        
         let opStr = "";
         let idealRow = [];
         totalRow.length = hdrColNodes.length;
@@ -1204,11 +1208,14 @@ const postProcessData   = () => {
                 }
                 if(cell != null && cell[c] != null && cell[c].innerText){
                     cell = cell[c].innerText.replace(/[h\* ]/gi, '').replace(/---/g, 0);
-                    if (!isNaN(totalRow[c]) && totalRow[c] != NaN && totalRow[c] !== "NaN") {
-                        totalRow[c] = (totalRow[c] / 1) + (cell / 1);
+                    if (!isNaN(totalRow[c]) && totalRow[c] !== "NaN") {
+                        totalRow[c] = round_to_precision((totalRow[c] / 1) + (cell / 1), 2);
+                        
+                        
                     }
                 }
             });
+           
         }
        
         let seedTotal = totalRow[2];
@@ -1266,21 +1273,21 @@ const postProcessData   = () => {
 const released = () => {
     window.clearTimeout(ongoingtimer);
     ongoing=false;
-}
+};
 
 let ongoing = false, ongoingtimer=null, 
     offset  = (totalItrDayPicker.getBoundingClientRect().height - 2),
     activeInteraction = false;
 
     totalItrDayPicker.addEventListener('mouseOver', ()=>{activeInteraction=true;});
-    totalItrDayPicker.addEventListener('mouseOut',  ()=>{activeInteraction=false; ongoing=false});
-    totalItrDayPicker.addEventListener('blur',      ()=>{activeInteraction=false; ongoing=false});
+    totalItrDayPicker.addEventListener('mouseOut',  ()=>{activeInteraction=false; ongoing=false;});
+    totalItrDayPicker.addEventListener('blur',      ()=>{activeInteraction=false; ongoing=false;});
     window.addEventListener('click', released);
 
 const syncSpinner = (hardValue=null) => {                                                                   //## Ⓒ ⬅⬅⬅︎ 
     _I("FUNCTION: syncSpinner", "hardValue", hardValue);
     if(hardValue != null && !isNaN(hardValue)) totalItrDayPicker.placeholder = hardValue;
-    TOTALITRDAYS  = getDayCountFromPicker()
+    TOTALITRDAYS  = getDayCountFromPicker();
     let control   = totalItrDayPicker.parentElement;
     offset        =(totalItrDayPicker.getBoundingClientRect().height + 2);
     control.style = "--value:" + (TOTALITRDAYS * offset * -1) + "px";
@@ -1322,18 +1329,18 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
       showPopover: {
          checked: true
       }
-   }
+   };
 
-   const readableRound = (val=parseFloat(val), precision=0, trimTrailing0s=1) => {
-      if(val == null || isNaN(val) || val == Infinity) return false;
-      if(!isNaN(precision) && precision > 0 && trimTrailing0s === 1) trimTrailing0s = val.toString().indexOf('.') !== -1
+   const readableRound = (val, precision=0, trimTrailing0s=1) => {
+       if (val == null || isNaN(val) || val == Infinity) return false; else val = parseFloat(val);
+      if(!isNaN(precision) && precision > 0 && trimTrailing0s === 1) trimTrailing0s = val.toString().indexOf('.') !== -1;
       let moddedPrecision = (isNaN(precision) || precision < 0) ? 1 : precision;      
       let fltPtAdjustment = (1 + new Array(moddedPrecision).fill(0).join('')) * 1;
 
       val = Math.round(val * fltPtAdjustment) / fltPtAdjustment;
       let valS = (trimTrailing0s) ? val : val.toPrecision(val.toString().split('.')[0].length + precision);
       return trimTrailing0s ? val : valS;
-   }
+   };
 
 
    const c              = document.getElementById("burndownOutput"),
@@ -1365,11 +1372,11 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
       let hVal = Math.round(60 * (minMaxed / 100) + 60);
       let hex = RGBtoHEX(...HSVtoRGB(hVal,saturation,intensity));
       return hex;
-   }
+   };
 
    let HSVtoRGB    = (h,s,v,f=(n,k=(n+h/60)%6)=>v-v*s*Math.max(Math.min(k,4-k,1),0))=>[f(5),f(3),f(1)];
    let RGBtoHEX    = (r,g,b) => "#"+[r,g,b].map(x=>Math.round(x*255).toString(16).padStart(2,0)).join('');
-   let HSVtoHEX    = (h=0,s=1,v=1) => RGBtoHEX(...HSVtoRGB(h,s,v))
+   let HSVtoHEX    = (h=0,s=1,v=1) => RGBtoHEX(...HSVtoRGB(h,s,v));
    let rgbStrToHex = (rgbStr) => rgbStr && '#'+rgbStr.slice(4,-1).split(', ').map(x => (+x).toString(16).padStart(2, '0')).join('');
 
 
@@ -1391,27 +1398,27 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
                }
             }
          }
-      })()
+      })();
       const seedIdealPoints = (() => {
          let idealHoursPerDay = readableRound(iterationStartingHrs / (totalDaysInIteration), 2, true);
 
          for(let i=1; i<totalDaysInIteration; i++){
             idealPlottedPtValues.push(idealPlottedPtValues[i-1] - idealHoursPerDay); 
          }
-      })()
+      })();
 
       const clearGrid = () => {
          ctx.clearRect(0, 0, c.width, c.height);
-      }
+      };
 
       const drawBGGridPanel = () => {
-        clearGrid()
+        clearGrid();
          ctx.lineWidth = "2";
          ctx.fillStyle='#999';
          ctx.strokeStyle = "#000";
          ctx.fillRect(gridVertMargins, gridVertMargins, canvasWidth, canvasHeight);
          ctx.strokeRect(gridVertMargins, gridVertMargins, canvasWidth, canvasHeight);
-      }
+      };
 
       const drawColPanels = () => {
          for(let i=0; i<=totalDaysInIteration; i++){
@@ -1433,7 +1440,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
             ctx.font = '16px monospace';
             ctx.fillText(lblUnit, plotX(i) - lblOSet, canvasHeight + 95);
          }
-      }
+      };
       const drawGridLines = () => {
          // seedHoverTriggers();
          ctx.beginPath();
@@ -1452,7 +1459,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
             ctx.lineTo(canvasWidth + gridSideMargins,  i * gridRowHeight + gridVertMargins);
          }
          ctx.stroke();
-      }
+      };
 
       const generateYAxis = () => {
          let yAxis = document.getElementById('yaxis');
@@ -1460,7 +1467,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
          for(var i=0; i<=11; i++){
             yAxis.innerText = i * readableRound(adjustedRowUnitValue) + ' ' + yAxis.innerText;
          }
-      }
+      };
 
 
       let plotIdealPoints = () => {
@@ -1472,11 +1479,11 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
             // ctx.strokeStyle = "#08b2ed";
             ctx.strokeStyle = interpolatedIndicies.indexOf(i) !== -1 ? "#AA66AA" : "#08b2ed";
 
-            ctx.arc(plotX(i), plotY(idealPlottedPtValues[i]), 6, 0, wholePi)
+            ctx.arc(plotX(i), plotY(idealPlottedPtValues[i]), 6, 0, wholePi);
             ctx.fill();
             ctx.stroke();
          }
-      }
+      };
 
       let drawIdealLine = () => {
          ctx.beginPath();
@@ -1486,7 +1493,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
          ctx.lineWidth = "3";
          ctx.setLineDash([5, 4]);
          ctx.stroke();
-      }
+      };
 
       let preSeedPointColors = (dataObj=remainingHoursPerDay) => {
          for(let i=1; i<=dataObj.length; i++){
@@ -1496,7 +1503,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
             dotColor = posNegPrcntToGYRHex(hourDifference);
             colorsForActualHours.push(dotColor);
          }
-      }
+      };
 
       let drawBaseGrid = () => {
          clearGrid();
@@ -1505,16 +1512,16 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
          drawGridLines();
          generateYAxis();
          preSeedPointColors();
-      }
+      };
 
       var ctx = c.getContext("2d");
       drawBaseGrid();
-      drawIdealLine()
+      drawIdealLine();
       plotIdealPoints();
 
       let drawBarGraph = (dataObj=remainingHoursPerDay, showIdealBars=true) => {
          var bar = c.getContext("2d");
-         bar.globalAlpha = 0.4
+         bar.globalAlpha = 0.4;
          bar.beginPath();
          let barShift = gridColWidth * -0.4;
          let barWidth = gridColWidth * 0.80;
@@ -1545,7 +1552,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
                }
             }
          }
-      }
+      };
 
       let plotActualPoints = (dataObj=remainingHoursPerDay) => {
          let plotPt = (startX, startY, radius = 10) => {
@@ -1556,7 +1563,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
             point.lineTo((startX - radius), startY);
             point.closePath();
             return point;
-         }
+         };
 
          let pts  = c.getContext("2d");
          for(let i=1; i<=dataObj.length-1; i++){
@@ -1577,7 +1584,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
             pts.stroke(plottedPt);
             colorsForActualHours.push(dotColor);
          }
-      }
+      };
 
     let drawActualLabels = (dayIndex) => {
          
@@ -1591,7 +1598,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
          let hours      = "(" + readableRound(overUnder, 2, true) + " hrs)";
          
          if(overUnder < 0){
-            _('' + colorsForActualHours[dayIndex + 1])
+            _('' + colorsForActualHours[dayIndex + 1]);
             ctx.font = 'bold 16px monospace';
             ctx.fillStyle=LightenDarkenColor(colorsForActualHours[dayIndex + 1], 1/100);
             ctx.fillText("BEHIND!", plotX(dayIndex) + xOffset, plotY(remainingHoursPerDay[dayIndex]) - 15);
@@ -1619,7 +1626,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
             
          }
 //           
-      }
+      };
 
 
       let drawLineGraph = (dataObj=remainingHoursPerDay) => {
@@ -1656,7 +1663,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
             }
             drawActualLabels(i);
          }
-      }
+      };
 
       let shadeLineGraph = (dataObj=remainingHoursPerDay) => {
          let segs  = c.getContext("2d");
@@ -1680,30 +1687,30 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay){
          linePath.lineTo(100, 150);
          linePath.closePath();
 
-         // let gradient = ctx.createLinearGradient(100,650 - idealPlottedPtValues[0],200,650 - idealPlottedPtValues[1]);
-         // gradient.addColorStop(0, colorsForActualHours[i]);
-         // gradient.addColorStop(1, colorsForActualHours[i+1]);
+         let gradient = ctx.createLinearGradient(100,650 - idealPlottedPtValues[0],200,650 - idealPlottedPtValues[1]);
+         gradient.addColorStop(0, colorsForActualHours[i]);
+         gradient.addColorStop(1, colorsForActualHours[i+1]);
          segs.strokeStyle = '#000';
          segs.lineWidth = "3";
          segs.stroke(linePath);
-         segs.fillRule = "evenodd"
+         segs.fillRule = "evenodd";
          segs.fill(linePath);
          // segs.stroke();
 
-      }
+      };
 
       let renderPopOvers = (dataObj=remainingHoursPerDay) => {
          for(let i=0; i<=dataObj.length; i++){
 
          }
-      }
+      };
 
       drawBarGraph();
-      plotActualPoints()
-      drawLineGraph()  // plotActualPoints()
-      plotActualPoints()
+      plotActualPoints();
+      drawLineGraph();
+      plotActualPoints();
       // shadeLineGraph()
 }
-setTimeout(()=>{window.scrollTo(0,0)}, 500);
+setTimeout(()=>{window.scrollTo(0,0);}, 500);
 
 window.addEventListener('DOMContentLoaded', init);
