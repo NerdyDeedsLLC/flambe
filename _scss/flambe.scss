@@ -1240,6 +1240,7 @@ td.major-alert {color: red !important;}
    transition:all 0.2s ease-in;
    --col-width:calc(1100px / var(--cols));
    z-index:0;
+   transform:translatey(100px);
 
    #yaxis {
       position:absolute;
