@@ -380,6 +380,7 @@ const syncSelect = (e, val) => {
     txtBox.value = val; 
     retain(trg.id, val);
     trg.blur();
+
 };
 
 const setSelect = (sel, val) => {
@@ -414,8 +415,8 @@ const generateTeamsAndIterationLists = () => {
     let teamsDD = qs('#selTeam');
     let itrsDD  = qs('#selIteration');
     
-    teamsDD.innerHTML = '<option>' + ALLTEAMS.join('</option><option>') + '</option>';
-    itrsDD.innerHTML  = '<option>' + ALLITRS.join('</option><option>') + '</option>';
+    teamsDD.innerHTML = '<option>Show All Teams</option><option>' + ALLTEAMS.join('</option><option>') + '</option>';
+    itrsDD.innerHTML  = '<option>Show All Iterations</option><option>' + ALLITRS.join('</option><option>') + '</option>';
     teamsDD.addEventListener('change', syncSelect)
     itrsDD.addEventListener('change', syncSelect)
     
@@ -547,6 +548,9 @@ addOrReplaceSingleFileAndParse = (slotId=targetSlot, liObj=qs('#file-slot-'+slot
 
  const runReport = (obj=doneButton) => {                                                                    //** ⬅⬅⬅︎ Ⓗ    Execute the preview grid and graphing methods 
     //  offerToPerformDayOneOverrideAdjustment()
+    // safeBuffer = Object.assign([], );
+    let pvTable = qs('.preview-table')
+    if(pvTable) pvTable.remove();
      FILESLOADED = fileBuffer.filter(fb => fb != '').length;                                                // Increment our "number of files we've read" counter...
      DAYSLOADED = FILESLOADED - 1; 
                                                                               // ... and the number of days that equates out to.
@@ -568,24 +572,65 @@ addOrReplaceSingleFileAndParse = (slotId=targetSlot, liObj=qs('#file-slot-'+slot
     COMBD_DATA = [];
     ISSUE_KEYS = [];
     DEBUG_DATA = [];
+    
     getDistinctKeysFromFiles();                                                                             //^^ ➜➜➜ 🅕 
 };
+let fDR = null;
+function checkFilterMatch(fullDaysRecords, teamFilt, itrFilt){
+    function escapeRegExp(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+    }
+
+    let allTeams = ALLTEAMS.join(','), 
+        allItrs  = ALLITRS.join(',');
+    teamFilt = (teamFilt==null || teamFilt=='' || teamFilt=='*' || teamFilt.indexOf('Show All') === 0) ? '.*' : escapeRegExp(teamFilt);
+    itrFilt  = (itrFilt==null  || itrFilt==''  || itrFilt =='*' || itrFilt.indexOf('Show All') === 0)  ? '.*' : escapeRegExp(itrFilt);
+    
+    console.log('Team(s) selected:', teamFilt);
+    console.log('Iteration(s) selected:', itrFilt);
+    console.log('Records to examine:', fullDaysRecords);
+    
+    if(fullDaysRecords != null){
+        fDR = fullDaysRecords;
+        teamFilt = new RegExp(teamFilt, 'gim');
+        itrFilt  = new RegExp(itrFilt, 'gim');
+        console.log('Team(s) selected:', teamFilt);
+        console.log('Iteration(s) selected:', itrFilt);
+        console.log('Records to examine:', fullDaysRecords);
+        
+        let filteredRecords = fullDaysRecords.filter(
+            rtc => {
+                console.log(rtc['Sprint'])
+                return (
+                (teamFilt && rtc['Custom field (Scrum Team)'] != null && rtc['Custom field (Scrum Team)'].match(teamFilt) ) 
+                &&
+                (itrFilt && rtc['Sprint'] != null && rtc['Sprint'].match(itrFilt) ) 
+                )
+            }
+        );
+        console.log('fullDaysRecords', fullDaysRecords, 'filteredRecords', filteredRecords);
+        return filteredRecords;
+    }
+    return false;
+}
 
 const getDistinctKeysFromFiles = () => {                                                                    //^^ ⬅⬅⬅︎ Ⓕ    Iterate through our files, constructing a unique JSON structure from them 
-        safeBuffer = Object.assign([], fileBuffer);                                                         // Duplicate the file buffer (so we're not mucking up our original, "pure" copy. This one's "safe" to screw with
-        while(safeBuffer.lastIndexOf('') === (safeBuffer.length - 1)) safeBuffer.pop();                     // Discard any blank indicies And the END of the stack. Those are "missing" days.
-        while(safeBuffer.indexOf('') != -1)  safeBuffer[safeBuffer.indexOf('')] = 'INTERPOLATED';           // (...since any blanks in the middle of the stack get flagged as needing to be interpolated)
-        for (let files in safeBuffer) {                                                                     // Iterate all the files we've collected into the buffer...
-            let file = safeBuffer[files];                                                                   //  ... Alias the file (for convenience).
-            if(file !== 'INTERPOLATED'){                                                                    //  ... Assuming it's not flagged for interpolation, 
-                let keySet = JSON.stringify(file.fileData, ['Issue key'])                                   //    ... pull out a flattened string containing ONLY the 'Issue key' columns
-                    .match(/DIGTDEV-\d{4,6}/g);                                                             //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
-                ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])];                                      //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
-            } else INTERPOL8D.push(files);                                                                  //  ... UNLESS it IS flagged for interpolation, in which case add it to that collection  
-        }
-        
-        remapDataSoIssueIDIsPrimaryKey();                                                                   //&& ➜➜➜ 🅖
-    };
+    safeBuffer = Object.assign([], JSON.parse(recall('fileBuffer')));                                                             // Duplicate the file buffer (so we're not mucking up our original, "pure" copy. This one's "safe" to screw with
+
+    while(safeBuffer.lastIndexOf('') === (safeBuffer.length - 1)) safeBuffer.pop();                         // Discard any blank indicies And the END of the stack. Those are "missing" days.
+    while(safeBuffer.indexOf('') != -1)  safeBuffer[safeBuffer.indexOf('')] = 'INTERPOLATED';               // (...since any blanks in the middle of the stack get flagged as needing to be interpolated)
+    for (let files in safeBuffer) {                                                                         // Iterate all the files we've collected into the buffer...
+        let file = safeBuffer[files];                                                                       //  ... Alias the file (for convenience).
+        if(file !== 'INTERPOLATED'){                                                                        //  ... Assuming it's not flagged for interpolation, 
+            safeBuffer[files].fileData = checkFilterMatch(file.fileData,recall('selTeam'),recall('selIteration'))            // PERFORM TEAM AND ITR FILTRATION HERE
+            let keySet = JSON.stringify(file.fileData, ['Issue key'])                                       //    ... pull out a flattened string containing ONLY the 'Issue key' columns
+            keySet = keySet.match(/DIGTDEV-\d{4,6}/g);                                                                 //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
+            if(keySet != null && keySet !== '' && Array.isArray(keySet) && keySet.length > 0) ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])];                                          //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
+        } else INTERPOL8D.push(files);                                                                      //  ... UNLESS it IS flagged for interpolation, in which case add it to that collection  
+    }
+    
+    remapDataSoIssueIDIsPrimaryKey();                                                                       //&& ➜➜➜ 🅖
+};
 
 const remapDataSoIssueIDIsPrimaryKey = () => {                                                              //&& Ⓖ ⬅︎⬅︎⬅︎    Iterate finalized buffer, and concatinated generate output data
     _I("FUNCTION: remapDataSoIssueIDIsPrimaryKey");
