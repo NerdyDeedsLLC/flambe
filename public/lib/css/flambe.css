@@ -690,6 +690,11 @@ button.add-record {
   border-bottom: 3px solid #000;
 }
 
+.output-table table.preview-table tr::before {
+  content: attr(id);
+  display: table-cell;
+}
+
 .output-table table.preview-table tr th {
   padding: 3px 10px;
 }
