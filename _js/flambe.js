@@ -416,6 +416,7 @@ const generateTeamsAndIterationLists = () => {
         }
     }
     
+
     ALLTEAMS = [...new Set(ALLTEAMS)].sort();                                                               // Finally, reduce both to collections containing only unique elements
     ALLITRS  = [...new Set(ALLITRS)].sort();
 
@@ -561,6 +562,7 @@ addOrReplaceSingleFileAndParse = (slotId=targetSlot, liObj=qs('#file-slot-'+slot
     if(pvTable) pvTable.remove();
      FILESLOADED = fileBuffer.filter(fb => fb != '').length;                                                // Increment our "number of files we've read" counter...
      DAYSLOADED = FILESLOADED - 1; 
+     if(DAYSLOADED < 0) return false
                                                                               // ... and the number of days that equates out to.
     const sumHours = (hourColl) => 
         hourColl.flatMap(s => { let sth=0; retVal = parseInt(s['Remaining Estimate']); retVal = isNaN(retVal) || retVal === 'NaN' ? 0 : retVal; sth += retVal; return sth; });
@@ -594,21 +596,21 @@ function checkFilterMatch(fullDaysRecords, teamFilt, itrFilt){
     teamFilt = (teamFilt==null || teamFilt=='' || teamFilt=='*' || teamFilt.indexOf('Show All') === 0) ? '.*' : escapeRegExp(teamFilt);
     itrFilt  = (itrFilt==null  || itrFilt==''  || itrFilt =='*' || itrFilt.indexOf('Show All') === 0)  ? '.*' : escapeRegExp(itrFilt);
     
-    console.log('Team(s) selected:', teamFilt);
-    console.log('Iteration(s) selected:', itrFilt);
-    console.log('Records to examine:', fullDaysRecords);
+    // console.log('Team(s) selected:', teamFilt);
+    // console.log('Iteration(s) selected:', itrFilt);
+    // console.log('Records to examine:', fullDaysRecords);
     
     if(fullDaysRecords != null){
         fDR = fullDaysRecords;
         teamFilt = new RegExp(teamFilt, 'gim');
         itrFilt  = new RegExp(itrFilt, 'gim');
-        console.log('Team(s) selected:', teamFilt);
-        console.log('Iteration(s) selected:', itrFilt);
-        console.log('Records to examine:', fullDaysRecords);
+        // console.log('Team(s) selected:', teamFilt);
+        // console.log('Iteration(s) selected:', itrFilt);
+        // console.log('Records to examine:', fullDaysRecords);
         
         let filteredRecords = fullDaysRecords.filter(
             rtc => {
-                console.log(rtc['Sprint']);
+                // console.log(rtc['Sprint']);
                 return (
                 (teamFilt && rtc['Custom field (Scrum Team)'] != null && rtc['Custom field (Scrum Team)'].match(teamFilt) ) 
                 &&
@@ -616,7 +618,7 @@ function checkFilterMatch(fullDaysRecords, teamFilt, itrFilt){
                 );
             }
         );
-        console.log('fullDaysRecords', fullDaysRecords, 'filteredRecords', filteredRecords);
+        // console.log('fullDaysRecords', fullDaysRecords, 'filteredRecords', filteredRecords);
         return filteredRecords;
     }
     return false;
@@ -868,7 +870,7 @@ const msgBox = (title, msgText, callback=()=>{this.parentNode.parentNode.remove(
     else boxUI += `<button id="msgbox-prime">${buttonText}</button>`;
     boxUI += `</div></div>`;
     document.body.insertAdjacentHTML('afterBegin', boxUI);
-    qs("#msgbox-prime").addEventListener('click', ()=> { qs("#msgbox").remove(); callback();});
+    qs("#msgbox-prime").addEventListener('click', ()=> { qs("#msgbox").remove(); callback(); qs("#msgbox").remove(); });
     return;
 };
 
@@ -876,7 +878,7 @@ const reloadPageAfterAdjustment = () => {
     window.location.reload();
 };
 
-let offerPerformed = false, genModSeeds=recall('genModSeeds') || false;
+let offerPerformed = false, genModSeeds=recall('genModSeeds');
 const closeWindow = () => qs('#adjustement-panel').remove();
 const reviseSeed = (newData) =>  {
     let issueBoxes = qsa(".adjustment-issue-check:checked");
@@ -884,15 +886,25 @@ const reviseSeed = (newData) =>  {
     
     let adjusterVals = newRecVals.filter(nv=>issueBoxes.indexOf('|' + nv.issueID + '|') != -1);
     adjusterVals.forEach(aV => {
-        let trgSeedRec = fileBuffer[0].fileData.find(fD=>fD['Issue key'] === aV.issueID);
-        if(trgSeedRec != null) trgSeedRec = aV.newRecord;
-        else fileBuffer[0].fileData.push(aV.newRecord);
+        let i=0, trgSeedRec = fileBuffer[0].fileData.find((fD, i)=>fD['Issue key'] === aV.issueID);
+        let foundRecord = null; 
+        for(records in fileBuffer[0].fileData){
+            if(fileBuffer[0].fileData[records]['Issue key'] === aV.newRecord['Issue key']) foundRecord = records;
+        }
+        if(foundRecord != null){
+            console.log(`Attempting to correct discrepency in record`, trgSeedRec, `by patching it with`, aV); 
+            console.log('Previous value: ', fileBuffer[0].fileData[foundRecord], ' New value:', aV.newRecord);
+            fileBuffer[0].fileData[foundRecord] = aV.newRecord;
+        }else{ 
+            console.log('Attempting to restore imblanace of data by appending record', aV.newRecord);
+            fileBuffer[0].fileData.push(aV.newRecord);
+        }
     });
 
     retain('fileBuffer',JSON.stringify(fileBuffer));
 
-    genModSeeds = retain("genModSeeds", true);
-    msgBox('Done!', 'The data has been updated. The page will now refresh.', reloadPageAfterAdjustment  , 'OK');
+    // genModSeeds = retain("genModSeeds", true);
+    // msgBox('Done!', 'The data has been updated. The page will now refresh.', reloadPageAfterAdjustment  , 'OK');
     
     closeWindow();
 };
