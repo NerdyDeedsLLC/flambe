@@ -1210,7 +1210,7 @@ const postProcessData = () => {
         for(var i=0; i<totalRow.length; i++){
             let sum = 0;
             [...qsa("#output-panels tr.preview-row td:nth-child(" + (i+3) + ")")].forEach((td,idx)=>{
-                let iText = td.innerText.replace(/\D/g,'') / 1 || 0;
+                let iText = td.innerText.replace(/[^\d\.]/g,'') / 1 || 0;
                 sum += iText;
                 if(i===0){ // Seed Column
                     idealRow[0] = readableRound(sum,2,true);
