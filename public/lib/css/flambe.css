@@ -817,6 +817,11 @@ button.add-record {
   background-color: #CFC;
 }
 
+.output-table tr.total-row td.extra-dim, .output-table tr.ideal-row td.extra-dim {
+  background: #AAA;
+  color: #666;
+}
+
 #adjustement-panel {
   border-radius: 10px;
   display: inline-block;

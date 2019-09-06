@@ -675,6 +675,8 @@ button.add-record {
                     &:nth-of-type(-n + 3) {
                         text-align: center;
                     }
+
+
                 }
             }
         }
@@ -762,7 +764,12 @@ button.add-record {
                 box-shadow: inset 1px 1px 5px green, inset -1px 1px 5px green, inset 1px -1px 5px green, inset -1px -1px 5px green;
                 background-color: #CFC;
             }
+            &.extra-dim {
+                background: #AAA;
+                color:#666;
+            }
         }
+
     }
 }
 
@@ -848,6 +855,8 @@ button.add-record {
             }
 
         }
+
+
     }
 }
 .cta-adjustment {

@@ -298,7 +298,8 @@ const d = document                                       // ⥱ Alias - document
 
     , toHours = (val = null) => {                                                                   		// Converts the asinine JIRA output we're currently getting (seconds, across the board) to hours
         if (val === '---') { return val; }                                                           		//  ... (except in the case of the starting value being '---' whereupon...
-        if (val == null || isNaN((val / 1))) { return '0*'; }                                        		//  ... we convert the value to something that still signifies the special case, but can also...
+        if (val == null) { return '0*'; }                                        		                    //  ... we convert the value to something that still signifies the special case, but can also...
+        if (isNaN(val)) { return '0**'; }                                        		                    //  ... we convert the value to something that still signifies the special case, but can also...
         return (val / 1 <= 0) ? 0 : (val / 3600).toPrecision(3);                                       		//  ... still be coerced back into a number type by the interpreter)
     }
     , setTargetSlot = (slotIndex) => (targetSlot = slotIndex)
@@ -836,7 +837,7 @@ const constructPreviewAndReportData = () => {                                   
     let cbPanel = document.getElementById('filter-ckbox-panel');
     if (cbPanel) cbPanel.remove();
 
-    previewPanel.insertAdjacentHTML('beforeEnd', tblMarkup.replace(/<td>0\*h<\/td>/g, '<td class="major-alert">0*h</td>'));
+    previewPanel.insertAdjacentHTML('beforeEnd', tblMarkup.replace(/<td>(0\*+?)h<\/td>/g, '<td class="major-alert">$1h</td>'));
     // previewPanel.insertAdjacentHTML('beforeEnd', tblMarkup.replace(/<td>0\*h<\/td>/g, '<td class="major-alert">0*h</td>'));
 
     let linkHandlers = [...qsa('a.iss-hvr-lnk')].forEach(lnk => lnk.addEventListener('contextmenu', showRecordDetails));
@@ -1201,7 +1202,7 @@ const postProcessData = () => {
             if (major && major.length == 0 && medium && medium.length == 0) row[0].innerHTML += formatFlags('minor', minor);
         });
     }).then(() => { // Add Remove behavior on flags
-        var removeFlagIcon=(el, trg=el.target)=>{trg.nextSibling.remove(); trg.remove();}
+        var removeFlagIcon=(el, trg=el.target)=>{el.preventDefault(); trg.nextSibling.remove(); trg.remove();return false;}
         qsa('.flag-icons').forEach(fi=>fi.addEventListener('click',removeFlagIcon))
     }).then(() => { // Sum up our totals
         totalRow = new Array(hdrColNodes.length-2).fill(0);
@@ -1214,18 +1215,25 @@ const postProcessData = () => {
                 sum += iText;
                 if(i===0){ // Seed Column
                     idealRow[0] = readableRound(sum,2,true);
-                    for(var ir=1; ir<idealRow.length; ir++) idealRow[ir] = readableRound(sum - ((sum / (TOTALITRDAYS+1)) * ir),2);
-                    totalRow[0] = `<td>${sum}h</td>`;
-                }else
-                    totalRow[i] = (sum > idealRow[i]) ? `<td class='over'>${sum}h</td>` : `<td class='under'>${sum}h</td>`;
+                    for(var ir=1; ir<idealRow.length; ir++) idealRow[ir] = readableRound(sum - ((sum / (TOTALITRDAYS)) * ir),2, true);
+                    totalRow[0] = `<td>${readableRound(sum, 2, true)}h</td>`;
+                }else{
+                    if(DAYSLOADED >= i)
+                        totalRow[i] = (sum > idealRow[i]) ? `<td class='over'>${readableRound(sum, 2, true)}h</td>` : `<td class='under'>${readableRound(sum, 2, true)}h</td>`;
+                    else
+                        totalRow[i] = '<td></td>';
+                }
             });
         }
-        let idealRowMarkup = `<tr class="total-row"><td colspan="2" class="total-label">Total (Ideal):</td><td>${idealRow.join('h</td><td>')}h</td></tr>`;
+        let idealRowMarkup = `<tr class="ideal-row"><td colspan="2" class="total-label">Total (Ideal):</td><td>${idealRow.join('h</td><td>')}h</td></tr>`;
         let totalRowMarkup = `<tr class="total-row"><td colspan="2" class="total-label">Total (Actual):</td>${totalRow.join('')}</tr>`;
         qs('.preview-table tbody').insertAdjacentHTML('beforeEnd', idealRowMarkup);
         qs('.preview-table tbody').insertAdjacentHTML('beforeEnd', totalRowMarkup);
 
-        dataToGraph = totalRow.join('|').replace(/[^\d\|]/g, '').replace(/\|0/g,'').split('|');
+        qsa('.ideal-row td:nth-child(n + ' + ( 3 + DAYSLOADED) + '), .total-row td:nth-child(n + ' + ( 3 + DAYSLOADED) + ')').forEach(dimIdeal => {dimIdeal.className = dimIdeal.className.replace(/extra-dim /, '') + 'extra-dim '});
+
+        dataToGraph = totalRow.join('|').replace(/[^\d\|\.]/g, '').replace(/\|0/g,'').split('|');
+        _(dataToGraph)
         idealDayCount = idealRow.length;
         return
         
@@ -1285,9 +1293,11 @@ const incDec = (dir, mechanical = true, dly = 750, scale = 1) => {
 //%% ======================================== GRAPHING FUNCTIONS ========================================
 //%% ====================================================================================================
 function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
+    _('_renderCHARt', totalDaysInIteration, remainingHoursPerDay)
     // 500, 450, 400, 350, 300, 250, 200, 150, 100, 50*, 0*
     // totalDaysInIteration = 10;
     // remainingHoursPerDay = [500,475,375,450,200,250];
+    remainingHoursPerDay = remainingHoursPerDay.slice(0, FILESLOADED);
     iterationStartingHrs = remainingHoursPerDay[0];
     idealPlottedPtValues = [iterationStartingHrs];
     interpolatedIndicies = [];
@@ -1314,7 +1324,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
     canvasHeight = 550;
     canvasWidth = 1050;
     gridRowScale = 50 / (Math.max(...remainingHoursPerDay) / 10);
-    gridColWidth = Math.round(canvasWidth / (totalDaysInIteration + 1));
+    gridColWidth = Math.round(canvasWidth / (totalDaysInIteration));
     canvasWidth = (1 + totalDaysInIteration) * gridColWidth;
     gridRowHeight = 50;
 
@@ -1360,10 +1370,10 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
         }
     })();
     const seedIdealPoints = (() => {
-        let idealHoursPerDay = readableRound(iterationStartingHrs / (totalDaysInIteration), 2, true);
+        let idealHoursPerDay = readableRound(iterationStartingHrs / (totalDaysInIteration - 1), 2, true);
 
-        for (let i = 1; i < totalDaysInIteration; i++) {
-            idealPlottedPtValues.push(idealPlottedPtValues[i - 1] - idealHoursPerDay);
+        for (let i = 0; i < totalDaysInIteration - 1; i++) {
+            idealPlottedPtValues.push(idealPlottedPtValues[i] - idealHoursPerDay);
         }
     })();
 
@@ -1407,7 +1417,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
         ctx.lineWidth = "1";
         ctx.setLineDash([2, 2]);
         ctx.strokeStyle = "#DDD";
-        for (let i = 0; i < totalDaysInIteration; i++) {
+        for (let i = 0; i < totalDaysInIteration - 1; i++) {
             ctx.moveTo(plotX(i) + (gridColWidth / 2), gridVertMargins);
             ctx.lineTo(plotX(i) + (gridColWidth / 2), canvasHeight + gridVertMargins);
         }
@@ -1449,7 +1459,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
         ctx.beginPath();
         ctx.strokeStyle = "#08b2ed";
         ctx.moveTo(plotX(0), plotY(idealPlottedPtValues[0]));
-        ctx.lineTo(plotX(idealPlottedPtValues.length), plotY(0));
+        ctx.lineTo(plotX(idealPlottedPtValues.length -1), plotY(0));
         ctx.lineWidth = "3";
         ctx.setLineDash([5, 4]);
         ctx.stroke();
