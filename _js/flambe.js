@@ -7,6 +7,17 @@ function round_to_precision(x, precision) {
     return y - (y % (precision === undefined ? 1 : +precision));
 }
 
+const readableRound = (val, precision = 0, trimTrailing0s=1) => {
+    if (val == null || isNaN(val) || val == Infinity) return false; else val = parseFloat(val);
+    if (!isNaN(precision) && precision > 0 && trimTrailing0s === 1) trimTrailing0s = val.toString().indexOf('.') !== -1;
+    let moddedPrecision = (isNaN(precision) || precision < 0) ? 1 : precision;
+    let fltPtAdjustment = (1 + new Array(moddedPrecision).fill(0).join('')) * 1;
+
+    val = Math.round(val * fltPtAdjustment) / fltPtAdjustment;
+    let valS = (trimTrailing0s) ? val : val.toPrecision(val.toString().split('.')[0].length + precision);
+    return trimTrailing0s ? val : valS;
+};
+
 
 (function (window, undefined) {
     'use strict';
@@ -265,13 +276,14 @@ function round_to_precision(x, precision) {
 //!! =====================================================================================================================================
 // DECLARATIONS //==================================================================================================================
 // Shortcut aliases and Helper functions //-----------------------------------------------------------------------------------------
-const DEBUG_MODE = false;    //--> NOT TO BE SET TO 'TRUE' IN PRODUCTION USE - CONTROLS CONSOLE LOGS AND EXCESSIVE MEMORY CONSUMPTION
+const DEBUG_MODE = true;    //--> NOT TO BE SET TO 'TRUE' IN PRODUCTION USE - CONTROLS CONSOLE LOGS AND EXCESSIVE MEMORY CONSUMPTION
+const INFO_TRACE = false;    //--> NOT TO BE SET TO 'TRUE' IN PRODUCTION USE - CONTROLS CONSOLE LOGS AND EXCESSIVE MEMORY CONSUMPTION
 
 const d = document                                       // ⥱ Alias - document
     , qs = (s) => d.querySelector(s)                        // ⥱ Alias - querySelector
     , qsa = (s) => [...d.querySelectorAll(s)]                // ⥱ Alias - querySelectorAll
     , _ = (...args) => (DEBUG_MODE) ? console.log.call(this, ...args) : false     // ⥱ Alias - _
-    , _I = (...args) => (DEBUG_MODE) ? console.info.call(this, ...args) : false     // ⥱ Alias - _
+    , _I = (...args) => (DEBUG_MODE && INFO_TRACE) ? console.info.call(this, ...args) : false     // ⥱ Alias - _
     , _T = (...args) => (DEBUG_MODE) ? console.table.call(this, ...args) : false     // ⥱ Alias - _
 
     // Rote memory's storage
@@ -380,10 +392,7 @@ insertFileNodeBetween = (e, trgObj = e.target) => {
 
 const syncSelect = (e, val) => {
     trg = e.target;
-    console.log('v1', val);
     val = (val != null) ? val : trg.value;
-    console.log('v2', val);
-    console.log('syncSelect', e, trg, val);
     let txtBox = trg.previousElementSibling.previousElementSibling;
     txtBox.value = val;
     retain(trg.id, val);
@@ -392,7 +401,6 @@ const syncSelect = (e, val) => {
 };
 
 const setSelect = (sel, val) => {
-    console.log('setSelect', sel, val);
     if (sel == null || val == null) return false;
     sel = (typeof (sel === 'string')) ? qs(sel) : sel;
     sel.value = val;
@@ -596,21 +604,14 @@ function checkFilterMatch(fullDaysRecords, teamFilt, itrFilt) {
     teamFilt = (teamFilt == null || teamFilt == '' || teamFilt == '*' || teamFilt.indexOf('Show All') === 0) ? '.*' : escapeRegExp(teamFilt);
     itrFilt = (itrFilt == null || itrFilt == '' || itrFilt == '*' || itrFilt.indexOf('Show All') === 0) ? '.*' : escapeRegExp(itrFilt);
 
-    // console.log('Team(s) selected:', teamFilt);
-    // console.log('Iteration(s) selected:', itrFilt);
-    // console.log('Records to examine:', fullDaysRecords);
 
     if (fullDaysRecords != null) {
         fDR = fullDaysRecords;
         teamFilt = new RegExp(teamFilt, 'gim');
         itrFilt = new RegExp(itrFilt, 'gim');
-        // console.log('Team(s) selected:', teamFilt);
-        // console.log('Iteration(s) selected:', itrFilt);
-        // console.log('Records to examine:', fullDaysRecords);
 
         let filteredRecords = fullDaysRecords.filter(
             rtc => {
-                // console.log(rtc['Sprint']);
                 return (
                     (teamFilt && rtc['Custom field (Scrum Team)'] != null && rtc['Custom field (Scrum Team)'].match(teamFilt))
                     &&
@@ -618,7 +619,6 @@ function checkFilterMatch(fullDaysRecords, teamFilt, itrFilt) {
                 );
             }
         );
-        // console.log('fullDaysRecords', fullDaysRecords, 'filteredRecords', filteredRecords);
         return filteredRecords;
     }
     return false;
@@ -892,11 +892,8 @@ const reviseSeed = (newData) => {
             if (fileBuffer[0].fileData[records]['Issue key'] === aV.newRecord['Issue key']) foundRecord = records;
         }
         if (foundRecord != null) {
-            console.log(`Attempting to correct discrepency in record`, trgSeedRec, `by patching it with`, aV);
-            console.log('Previous value: ', fileBuffer[0].fileData[foundRecord], ' New value:', aV.newRecord);
             fileBuffer[0].fileData[foundRecord] = aV.newRecord;
         } else {
-            console.log('Attempting to restore imblanace of data by appending record', aV.newRecord);
             fileBuffer[0].fileData.push(aV.newRecord);
         }
     });
@@ -1066,7 +1063,7 @@ let hdrRowNode = [];
 let hdrColNodes = [];
 let numericTotals = ['', ''];
 let totalRow = [];
-
+let idealRow;
 const postProcessData = () => {
     let rptStatuses = {}
         , dispCkBoxes = ''
@@ -1082,7 +1079,7 @@ const postProcessData = () => {
             let row = [...rows.querySelectorAll('td')];
             colNodes.push(row);
             if (row && row[0] && row[0].innerText !== '') {
-                rowNodes[idx].className = 'preview-row row-status-' + row[0].innerText.replace(/\s+/g, '_');
+                rowNodes[idx].className = 'preview-row preview-row-' + idx + ' row-status-' + row[0].innerText.replace(/\s+/g, '_');
                 uniqueStatuses.push(row[0].innerText);
             }
             return rows;
@@ -1148,6 +1145,7 @@ const postProcessData = () => {
 
 
         rowNodes.forEach((rowObj, rowIdx) => {
+           
             let minor = [],
                 medium = [],
                 major = [],
@@ -1202,75 +1200,35 @@ const postProcessData = () => {
             if (major && major.length == 0) row[0].innerHTML += formatFlags('medium', medium);
             if (major && major.length == 0 && medium && medium.length == 0) row[0].innerHTML += formatFlags('minor', minor);
         });
+    }).then(() => { // Add Remove behavior on flags
+        var removeFlagIcon=(el, trg=el.target)=>{trg.nextSibling.remove(); trg.remove();}
+        qsa('.flag-icons').forEach(fi=>fi.addEventListener('click',removeFlagIcon))
     }).then(() => { // Sum up our totals
+        totalRow = new Array(hdrColNodes.length-2).fill(0);
+        idealRow = new Array(hdrColNodes.length-2).fill(0);
 
-        let opStr = "";
-        let idealRow = [];
-        totalRow.length = hdrColNodes.length;
-        idealRow.length = hdrColNodes.length;
-        totalRow = totalRow.fill(0, 2, hdrColNodes.length);
-        idealRow = idealRow.fill(0, 2, hdrColNodes.length);
-
-
-
-        for (var c = 2; c < hdrColNodes.length; c++) {
-            rowNodes.forEach((row, rowIdx) => {
-                let cell = row.childNodes;
-                if (cell.className === 'interpolated-value') {
-                }
-                if (cell != null && cell[c] != null && cell[c].innerText) {
-                    cell = cell[c].innerText.replace(/[h\* ]/gi, '').replace(/---/g, 0);
-                    if (!isNaN(totalRow[c]) && totalRow[c] !== "NaN") {
-                        totalRow[c] = round_to_precision((totalRow[c] / 1) + (cell / 1), 2);
-
-
-                    }
-                }
+        for(var i=0; i<totalRow.length; i++){
+            let sum = 0;
+            [...qsa("#output-panels tr.preview-row td:nth-child(" + (i+3) + ")")].forEach((td,idx)=>{
+                let iText = td.innerText.replace(/\D/g,'') / 1 || 0;
+                sum += iText;
+                if(i===0){ // Seed Column
+                    idealRow[0] = readableRound(sum,2,true);
+                    for(var ir=1; ir<idealRow.length; ir++) idealRow[ir] = readableRound(sum - ((sum / (TOTALITRDAYS+1)) * ir),2);
+                    totalRow[0] = `<td>${sum}h</td>`;
+                }else
+                    totalRow[i] = (sum > idealRow[i]) ? `<td class='over'>${sum}h</td>` : `<td class='under'>${sum}h</td>`;
             });
-
         }
+        let idealRowMarkup = `<tr class="total-row"><td colspan="2" class="total-label">Total (Ideal):</td><td>${idealRow.join('h</td><td>')}h</td></tr>`;
+        let totalRowMarkup = `<tr class="total-row"><td colspan="2" class="total-label">Total (Actual):</td>${totalRow.join('')}</tr>`;
+        qs('.preview-table tbody').insertAdjacentHTML('beforeEnd', idealRowMarkup);
+        qs('.preview-table tbody').insertAdjacentHTML('beforeEnd', totalRowMarkup);
 
-        let seedTotal = totalRow[2];
-        idealDayCount = hdrColNodes.length - 3;
-        for (c = 2; c < idealRow.length; c++) {
-            idealRow[c] = c === 2 ? seedTotal : Math.round((10 * (idealRow[c - 1] - (seedTotal / idealDayCount)))) / 10;
-        }
-
-        dataToGraph = totalRow.slice(2);
-
-        opStr += '<tr class="ideal-row"><td colspan="2" class="ideal-label">TOTAL (Ideal):</td>';
-        opStr += '  <td>' + idealRow.slice(2).join('</td><td>') + '</td>';
-        opStr += '</tr>';
-        opStr += '<tr class="total-row"><td colspan="2" class="total-label">TOTAL (Actual):</td>';
-        opStr += '  <td>' + totalRow.slice(2).join('</td><td>') + '</td>';
-        opStr += '</tr>';
-        qs('.preview-table tbody').insertAdjacentHTML('beforeEnd', opStr);
-    }).then((res) => {
-        _I("THENABLE -> ", "res", res);
-        totalRow = [...qs('.total-row').childNodes];
-        idealRow = [...qs('.ideal-row').childNodes];
-    }).then((res) => {
-        _I("THENABLE -> ", "res", res);
-        for (var c = 2; c < idealRow.length; c++) {
-            if (totalRow[c].innerText !== null && idealRow[c].innerText !== null) {
-                let totalCell = totalRow[c]
-                    , totalVals = totalCell.innerText.replace(/h/g, '') / 1
-                    , idealCell = idealRow[c]
-                    , idealVals = idealCell.innerText.replace(/h/g, '') / 1;
-
-                if (c <= DAYSLOADED + 2) {
-                    if (totalVals > idealVals) {
-                        totalCell.className = "over";
-                        idealCell.className = "over";
-                    }
-                    if (totalVals < idealVals) {
-                        totalCell.className = "under";
-                        idealCell.className = "under";
-                    }
-                }
-            }
-        }
-
+        dataToGraph = totalRow.join('|').replace(/[^\d\|]/g, '').replace(/\|0/g,'').split('|');
+        idealDayCount = idealRow.length;
+        return
+        
     }).then((res) => {
         renderCHARt(idealDayCount, dataToGraph);
     });
@@ -1327,7 +1285,6 @@ const incDec = (dir, mechanical = true, dly = 750, scale = 1) => {
 //%% ======================================== GRAPHING FUNCTIONS ========================================
 //%% ====================================================================================================
 function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
-    //    console.clear();
     // 500, 450, 400, 350, 300, 250, 200, 150, 100, 50*, 0*
     // totalDaysInIteration = 10;
     // remainingHoursPerDay = [500,475,375,450,200,250];
@@ -1343,16 +1300,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
         }
     };
 
-    const readableRound = (val, precision = 0, trimTrailing0s = 1) => {
-        if (val == null || isNaN(val) || val == Infinity) return false; else val = parseFloat(val);
-        if (!isNaN(precision) && precision > 0 && trimTrailing0s === 1) trimTrailing0s = val.toString().indexOf('.') !== -1;
-        let moddedPrecision = (isNaN(precision) || precision < 0) ? 1 : precision;
-        let fltPtAdjustment = (1 + new Array(moddedPrecision).fill(0).join('')) * 1;
-
-        val = Math.round(val * fltPtAdjustment) / fltPtAdjustment;
-        let valS = (trimTrailing0s) ? val : val.toPrecision(val.toString().split('.')[0].length + precision);
-        return trimTrailing0s ? val : valS;
-    };
+    
 
 
     const c = document.getElementById("burndownOutput"),
@@ -1578,14 +1526,11 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
         };
 
         let pts = c.getContext("2d");
-        for (let i = 1; i <= dataObj.length - 1; i++) {
+        for (let i = 1; i <= dataObj.length; i++) {
             if (i > DAYSLOADED + 1) return false;
-            let ideal = idealPlottedPtValues[i - 1],
-                actual = dataObj[i - 1],
-                hourDifference = ideal - actual,
-                plottedPt = plotPt(plotX(i - 1), plotY(dataObj[i - 1])),
-                dotColor = colorsForActualHours[i];
-            lineColor = colorsForActualHours[i];
+            let plottedPt = plotPt(plotX(i - 1), plotY(dataObj[i - 1])),
+                dotColor  = colorsForActualHours[i],
+                lineColor = dotColor;
 
             pts.globalAlpha = 0.95;
             pts.strokeStyle = lineColor;

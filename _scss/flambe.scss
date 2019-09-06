@@ -102,7 +102,7 @@ main#iteration-info {
             label {
                 display: inline-block;
                 width: 100px;
-                position: absolute;
+                // position: absolute;
                 height: 26px;
                 line-height: 26px;
                 margin: -28px 0 0 5px;
@@ -690,7 +690,7 @@ button.add-record {
     td {
         position: relative;
     
-        &:nth-child(-n + 2) {
+        &:nth-child(-n + 1) {
             text-align: left;
             font-size:12px;
         }

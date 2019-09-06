@@ -106,7 +106,6 @@ main#iteration-info section.form-fields div.itr-form-field select option:first-c
 main#iteration-info section.form-fields div.itr-form-field label {
   display: inline-block;
   width: 100px;
-  position: absolute;
   height: 26px;
   line-height: 26px;
   margin: -28px 0 0 5px;
@@ -745,7 +744,7 @@ button.add-record {
   position: relative;
 }
 
-.output-table td:nth-child(-n + 2) {
+.output-table td:nth-child(-n + 1) {
   text-align: left;
   font-size: 12px;
 }
