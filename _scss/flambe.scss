@@ -809,16 +809,54 @@ button.add-record {
         transform:translate(-50%, -50%);
         box-shadow:0 20px 40px #000A;
         font-size:14px;
+        width:900px;
+        
 
         tr {
             border-spacing:0;
-            &.adjustment-total-row {
-                color:#600;
+            &.adjustment-team-subtotal-row td {
+                text-align: right;
+                font-weight: bold;
+                border-top: 1px dashed #AAA;
+                border-bottom: 1px solid #000;
+                background: #E6E6E6;
+                color: #500A;
+            }
+
+            &.adjustment-type-subtotal-row td {
+                text-align: right;
+                font-weight: bold;
+                background: #EEC;
+                color: #900C;
+            }
+
+            &.adjustment-total-row td {
+                color:#C33;
+                background:#EE9;
                 text-align:right;
-                font-weight:bold;
-                td{
-                    border-top: 1px solid #aaa;
-                    border-bottom:2px solid black;
+                font-weight:900;
+                font-size:120%;
+                border-top: 1px solid #aaa;
+                border-bottom:2px solid black;
+            }
+
+            &.adjustment-type-row {
+                background: #BBB;
+                font-weight: 900;
+            }
+
+            &.adjustment-type-row td {
+                text-align: left;
+                border-top: 2px solid #000;
+                border-bottom: 1px solid black;
+            }
+
+
+            &.adjustment-team-name td {
+                // border-top:2px solid black;
+
+                &:first-of-type{
+                    font-weight:900;
                 }
             }
         }
@@ -838,23 +876,23 @@ button.add-record {
             padding:7px 13px;
             border-image-width:0;
             border-spacing:0;
+
+            &:last-of-type {
+                width:120px;
+            }
         }
 
         td {
             white-space: nowrap;
             vertical-align: top;
             padding:7px 13px;
-
-            &:last-of-type{
-                text-align: right;
-            }
-
-            &.adjustment-team-name {
-                font-weight:900;
-                border-bottom:2px solid black;
-            }
-
         }
+        tr:not(.adjustment-type-row) td:last-of-type{
+            text-align: right;
+        }
+
+            
+        
 
 
     }

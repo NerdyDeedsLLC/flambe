@@ -1,3 +1,4 @@
+
 //@@ =====================================================================================================================================
 //@@ ========================================================= .CSV PARSER ===============================================================
 //@@ =====================================================================================================================================
@@ -10,15 +11,16 @@ function round_to_precision(x, precision) {
 const readableRound = (val, precision = 0, trimTrailing0s=1) => {
     if (val == null || isNaN(val) || val == Infinity) return false; else val = parseFloat(val);
     if (!isNaN(precision) && precision > 0 && trimTrailing0s === 1) trimTrailing0s = val.toString().indexOf('.') !== -1;
-    let moddedPrecision = (isNaN(precision) || precision < 0) ? 1 : precision;
-    let fltPtAdjustment = (1 + new Array(moddedPrecision).fill(0).join('')) * 1;
+    let moddedPrecision = (isNaN(precision) || precision < 0) ? 1 : precision,
+        fltPtAdjustment = (1 + new Array(moddedPrecision).fill(0).join('')) * 1;
 
     val = Math.round(val * fltPtAdjustment) / fltPtAdjustment;
     let valS = (trimTrailing0s) ? val : val.toPrecision(val.toString().split('.')[0].length + precision);
     return trimTrailing0s ? val : valS;
 };
 
-
+/*eslint-disable*/
+var CSV = {};
 (function (window, undefined) {
     'use strict';
 
@@ -27,7 +29,6 @@ const readableRound = (val, precision = 0, trimTrailing0s=1) => {
 
 
     // Define local CSV object.
-    var CSV = {};
 
     /**
      * Split CSV text into an array of lines.
@@ -261,6 +262,7 @@ const readableRound = (val, precision = 0, trimTrailing0s=1) => {
         module.exports = CSV;
     } else if (typeof define === 'function' && define.amd) {
         // Node module pattern not supported, but AMD module pattern is, so use it.
+        //eslint-disable-next-line
         define([], function () {
             return CSV;
         });
@@ -269,6 +271,7 @@ const readableRound = (val, precision = 0, trimTrailing0s=1) => {
         window.CSV = CSV;
     }
 }(typeof window !== 'undefined' ? window : {}));
+/*eslint-enable*/
 //@@ =====================================================================================================================================
 
 //!! =====================================================================================================================================
@@ -284,9 +287,10 @@ const d = document                                       // ⥱ Alias - document
     , qsa = (s) => [...d.querySelectorAll(s)]                // ⥱ Alias - querySelectorAll
     , _ = (...args) => (DEBUG_MODE) ? console.log.call(this, ...args) : false     // ⥱ Alias - _
     , _I = (...args) => (DEBUG_MODE && INFO_TRACE) ? console.info.call(this, ...args) : false     // ⥱ Alias - _
-    , _T = (...args) => (DEBUG_MODE) ? console.table.call(this, ...args) : false     // ⥱ Alias - _
+    , _T = (...args) => (DEBUG_MODE) ? console.table.call(this, ...args) : false     //eslint-disable-line
 
-    // Rote memory's storage
+    // Rote memory's storage 
+    /*eslint-disable*/
     , rote = window.localStorage                                                                	       	// Alias to the window's localStorage. Really these are all just helper functions that amuse me.
     , memories = () => rote.length                                                      		// Returns the count of how many memories are being held in rote storage
     , recall = (k, def = null) => { k = rote.getItem(k); return k ? k : (def ? def : null); }            		// Returns a memory value if present. If not, returns def if provided, null if not
@@ -294,17 +298,17 @@ const d = document                                       // ⥱ Alias - document
     , reflect = (k, def = null) => retain(k, recall(k, def))                                        		// Runs a recall for a memory (value at key or null), then immediately retains it in memories
     , forget = (k) => rote.removeItem(k)                                                  		// Discrads the memories at key k
     , fugue = () => rote.clear()                                                      		// Purges all memories... as though they'd NEVER. BEEN. FORMED. AT. ALL!
-
+    /*eslint-enable*/
 
     , toHours = (val = null) => {                                                                   		// Converts the asinine JIRA output we're currently getting (seconds, across the board) to hours
         if (val === '---') { return val; }                                                           		//  ... (except in the case of the starting value being '---' whereupon...
         if (val == null) { return '0*'; }                                        		                    //  ... we convert the value to something that still signifies the special case, but can also...
         if (isNaN(val)) { return '0**'; }                                        		                    //  ... we convert the value to something that still signifies the special case, but can also...
-        return (val / 1 <= 0) ? 0 : (val / 3600).toPrecision(3);                                       		//  ... still be coerced back into a number type by the interpreter)
+        return (val / 1 <= 0) ? 0 : parseFloat((val / 3600).toPrecision(3));                                       		//  ... still be coerced back into a number type by the interpreter)
     }
-    , setTargetSlot = (slotIndex) => (targetSlot = slotIndex)
+    , setTargetSlot = (slotIndex) => (targetSlot = slotIndex) // eslint-disable-line
 
-    , findLastIndexOf = (arr = void (0), val = void (0), fromIndex = null) => {
+    , findLastIndexOf = (arr = void (0), val = void (0), fromIndex = null) => { // eslint-disable-line no-unused-vars
         for (var i = arr ? arr.length - 1 : 0; arr !== void (0) && val !== void (0) && i >= 0; i--)
             if (((val.constructor + '').match(/RegExp/) && arr[i].match(val)) || (val + '' == arr[i])) return (i);
         return -1;
@@ -320,6 +324,7 @@ let fileBuffer = []                                                             
     , safeBuffer = []
     , namedFiles = []                                                                            		// Array containing just the names of the files contained within fileBuffer (used for sequencing the read order)
     , COMBD_DATA = []                                                                            		// COMBINED DATA from all the files ingested
+    , DEBUG_DATA = []                                                                                   // PLACEHOLDER DATA container for use in debugging
     , ISSUE_KEYS = []                                                                            		// LIST OF ALL THE ISSUES from all the files ingested
     , INTERPOL8D = []                                                                            		// ARRAY OF ALL THE DATES that needed to be interpolated
     , RPTDATA = []                                                                            		//
@@ -338,7 +343,7 @@ let fileBuffer = []                                                             
     , targetSlot = null;
 
 // APPLICATION SOURCE ============================================================================ 🅔🅧🅔🅒🅤🅣🅘🅞🅝 🅢🅔🅠🅤🅔🅝🅒🅔 indicated by encircled digits (➀-➈)
-init = () => {                                                                                      		// ⓿ Initiate application, chaining steps 1-3 above to file input's onChange
+const init = () => {                                                                                      		// ⓿ Initiate application, chaining steps 1-3 above to file input's onChange
     _I("\n\n====== INIT ======\n");
     iterationName.value = recall('iterationName', '') || "Team Byrnedown - Iteration ";                  // Seed the value set for the iteration's name (or blank if none is stored)...
     iterationName.onkeyup = () => { retain('iterationName', iterationName.value); };                    		// ... and set up the field's onKeyUp handler to save any changes henceforth.
@@ -377,9 +382,9 @@ init = () => {                                                                  
     });
 };
 
-insertFileNodeBetween = (e, trgObj = e.target) => {
+const insertFileNodeBetween = (e, trgObj = e.target) => {
     _I("FUNCTION: insertFileNodeBetween", "e", e, "trgObj", trgObj);                                        //$$ Ⓓ ⬅⬅⬅︎ 
-    _(e, trgObj);
+// _(e, trgObj);
     if (trgObj.tagName !== 'LI') {
         // e.preventDefault();
         return (e.cancelBubble = true);
@@ -392,7 +397,7 @@ insertFileNodeBetween = (e, trgObj = e.target) => {
 };
 
 const syncSelect = (e, val) => {
-    trg = e.target;
+    let trg = e.target;
     val = (val != null) ? val : trg.value;
     let txtBox = trg.previousElementSibling.previousElementSibling;
     txtBox.value = val;
@@ -403,7 +408,7 @@ const syncSelect = (e, val) => {
 
 const setSelect = (sel, val) => {
     if (sel == null || val == null) return false;
-    sel = (typeof (sel === 'string')) ? qs(sel) : sel;
+    sel = (typeof (sel) === 'string') ? qs(sel) : sel;
     sel.value = val;
     syncSelect({ target: sel }, val);
 };
@@ -430,8 +435,8 @@ const generateTeamsAndIterationLists = () => {
     ALLITRS = [...new Set(ALLITRS)].sort();
 
 
-    let teamsDD = qs('#selTeam');
-    let itrsDD = qs('#selIteration');
+    let teamsDD = qs('#selTeam'),
+        itrsDD = qs('#selIteration');
 
     teamsDD.innerHTML = '<option>Show All Teams</option><option>' + ALLTEAMS.join('</option><option>') + '</option>';
     itrsDD.innerHTML = '<option>Show All Iterations</option><option>' + ALLITRS.join('</option><option>') + '</option>';
@@ -441,16 +446,16 @@ const generateTeamsAndIterationLists = () => {
 };
 setSelect('#selTeam', recall('selTeam'));
 setSelect('#selIteration', recall('selIteration'));
-
-removeFileAtIndex = (trgBtn, isFilled) => {                                                                 //%% Ⓔ ⬅⬅⬅︎  Remove the file from the slot whose trashcan was clicked (both in the buffer and the UI)
+// eslint-disable-next-line
+const removeFileAtIndex = (trgBtn, isFilled) => {                                                                 //%% Ⓔ ⬅⬅⬅︎  Remove the file from the slot whose trashcan was clicked (both in the buffer and the UI)
     _I("FUNCTION: removeFileAtIndex", "trgBtn", trgBtn, "isFilled", isFilled);
-    ind = trgBtn.dataset.index;
+    let ind = trgBtn.dataset.index;
     if (findLastIndexOf(namedFiles, /.+/) === 0) {
         namedFiles[0] = retain('namedFiles', '');
         fileBuffer[0] = retain('fileBuffer', '');
         return resizeBufferArraysAndRebuildSlots();                                                         //@@ ➜➜➜ 🅑 
     }
-    _(ind, trgBtn);
+// _(ind, trgBtn);
     if (isFilled) {
         namedFiles.splice(ind, 1, "");
         fileBuffer.splice(ind, 1, "");
@@ -463,7 +468,7 @@ removeFileAtIndex = (trgBtn, isFilled) => {                                     
 };
 
 
-resizeBufferArraysAndRebuildSlots = (newLen = ((totalItrDayPicker.placeholder / 1) + 1)) => {               //@@ Ⓑ ⬅⬅⬅︎ Destroys the current buffer and UI, rebuilding them to reflect new state
+const resizeBufferArraysAndRebuildSlots = (newLen = ((totalItrDayPicker.placeholder / 1) + 1)) => {               //@@ Ⓑ ⬅⬅⬅︎ Destroys the current buffer and UI, rebuilding them to reflect new state
     _I("FUNCTION: resizeBufferArraysAndRebuildSlots", newLen);
     if (typeof (namedFiles) == 'undefined' || isNaN(newLen) || newLen < 0) return false;
     let oldLen = (namedFiles && namedFiles.length) ? namedFiles.length / 1 : 0,
@@ -480,7 +485,7 @@ resizeBufferArraysAndRebuildSlots = (newLen = ((totalItrDayPicker.placeholder / 
 
     let interpolated = findLastIndexOf(namedFiles, /.+/);
 
-    for (i = namedFiles.length - 1; i >= 0; i--) {
+    for (let i = namedFiles.length - 1; i >= 0; i--) {
         if (namedFiles.indexOf(namedFiles[i]) < i) namedFiles[i] = '';
         let pList = ' class="drag-drop" draggable="true" '
             , dSlot = ` data-slot="${(i > 0) ? i : 'S'}" `
@@ -521,22 +526,22 @@ resizeBufferArraysAndRebuildSlots = (newLen = ((totalItrDayPicker.placeholder / 
 
     generateTeamsAndIterationLists();
 };
-addOrReplaceSingleFileAndParse = (slotId = targetSlot, liObj = qs('#file-slot-' + slotId)) =>                     //!! Ⓐ ⬅⬅⬅︎ Inserts (or updates) a file at the specified slot (in both the buffer and the UI)
+const addOrReplaceSingleFileAndParse = (slotId = targetSlot, liObj = qs('#file-slot-' + slotId)) =>                     //!! Ⓐ ⬅⬅⬅︎ Inserts (or updates) a file at the specified slot (in both the buffer and the UI)
 {
     let fileObj = input.files[0],
         fileName = fileObj.name;
 
     if (namedFiles.indexOf(fileName) != -1) return (alert('This file is already in use!'));
-    _("WORKING WITH PROVIDED FILE ", fileName, namedFiles.indexOf(fileName));
+// _("WORKING WITH PROVIDED FILE ", fileName, namedFiles.indexOf(fileName));
     const readUploadedFileAsText = (fileObj) => {
         _I("FUNCTION: readUploadedFileAsText", "fileObj", fileObj);
-        _("readUploadedFileAsText");
+// _("readUploadedFileAsText");
         let reader = new FileReader();
 
         return new Promise((resolve) => {
             reader.onload = () => {
                 _I("FUNCTION: onload");
-                _('onload Event fired...');
+// _('onload Event fired...');
                 resolve(reader.result);
             };
             reader.readAsText(fileObj);
@@ -546,9 +551,9 @@ addOrReplaceSingleFileAndParse = (slotId = targetSlot, liObj = qs('#file-slot-' 
     readUploadedFileAsText(fileObj)
         .then(result =>
             new Promise(resolve => {
-                _('...resolved\n".then()" #1');
+// _('...resolved\n".then()" #1');
                 var opJSON = CSV.parse(result);                                                         //    Parse the .CSV file input, ...
-                _(opJSON);
+// _(opJSON);
                 let newJSONData = { fileName: fileName, fileData: opJSON };
                 fileBuffer[slotId] = newJSONData;
                 namedFiles[slotId] = fileName;
@@ -556,7 +561,7 @@ addOrReplaceSingleFileAndParse = (slotId = targetSlot, liObj = qs('#file-slot-' 
             })
         )
         .then(() => {
-            _('...resolved\n".then()" #2');
+// _('...resolved\n".then()" #2');
             resizeBufferArraysAndRebuildSlots();                                                            //@@ ➜➜➜ ︎🅑 
             doneButton.disabled = false;
             doneButton.addEventListener('click', runReport);                                                 //** ➜➜➜ ︎🅗 
@@ -574,13 +579,13 @@ const runReport = (obj = doneButton) => {                                       
     if (DAYSLOADED < 0) return false;
     // ... and the number of days that equates out to.
     const sumHours = (hourColl) =>
-        hourColl.flatMap(s => { let sth = 0; retVal = parseInt(s['Remaining Estimate']); retVal = isNaN(retVal) || retVal === 'NaN' ? 0 : retVal; sth += retVal; return sth; });
+        hourColl.flatMap(s => { let sth = 0, retVal = parseInt(s['Remaining Estimate']); retVal = isNaN(retVal) || retVal === 'NaN' ? 0 : retVal; sth += retVal; return sth; });
 
     if (TOTALITRDAYS > 2 && DAYSLOADED === 1) {
-        let seedDataCount = fileBuffer[0].fileData.length;
-        let seedDatatotal = sumHours(fileBuffer[0].fileData);
-        let day1DataCount = fileBuffer[1].fileData.length;
-        let day1Datatotal = sumHours(fileBuffer[1].fileData);
+        let seedDataCount = fileBuffer[0].fileData.length,
+            seedDatatotal = sumHours(fileBuffer[0].fileData);
+        let day1DataCount = fileBuffer[1].fileData.length,
+            day1Datatotal = sumHours(fileBuffer[1].fileData);
         if (day1DataCount > seedDataCount || day1Datatotal > seedDatatotal) { // 
             offerToPerformDayOneOverrideAdjustment();
         }
@@ -594,22 +599,17 @@ const runReport = (obj = doneButton) => {                                       
 
     getDistinctKeysFromFiles();                                                                             //^^ ➜➜➜ 🅕 
 };
-let fDR = null;
 function checkFilterMatch(fullDaysRecords, teamFilt, itrFilt) {
     function escapeRegExp(string) {
         return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
     }
 
-    let allTeams = ALLTEAMS.join(','),
-        allItrs = ALLITRS.join(',');
-    teamFilt = (teamFilt == null || teamFilt == '' || teamFilt == '*' || teamFilt.indexOf('Show All') === 0) ? '.*' : escapeRegExp(teamFilt);
-    itrFilt = (itrFilt == null || itrFilt == '' || itrFilt == '*' || itrFilt.indexOf('Show All') === 0) ? '.*' : escapeRegExp(itrFilt);
-
+    teamFilt = (teamFilt == null || teamFilt == '' || teamFilt == '*' || teamFilt.indexOf('Show All') === 0) ? '.*': escapeRegExp(teamFilt);
+    itrFilt  = (itrFilt  == null || itrFilt  == '' || itrFilt  == '*' || itrFilt.indexOf('Show All')  === 0) ? '.*': escapeRegExp(itrFilt);
 
     if (fullDaysRecords != null) {
-        fDR = fullDaysRecords;
         teamFilt = new RegExp(teamFilt, 'gim');
-        itrFilt = new RegExp(itrFilt, 'gim');
+        itrFilt  = new RegExp(itrFilt, 'gim');
 
         let filteredRecords = fullDaysRecords.filter(
             rtc => {
@@ -645,7 +645,7 @@ const getDistinctKeysFromFiles = () => {                                        
 
 const remapDataSoIssueIDIsPrimaryKey = () => {                                                              //&& Ⓖ ⬅︎⬅︎⬅︎    Iterate finalized buffer, and concatinated generate output data
     _I("FUNCTION: remapDataSoIssueIDIsPrimaryKey");
-    temp_store = [];                                                                                        // Create a temporary, empty collection...
+    let temp_store = [];                                                                                        // Create a temporary, empty collection...
     ISSUE_KEYS.forEach(r => {                                                                               //    ... Iterate through our unique keys from all files (from getDistinctKeysFromFiles)...
         temp_store.push(r['Issue key']);                                                                    //    ... stuff 'em into said temp array...
         COMBD_DATA[r] = new Array(safeBuffer.length).fill('');                                              //    ... and create an index to house the data within our Combined Data collection
@@ -656,11 +656,11 @@ const remapDataSoIssueIDIsPrimaryKey = () => {                                  
 
     for (let files in safeBuffer) {
         let file = safeBuffer[files];
-        _('file', file);
-        _('safeBuffer[files]', safeBuffer[files]);
+// _('file', file);
+// _('safeBuffer[files]', safeBuffer[files]);
         if (file !== 'INTERPOLATED') {
             file = file.fileData;
-            _('file', file);
+// _('file', file);
             file.forEach(f => {
                 if (f && f['Issue key'] && f['Issue key'] != null && f['Issue key'] !== '') {
                     COMBD_DATA[f['Issue key']][files] = f;
@@ -687,19 +687,19 @@ const showRecordDetails = (e, targetLink = e.target) => {
     const destroyExtantDetailPreviewers = () => [...qsa('.extra-details')].forEach(pp => pp.remove());
     destroyExtantDetailPreviewers();
     window.addEventListener('click', destroyExtantDetailPreviewers);
-    let gatheredDetails = quickIndex.getLatestDetails(targetLink.innerText);
-    flatData = '<div class="extra-details"><span>' + Object.entries(gatheredDetails).flat().join('</span><span>') + '</span></div>';
+    let gatheredDetails = quickIndex.getLatestDetails(targetLink.innerText),
+        flatData = '<div class="extra-details"><span>' + Object.entries(gatheredDetails).flat().join('</span><span>') + '</span></div>';
     targetLink.insertAdjacentHTML('afterEnd', flatData);
 };
-
+let quickIndex;
 const processParentChildRelationships = () => {                                                             //⦾! Ⓘ ⬅︎⬅︎⬅︎ Correllates the parent tasks to their corresponding sub-tasks 
     _I("FUNCTION: processParentChildRelationships");
     const createJIRALink = (IssueId, isParent = false) => {
         // _I("FUNCTION: createJIRALink", "IssueId", IssueId, "isParent", isParent);
-        let hrefUrl = `href="https://jira.sprintdd.com/browse/${IssueId}"' `;
-        let clsName = `class="issue-${isParent ? 'parent-' : ''}link iss-hvr-lnk" `;
-        let wndoTrg = `target="_blank" `;
-        let issueID = IssueId.replace(/(\d+)/gi, '<b>$1</b>');
+        let hrefUrl = `href="https://jira.sprintdd.com/browse/${IssueId}"' `,
+            clsName = `class="issue-${isParent ? 'parent-' : ''}link iss-hvr-lnk" `;
+        let wndoTrg = `target="_blank" `,
+            issueID = IssueId.replace(/(\d+)/gi, '<b>$1</b>');
 
         return `<a ${hrefUrl + clsName + wndoTrg}>${issueID}</a>`;
     };
@@ -762,7 +762,7 @@ const constructPreviewAndReportData = () => {                                   
             : value;
 
     };
-    _('constructPreviewAndReportData', COMBD_DATA);
+// _('constructPreviewAndReportData', COMBD_DATA);
     let MRKUP = [],                                                                                    // Collection of markup that'll we'll used to render both the HTML preview and the ultimate XLSX file output
         _I_ = '||--||';                                                                                // The string delimiter we're using to distinguish one chunk of data from another. Our "Split-target"
     Object.entries(COMBD_DATA).forEach((dataRecord, ind) => {                                          // Iterate across each Issue (the "rows") that we've ingested data for, to extract the following data:
@@ -813,7 +813,7 @@ const constructPreviewAndReportData = () => {                                   
             dayCt++;                                                                                   // Increment the day counter whether we added to stack or not (since we skip over weekends and holidays)
         }
     } else {
-        for (i = 1; i <= namedFiles.length - 1; i++)
+        for (let i = 1; i <= namedFiles.length - 1; i++)
             if (i > safeBuffer.length - 1)
                 dateArr.push('XXXDay ' + i);
             else
@@ -857,7 +857,7 @@ const constructPreviewAndReportData = () => {                                   
         genLength = RPTDATA[0].length;
     INTERPOL8D.forEach(itpCol => interpString += `td:nth-of-type(-n + ${itpCol + 3}):nth-last-of-type(-n + ${genLength - 2 - itpCol}),`);
     // interpString += `td:nth-of-type(-n + ${INTERPOL8D[0] - -3}):nth-last-of-type(-n + ${genLength - 2 - INTERPOL8D[0]}),`;
-    _(interpString);
+// _(interpString);
     //let fx=[...qsa((interpString.slice(0,-1)))].forEach(itpCell=>itpCell.className+=' interpolated-value');
     return true;
 };
@@ -875,42 +875,37 @@ const msgBox = (title, msgText, callback = () => { this.parentNode.parentNode.re
     return;
 };
 
-const reloadPageAfterAdjustment = () => {
-    window.location.reload();
-};
-
 let offerPerformed = false, genModSeeds = recall('genModSeeds');
 const closeWindow = () => qs('#adjustement-panel').remove();
 const reviseSeed = (newData) => {
-    let issueBoxes = qsa(".adjustment-issue-check:checked");
-    issueBoxes = '|' + issueBoxes.map(ib => ib.id.replace('adjust-', '')).join('|') + '|';
+    function locateCorrespondingRecord(needle, haystack, propertyToCheck){
+        let straw = haystack.find(straws => (straws[propertyToCheck] === needle));
+        return straw || null;
+    }
+    let issueBoxes = qsa(".adjustment-issue-check:checked"),
+        seededSet  = fileBuffer[0]["fileData"],
+        dayOneSet  = fileBuffer[1]["fileData"];
 
-    let adjusterVals = newRecVals.filter(nv => issueBoxes.indexOf('|' + nv.issueID + '|') != -1);
-    adjusterVals.forEach(aV => {
-        let i = 0, trgSeedRec = fileBuffer[0].fileData.find((fD, i) => fD['Issue key'] === aV.issueID);
-        let foundRecord = null;
-        for (var records in fileBuffer[0].fileData) {
-            if (fileBuffer[0].fileData[records]['Issue key'] === aV.newRecord['Issue key']) foundRecord = records;
-        }
-        if (foundRecord != null) {
-            fileBuffer[0].fileData[foundRecord] = aV.newRecord;
-        } else {
-            fileBuffer[0].fileData.push(aV.newRecord);
-        }
-    });
+    issueBoxes = issueBoxes.map(iB => iB.id.replace('adjust-', ''));
 
+    issueBoxes.forEach(issueKey => {
+        let seededVersionOfIssue = locateCorrespondingRecord(issueKey, seededSet, "Issue key"),
+            dayOneVersionOfIssue = locateCorrespondingRecord(issueKey, dayOneSet, "Issue key");
+        if(seededVersionOfIssue === null)   seededSet.push(dayOneVersionOfIssue);
+        else                                seededVersionOfIssue = dayOneVersionOfIssue;
+
+        _(issueKey, seededVersionOfIssue, dayOneVersionOfIssue);
+    })
+    fileBuffer[0]["fileData"] = seededSet;
     retain('fileBuffer', JSON.stringify(fileBuffer));
-
-    // genModSeeds = retain("genModSeeds", true);
-    // msgBox('Done!', 'The data has been updated. The page will now refresh.', reloadPageAfterAdjustment  , 'OK');
-
+    document.location.href = document.location;
     closeWindow();
 };
 
 const syncAdjCheckboxes = (fromMaster = false) => {
-    let masterBox = qs("#adjustment-all");
-    let issueBoxes = qsa(".adjustment-issue-check");
-    masterBox.className = "adjustment-master";
+    let masterBox         = qs("#adjustment-all"),
+        issueBoxes        = qsa(".adjustment-issue-check");
+    masterBox.className   = "adjustment-master";
     if (fromMaster) {
         issueBoxes.forEach(b => { b.checked = masterBox.checked; });
     } else {
@@ -924,123 +919,176 @@ const syncAdjCheckboxes = (fromMaster = false) => {
             masterBox.className += " partial";
         }
     }
+
+    issueBoxes.forEach(iB=>{
+        let teamTotCell = qs('#teamTot' + iB.dataset.affectsTeam),
+            typeTotCell = qs('#typeTot' + iB.dataset.affectsType);
+        let sumTotlCell = qs('#overallTot');
+
+        if(teamTotCell) teamTotCell.innerText = '±0 hours';
+        if(typeTotCell) typeTotCell.innerText = '±0 hours';
+        if(sumTotlCell) sumTotlCell.innerText = '±0 hours';
+    });
+    let checkedIssueBoxes = qsa(".adjustment-issue-check:checked");
+    checkedIssueBoxes.forEach(cIB=>{
+        let teamTotCell = qs('#teamTot' + cIB.dataset.affectsTeam),
+            typeTotCell = qs('#typeTot' + cIB.dataset.affectsType);
+        let sumTotlCell = qs('#overallTot');
+        if(teamTotCell) teamTotCell.innerText = '+' + ((teamTotCell.innerText.replace(/[^\d.]/g, '') * 1) + (cIB.dataset.issueImpact * 1)) + ' hours';
+        if(typeTotCell) typeTotCell.innerText = '+' + ((typeTotCell.innerText.replace(/[^\d.]/g, '') * 1) + (cIB.dataset.issueImpact * 1)) + ' hours';
+        if(sumTotlCell) sumTotlCell.innerText = '+' + ((sumTotlCell.innerText.replace(/[^\d.]/g, '') * 1) + (cIB.dataset.issueImpact * 1)) + ' hours';
+    });
 };
 
-let seededSet, dayOneSet, revisedSeed, newRecVals, summaryTxts, summaryTots, seededFlat, lastMinAdds, seedFltKeys, missingStories, lastMinHrs;
+// let seededSet, dayOneSet, revisedSeed, summaryTxts, summaryTots, seededFlat, lastMinAdds, seedFltKeys, missingStories, lastMinHrs;
 
 const performDayOneOverrideAdjustment = () => {
+    function locateCorrespondingRecord(needle, haystack, returnIndex=true){
+        for(var idx=0; idx<haystack.length; idx++) if(needle===haystack[idx]) return returnIndex ? idx : haystack[idx];
+        return null
+    }
+
     if (offerPerformed || genModSeeds) return false;
-    offerPerformed = true;
-    lastMinAdds = '';
-    lastMinHrs = '';
-    newRecVals = [];
-    teamsNewRec = [];
-    summaryTxts = [];
-    seededSet = fileBuffer[0]["fileData"];
-    dayOneSet = fileBuffer[1]["fileData"];
-    revisedSeed = Object.assign([], seededSet);
-    alterdHours = [];
-    seededFlat = seededSet.flatMap(s => s["Issue key"]); // https://stackoverflow.com/questions/9736804/find-missing-element-by-comparing-2-arrays-in-javascript
-    seedFltKeys = '|' + seededFlat.join('|') + '|';
-    missingStories = dayOneSet.filter(d1 => seedFltKeys.indexOf('|' + d1['Issue key'] + '|') == -1);
+    offerPerformed        = true;
+    let lastMinAdds       = '',
+        lastMinHrs        = '',
+        teamsNewRec       = [],
+        summaryTxts       = [],
+        
+        seededSet         = fileBuffer[0]["fileData"],
+        dayOneSet         = fileBuffer[1]["fileData"],
+        seededFlat        = seededSet.flatMap(s   => s["Issue key"]),
+        dayOneFlat        = dayOneSet.flatMap(s   => s["Issue key"]),
+        teamKeyStr        = 'Custom field (Scrum Team)',
+        seededFlatKeys    = '_' + seededFlat.join('_') + '_',
+        // dayOneFlatKeys = '|' + dayOneFlat.join('|') + '|';
 
-    dayOneSet.forEach((d1, i) => {
-        let activeStory = d1['Issue key'],
-            day1Rec = dayOneSet.find(d => d['Issue key'] === activeStory),
-            seedRec = revisedSeed.find(s => s['Issue key'] === activeStory);
-        if (day1Rec && seedRec && day1Rec['Remaining Estimate'] && seedRec['Remaining Estimate'] && ((day1Rec['Remaining Estimate'] < seedRec['Remaining Estimate']) || (!isNaN(day1Rec['Remaining Estimate']) && isNaN(seedRec['Remaining Estimate'])))) {
-            let oldEst = seedRec['Remaining Estimate'],
-                newEst = day1Rec['Remaining Estimate'];
-            seedRec['OldEstimate'] = oldEst;
-            seedRec['Remaining Estimate'] = newEst;
-            newRecVals.push({ type: 'adj', issueID: activeStory, newRecord: day1Rec, oldVal: (toHours(newEst) + "").replace(/\.0+$/, ''), newVal: (toHours(oldEst) + "").replace(/\.0+$/, '') });
+        revisedSeed       = Object.assign([], seededSet),
+        alterdHours       = [],
+
+        missues           = dayOneFlat.filter(d1i => !new RegExp(`_${d1i}_`, 'gim').test(seededFlatKeys));
+    missues               = missues.map(m => {let newM = dayOneSet[locateCorrespondingRecord(m, dayOneFlat)]; newM.modded = 'ADD'; newM.modValue = newM['Remaining Estimate']*1; return newM; });
+
+    let newSeed           = [...seededSet, ...missues];
+    // newSeedFlat   = seededSet.flatMap(s => s["Issue key"]);
+
+    newSeed.forEach(nSI => {
+        let relatedDay1Value = dayOneSet[locateCorrespondingRecord(nSI['Issue key'], dayOneFlat)],
+            newSeedEstHrsVal = nSI['Remaining Estimate'];
+        newSeedEstHrsVal = (newSeedEstHrsVal == null || newSeedEstHrsVal == '' || isNaN((newSeedEstHrsVal*1))) ? 0 : (newSeedEstHrsVal*1);
+        if(relatedDay1Value && relatedDay1Value['Remaining Estimate']){
+            relatedDay1Value = relatedDay1Value['Remaining Estimate'] * 1;
+            if(relatedDay1Value > newSeedEstHrsVal){
+                // _(nSI, nSI['Remaining Estimate'], relatedDay1Value, '\n\n========================');
+                nSI.oldValue = newSeedEstHrsVal;
+                nSI.modded   = 'AMEND';
+                nSI.modValue = relatedDay1Value - newSeedEstHrsVal;
+                nSI.newValue = relatedDay1Value;
+                nSI['Remaining Estimate'] = relatedDay1Value;
+            }
         }
     });
 
-    missingStories.forEach(ms => {
-        newRecVals.push({ type: 'add', issueID: ms['Issue key'], newRecord: ms, oldVal: 0, newVal: (toHours(ms['Remaining Estimate']) + "").replace(/\.0+$/, '') });
-    });
-    //teamsNewRec = [...new Set(newRecVals.flatMap
-    newRecVals.forEach(record => {
-        let team = record.newRecord['Custom field (Scrum Team)'];
-        if (record.type == 'add') record.msg = `Story would be added to the iteration`;
-        else record.msg = `Story's hours will be increased (from ${record.oldVal} to ${record.newVal})`;
-
-
-        if (summaryTxts[team] == null) {
-            summaryTxts[team] = [record];
-        } else {
-            summaryTxts[team].push(record);
-        }
-    });
-
+    let updates  = [
+                        ...missues.sort((a, b) => b[teamKeyStr] - a[teamKeyStr]), 
+                        ...newSeed.filter(nSI=>typeof(nSI.oldValue) !== 'undefined').sort((a, b) => b[teamKeyStr] - a[teamKeyStr])
+                    ];
 
     let summaryOPUI = '';
 
     summaryOPUI += `<div id='adjustement-panel'>
-                                <table cellpadding="0' cellspacing="0">
-                                    <thead>
-                                        <tr><th colspan="5">Optional Adjustments</th></tr>
-                                        <tr>
-                                            <th>Team</th>
-                                            <th><input id="adjustment-all" name="adjustment-all" class="adjustment-master on" type="checkbox" value="*" checked onclick="syncAdjCheckboxes(true)" /></th>
-                                            <th>Issue ID</th>
-                                            <th>Change that would be made</th>
-                                            <th>Impact on Itr.</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>`;
-    Object.keys(summaryTxts).forEach(key => {
-        summaryTxts[key] = [...summaryTxts[key]];
-        record = summaryTxts[key];
-        let teamTot = 0;
-        for (let i = 0; i < record.length; i++) {
-            teamTot += (record[i].newVal - record[i].oldVal);
-            summaryOPUI += ` <tr class="adjustment-${record[i].type}">
-                                    ${(i === 0) ? `<td rowspan="${summaryTxts[key].length + 1}" class="adjustment-team-name">${key}</td>` : ''}
-                                    <td><input id="adjust-${record[i].issueID}" name="adjust-${record[i].issueID}" class="adjustment-issue-check" type="checkbox" value="${record[i].issueID}" checked onclick="syncAdjCheckboxes()" /></td>
-                                    <td>${record[i].issueID}</td>
-                                    <td>${record[i].msg}</td>
-                                    <td><b>+${record[i].newVal - record[i].oldVal}</b> hrs.</td>
-                                </tr>`;
-        }
-        summaryOPUI += ` <tr class='adjustment-total-row'>
-                <td colspan="3">For a total increase of: </td>
-                <td><b>${teamTot}</b> hrs.</td>
-            </tr>`;
+                        <table cellpadding="0' cellspacing="0">
+                            <thead>
+                                <tr><th colspan="5">Optional Adjustments</th></tr>
+                                <tr>
+                                    <th>Team</th>
+                                    <th><input id="adjustment-all" name="adjustment-all" class="adjustment-master on" type="checkbox" value="*" checked onclick="syncAdjCheckboxes(true)" /></th>
+                                    <th>Issue ID</th>
+                                    <th>Change that would be made</th>
+                                    <th>Impact on Itr.</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+    let freeText='', typeText='', typeIterating = '', teamIterating='', teamTotal=0, typeTotal=0, overallTotal=0, teamTotFld=0, typeTotFld=0;
+    updates.forEach(update=>{
+        typeText = (update.modded=='ADD') 
+            ? `${update["Issue key"]} would be added (adds ${toHours(update.modValue)} hours)` 
+            : `${update["Issue key"]} will increase in hours from ${toHours(update.oldValue)} to ${toHours(update.newValue)} (adds ${toHours(update.modValue)} hours)`;
 
+        if(typeIterating     !== update.modded){
+            if(typeIterating !== ''){
+                summaryOPUI += `<tr class="adjustment-type-subtotal-row"><td colspan="4">Sub-Total of Adjustments:</td><td id="typeTot${typeTotFld}">+${typeTotal} hours</td></tr>`;
+                typeTotFld++;
+            }
+            typeTotal         = 0;
+            typeIterating     = update.modded;
+            summaryOPUI      += `<tr class="adjustment-type-row"><td colspan="5">${(typeIterating == 'ADD') ? "Stories to be ADDED" : "Stories whose HOURS INCREASED"}</td></tr>`;
+        }
+        if(update[teamKeyStr] !== teamIterating){
+            if(teamIterating  !== ''){
+                summaryOPUI += teamTotal !== 0 ? `<tr class="adjustment-team-subtotal-row"><td colspan="4">Team Impact:</td><td id="teamTot${teamTotFld}">+${teamTotal} hours</td></tr>` : '';
+                teamTotFld++;
+            }
+            teamTotal         = 0;
+            teamIterating     = update[teamKeyStr];
+        } 
+        summaryOPUI      += update.modValue !== 0 ? `<tr class = "adjustment-team-name"><td>${teamIterating}</td>` : '';
+
+        teamTotal    += (toHours(update.modValue) * 1);
+        typeTotal    += (toHours(update.modValue) * 1);
+        overallTotal += (toHours(update.modValue) * 1);
+        
+        summaryOPUI  += update.modValue !== 0 ? `<td><input id="adjust-${update["Issue key"]}" name="adjust-${update["Issue key"]}" class="adjustment-issue-check" type="checkbox" value="${update["Issue key"]}" checked data-issue-impact="${toHours(update.modValue)}" data-affects-team="${teamTotFld}" data-affects-type="${typeTotFld}" onclick="syncAdjCheckboxes()" /></td>
+                                                    <td>${update["Issue key"]}</td>
+                                                    <td>${typeText}</td>
+                                                    <td><b>+${toHours(update.modValue)}</b> hrs.</td>
+                                                </tr>` : '';
+
+        freeText    += update.modValue === 0 ? `<tr class = "adjustment-team-name"><td>${update[teamKeyStr]}</td>
+                                                    <td><input id="adjust-${update["Issue key"]}" name="adjust-${update["Issue key"]}" class="adjustment-issue-check" type="checkbox" value="${update["Issue key"]}" checked data-issue-impact="0" onclick="syncAdjCheckboxes()" /></td>
+                                                    <td>${update["Issue key"]}</td>
+                                                    <td>Freebie; If added, story won't impact the iteration/burndown.</td>
+                                                    <td>±0 hrs.</td>
+                                                </tr>` : '';
+        
     });
+    summaryOPUI += teamTotal !== 0 ? `<tr class="adjustment-team-subtotal-row"><td colspan="4">Team Impact:</td><td id="teamTot${teamTotFld}">+${teamTotal} hours</td></tr>` : '';
+    summaryOPUI += typeTotal !== 0 ? `<tr class="adjustment-type-subtotal-row"><td colspan="4">Sub-Total of Adjustments:</td><td id="typeTot${typeTotFld}">+${typeTotal} hours</td></tr>` : '';
+    summaryOPUI += `<tr class="adjustment-type-row"><td colspan="5">FREEBIES</td></tr>`;
+    summaryOPUI += freeText;
+    summaryOPUI += `<tr class="adjustment-type-subtotal-row"><td colspan="4">Sub-Total of Adjustments:</td><td>±0 hours</td></tr>`;
+    summaryOPUI += `<tr class="adjustment-total-row"><td colspan="4">Cumulative Impact:</td><td id="overallTot">+${overallTotal} hours</td></tr>`;
     summaryOPUI += `
-                                        <tr>
-                                            <td colspan="5">
-                                                <input class="cta-adjustment secondary" type="button" onclick="closeWindow()" value="Err... Never Mind" />
-                                                <input class="cta-adjustment primary" type="button" onclick="reviseSeed(newRecVals)" value="Adjust Seed Values" />
-                                            </td>
-                                        </tr>
-                                     </tbody>
-                                </table>
-                            </div>`;
+                        <tr>
+                            <td colspan="5">
+                                <input class="cta-adjustment secondary" type="button" onclick="closeWindow()" value="Err... Never Mind" />
+                                <input class="cta-adjustment primary" type="button" onclick="reviseSeed()" value="Adjust Seed Values" />
+                            </td>
+                        </tr>
+                        </tbody>
+                </table>
+            </div>`;
 
     document.body.insertAdjacentHTML('afterBegin', summaryOPUI);
 
+
+
+
+    
     // }
 };
 const offerToPerformDayOneOverrideAdjustment = () => {
     if (!offerPerformed && !genModSeeds) {
         msgBox('Ruh-roh!', 'Looks like one or more of your scrumbags either failed to seed their hours before the start of the iteration, or "remembered" one or more stories just after the iteration started. <br /><br />Would you like me to correct that for you?', performDayOneOverrideAdjustment);
     }
+    // performDayOneOverrideAdjustment();
 };
 
 const createReportData = () => {
     _I("FUNCTION: createReportData");
-    tableNode = document.querySelector('.preview-table');
-    tHead = [...tableNode.querySelectorAll('th')].map(th => th.innerText);
-    tBody = [...tableNode.querySelectorAll('tr')].map(tr => {
-        let opObj = [...tr.querySelectorAll('td')];
-        opObj = opObj.flatMap(f => f.innerText);
-
-        return opObj;
-    });
+    let tableNode = document.querySelector('.preview-table'),
+        tHead = [...tableNode.querySelectorAll('th')].map(th => th.innerText),
+        tBody = [...tableNode.querySelectorAll('tr')].map(tr => [...tr.querySelectorAll('td')].flatMap(f => f.innerText));
     tBody[0] = tHead;
     RPTDATA = Object.assign([], tBody);
 };
@@ -1089,16 +1137,16 @@ const postProcessData = () => {
         _I("THENABLE -> ", "res", res);
         hdrRowNode = rowNodes.splice(0, 1)[0];
         hdrColNodes = [...hdrRowNode.childNodes];
-        _('hdrRowNode', hdrRowNode);
-        _('rowNodes', rowNodes);
-        _('hdrColNodes', hdrColNodes);
-        _('colNodes', colNodes);
+// _('hdrRowNode', hdrRowNode);
+// _('rowNodes', rowNodes);
+// _('hdrColNodes', hdrColNodes);
+// _('colNodes', colNodes);
 
 
         // Extarct the unique statuses and generate their respective checkboxes for the display filtes.
         [...new Set(uniqueStatuses)].sort().forEach(status => {
-            let muStatus = status.replace(/\s+/g, '_');
-            let statusRE = new RegExp(status, 'g');
+            let muStatus = status.replace(/\s+/g, '_'),
+                statusRE = new RegExp(status, 'g');
             rptStatuses[muStatus] = RPTString.match(statusRE).length;
             dispCkBoxes += `<input name="chk-${muStatus}" id="chk-${muStatus}" class='status-filter-checkboxes' type="checkbox" value="${rptStatuses[muStatus]}" checked="true" onChange="reFilterPreview(this)" /><label for="chk-${muStatus}">${status} (${rptStatuses[muStatus]})</label><br>`;
         });
@@ -1109,8 +1157,8 @@ const postProcessData = () => {
         // Interpolate any missing data into its respective columns, from left to right, top to bottom.
         colNodes.forEach((reportRow, rowIndex) => {
             reportRow.forEach((cols, colIndex) => {
-                let col = cols.innerText;
-                let cell = colNodes[rowIndex][colIndex];//qs(`.preview-table tr:nth-of-type(${rowIndex}) td:nth-of-type(${colIndex+1})`);
+                let col = cols.innerText,
+                    cell = colNodes[rowIndex][colIndex];//qs(`.preview-table tr:nth-of-type(${rowIndex}) td:nth-of-type(${colIndex+1})`);
                 // _(cell == colNodes[rowIndex][colIndex]);
                 if (col === '---') {
                     cell.className = 'interpolated-value';
@@ -1147,33 +1195,29 @@ const postProcessData = () => {
 
         rowNodes.forEach((rowObj, rowIdx) => {
            
-            let minor = [],
-                medium = [],
-                major = [],
-                critical = [];
-
-            let row = rowObj.children,                                                                              // NodeList of the cells' DOM objects for the row being examined
-                rowHrs = rowObj.innerText.replace(/[A-Z-]{8}\d{5}/gi, '').replace(/(\d+)h/gi, '$1 ').match(/\d+/gi),  // Array of hours representing all columns in this row (ex: [8, 8, 7, 6, 4, 2, 0, 0, 0, 0, 0])
-                totHrsCols = rowHrs.length,                                                                                // Number of hours columns being examined (ex: 11, for a std length itr)
-                seedHours = num(rowHrs[0]),                                                                               // Number of hours in seed column (ex: 8, for an 8h seed)
-                rowHoursFlat = rowHrs.join('').replace(/ /g, ''),
+            let minor           = [],
+                medium          = [],
+                major           = [],
+                critical        = [],
+                row             = rowObj.children,                                                                              // NodeList of the cells' DOM objects for the row being examined
+                rowHrs          = rowObj.innerText.replace(/[A-Z-]{8}\d{5}/gi, '').replace(/(\d+)h/gi, '$1 ').match(/\d+/gi),  // Array of hours representing all columns in this row (ex        : [8, 8, 7, 6, 4, 2, 0, 0, 0, 0, 0])
+                totHrsCols      = rowHrs.length,                                                                                // Number of hours columns being examined (ex                    : 11, for a std length itr)
+                seedHours       = num(rowHrs[0]),                                                                               // Number of hours in seed column (ex                            : 8, for an 8h seed)
+                rowHoursFlat    = rowHrs.join('').replace(/ /g, ''),
                 last72HoursFlat = rowHrs.slice(-3).join('').replace(/ /g, ''),
-                allZeroes = new Array(totHrsCols).fill(0).join(''),                                                       // String of zeroes whose length is number of hours cols (ex: "00000000000" if a std length itr)
-                allSeedValue = new Array(totHrsCols).fill(seedHours).join(''),                                               // String of seed values whose length is number of hours cols (ex: "88888888888" for an 8h seed)
-                allItrZeroedOut = rowHoursFlat === allZeroes;
-
-
-            let finalDaysHours = num(rowHrs[totHrsCols - 1]),
+                allZeroes       = new Array(totHrsCols).fill(0).join(''),                                                       // String of zeroes whose length is number of hours cols (ex     : "00000000000" if a std length itr)
+                allSeedValue    = new Array(totHrsCols).fill(seedHours).join(''),                                               // String of seed values whose length is number of hours cols (ex: "88888888888" for an 8h seed)
+                finalDaysHours  = num(rowHrs[totHrsCols - 1]),
                 seedStoryNumber = row[1].innerText,
-                seedStatus = row[0].innerText;
-
-            let devHasBegun = false,
-                newStoryMidItr = false,
+                seedStatus      = row[0].innerText,
+                devHasBegun     = false,
+                newStoryMidItr  = false,
                 delStoryFromItr = false,
-                noChangeFor72 = rowHrs.slice(-3).join('') === new Array(3).fill(finalDaysHours).join(''),
-                noChangeInItr = rowHoursFlat === new Array(totHrsCols).fill(finalDaysHours).join('').replace(/ /g, ''),
-                zeroesAllItr = parseInt(rowHrs.join('')) === 0;
-            runningValues = seedHours;
+                allItrZeroedOut = rowHoursFlat === allZeroes,
+                noChangeFor72   = rowHrs.slice(-3).join('') === new Array(3).fill(finalDaysHours).join(''),
+                noChangeInItr   = rowHoursFlat              === new Array(totHrsCols).fill(finalDaysHours).join('').replace(/ /g, ''),
+                zeroesAllItr    = parseInt(rowHrs.join('')) === 0,
+                runningValues   = seedHours;
 
             for (var colIdx = row.length - 1; colIdx >= 2; colIdx--) {
                 let col = row[colIdx];
@@ -1225,16 +1269,16 @@ const postProcessData = () => {
                 }
             });
         }
-        let idealRowMarkup = `<tr class="ideal-row"><td colspan="2" class="total-label">Total (Ideal):</td><td>${idealRow.join('h</td><td>')}h</td></tr>`;
-        let totalRowMarkup = `<tr class="total-row"><td colspan="2" class="total-label">Total (Actual):</td>${totalRow.join('')}</tr>`;
+        let idealRowMarkup = `<tr class="ideal-row"><td colspan="2" class="total-label">Total (Ideal):</td><td>${idealRow.join('h</td><td>')}h</td></tr>`,
+            totalRowMarkup = `<tr class="total-row"><td colspan="2" class="total-label">Total (Actual):</td>${totalRow.join('')}</tr>`;
         qs('.preview-table tbody').insertAdjacentHTML('beforeEnd', idealRowMarkup);
         qs('.preview-table tbody').insertAdjacentHTML('beforeEnd', totalRowMarkup);
 
         qsa('.ideal-row td:nth-child(n + ' + ( 3 + DAYSLOADED) + '), .total-row td:nth-child(n + ' + ( 3 + DAYSLOADED) + ')').forEach(dimIdeal => {dimIdeal.className = dimIdeal.className.replace(/extra-dim /, '') + 'extra-dim '});
 
         dataToGraph = totalRow.join('|').replace(/[^\d\|\.]/g, '').replace(/\|0/g,'').split('|');
-        _(dataToGraph)
-        idealDayCount = idealRow.length;
+// _(dataToGraph)
+        idealDayCount = idealRow.length; 
         return
         
     }).then((res) => {
@@ -1292,62 +1336,69 @@ const incDec = (dir, mechanical = true, dly = 750, scale = 1) => {
 //%% ====================================================================================================
 //%% ======================================== GRAPHING FUNCTIONS ========================================
 //%% ====================================================================================================
+
+
+//%% ====================================================================================================
+//%% ======================================== GRAPHING FUNCTIONS ========================================
+//%% ====================================================================================================
 function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
-    _('_renderCHARt', totalDaysInIteration, remainingHoursPerDay)
+// _('_renderCHARt', totalDaysInIteration, remainingHoursPerDay)
     // 500, 450, 400, 350, 300, 250, 200, 150, 100, 50*, 0*
     // totalDaysInIteration = 10;
     // remainingHoursPerDay = [500,475,375,450,200,250];
-    remainingHoursPerDay = remainingHoursPerDay.slice(0, FILESLOADED);
-    iterationStartingHrs = remainingHoursPerDay[0];
-    idealPlottedPtValues = [iterationStartingHrs];
-    interpolatedIndicies = [];
-    colorsForActualHours = ["#FFFF00"];
-    // pageSettings = document.getElementById('grid-settings-panel').elements;
-    let pageSettings = {};
-    pageSettings.elements = {
+    remainingHoursPerDay     = remainingHoursPerDay.slice(0, FILESLOADED);
+    
+    let iterationStartingHrs = remainingHoursPerDay[0],
+        idealPlottedPtValues = [iterationStartingHrs],
+        interpolatedIndicies = [],
+        colorsForActualHours = ["#FFFF00"],
+        pageSettings         = {};
+   
+    pageSettings.elements    = {
         showPopover: {
-            checked: true
+            checked : true
         }
     };
 
     
 
 
-    const c = document.getElementById("burndownOutput"),
-        popoverObj = document.getElementById("popover"),
-        wholePi = Math.PI * 2;
-    largestActualHrValue = Math.max(...remainingHoursPerDay);
-    adjustedRowUnitValue = largestActualHrValue / 10;
-    gridScaleMultipliers = 50 / adjustedRowUnitValue;
-    gridSideMargins = 50; //(canvasWidth - (gridColWidth * totalDaysInIteration)) / 2;
-    gridVertMargins = 50;
-    canvasHeight = 550;
-    canvasWidth = 1050;
-    gridRowScale = 50 / (Math.max(...remainingHoursPerDay) / 10);
-    gridColWidth = Math.round(canvasWidth / (totalDaysInIteration));
-    canvasWidth = (1 + totalDaysInIteration) * gridColWidth;
-    gridRowHeight = 50;
+    const c                  = document.getElementById("burndownOutput"),
+        popoverObj           = document.getElementById("popover"),
+        wholePi              = Math.PI * 2;
+    let largestActualHrValue = Math.max(...remainingHoursPerDay),
+        adjustedRowUnitValue = largestActualHrValue / 10,
+        gridScaleMultipliers = 50 / adjustedRowUnitValue,
+        gridSideMargins      = 50, //(canvasWidth - (gridColWidth * totalDaysInIteration)) / 2;
+        gridVertMargins      = 50,
+        canvasHeight         = 550,
+        canvasWidth          = 1050,
+        gridRowScale         = 50 / (Math.max(...remainingHoursPerDay) / 10),
+        gridColWidth         = Math.round(canvasWidth / (totalDaysInIteration)),
+        gridRowHeight        = 50,
+        plot                 = (day, val) => [plotX(day), plotY(val)],
+        plotX                = (day)      => readableRound(gridSideMargins + (gridColWidth * day) + (gridColWidth / 2)),
+        plotY                = (val)      => canvasHeight - (gridScaleMultipliers * val) + gridVertMargins;
 
-    let plot = (day, val) => [plotX(day), plotY(val)];
-    let plotX = (day) => readableRound(gridSideMargins + (gridColWidth * day) + (gridColWidth / 2));
-    let plotY = (val) => canvasHeight - (gridScaleMultipliers * val) + gridVertMargins;
+    canvasWidth              = (1 + totalDaysInIteration) * gridColWidth;
+
 
 
     // COLOR Helper Functions
 
     const LightenDarkenColor = (colStr, amt, col = parseInt(colStr, 16)) => (((col & 0x0000FF) + amt) | ((((col >> 8) & 0x00FF) + amt) << 8) | (((col >> 16) + amt) << 16)).toString(16);
 
-    posNegPrcntToGYRHex = (val, saturation = 1, intensity = 1) => {
-        let minMaxed = 2 * (Math.round(Math.min(Math.max(val, -50), 50)));
-        let hVal = Math.round(60 * (minMaxed / 100) + 60);
+    const posNegPrcntToGYRHex = (val, saturation = 1, intensity = 1) => {
+        let minMaxed = 2 * (Math.round(Math.min(Math.max(val, -50), 50))),
+            hVal = Math.round(60 * (minMaxed / 100) + 60);
         let hex = RGBtoHEX(...HSVtoRGB(hVal, saturation, intensity));
         return hex;
     };
 
-    let HSVtoRGB = (h, s, v, f = (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k, 1), 0)) => [f(5), f(3), f(1)];
-    let RGBtoHEX = (r, g, b) => "#" + [r, g, b].map(x => Math.round(x * 255).toString(16).padStart(2, 0)).join('');
-    let HSVtoHEX = (h = 0, s = 1, v = 1) => RGBtoHEX(...HSVtoRGB(h, s, v));
-    let rgbStrToHex = (rgbStr) => rgbStr && '#' + rgbStr.slice(4, -1).split(', ').map(x => (+x).toString(16).padStart(2, '0')).join('');
+    let HSVtoRGB = (h, s, v, f = (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k, 1), 0)) => [f(5), f(3), f(1)],
+        RGBtoHEX = (r, g, b) => "#" + [r, g, b].map(x => Math.round(x * 255).toString(16).padStart(2, 0)).join('');
+    let HSVtoHEX = (h = 0, s = 1, v = 1) => RGBtoHEX(...HSVtoRGB(h, s, v)),
+        rgbStrToHex = (rgbStr) => rgbStr && '#' + rgbStr.slice(4, -1).split(', ').map(x => (+x).toString(16).padStart(2, '0')).join('');
 
 
     // Fill in any gaps in our data for the graph.
@@ -1356,11 +1407,11 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
             if (remainingHoursPerDay[i] == -1) {
                 let bgnIndex = null,
                     endIndex = null;
-                for (b = i; b >= 0 && bgnIndex === null; b--) if (remainingHoursPerDay[b] != -1) bgnIndex = b;
-                for (e = i; e >= 0 && endIndex === null; e++) if (remainingHoursPerDay[e] != -1) endIndex = e;
+                for (let b = i; b >= 0 && bgnIndex === null; b--) if (remainingHoursPerDay[b] != -1) bgnIndex = b;
+                for (let e = i; e >= 0 && endIndex === null; e++) if (remainingHoursPerDay[e] != -1) endIndex = e;
                 if (bgnIndex != null && endIndex != null) {
-                    let interpRange = endIndex - bgnIndex;
-                    let perDiemVals = ((remainingHoursPerDay[endIndex] - remainingHoursPerDay[bgnIndex]) / interpRange);
+                    let interpRange = endIndex - bgnIndex,
+                        perDiemVals = ((remainingHoursPerDay[endIndex] - remainingHoursPerDay[bgnIndex]) / interpRange);
                     for (let v = bgnIndex + 1; v < endIndex; v++) {
                         if (remainingHoursPerDay[v] == -1) remainingHoursPerDay[v] = readableRound((remainingHoursPerDay[v - 1] + perDiemVals), 2, true);
                         interpolatedIndicies.push(v);
@@ -1392,14 +1443,14 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
 
     const drawColPanels = () => {
         for (let i = 0; i <= totalDaysInIteration; i++) {
-            let disabled = i >= remainingHoursPerDay.length;
-            let interped = interpolatedIndicies.indexOf(i) !== -1;
+            let disabled = i >= remainingHoursPerDay.length,
+                interped = interpolatedIndicies.indexOf(i) !== -1;
 
             ctx.fillStyle = disabled ? '#eaeaea' : (interped) ? '#FAEFFF' : '#fff';
             ctx.fillRect(gridSideMargins + (gridColWidth * i), gridVertMargins, gridColWidth, canvasHeight);
 
-            let lblVals = (i === 0) ? 'ITR' : i;
-            let lblOSet = (i === 0) ? 21 : (i >= 10) ? 13 : 15;
+            let lblVals = (i === 0) ? 'ITR' : i,
+                lblOSet = (i === 0) ? 21 : (i >= 10) ? 13 : 15;
             let lblUnit = (i === 0) ? 'start' : 'day';
 
             // if(disabled) ctx.globalAlpha = 0.4
@@ -1493,8 +1544,8 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
         var bar = c.getContext("2d");
         bar.globalAlpha = 0.4;
         bar.beginPath();
-        let barShift = gridColWidth * -0.4;
-        let barWidth = gridColWidth * 0.80;
+        let barShift = gridColWidth * -0.4,
+            barWidth = gridColWidth * 0.80;
 
         for (let i = 0; i < idealPlottedPtValues.length; i++) {
             if (i > DAYSLOADED) return false;
@@ -1556,16 +1607,16 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
     let drawActualLabels = (dayIndex) => {
 
         if (dayIndex > remainingHoursPerDay.length - 1 || dayIndex > DAYSLOADED) return '';
-        let actual = remainingHoursPerDay[dayIndex];
-        let ideal = idealPlottedPtValues[dayIndex];
-        let overUnder = ideal - actual;
+        let actual = remainingHoursPerDay[dayIndex],
+            ideal = idealPlottedPtValues[dayIndex],
+            overUnder = ideal - actual;
         if (overUnder === 0) return '';
-        let xOffset = -30;
-        let percentage = -readableRound(100 - ((ideal / actual) * 100), 1) + '%';
-        let hours = "(" + readableRound(overUnder, 2, true) + " hrs)";
+        let xOffset = -30,
+            percentage = -readableRound(100 - ((ideal / actual) * 100), 1) + '%',
+            hours = "(" + readableRound(overUnder, 2, true) + " hrs)";
 
         if (overUnder < 0) {
-            _('' + colorsForActualHours[dayIndex + 1]);
+// _('' + colorsForActualHours[dayIndex + 1]);
             ctx.font = 'bold 16px monospace';
             ctx.fillStyle = LightenDarkenColor(colorsForActualHours[dayIndex + 1], 1 / 100);
             ctx.fillText("BEHIND!", plotX(dayIndex) + xOffset, plotY(remainingHoursPerDay[dayIndex]) - 15);
@@ -1611,8 +1662,8 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
                 hourDifference = ideal - actual;
             if (dataObj[i + 1]) {
                 segs.beginPath();
-                let segment = new Path2D();
-                let sX = plotX(i),
+                let segment = new Path2D(),
+                    sX = plotX(i),
                     sY = plotY(dataObj[i]),
                     eX = plotX(i + 1),
                     eY = plotY(dataObj[i + 1]);
@@ -1633,9 +1684,9 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
     };
 
     let shadeLineGraph = (dataObj = remainingHoursPerDay) => {
-        let segs = c.getContext("2d");
-        let linePath = new Path2D();
-        let i;
+        let segs = c.getContext("2d"),
+            linePath = new Path2D(),
+            i;
         segs.beginPath();
         for (i = 0; i <= dataObj.length; i++) {
             let sX = 100 + (i * 100),
@@ -1646,9 +1697,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
                 linePath.moveTo(sX, sY);
                 linePath.lineTo(eX, eY);
                 //_('linePath.lineTo(',eX, eY,')');
-            } else {
-
-            }
+            } 
         }
         linePath.lineTo(100 + ((dataObj.length - 1) * 100), 650 - idealPlottedPtValues[(dataObj.length - 1)]);
         linePath.lineTo(100, 150);
@@ -1665,13 +1714,6 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
         // segs.stroke();
 
     };
-
-    let renderPopOvers = (dataObj = remainingHoursPerDay) => {
-        for (let i = 0; i <= dataObj.length; i++) {
-
-        }
-    };
-
     drawBarGraph();
     plotActualPoints();
     drawLineGraph();
