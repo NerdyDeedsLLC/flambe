@@ -1523,10 +1523,10 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
                 hourDifference = ideal - actual;
                 //posNegPrcntToGYRHex(hourDifference);
                 let dotColor;
-                if(hourDifference > 0){
-                    dotColor = "#090";
+                if(hourDifference >= 0){
+                    dotColor = "#0C0";
                 }else{
-                    dotColor = (actual / ideal >= 1.15) ? "#F11" : "#DD3"
+                    dotColor = (actual / ideal >= 1.15) ? "#E00" : "#EE2"
                 }
             colorsForActualHours.push(dotColor);
         }
@@ -1548,7 +1548,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
 
     let drawBarGraph = (dataObj = remainingHoursPerDay, showIdealBars = true) => {
         var bar = c.getContext("2d");
-        bar.globalAlpha = 0.4;
+        bar.globalAlpha = 0.7;
         bar.beginPath();
         let barShift = gridColWidth * -0.4,
             barWidth = gridColWidth * 0.80;
@@ -1598,15 +1598,16 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
             let plottedPt = plotPt(plotX(i - 1), plotY(dataObj[i - 1])),
                 dotColor  = colorsForActualHours[i],
                 lineColor = dotColor;
-
-            pts.globalAlpha = 0.95;
-            pts.strokeStyle = lineColor;
-            pts.setLineDash([]);
-            pts.lineWidth = "2";
-            pts.fillStyle = dotColor;
-            pts.fill(plottedPt, 'evenodd');
-            pts.stroke(plottedPt);
-            colorsForActualHours.push(dotColor);
+                
+                pts.globalAlpha = 1;
+                pts.strokeStyle = lineColor;
+                pts.setLineDash([]);
+                pts.lineWidth = "2";
+                pts.stroke(plottedPt);
+                pts.globalAlpha = 0.5;
+                pts.fillStyle = dotColor;
+                pts.fill(plottedPt, 'evenodd');
+                colorsForActualHours.push(dotColor);
         }
     };
 
