@@ -1351,7 +1351,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
     let iterationStartingHrs = remainingHoursPerDay[0],
         idealPlottedPtValues = [iterationStartingHrs],
         interpolatedIndicies = [],
-        colorsForActualHours = ["#FFFF00"],
+        colorsForActualHours = ["#009900"],
         pageSettings         = {};
    
     pageSettings.elements    = {
@@ -1520,8 +1520,14 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
         for (let i = 1; i <= dataObj.length; i++) {
             let ideal = idealPlottedPtValues[i - 1],
                 actual = dataObj[i - 1],
-                hourDifference = ideal - actual,
-                dotColor = posNegPrcntToGYRHex(hourDifference);
+                hourDifference = ideal - actual;
+                //posNegPrcntToGYRHex(hourDifference);
+                let dotColor;
+                if(hourDifference > 0){
+                    dotColor = "#090";
+                }else{
+                    dotColor = (actual / ideal >= 1.15) ? "#F11" : "#DD3"
+                }
             colorsForActualHours.push(dotColor);
         }
     };
@@ -1618,7 +1624,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
         if (overUnder < 0) {
 // _('' + colorsForActualHours[dayIndex + 1]);
             ctx.font = 'bold 16px monospace';
-            ctx.fillStyle = LightenDarkenColor(colorsForActualHours[dayIndex + 1], 1 / 100);
+            ctx.fillStyle = colorsForActualHours[dayIndex+1];
             ctx.fillText("BEHIND!", plotX(dayIndex) + xOffset, plotY(remainingHoursPerDay[dayIndex]) - 15);
 
             ctx.font = '12px monospace';
@@ -1636,11 +1642,11 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
 
             ctx.font = '14px monospace';
             ctx.fillStyle = '#666';
-            ctx.fillText(hours, plotX(dayIndex) + xOffset - 2, plotY(remainingHoursPerDay[dayIndex]) + 45);
+            ctx.fillText(hours, plotX(dayIndex) + xOffset - 10, plotY(remainingHoursPerDay[dayIndex]) + 45);
 
             ctx.font = '26px monospace';
             ctx.fillStyle = '#000';
-            ctx.fillText(percentage, plotX(dayIndex) + xOffset + 5, plotY(remainingHoursPerDay[dayIndex]) + 70);
+            ctx.fillText(percentage, plotX(dayIndex) + xOffset - 7, plotY(remainingHoursPerDay[dayIndex]) + 70);
 
         }
         //           
