@@ -1624,6 +1624,8 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
 
         if (overUnder < 0) {
 // _('' + colorsForActualHours[dayIndex + 1]);
+            ctx.textAlign = "left";
+
             ctx.font = 'bold 16px monospace';
             ctx.fillStyle = colorsForActualHours[dayIndex+1];
             ctx.fillText("BEHIND!", plotX(dayIndex) + xOffset, plotY(remainingHoursPerDay[dayIndex]) - 15);
