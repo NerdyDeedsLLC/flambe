@@ -1714,10 +1714,23 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
         // segs.stroke();
 
     };
+
+    const labelGraphChart = () => {
+        ctx.textAlign = "right";
+            ctx.fillStyle = '#666';
+            ctx.font = '20px sans-serif';
+            let teamsDD = qs('#selTeam').value;
+            let teamName = teamsDD || 'All Teams'
+            ctx.fillText(iterationName.value, 1090, 90);
+            ctx.font = '16px sans-serif';
+            ctx.fillText(teamName, 1080, 120);
+    }
+
     drawBarGraph();
     plotActualPoints();
     drawLineGraph();
     plotActualPoints();
+    labelGraphChart();
     // shadeLineGraph()
 }
 setTimeout(() => { window.scrollTo(0, 0); }, 500);
