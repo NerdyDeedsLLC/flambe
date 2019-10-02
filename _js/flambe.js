@@ -402,7 +402,7 @@ const syncSelect = (e, val) => {
     let txtBox = trg.previousElementSibling.previousElementSibling;
     txtBox.value = val;
     retain(trg.id, val);
-    trg.blur();
+    //trg.blur();
 
 };
 
@@ -450,7 +450,7 @@ const generateTeamsAndIterationLists = () => {
     mtvsDD.innerHTML  = '<option>Show All MTVs</option><option>'        + ALLMTVS.join('</option><option>')  + '</option>';
     teamsDD.addEventListener('change', syncSelect);
     itrsDD.addEventListener( 'change', syncSelect);
-    mtvsDD.addEventListener('change', syncSelect);
+    mtvsDD.addEventListener( 'change', syncSelect);
 
 };
 setSelect('#selTeam',      recall('selTeam'));
@@ -609,25 +609,38 @@ const runReport = (obj = doneButton) => {                                       
 
     getDistinctKeysFromFiles();                                                                             //^^ ➜➜➜ � 
 };
-function checkFilterMatch(fullDaysRecords, teamFilt, itrFilt) {
+
+let MTVListings = {};
+function checkFilterMatch(fullDaysRecords, teamFilt, itrFilt, mtvFilt) {
     function escapeRegExp(string) {
         return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
     }
 
     teamFilt = (teamFilt == null || teamFilt == '' || teamFilt == '*' || teamFilt.indexOf('Show All') === 0) ? '.*': escapeRegExp(teamFilt);
     itrFilt  = (itrFilt  == null || itrFilt  == '' || itrFilt  == '*' || itrFilt.indexOf('Show All')  === 0) ? '.*': escapeRegExp(itrFilt);
+    mtvFilt  = (mtvFilt  == null || mtvFilt  == '' || mtvFilt  == '*' || mtvFilt.indexOf('Show All')  === 0) ? '.*': escapeRegExp(mtvFilt);
 
     if (fullDaysRecords != null) {
         teamFilt = new RegExp(teamFilt, 'gim');
         itrFilt  = new RegExp(itrFilt, 'gim');
+        mtvFilt  = new RegExp(mtvFilt, 'gim');
 
         let filteredRecords = fullDaysRecords.filter(
             rtc => {
-                return (
-                    (teamFilt && rtc['Custom field (Scrum Team)'] != null && rtc['Custom field (Scrum Team)'].match(teamFilt))
-                    &&
-                    (itrFilt && rtc['Sprint'] != null && rtc['Sprint'].match(itrFilt))
-                );
+                if(rtc["Issue Type"] === "Epic"){
+                    console.log('EPIC!!!!', rtc["Issue key"])
+                    MTVListings[rtc["Issue key"]] = rtc.Summary;
+                }else{ 
+                    console.log('NON-EPIC!!!!', rtc["Issue key"])
+
+                    return (
+                        (rtc["Issue Type"] !== "Epic")
+                        &&
+                        (teamFilt && rtc['Custom field (Scrum Team)'] != null && rtc['Custom field (Scrum Team)'].match(teamFilt))
+                        &&
+                        (itrFilt && rtc['Sprint'] != null && rtc['Sprint'].match(itrFilt))
+                    );
+                }
             }
         );
         return filteredRecords;
@@ -643,7 +656,7 @@ const getDistinctKeysFromFiles = () => {                                        
     for (let files in safeBuffer) {                                                                         // Iterate all the files we've collected into the buffer...
         let file = safeBuffer[files];                                                                       //  ... Alias the file (for convenience).
         if (file !== 'INTERPOLATED') {                                                                        //  ... Assuming it's not flagged for interpolation, 
-            safeBuffer[files].fileData = checkFilterMatch(file.fileData, recall('selTeam'), recall('selIteration'));            // PERFORM TEAM AND ITR FILTRATION HERE
+            safeBuffer[files].fileData = checkFilterMatch(file.fileData, recall('selTeam'), recall('selIteration'), recall('selMTV'));            // PERFORM TEAM AND ITR FILTRATION HERE
             let keySet = JSON.stringify(file.fileData, ['Issue key']);                                       //    ... pull out a flattened string containing ONLY the 'Issue key' columns
             keySet = keySet.match(/DIGTDEV-\d{4,6}/g);                                                                 //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
             if (keySet != null && keySet !== '' && Array.isArray(keySet) && keySet.length > 0) ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])];                                          //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
