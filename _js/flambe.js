@@ -291,7 +291,7 @@ var CSV = {};
 // DECLARATIONS //==================================================================================================================
 // Shortcut aliases and Helper functions //-----------------------------------------------------------------------------------------
 const DEBUG_MODE = true;    //--> NOT TO BE SET TO 'TRUE' IN PRODUCTION USE - CONTROLS CONSOLE LOGS AND EXCESSIVE MEMORY CONSUMPTION
-const INFO_TRACE = false;    //--> NOT TO BE SET TO 'TRUE' IN PRODUCTION USE - CONTROLS CONSOLE LOGS AND EXCESSIVE MEMORY CONSUMPTION
+const INFO_TRACE = true;    //--> NOT TO BE SET TO 'TRUE' IN PRODUCTION USE - CONTROLS CONSOLE LOGS AND EXCESSIVE MEMORY CONSUMPTION
 
 const d = document                                       // ⥱ Alias - document
     , qs = (s) => d.querySelector(s)                        // ⥱ Alias - querySelector
@@ -364,7 +364,9 @@ const init = () => {                                                            
     dateField.onchange = () => { retain('reportStartDate', dateField.value); };                		    // ... and establishing the onChange listener to store any updates.
     fileBuffer = recall('fileBuffer', null);                                             		// Try and retrieve the fileBuffer in one exisits in Rote memories...
     fileBuffer = (fileBuffer == null) ? [] : JSON.parse(fileBuffer);                    		// ... and, if one does, rehydrate it. Otherwise, establish it as a new array.
-
+    setSelect('#selTeam',      recall('selTeam'));
+    setSelect('#selIteration', recall('selIteration'));
+    setSelect('#selMTV',       recall('selMTV'));
     let startingLength = 10;
 
     if (fileBuffer.length > 0) {                                                                     		// If we DID manage to restore a previous buffer...
@@ -417,8 +419,8 @@ const syncSelect = (e, val) => {
 
 };
 
-const setSelect = (sel, val) => {
-    if (sel == null || val == null) return false;
+const setSelect = (sel, val='') => {
+    if (sel == null) return false;
     sel = (typeof (sel) === 'string') ? qs(sel) : sel;
     sel.value = val;
     syncSelect({ target: sel }, val);
@@ -426,51 +428,79 @@ const setSelect = (sel, val) => {
 
 let allFilters = [];
 
-let ALLTEAMS = [];
-let ALLITRS  = [];
-let ALLMTVS  = [];
+let ALLTEAMS = [], ALLTEAMS_SET=false;
+let ALLITRS  = [], ALLITRS_SET=false;
+let ALLMTVS  = [], ALLMTVS_SET=false;
 let fileJSONdForFilters = [];
 const generateTeamsAndIterationLists = () => {
-    ALLTEAMS = [];
-    ALLITRS  = [];
-    ALLMTVS  = [];
+    ALLTEAMS = [], ALLTEAMS_SET=false;
+    ALLITRS  = [], ALLITRS_SET=false;
+    ALLMTVS  = [], ALLMTVS_SET=false;
+    
     for (let files in fileBuffer) {
         let file = fileBuffer[files];
         if (file != null && file !== '') {
-            fileJSONdForFilters.push(JSON.parse(JSON.stringify(file.fileData, ['ScrumTeam', 'Sprint', 'Sprint2', 'Sprint3', 'Sprint4', 'EpicLink', 'EpicName'])));
+            fileJSONdForFilters.push(JSON.parse(JSON.stringify(file.fileData, ['IssueKey', 'ScrumTeam', 'Sprint', 'Sprint2', 'Sprint3', 'Sprint4', 'EpicLink', 'EpicName'])));
             fileJSONdForFilters.flat().forEach(flatRec=>{
+                let currenExaminedITR = '';
                 // let flatRec = record;
-                if(flatRec.ScrumTeam != '') 	  		{ALLTEAMS.push(flatRec.ScrumTeam); console.log(flatRec.ScrumTeam) }
-                if(flatRec.Sprint4 != '') 	  		    {ALLITRS.push( flatRec.Sprint4);console.log(flatRec.Sprint4) }
-                else if(flatRec.Sprint3 != '') 			{ALLITRS.push( flatRec.Sprint3);console.log(flatRec.Sprint3) }
-                else if(flatRec.Sprint2 != '')  		{ALLITRS.push( flatRec.Sprint2);console.log(flatRec.Sprint2) }
-                else if(flatRec.Sprint != '') 	    	{ALLITRS.push( flatRec.Sprint);console.log(flatRec.Sprint) }
-                if(flatRec.EpicName)                    {ALLMTVS.push(flatRec.EpicName);}
+                if(!ALLTEAMS_SET && flatRec.ScrumTeam != '') 	  		 {ALLTEAMS.push(flatRec.ScrumTeam);}
+                if(!ALLITRS_SET){
+                    if(flatRec.Sprint4 != '') 	  		                 {currenExaminedITR = flatRec.Sprint4;}
+                    else if(flatRec.Sprint3 != '') 		            	 {currenExaminedITR = flatRec.Sprint3;}
+                    else if(flatRec.Sprint2 != '')  	            	 {currenExaminedITR = flatRec.Sprint2;}
+                    else if(flatRec.Sprint != '') 	    	             {currenExaminedITR = flatRec.Sprint;}
+                    if(currenExaminedITR !== '')                         {ALLITRS.push(currenExaminedITR);}
+                }
+                if(!ALLMTVS_SET && flatRec.EpicName && flatRec.IssueKey) {ALLMTVS.push([flatRec.EpicName,flatRec.IssueKey]);}
             })
         }
     }
-    console.log('fileJSONdForFilters',fileJSONdForFilters)
-    ALLTEAMS = [...new Set(ALLTEAMS)].sort();                                                               // Finally, reduce em all to collections containing only unique elements
-    ALLITRS  = [...new Set(ALLITRS)].sort();
-    ALLMTVS  = [...new Set(ALLMTVS)].sort();
-    console.log('ALLTEAMS',    ALLTEAMS,    'ALLITRS',    ALLITRS,    'ALLMTVS',    ALLMTVS);
-
+    // console.log('fileJSONdForFilters',fileJSONdForFilters)
+    // console.log('\n\nALLTEAMS',    ALLTEAMS,    '\n\nALLITRS',    ALLITRS,    '\n\nALLMTVS',    ALLMTVS);
     let teamsDD       = qs('#selTeam'),
         itrsDD        = qs('#selIteration'),
         mtvsDD        = qs('#selMTV');
 
-    teamsDD.innerHTML = '<option>Show All Teams</option><option>'       + ALLTEAMS.join('</option><option>') + '</option>';
-    itrsDD.innerHTML  = '<option>Show All Iterations</option><option>'  + ALLITRS.join('</option><option>')  + '</option>';
-    mtvsDD.innerHTML  = '<option>Show All Iterations</option><option>'  + ALLMTVS.join('</option><option>')  + '</option>';
-    teamsDD.addEventListener('change', syncSelect);
-    itrsDD.addEventListener( 'change', syncSelect);
-    mtvsDD.addEventListener('change', syncSelect);
+    if(!ALLTEAMS_SET){
+        ALLTEAMS = [...new Set(ALLTEAMS)].sort();                                                               // Finally, reduce em all to collections containing only unique elements
+        teamsDD.innerHTML = ('<option value="">Show All Teams</option><option>' + ALLTEAMS.join('</option><option>') + '</option>').replace(/<option>(.*?)<\/option>/gim, '<option value="$1">$1</option>');
+        teamsDD.addEventListener('change', syncSelect);
+        ALLTEAMS_SET=true;
+    }
+
+    if(!ALLITRS_SET){
+        ALLITRS   = [...new Set(ALLITRS)].sort();
+        itrsDD.innerHTML  = ('<option value="">Show All Iterations</option><option>'  + ALLITRS.join('</option><option>')  + '</option>').replace(/<option>(.*?)<\/option>/gim, '<option value="$1">$1</option>');
+        itrsDD.addEventListener( 'change', syncSelect);
+        ALLITRS_SET=true;
+    }
+    if(!ALLMTVS_SET){
+        ALLMTVS   = [...new Set(ALLMTVS)].sort();
+
+        mtvsDD.innerHTML  = '<option value="">Show All MTV\'s</option><option value="' +
+                            [...new Set(ALLMTVS.map(mtvEntry=>{
+                                let [mtvName, mtvID] = mtvEntry;
+                                // console.log('rplcr', mtvName, mtvID);
+                                var padder = '000',
+                                    output = mtvName.replace(/^(\d{1,3}-\d)/gim, '$1 MTV').replace(/mtv ?(\d{1,3})/gim, '$1 MTV');
+                                    output = output.replace(/(\d{1,3}(?:[.-]\d)?)( (?:NF )?MTV)/gim, (match, p1, p2)=>{
+                                                p1 = ('' + parseInt(p1));
+                                                return padder.slice(-(3-p1.length)) + p1 + p2;
+                                            });
+                                return `${output.replace(/000(\d\d\d)/gim, '$1')}~~~~~${mtvID}`;
+                            }))].sort().join('</option><option value="').replace(/<option value="(.*?)~~~~~(.*?)<\/option>/gim, '<option value="$2">$1</option>') + '</option>';
+    
+        mtvsDD.addEventListener('change', syncSelect);
+        ALLMTVS_SET=true;
+    }
+
+
 
 };
-setSelect('#selTeam',      recall('selTeam'));
-setSelect('#selIteration', recall('selIteration'));
-setSelect('#selMTV',       recall('selMTV'));
+
 // eslint-disable-next-line
+
 const removeFileAtIndex = (trgBtn, isFilled) => {                                                                 //%% Ⓔ ���︎  Remove the file from the slot whose trashcan was clicked (both in the buffer and the UI)
     _I("FUNCTION: removeFileAtIndex", "trgBtn", trgBtn, "isFilled", isFilled);
     let ind = trgBtn.dataset.index;
@@ -603,7 +633,7 @@ const runReport = (obj = doneButton) => {                                       
     if (DAYSLOADED < 0) return false;
     // ... and the number of days that equates out to.
     const sumHours = (hourColl) =>
-        hourColl.flatMap(s => { let sth = 0, retVal = parseInt(s['Remaining Estimate']); retVal = isNaN(retVal) || retVal === 'NaN' ? 0 : retVal; sth += retVal; return sth; });
+        hourColl.flatMap(s => { let sth = 0, retVal = parseInt(s['RemainingEstimate']); retVal = isNaN(retVal) || retVal === 'NaN' ? 0 : retVal; sth += retVal; return sth; });
 
     if (TOTALITRDAYS > 2 && DAYSLOADED === 1) {
         let seedDataCount = fileBuffer[0].fileData.length,
@@ -623,10 +653,16 @@ const runReport = (obj = doneButton) => {                                       
 
     getDistinctKeysFromFiles();                                                                             //^^ ➜➜➜ � 
 };
-function checkFilterMatch(fullDaysRecords, teamFilt, itrFilt) {
+function checkFilterMatch(fullDaysRecords, refinements) {
     function escapeRegExp(string) {
         return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
     }
+
+    console.warn(refinements);
+
+    let teamFilt = refinements.team,
+        itrFilt  = refinements.itr,
+        mtvFilt  = refinements.mtv;
 
     teamFilt = (teamFilt == null || teamFilt == '' || teamFilt == '*' || teamFilt.indexOf('Show All') === 0) ? '.*': escapeRegExp(teamFilt);
     itrFilt  = (itrFilt  == null || itrFilt  == '' || itrFilt  == '*' || itrFilt.indexOf('Show All')  === 0) ? '.*': escapeRegExp(itrFilt);
@@ -638,9 +674,27 @@ function checkFilterMatch(fullDaysRecords, teamFilt, itrFilt) {
         let filteredRecords = fullDaysRecords.filter(
             rtc => {
                 return (
-                    (teamFilt && rtc['Custom field (Scrum Team)'] != null && rtc['Custom field (Scrum Team)'].match(teamFilt))
+                    (teamFilt == null || (teamFilt != null && rtc['ScrumTeam'] != null && rtc['ScrumTeam'].match(teamFilt)))
                     &&
-                    (itrFilt && rtc['Sprint'] != null && rtc['Sprint'].match(itrFilt))
+                    (
+                        itrFilt == null 
+                        || 
+                        ( 
+                            itrFilt != null && 
+                            (
+                                (rtc['Sprint'] != null && rtc['Sprint'].match(itrFilt))
+                                ||
+                                (rtc['Sprint2'] != null && rtc['Sprint2'].match(itrFilt))
+                                ||
+                                (rtc['Sprint3'] != null && rtc['Sprint3'].match(itrFilt))
+                                ||
+                                (rtc['Sprint4'] != null && rtc['Sprint4'].match(itrFilt))
+                            )
+                        )
+                    )
+                    &&
+                    (mtvFilt==null || (mtvFilt != null && rtc['EpicLink'] != null && rtc['EpicLink'].match(mtvFilt)))
+
                 );
             }
         );
@@ -651,14 +705,14 @@ function checkFilterMatch(fullDaysRecords, teamFilt, itrFilt) {
 
 const getDistinctKeysFromFiles = () => {                                                                    //^^ ���︎ Ⓕ    Iterate through our files, constructing a unique JSON structure from them 
     safeBuffer = Object.assign([], JSON.parse(recall('fileBuffer')));                                                             // Duplicate the file buffer (so we're not mucking up our original, "pure" copy. This one's "safe" to screw with
-
+    let globalFilters = {team:recall('selTeam'),itr:recall('selIteration'), mtv:recall('selMTV')}
     while (safeBuffer.lastIndexOf('') === (safeBuffer.length - 1)) safeBuffer.pop();                         // Discard any blank indicies And the END of the stack. Those are "missing" days.
     while (safeBuffer.indexOf('') != -1) safeBuffer[safeBuffer.indexOf('')] = 'INTERPOLATED';               // (...since any blanks in the middle of the stack get flagged as needing to be interpolated)
     for (let files in safeBuffer) {                                                                         // Iterate all the files we've collected into the buffer...
         let file = safeBuffer[files];                                                                       //  ... Alias the file (for convenience).
         if (file !== 'INTERPOLATED') {                                                                        //  ... Assuming it's not flagged for interpolation, 
-            safeBuffer[files].fileData = checkFilterMatch(file.fileData, recall('selTeam'), recall('selIteration'));            // PERFORM TEAM AND ITR FILTRATION HERE
-            let keySet = JSON.stringify(file.fileData, ['Issue key']);                                       //    ... pull out a flattened string containing ONLY the 'Issue key' columns
+            safeBuffer[files].fileData = checkFilterMatch(file.fileData,globalFilters);            // PERFORM TEAM AND ITR FILTRATION HERE
+            let keySet = JSON.stringify(file.fileData, ['IssueKey']);                                       //    ... pull out a flattened string containing ONLY the 'IssueKey' columns
             keySet = keySet.match(/DIGTDEV-\d{4,6}/g);                                                                 //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
             if (keySet != null && keySet !== '' && Array.isArray(keySet) && keySet.length > 0) ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])];                                          //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
         } else INTERPOL8D.push(files);                                                                      //  ... UNLESS it IS flagged for interpolation, in which case add it to that collection  
@@ -671,7 +725,7 @@ const remapDataSoIssueIDIsPrimaryKey = () => {                                  
     _I("FUNCTION: remapDataSoIssueIDIsPrimaryKey");
     let temp_store = [];                                                                                        // Create a temporary, empty collection...
     ISSUE_KEYS.forEach(r => {                                                                               //    ... Iterate through our unique keys from all files (from getDistinctKeysFromFiles)...
-        temp_store.push(r['Issue key']);                                                                    //    ... stuff 'em into said temp array...
+        temp_store.push(r['IssueKey']);                                                                    //    ... stuff 'em into said temp array...
         COMBD_DATA[r] = new Array(safeBuffer.length).fill('');                                              //    ... and create an index to house the data within our Combined Data collection
         if (DEBUG_MODE) DEBUG_DATA[r] = new Array(safeBuffer.length).fill('');                               //    (... and if we're debugging, may as well make a slot a flattened string copy too)
     });
@@ -686,9 +740,9 @@ const remapDataSoIssueIDIsPrimaryKey = () => {                                  
             file = file.fileData;
 // _('file', file);
             file.forEach(f => {
-                if (f && f['Issue key'] && f['Issue key'] != null && f['Issue key'] !== '') {
-                    COMBD_DATA[f['Issue key']][files] = f;
-                    if (DEBUG_MODE) DEBUG_DATA[f['Issue key']][files] = JSON.stringify(f);
+                if (f && f['IssueKey'] && f['IssueKey'] != null && f['IssueKey'] !== '') {
+                    COMBD_DATA[f['IssueKey']][files] = f;
+                    if (DEBUG_MODE) DEBUG_DATA[f['IssueKey']][files] = JSON.stringify(f);
                 }
             });
             prevDay = files;
@@ -736,13 +790,13 @@ const processParentChildRelationships = () => {                                 
             , issueData = e[1]
             , fltrdRows = issueData.filter(col => typeof (col) === 'object')
             , validRow = fltrdRows[fltrdRows.length - 1]
-            , issueId = validRow['Issue id'];
+            , issueId = validRow['IssueId'];
 
         toc[issueId] = issueKey;
         opIssueObj = {
             key: issueKey
-            , iid: toc[validRow['Issue id']]
-            , pid: toc[validRow['Parent id']] || ''
+            , iid: toc[validRow['IssueId']]
+            , pid: toc[validRow['ParentId']] || ''
             , sts: validRow.Status
             , ass: validRow.Assignee
             , sum: validRow.Summary
@@ -799,8 +853,8 @@ const constructPreviewAndReportData = () => {                                   
             , ROWOP = ''                                                                                 //   - The iteratively-constructed markup for the "row" corresponding to the issue being examined
             , opHrs = 0
             , flags = ''                                                                                 //   - The empty collection of flags, to be joined & processed later in the loop
-            , reCtr = 1                                                                                  //   - Counter for how many consecutive days the Remaining Estimate has languished, unchanged
-            , ctCtr = 1                                                                                  //   - Iteration-length counter for how many consecutive days the Remaining Estimate goes unchanged
+            , reCtr = 1                                                                                  //   - Counter for how many consecutive days the RemainingEstimate has languished, unchanged
+            , ctCtr = 1                                                                                  //   - Iteration-length counter for how many consecutive days the RemainingEstimate goes unchanged
             , oldRE = ''                                                                                 //   - Previous (from the previous-iterated-over day in the row) Remaining Hours Estimate
             , oldPI = ''                                                                                 //   - Previous (from the previous-iterated-over day in the row) Parent ID
             , oldII = ''                                                                                 //   - Previous (from the previous-iterated-over day in the row) Issue ID
@@ -810,7 +864,7 @@ const constructPreviewAndReportData = () => {                                   
             , newST = '';                                                                                //   - Current Status (in this case, we don't care what the previous one was, but need it at the issue scope)
 
         issueData.forEach((datRec, ix) => {                                                             // ...Iterate the issue's collected data (the "columns"), gathering...
-            newRE = (datRec === '---') ? '---' : (datRec['Remaining Estimate'] || '---?');
+            newRE = (datRec === '---') ? '---' : (datRec['RemainingEstimate'] || '---?');
             if (newRE === '---') {
                 ROWOP = ROWOP + _I_ + '---';                                                           // Tack the current day being iterated past's Est. hours remaining onto the end of the issue being iterated past
             } else
@@ -913,8 +967,8 @@ const reviseSeed = (newData) => {
     issueBoxes = issueBoxes.map(iB => iB.id.replace('adjust-', ''));
 
     issueBoxes.forEach(issueKey => {
-        let seededVersionOfIssue = locateCorrespondingRecord(issueKey, seededSet, "Issue key"),
-            dayOneVersionOfIssue = locateCorrespondingRecord(issueKey, dayOneSet, "Issue key");
+        let seededVersionOfIssue = locateCorrespondingRecord(issueKey, seededSet, "IssueKey"),
+            dayOneVersionOfIssue = locateCorrespondingRecord(issueKey, dayOneSet, "IssueKey");
         if(seededVersionOfIssue === null)   seededSet.push(dayOneVersionOfIssue);
         else                                seededVersionOfIssue = dayOneVersionOfIssue;
 
@@ -981,9 +1035,9 @@ const performDayOneOverrideAdjustment = () => {
         
         seededSet         = fileBuffer[0]["fileData"],
         dayOneSet         = fileBuffer[1]["fileData"],
-        seededFlat        = seededSet.flatMap(s   => s["Issue key"]),
-        dayOneFlat        = dayOneSet.flatMap(s   => s["Issue key"]),
-        teamKeyStr        = 'Custom field (Scrum Team)',
+        seededFlat        = seededSet.flatMap(s   => s["IssueKey"]),
+        dayOneFlat        = dayOneSet.flatMap(s   => s["IssueKey"]),
+        teamKeyStr        = 'ScrumTeam',
         seededFlatKeys    = '_' + seededFlat.join('_') + '_',
         // dayOneFlatKeys = '|' + dayOneFlat.join('|') + '|';
 
@@ -991,24 +1045,24 @@ const performDayOneOverrideAdjustment = () => {
         alterdHours       = [],
 
         missues           = dayOneFlat.filter(d1i => !new RegExp(`_${d1i}_`, 'gim').test(seededFlatKeys));
-    missues               = missues.map(m => {let newM = dayOneSet[locateCorrespondingRecord(m, dayOneFlat)]; newM.modded = 'ADD'; newM.modValue = newM['Remaining Estimate']*1; return newM; });
+    missues               = missues.map(m => {let newM = dayOneSet[locateCorrespondingRecord(m, dayOneFlat)]; newM.modded = 'ADD'; newM.modValue = newM['RemainingEstimate']*1; return newM; });
 
     let newSeed           = [...seededSet, ...missues];
-    // newSeedFlat   = seededSet.flatMap(s => s["Issue key"]);
+    // newSeedFlat   = seededSet.flatMap(s => s["IssueKey"]);
 
     newSeed.forEach(nSI => {
-        let relatedDay1Value = dayOneSet[locateCorrespondingRecord(nSI['Issue key'], dayOneFlat)],
-            newSeedEstHrsVal = nSI['Remaining Estimate'];
+        let relatedDay1Value = dayOneSet[locateCorrespondingRecord(nSI['IssueKey'], dayOneFlat)],
+            newSeedEstHrsVal = nSI['RemainingEstimate'];
         newSeedEstHrsVal = (newSeedEstHrsVal == null || newSeedEstHrsVal == '' || isNaN((newSeedEstHrsVal*1))) ? 0 : (newSeedEstHrsVal*1);
-        if(relatedDay1Value && relatedDay1Value['Remaining Estimate']){
-            relatedDay1Value = relatedDay1Value['Remaining Estimate'] * 1;
+        if(relatedDay1Value && relatedDay1Value['RemainingEstimate']){
+            relatedDay1Value = relatedDay1Value['RemainingEstimate'] * 1;
             if(relatedDay1Value > newSeedEstHrsVal){
-                // _(nSI, nSI['Remaining Estimate'], relatedDay1Value, '\n\n========================');
+                // _(nSI, nSI['RemainingEstimate'], relatedDay1Value, '\n\n========================');
                 nSI.oldValue = newSeedEstHrsVal;
                 nSI.modded   = 'AMEND';
                 nSI.modValue = relatedDay1Value - newSeedEstHrsVal;
                 nSI.newValue = relatedDay1Value;
-                nSI['Remaining Estimate'] = relatedDay1Value;
+                nSI['RemainingEstimate'] = relatedDay1Value;
             }
         }
     });
@@ -1036,8 +1090,8 @@ const performDayOneOverrideAdjustment = () => {
     let freeText='', typeText='', typeIterating = '', teamIterating='', teamTotal=0, typeTotal=0, overallTotal=0, teamTotFld=0, typeTotFld=0;
     updates.forEach(update=>{
         typeText = (update.modded=='ADD') 
-            ? `${update["Issue key"]} would be added (adds ${toHours(update.modValue)} hours)` 
-            : `${update["Issue key"]} will increase in hours from ${toHours(update.oldValue)} to ${toHours(update.newValue)} (adds ${toHours(update.modValue)} hours)`;
+            ? `${update["IssueKey"]} would be added (adds ${toHours(update.modValue)} hours)` 
+            : `${update["IssueKey"]} will increase in hours from ${toHours(update.oldValue)} to ${toHours(update.newValue)} (adds ${toHours(update.modValue)} hours)`;
 
         if(typeIterating     !== update.modded){
             if(typeIterating !== ''){
@@ -1062,15 +1116,15 @@ const performDayOneOverrideAdjustment = () => {
         typeTotal    += (toHours(update.modValue) * 1);
         overallTotal += (toHours(update.modValue) * 1);
         
-        summaryOPUI  += update.modValue !== 0 ? `<td><input id="adjust-${update["Issue key"]}" name="adjust-${update["Issue key"]}" class="adjustment-issue-check" type="checkbox" value="${update["Issue key"]}" checked data-issue-impact="${toHours(update.modValue)}" data-affects-team="${teamTotFld}" data-affects-type="${typeTotFld}" onclick="syncAdjCheckboxes()" /></td>
-                                                    <td>${update["Issue key"]}</td>
+        summaryOPUI  += update.modValue !== 0 ? `<td><input id="adjust-${update["IssueKey"]}" name="adjust-${update["IssueKey"]}" class="adjustment-issue-check" type="checkbox" value="${update["IssueKey"]}" checked data-issue-impact="${toHours(update.modValue)}" data-affects-team="${teamTotFld}" data-affects-type="${typeTotFld}" onclick="syncAdjCheckboxes()" /></td>
+                                                    <td>${update["IssueKey"]}</td>
                                                     <td>${typeText}</td>
                                                     <td><b>+${toHours(update.modValue)}</b> hrs.</td>
                                                 </tr>` : '';
 
         freeText    += update.modValue === 0 ? `<tr class = "adjustment-team-name"><td>${update[teamKeyStr]}</td>
-                                                    <td><input id="adjust-${update["Issue key"]}" name="adjust-${update["Issue key"]}" class="adjustment-issue-check" type="checkbox" value="${update["Issue key"]}" checked data-issue-impact="0" onclick="syncAdjCheckboxes()" /></td>
-                                                    <td>${update["Issue key"]}</td>
+                                                    <td><input id="adjust-${update["IssueKey"]}" name="adjust-${update["IssueKey"]}" class="adjustment-issue-check" type="checkbox" value="${update["IssueKey"]}" checked data-issue-impact="0" onclick="syncAdjCheckboxes()" /></td>
+                                                    <td>${update["IssueKey"]}</td>
                                                     <td>Freebie; If added, story won't impact the iteration/burndown.</td>
                                                     <td>±0 hrs.</td>
                                                 </tr>` : '';

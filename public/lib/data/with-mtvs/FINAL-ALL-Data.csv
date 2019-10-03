@@ -1,0 +1,667 @@
+Status,Issue key,Issue id,Parent id,Summary,Assignee,Custom field (Email),Σ Original Estimate,Σ Remaining Estimate,Issue Type,Sprint,Sprint,Sprint,Sprint,Custom field (Epic Link),Original Estimate,Custom field (Epic Name),Custom field (Scrum Team)
+In Progress,DIGTDEV-12106,620083,,PAYMENT:Payment Management MS - Generate Preorder Token,Jose.2.Tapias@sprint.com,,144000,93600,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-11164,144000,,Scrum n Coke
+Definition,DIGTDEV-12818,629935,620083,Testing - Generate Preorder Token,,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Koala Tea
+Demo,DIGTDEV-14465,644166,,FOISTED UIUX: Collate data from form submission and send to back-end microservice,jason.jurusz@sprint.com,,,0,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-13589,,,ScrumRunners
+Demo,DIGTDEV-14466,644167,,"FOISTED UIUX: Seed Extant User Data (""Edit"" Mode) & interact with Update MS",jason.jurusz@sprint.com,,39600,0,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-13589,39600,,ScrumRunners
+In Development,DIGTDEV-14756,647724,,"PAYMENT: Payment Persistence MS - Implement ""POST Payment Process""",Ram.Gangineni@sprint.com,,,57600,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Scrum n Coke
+In Progress,DIGTDEV-15378,675395,647724,"Testing- PAYMENT: Payment Persistence MS - Implement ""POST Payment Process""",Srilekha.Rajam@sprint.com,,,0,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Koala Tea
+Completed,DIGTDEV-14959,649432,,FOISTED UIUX: React Conversion,jason.jurusz@sprint.com,,57600,0,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-13589,57600,,ScrumRunners
+Preparing,DIGTDEV-15623,692131,,SPIKE: Determine who Zeta is sending reports to,jason.jurusz@sprint.com,,57600,0,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14725,57600,,ScrumRunners
+In Progress,DIGTDEV-15162,653621,,Update Payment Persistence MS with new Yaml,Ram.Gangineni@sprint.com,,86400,0,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,,86400,,Scrum n Coke
+Completed,DIGTDEV-15253,671511,653621,Generate MS-Builder with new payment-Persistence.yaml,Ram.Gangineni@sprint.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Scrum n Coke
+Completed,DIGTDEV-15303,672860,653621,Post call for payment-Pesistence,Ram.Gangineni@sprint.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Scrum n Coke
+In Progress,DIGTDEV-15487,676470,653621,TEST for Payments : Persistence POST Method,Srilekha.Rajam@sprint.com,,,0,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Koala Tea
+Completed,DIGTDEV-15183,665568,,POST : JAVA BE - Template Management -Implement Department level SMS template limits ,Harika.Kopparapu@sprint.com,,,0,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14724,,,Techquilla
+In Progress,DIGTDEV-15943,695418,665568,Test the SMS limitations by department function,Poojitha.Rayani@sprint.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Koala Tea
+In Development,DIGTDEV-15201,666060,,POST : JAVA BE - Template Management - Full JavaDoc ,Harika.Kopparapu@sprint.com,,,28800,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-12000,,,Techquilla
+Demo,DIGTDEV-15202,666061,,POST : JAVA BE - Template Management - Department validation Tags,Joseph.Chantiny@sprint.com,,,0,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-12000,,,ScrumRunners
+In Progress,DIGTDEV-15588,676611,666061,Testing of POST : JAVA BE - Template Management - Department validation Tags,Srilekha.Rajam@sprint.com,,,0,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Koala Tea
+Demo,DIGTDEV-15204,666066,,POST : JAVA BE - Template Management - Department validation Templates,Anil.Reddy@sprint.com,,115200,0,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-12000,115200,,ScrumRunners
+Definition,DIGTDEV-15704,693858,666066,Testing of POST : JAVA BE - Template Management - Department validation Templates,Srilatha.2.Vemaraju@sprint.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Koala Tea
+Demo,DIGTDEV-15207,666082,,POST : JAVA BE - Outbound TO email of end user configuration,Harika.Kopparapu@sprint.com,,,0,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Techquilla
+Definition,DIGTDEV-15781,694464,666082,Testing-POST JAVA BE-  Outbound TO email of end user configuration,,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Koala Tea
+Demo,DIGTDEV-15232,668509,,POST : JAVA BE - Notifications Outbound- Changes in Swagger of TemplateManagement,Anil.Reddy@sprint.com,,201600,0,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-11995,201600,,ScrumRunners
+In Development,DIGTDEV-15237,671127,,PAYMENT: Payment Methods MS Connect to EPP Gateway Ms,Ram.Gangineni@sprint.com,,201600,18000,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-11158,115200,,Scrum n Coke
+Definition,DIGTDEV-15585,676285,671127,Test Payment Methods MS Connect to EPP Gateway Ms,Poojitha.Rayani@sprint.com,,86400,0,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,86400,,Koala Tea
+Demo,DIGTDEV-15281,671595,,UI Integration (templates),vivekreddy.doma@sprint.com,,180000,0,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,,180000,,ScrumRunners
+In Progress,DIGTDEV-15591,676641,671595,Test the UI Integration from this story,Srilatha.2.Vemaraju@sprint.com,,,0,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Koala Tea
+Demo,DIGTDEV-15311,673210,,POST : JAVA BE - Notifications TemplateManagement - Departments POST/PUT Payload,Joseph.Chantiny@sprint.com,,259200,0,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-12000,201600,,ScrumRunners
+In Progress,DIGTDEV-15288,671920,673210,Testing-POST JAVA BE- CRUD operations for Template Management(Departments) ,Srilatha.2.Vemaraju@sprint.com,,57600,0,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,57600,,Koala Tea
+Cancelled,DIGTDEV-15476,676258,673210,Testing subtask,Scot.Mewbuorn@sprint.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,
+Demo,DIGTDEV-15312,673211,,POST : JAVA BE - Notifications TemplateManagement - Templates POST/PUT Payload,Joseph.Chantiny@sprint.com,,201600,0,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-12000,201600,,ScrumRunners
+Done,DIGTDEV-15355,675014,673211,TEST for POST : JAVA BE - Update Template Mgmt Swagger file to remove mandatory field 'id' in PUT & DELETE methods,Joseph.Chantiny@sprint.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,ScrumRunners
+Cancelled,DIGTDEV-15477,676259,673211,Testing,Srilekha.Rajam@sprint.com,,,0,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Koala Tea
+In Progress,DIGTDEV-15335,674193,,PAYMENT: EPP Gateway - Get Key from KAFKA - Key Exchange ,SusheelReddy.2.Kandakatla@sprint.com,,0,79200,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-12140,0,,Scrum n Coke
+Definition,DIGTDEV-15923,695085,674193,OTS : Test the EPP Gateway communications,Srilekha.Rajam@sprint.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Koala Tea
+In Progress,DIGTDEV-15927,695147,674193,Development for key capture from kafka,SusheelReddy.2.Kandakatla@sprint.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Scrum n Coke
+In Progress,DIGTDEV-15337,674195,,PAYMENT: EPP Gateway MS - Map Payment Service Requests (generatePreOrderToken),Ashley.Barrow@sprint.com,,0,3600,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-12140,0,,Scrum n Coke
+In Progress,DIGTDEV-15928,695096,674195,OTS Test of the EPP Gateway Mapping,Poojitha.Rayani@sprint.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Koala Tea
+Preparing,DIGTDEV-15339,674203,,PAYMENT: Domain - Connect Payment Persistence with the Payment Domain,Ram.Gangineni@sprint.com,,0,0,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-12776,0,,Scrum n Coke
+Demo,DIGTDEV-15341,674410,,POST : JAVA BE - Notifications Outbound- Change End point Responses,Joseph.Chantiny@sprint.com,,403200,0,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-11995,201600,,ScrumRunners
+Completed,DIGTDEV-15345,674412,674410,POST : JAVA BE - Notifications Outbound- Change Bulk End point,Joseph.Chantiny@sprint.com,,201600,0,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,201600,,ScrumRunners
+In Development,DIGTDEV-15352,674856,,KeyExchange: KeyExchange deployment on OCP Env to load certs and EPP Keyexchange Mock service ,ravivarma.kusthapuram@sprint.com,,172800,43200,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-12744,172800,,Techquilla
+In Progress,DIGTDEV-16134,699095,674856,Adding CA bundle Certs to Java cacerts folder in OCP Env,sasanth.tummala@sprint.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,
+Demo,DIGTDEV-15493,676558,,Generating A3S token Dynamically,Mounika.Giraboina@sprint.com,,180000,0,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,,180000,,ScrumRunners
+Completed,DIGTDEV-15924,695086,676558,Test A3S token dynamically,Poojitha.Rayani@sprint.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,
+Demo,DIGTDEV-15497,676565,,POST : PMGUI - Versioning Modal Previewer,Pavankumar.Durgempudi@sprint.com,,187200,0,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,,187200,,ScrumRunners
+Cancelled,DIGTDEV-16031,696565,676565,Testing Versining modal preview,,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Koala Tea
+In Progress,DIGTDEV-15638,692487,,Back-end integration: Edit a Template ( /template-management ),Pavankumar.Durgempudi@sprint.com,,216000,108000,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,,216000,,ScrumRunners
+Demo,DIGTDEV-15587,676575,,Double click - Tag insertion (tag format),Mounika.Giraboina@sprint.com,,180000,0,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,,180000,,ScrumRunners
+Definition,DIGTDEV-16013,696278,676575,Test- Double click - Tag Insertion,Srilatha.2.Vemaraju@sprint.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Koala Tea
+In Progress,DIGTDEV-15622,692112,,PAYMENT: Separate Redux from the SDK,Suraj.Eathalapaka@sprint.com,,172800,64800,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Scrum n Coke
+Definition,DIGTDEV-15933,695243,692112,OTS Test of logic to remove Redux from SDK,Srilekha.Rajam@sprint.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Koala Tea
+Completed,DIGTDEV-16005,696147,692112,Create a new React project from scratch,Suraj.Eathalapaka@sprint.com,,14400,0,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,14400,,Scrum n Coke
+In Progress,DIGTDEV-16006,696149,692112,Integrate Payment Domain API calls and selectors into the new React project's Reducer,Suraj.Eathalapaka@sprint.com,,86400,10800,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,86400,,Scrum n Coke
+In Progress,DIGTDEV-16007,696150,692112,Write the necessary unit test cases.,Suraj.Eathalapaka@sprint.com,,72000,54000,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,72000,,Scrum n Coke
+In Progress,DIGTDEV-15648,692700,,Back-end integration: Tag Management ( /admin-console/tag-management ),Mounika.Giraboina@sprint.com,,216000,93600,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,,216000,,ScrumRunners
+In Progress,DIGTDEV-15671,693147,,MAINTENANCE: ITR23 Techquilla Maintenance,Scot.Mewbuorn@sprint.com,,108000,36000,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,,108000,,Techquilla
+In Progress,DIGTDEV-15673,693150,,MAINTENANCE: ITR23 SnC Maintenance,Scot.Mewbuorn@sprint.com,,108000,86400,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,,108000,,Scrum n Coke
+In Progress,DIGTDEV-15675,693153,,MAINTENANCE : ITR23 ScrumRunners Maintenance,Scot.Mewbuorn@sprint.com,,108000,75600,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,,108000,,ScrumRunners
+In Development,DIGTDEV-13669,638293,,POST : Part 2 - PMGUI - BULK : Send Bulk Mail UI (COLLECTION),jason.jurusz@sprint.com,,399600,108000,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-11995,18000,,ScrumRunners
+In Progress,DIGTDEV-12061,619780,638293,POST : BULK - Modal - Convert Input Bulk Data into Backend-Specified Format,jason.jurusz@sprint.com,,86400,64800,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,86400,,ScrumRunners
+Completed,DIGTDEV-13673,638297,638293,CLONE - POST : BULK : Send Bulk Mail UI (ME-TA-SK),jason.jurusz@sprint.com,,144000,0,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,144000,,ScrumRunners
+In Progress,DIGTDEV-13675,638299,638293,POST : BULK - Modal - Drag/Drop Header Mapping UI,jason.jurusz@sprint.com,,28800,14400,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,28800,,ScrumRunners
+In Progress,DIGTDEV-13677,638324,638293,Preview Panel,jason.jurusz@sprint.com,,43200,21600,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,43200,,ScrumRunners
+Completed,DIGTDEV-13678,638326,638293,POST : PMGUI - BULK - Alternate UI Mechanisms for Data Mapping,jason.jurusz@sprint.com,,57600,0,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,57600,,ScrumRunners
+In Progress,DIGTDEV-13679,638327,638293,Implement Modal UI,jason.jurusz@sprint.com,,21600,7200,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,21600,,ScrumRunners
+Definition,DIGTDEV-15229,667613,,POST : API (Adjust Polyfill for Interactivity) with Backend,jason.jurusz@sprint.com,,144000,100800,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14724,144000,,ScrumRunners
+Definition,DIGTDEV-15940,695400,667613,Test of API Refactoring  (Large effort unless already automated),,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Koala Tea
+To Do,DIGTDEV-16040,696814,,FLIM - FLAMBE :: Functionality for Listing/Improving Metrics (FLIM) for Flambe,jason.jurusz@sprint.com,,72000,28800,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,,72000,,ScrumRunners
+Preparing,DIGTDEV-15643,692494,,Back-end integration: Select Template to Send To ( /bulk-messages ),jason.jurusz@sprint.com,,28800,28800,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14724,28800,,ScrumRunners
+Preparing,DIGTDEV-15644,692496,,Back-end integration: Send Bulk Mails ( /bulk-messages/send-bulk-mail ),jason.jurusz@sprint.com,,28800,28800,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14724,28800,,ScrumRunners
+Preparing,DIGTDEV-15645,692497,,Back-end integration: Importing Data ( /bulk-messages/bulk-data-import ),jason.jurusz@sprint.com,,28800,28800,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14724,28800,,ScrumRunners
+In Development,DIGTDEV-15691,693172,,POST : JAVA BE - Notifications TemplateManament - Changes in Deparment PUT/Modify call,saisurya.pamidipati@sprint.com,,201600,36000,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-12000,201600,,Techquilla
+Definition,DIGTDEV-15929,695098,693172,Validation Test of the data being collected,Srilatha.2.Vemaraju@sprint.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,Koala Tea
+To Do,DIGTDEV-15718,694065,,POST : BULK : Send Bulk Mail UI Page-to-Page Interactivity,jason.jurusz@sprint.com,,144000,86400,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-11995,144000,,ScrumRunners
+Preparing,DIGTDEV-15869,694298,,ITR23 Master Test Story,Markquatt.Ford@sprint.com,,1087200,320400,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,,540000,,Koala Tea
+Definition,DIGTDEV-15290,671838,694298,Testing-POST JAVA BE- CRUD operations for Template Management (Templates) ,Sairaghu.Uppala@sprint.com,,28800,28800,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,28800,,Techquilla
+Definition,DIGTDEV-15586,676286,694298,Test API endpoints for CRUD Ops: Template Versions,Poojitha.Rayani@sprint.com,,28800,28800,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,28800,,Koala Tea
+In Progress,DIGTDEV-15904,694812,694298,Testing Template validations ,Srilatha.2.Vemaraju@sprint.com,,43200,10800,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,43200,,Koala Tea
+Completed,DIGTDEV-15925,695087,694298,Test: Generating A3S token Dynamically,Poojitha.Rayani@sprint.com,,14400,0,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,14400,,Koala Tea
+Definition,DIGTDEV-15930,695171,694298,Testing -UI Integration Templates,Srilatha.2.Vemaraju@sprint.com,,18000,18000,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,18000,,
+Definition,DIGTDEV-15949,695526,694298,Testing -Validations of the Data being collected,Srilatha.2.Vemaraju@sprint.com,,25200,25200,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,25200,,Koala Tea
+Definition,DIGTDEV-15963,695624,694298,Testing- CRUD operations for Template Management(Departments) ,Srilatha.2.Vemaraju@sprint.com,,57600,16200,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,57600,,Koala Tea
+In Progress,DIGTDEV-16010,696232,694298,TEST for Payments : Persistence POST Order Method,Srilekha.Rajam@sprint.com,,57600,7200,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,57600,,Koala Tea
+In Progress,DIGTDEV-16015,696505,694298,TEST: JAVA BE - Template Management - Department validation Tags,Srilekha.Rajam@sprint.com,,28800,10800,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,28800,,Koala Tea
+Definition,DIGTDEV-16016,696511,694298,OTS- TEST: Logic to remove Redux from SDK,Srilekha.Rajam@sprint.com,,7200,7200,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,7200,,Koala Tea
+Definition,DIGTDEV-16017,696513,694298,Test Payment Methods MS Connect to EPP Gateway Ms,Poojitha.Rayani@sprint.com,,57600,57600,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,57600,,Koala Tea
+In Progress,DIGTDEV-16022,696543,694298,"PAYMENT: Payment Persistence MS - Implement ""POST Payment Process""",Srilekha.Rajam@sprint.com,,57600,46800,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,57600,,Koala Tea
+In Progress,DIGTDEV-16023,696552,694298,Test the SMS limitations by department function,Poojitha.Rayani@sprint.com,,3600,1800,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,3600,,Koala Tea
+Completed,DIGTDEV-16032,696566,694298,OTS Test of the EPP Gateway Mapping,Poojitha.Rayani@sprint.com,,3600,0,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,3600,,Koala Tea
+Definition,DIGTDEV-16034,696569,694298,Consolidated Testing for OUTBOUND messaging ,Poojitha.Rayani@sprint.com,,72000,39600,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,72000,,Koala Tea
+Definition,DIGTDEV-16037,696701,694298,OTS : Test the EPP Gateway Communications,Srilekha.Rajam@sprint.com,,7200,7200,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,7200,,Koala Tea
+In Progress,DIGTDEV-16041,696818,694298,Test-Double click Tag insertion,Srilatha.2.Vemaraju@sprint.com,,36000,14400,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,36000,,Koala Tea
+Solution Definition,DIGTDEV-15883,694688,,"MTV209 - As an analyst, I want to analyze scenarios and design the Microservices needed for the Order Handling portion of this story",,,,,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-16130,,,WHO
+Preparing,DIGTDEV-15735,694410,,MTV209 - Create list of scenarios for charging,mahesh.menon@sprint.com,,57600,57600,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-16130,57600,,WHO
+Preparing,DIGTDEV-15736,694411,,MTV209 - assist with documentation for Manage Charges,mahesh.menon@sprint.com,,57600,57600,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-16130,57600,,WHO
+On Hold,DIGTDEV-15483,676547,,MTV181 - Analysis and design of SOX compliance,mahesh.menon@sprint.com,,64800,64800,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-13589,64800,,WHO
+Preparing,DIGTDEV-15761,694436,,MTV209 - Create fulfillment MS as needed (3-6),mahesh.menon@sprint.com,,28800,28800,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-16130,28800,,WHO
+Definition,DIGTDEV-16011,696424,,"MTV209 - As a developer, I want to create skeletons for the Manage Charges microservices",,,,,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-16130,,,WHO
+In Progress,DIGTDEV-16020,696609,,MTV181 - Test support and code fix,krishna.Gontumukkulu@sprint.com,,36000,36000,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-13589,36000,,WHO
+Preparing,DIGTDEV-16035,696678,,MTV209 - Create Manage Charges microservice,krishna.Gontumukkulu@sprint.com,,115200,115200,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-16130,115200,,WHO
+Preparing,DIGTDEV-16036,696679,,MTV209 - Create Manage Charges microservice ,abdul.a.shaik@sprint.com,,115200,115200,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-16130,115200,,WHO
+In Progress,DIGTDEV-16021,696611,,MTV181 - Test support and code fix,abdul.a.shaik@sprint.com,,,0,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-13589,,,WHO
+Definition,DIGTDEV-15896,694906,,"MTV181 - As a Tester, I want to Test and validate the MS for administration of Fallout Management",,,,,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-13589,,,WHO
+Solution Definition,DIGTDEV-15700,693847,,"MTV103-1 - As an Analyst, I want to design and map the tables required for promotions to be displayed",Pavan.Shetty@sprint.com,,,0,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14747,,,OMG
+Solution Definition,DIGTDEV-15922,695079,,"MTV103-5 - As an Analyst, I want to design and map the tables required for Add a Line",,,,0,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14738,,,OMG
+Solution Definition,DIGTDEV-15920,695044,,"MTV103-7 - As an Analyst, I want to design and map the tables required for Upgrade Device",,,,,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14733,,,OMG
+In Development,DIGTDEV-15919,694858,,"MTV103-5 - As a Developer, I want to implement the code required for Add a Line OH",,,,,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14738,,,OMG
+In Development,DIGTDEV-15988,695783,,"MTV103-7 - As a Developer, I want to implement the code required for Upgrade Device",,,,,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14733,,,OMG
+Definition,DIGTDEV-15915,694950,,MTV103-7 - As a Developer I want to review all code prior to deployment and correct any defects,,,,,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14733,,,OMG
+Definition,DIGTDEV-15715,693872,,MTV103 - As a Developer I want to update mapping logic to include updated table information,,,,,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14747,,,OMG
+In Development,DIGTDEV-15952,695462,,MTV103 - As a Developer I want to review code prior to release and correct any defects discovered,,,,,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14747,,,OMG
+Preparing,DIGTDEV-15659,692845,,MTV103-7 - Design and Mapping for ORDER_RMA_INFO table,Pavan.Shetty@sprint.com,,72000,72000,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14733,72000,,OMG
+Preparing,DIGTDEV-15662,692851,,MTV103-7 - Design and Mapping for CANCEL_UNDLVRD_SHIPMENT,Pavan.Shetty@sprint.com,,43200,43200,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14733,43200,,OMG
+On Hold,DIGTDEV-15660,692846,,MTV103 - Design and Mapping for ORDER_LINE_CANCEL_DETAILS table,Pavan.Shetty@sprint.com,,72000,86400,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6313,72000,,OMG
+On Hold,DIGTDEV-15658,692844,,MTV103 - Design and Mapping for ORDER_IB_INFO table,Pavan.Shetty@sprint.com,,72000,72000,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6313,72000,,OMG
+On Hold,DIGTDEV-11793,616598,,MTV103 - Design and Mapping for OMIM_SHIPMENT_INFO,purushotham.veeregowda@sprint.com,,21600,21600,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6313,21600,,OMG
+In Progress,DIGTDEV-16051,697011,,MTV103 - Investigate and fix the errors on TestAuthenticationService ,Mario.Ponciano@sprint.com,,57600,57600,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6313,57600,,OMG
+In Progress,DIGTDEV-16148,699469,,MTV103 - Create DAO for OMIM_SHIPMENT_INFO,Chudala.Prava@sprint.com,,,,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14747,,,OMG
+Completed,DIGTDEV-15693,693345,,MTV103 - Updated mapping logic of WORKING_STATUS and SIM_EQUIPMENT_ID fields in ORDER_LINE_DETAILS table.,andressa.bastos@sprint.com,,300,0,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6313,300,,OMG
+Done,DIGTDEV-15252,671351,,MTV103 - Rework Orchestrator (ORE),butchi.kanaparti@sprint.com,,97200,144000,Developer Story,Tapas ITR21 (PI10): 21/8-3/9,Tapas ITR23 (PI11): 25/9-8/10,,,DIGTDEV-6313,86400,,OMG
+Completed,DIGTDEV-15306,672966,671351,Refactor DBValueConstants to WorkflowConstants,butchi.kanaparti@sprint.com,,10800,0,Sub-task,Tapas ITR21 (PI10): 21/8-3/9,Tapas ITR23 (PI11): 25/9-8/10,,,,10800,,
+In Progress,DIGTDEV-15307,672967,671351,Modify OrderItemStepCompleteProcessor to update line status only per business logic,,,,,Sub-task,Tapas ITR21 (PI10): 21/8-3/9,Tapas ITR23 (PI11): 25/9-8/10,,,,,,
+Completed,DIGTDEV-15324,673695,,MTV103 - Rework PHONE_CONFIG table to include new data,andressa.bastos@sprint.com,,36000,36000,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6313,36000,,OMG
+Completed,DIGTDEV-15677,692995,,MTV103 - Define thread pool for async operations,gabriel.harachide@sprint.com,,28800,0,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6313,28800,,OMG
+In Progress,DIGTDEV-15696,693348,,MTV103 - Updated mapping logic of ORDER_COMMENTS.COMMENT_TXT field to add a comment where there is  a fallout event notification from Sky on kafka topic 'FalloutManagementNotification',andressa.bastos@sprint.com,,64800,36000,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6313,64800,,OMG
+On Hold,DIGTDEV-11987,619428,,MTV103 - Create NextelOrderShippingValueAdapter.java for ORDER_SHIPPING table,gabriel.harachide@sprint.com,,43200,50400,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6313,43200,,OMG
+On Hold,DIGTDEV-11981,619417,,MTV103 - Create NextelOrderPaymentsAdapter.java for ORDER_PAYMENTS table,gabriel.harachide@sprint.com,,43200,43200,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6313,43200,,OMG
+In Progress,DIGTDEV-15680,692998,,MTV103 - Create a common unit-test profile,gabriel.harachide@sprint.com,,28800,0,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6313,28800,,OMG
+In Progress,DIGTDEV-15681,692999,,MTV103 - Remove external dependencies from Unit-Test,gabriel.harachide@sprint.com,,43200,43200,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6313,43200,,OMG
+In Development,DIGTDEV-15947,695436,,MTV103 - As an analyst I want to analyse and map data missing from tables for Add a Line and Upgrade Device,,,,,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14747,,,OMG
+In Progress,DIGTDEV-15946,695434,,"MTV103-7 As an analyst, I want to map the missing columns in tables needed for Upgrade Device",Pavan.Shetty@sprint.com,,36000,36000,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14733,36000,,OMG
+Preparing,DIGTDEV-16012,696431,,MTV103 - support for running ORE in UAT1,butchi.kanaparti@sprint.com,,57600,57600,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14747,57600,,OMG
+In Progress,DIGTDEV-15945,695433,,"MTV103-5 As an analyst, I want to map the missing columns in tables needed for Add a Line",Pavan.Shetty@sprint.com,,36000,36000,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14738,36000,,OMG
+Definition,DIGTDEV-15893,694903,,"MTV103 - As a Developer, I want to implement a service for Fallout access, including a database",,,,,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6313,,,OMG
+In Progress,DIGTDEV-15686,693305,,MTV103 - Revisit service fallout custom configurations,vinicius.oliveira@sprint.com,,43200,10800,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6313,43200,,OMG
+Completed,DIGTDEV-15688,693308,,MTV103 - Create skeletons for service fallout resolvers,vinicius.oliveira@sprint.com,,43200,0,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6313,43200,,OMG
+In Progress,DIGTDEV-15690,693310,,MTV103 - Fix SonarLint issues,Chudala.Prava@sprint.com,,64800,64800,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6313,64800,,OMG
+Cancelled,DIGTDEV-6198,579837,,16 MTV - BAN Lock Issues,,,,,Epic,,,,,,,BAN Lock Issues ,
+Done,DIGTDEV-6199,579838,,0 MTV - Shopping cart POC,Shilpa.Pathak@amdocs.com,,,,Epic,,,,,,,000 MTV - POC,
+In Development,DIGTDEV-6200,579839,,"02 MTV - New Customer creates an order of purchasing a new postpaid plan for his own device, in a National Retail store, and decides not to submit the order",amosk@amdocs.com,,,,Epic,,,,,,,"02 MTV - New Customer creates an order of purchasing a new postpaid plan for his own device, in a National Retail store, and decides not to submit the order.",
+Cancelled,DIGTDEV-6202,579841,,CANCELLED - Digital-1-Cross Activities,,,,,Epic,,,,,,,Cross Activities,
+Definition,DIGTDEV-6203,579842,,IN_Infra Tapas,,,,,Epic,,,,,,,Infra/IT,
+Done,DIGTDEV-6204,579843,,83 MTV - ODO Foundation,,,,,Epic,,,,,,,83 MTV - ODO Foundation,
+Definition,DIGTDEV-6205,579844,,CJ Testing - Cross Activities,,,,,Epic,Tapas ITR6 (PI2): 11/28-12/11,Tapas ITR8 (PI3): 01/02-01/15,Tapas ITR7 (PI3): 12/19-01/01,Tapas IP (PI2): 12/12-12/18,,,Testing Cross Activities,
+Done,DIGTDEV-6206,579845,,54 MTV - On demand data loading from Ensemble into D1 (customer),daniel.peyser@amdocs.com,,,,Epic,,,,,,,054 MTV - On demand data loading from Ensemble into D1 (customer),
+Done,DIGTDEV-6207,579846,,"66 MTV - Change Price Plan - Single Subscriber - Order Capture - non-handset, change from Non-NVP to NVP offer, tax agnostic rates, no add-ons",Dana.Roffe@amdocs.com,,,,Epic,,,,,,,"66 MTV - Change Price Plan - Single Subscriber for a Customer – tax agnostic – catalog price presentment in ordering, billing as TE. No add-ons - OC. Includes changes from Legacy offers and from NVP offers",
+Done,DIGTDEV-6208,579847,,"75 MTV - Change Price Plan - Single Subscriber - Order Handling - non-handset, tax agnostic rates, no add-ons",ashaym@amdocs.com,,,,Epic,,,,,,,"075 MTV - Change Price Plan - Single Subscriber - Order Handling - non-handset, tax agnostic rates, no add-ons",
+Done,DIGTDEV-6209,579848,,"73 MTV - Change Price Plan - Single Subscriber - non-handset, TE offer, change from NVP to NVP, with add-ons change",Dana.Roffe@amdocs.com,,,,Epic,,,,,,,"73 MTV - Change Price Plan - Single Subscriber - non-handset, TE offer, change from NVP to NVP, with add-ons change",
+Done,DIGTDEV-6210,579849,,"19 MTV - Add/Remove Services - Single Subscriber - non-handset, only NVP add-ons",EITANAP@Amdocs.com,,,,Epic,,,,,,,"019 MTV - Add/Remove Services - Single Subscriber - non-handset, only NVP add-ons",
+Done,DIGTDEV-6211,579850,,"14-1 MTV - NF (SSO Temporary Solution, AMIL NF)",daniel.peyser@amdocs.com,,,,Epic,,,,,,,"14.1 MTV - NF (single sign on - temporary solution, etc.)",
+Cancelled,DIGTDEV-6212,579851,,82-2 MTV - AMIL Switch including extension - continuation - customer with single/multiple subscribers are in Tapas,Doron.Badhav@amdocs.com,,,,Epic,Tapas ITR8 (PI3): 01/02-01/15,Tapas ITR7 (PI3): 12/19-01/01,,,,,082-2 MTV - Change Plan - AMIL Switch including extension - continuation - customer with single/multiple subscribers are in Tapas,
+Done,DIGTDEV-6213,579852,,71 MTV - On demand data loading from Ensemble into D1 (Product Inventory),daniel.peyser@amdocs.com,,,,Epic,,,,,,,071 MTV - Change Plan - On demand data loading from Ensemble into D1 (Product Inventory),
+Done,DIGTDEV-6214,579853,,"03 MTV - Add a Line - Single Line - Order Handling - non-handset, SRP (full price), in store, no add-ons, no change to existing subscribers, no accessories",ashaym@amdocs.com,,,,Epic,,,,,,,"003 MTV - Add a Line - Single Line - Order Handling - non-handset, SRP (full price) in store, no add-on's, no change to existing subscribers, no accessories",
+Done,DIGTDEV-6215,579854,,"60 MTV - Add a Line - Single Line - Order Capture - non-handset, SRP (full price), in store, no add-ons, no change to existing subscribers, no accessories",arvind.bhosale@amdocs.com,,,,Epic,,,,,,,"060 MTV - Add a Line - Single Line - Order Capture - non-handset, SRP (full price), in store, no add-ons, no change to existing subscribers, no accessories.",
+In Development,DIGTDEV-6216,579855,,"67 MTV - Change Price Plan - Single Subscriber - non-handset, TE/TI NVP offer, with bundle add-ons change",ELVIRAN@Amdocs.com,,,,Epic,,,,,,,"067 MTV  - Change Price Plan - Single Subscriber - non-handset, TE/TI NVP offer, with add-ons change",
+In Development,DIGTDEV-6217,579856,,"17 MTV - Change Price Plan - Multi Line - handset, change to Family Regular Bundle NVP",Dana.Roffe@amdocs.com,,,,Epic,,,,,,,17 MTV - Change Price Plan - to Shared TE/TI (from Shared handset NTM) - Multi,
+In Development,DIGTDEV-6218,579857,,"20 MTV - Upgrade Device - Single Line - non-handset, in store, SRP (full price); no change plan, add-on, promotion; no existing loan/lease; no accessories",,,,,Epic,,,,,,,"020 MTV - Upgrade Device - Single Line - non-handset, in store, SRP (full price); no change plan, add-on, promotion;no existing loan/lease; no accessories",
+In Development,DIGTDEV-6219,579858,,"10 MTV - Upgrade Device, Change Price Plan, Add a Line - Cart maintenance",daniel.peyser@amdocs.com,,,,Epic,,,,,,,"010 MTV - Upgrade Device - Upgrade Device, Add a Line, Cart maintenance",
+Cancelled,DIGTDEV-6220,579859,,97 MTV - Add a Line - Auto pay discount addition by Engage,savely.vasilevsky@amdocs.com,,,,Epic,,,,,,,097 MTV - Add a Line - Auto pay discount addition by Engage,
+User Story Creation,DIGTDEV-6221,579860,,"86 MTV - Add a Line - Single Line - non-handset, with accessories purchase",Amihay.Steinberg@Amdocs.com,,,,Epic,,,,,,,"086 MTV - Add a Line - Single Line - non-handset, with accessories purchase",
+In Review,DIGTDEV-6222,579861,,100 MTV - Add a Line - Multi Line - Shared and Individual plans,Limor.Muyal@amdocs.com,,,,Epic,,,,,,,"100 MTV - Add a Line - Multi - handset; BAN level add-ons",
+In Review,DIGTDEV-6223,579862,,102 MTV - Upgrade Device - Multi Line - without change to existing Shared and Individual plan,EITANAP@Amdocs.com,,,,Epic,,,,,,,"102 MTV - Upgrade Device - Multi Line - handset, without change to existing plan; BAN level add-ons",
+Cancelled,DIGTDEV-6224,579863,,92 MTV - Add a Line - BOGO/BOGX batch application,savely.vasilevsky@amdocs.com,,,,Epic,,,,,,,092 MTV - Add a Line - BOGO/BOGX batch application,
+User Story Creation,DIGTDEV-6225,579864,,"18 MTV - Change Price Plan - Multi Line - handset, change to Family ONE/ONE PLUS NVP",Dana.Roffe@amdocs.com,,,,Epic,,,,,,,"018 MTV - Change Price Plan - Multi Line - handset, change to Family ONE/ONE PLUS NVP",
+User Story Creation,DIGTDEV-6226,579865,,"21-1 MTV - Upgrade Device - Single Line - non-handset, in store, SRP (full price), with change plan, add-on, promotion; no existing loan/lease; no accessories",zafrirr@amdocs.com,,,,Epic,,,,,,,"21 MTV - Upgrade Device - Single Line - non-handset, in store, SRP (full price), with change plan, add-on, promotion; no existing loan/lease; no accessories",
+User Story Creation,DIGTDEV-6227,579866,,"87 MTV - Add a Line - Single - Purchase (all plans types), TE/TI NTM - same as other subscribers, shipment",yank@amdocs.com,,,,Epic,,,,,,,"087 MTV - Add a Line - Single Line - non-handset, SRP (full price), shipment to home",
+User Story Creation,DIGTDEV-6228,579867,,"78 MTV - Upgrade Device - Single Line - non-handset, loan (Prime/Sub-Prime) without down payment, in store, with add-ons/promotions change, no existing loan/lease, no deposit, no accessories",Amihay.Steinberg@Amdocs.com,,,,Epic,,,,,,,"MTV 78 - Upgrade Device - Single - add-ons, promotion; no existing loan/lease; in store; loan - Prime/Sub-Prime, no down payments, no deposit. No accessories",
+In Development,DIGTDEV-6229,579868,,"22 MTV - Upgrade Device - Single Line - non-handset, closing existing loan, no change plan, no accessories",zafrirr@amdocs.com,,,,Epic,,,,,,,"022 MTV - Upgrade Device - Single, including closing existing loan. No accessories",
+User Story Creation,DIGTDEV-6230,579869,,"70 MTV - Upgrade Device - Single Line - non-handset, closing existing lease, no change plan, no accessories",ELVIRAN@Amdocs.com,,,,Epic,,,,,,,70 MTV - Upgrade Device - Single - including closing existing lease. No accessories,
+User Story Creation,DIGTDEV-6231,579870,,"80 MTV - Upgrade Device - non-handset, shipment to home",yank@amdocs.com,,,,Epic,,,,,,,"080 MTV - Upgrade Device - non-handset, shipment to home",
+User Story Creation,DIGTDEV-6232,579871,,"24 MTV - Upgrade Device - Single Line - non-handset, with trade in",amos.krayef@amdocs.com,,,,Epic,,,,,,,"024 MTV - Upgrade Device - Single Line - non-handset, with trade-in",
+User Story Creation,DIGTDEV-6233,579872,,"77 MTV - Upgrade Device - non-handset, with accessories purchase (for all scenarios)",daniel.peyser@amdocs.com,,,,Epic,,,,,,,"077 MTV Upgrade Device - non-handset,  with accessories purchase (for all scenarios)",
+In Development,DIGTDEV-6234,579873,,33 MTV - Order Handling fallout management,,,,,Epic,,,,,,,"33 MTV - Order Fallout - OH fallout management, SOM OH ",
+In Development,DIGTDEV-6235,579874,,"109 MTV - Change Price Plan - non-handset, immediate automatic Catalog promotions",,,,,Epic,,,,,,,"109 MTV - Change Price Plan - non-handset, immediate automatic Catalog promotions",
+In Development,DIGTDEV-6236,579875,,"61 MTV - Add a Line - Single Line - non-handset, loan (Prime) without down payments, in store, no add-ons, no change to existing subscribers",Amihay.Steinberg@Amdocs.com,,,,Epic,,,,,,,"061 MTV - Add a Line - Single Line - non-handset, loan (Prime/Sub-Prime) without down payments, in store, no add-ons, no change to existing subscribers",
+In Review,DIGTDEV-6237,579876,,"34 MTV - Add a Line - Single Line - non-handset, with trade in",yank@amdocs.com,,,,Epic,,,,,,,"034 MTV - Add a Line - Single Line - non-handset, with trade-in",
+Cancelled,DIGTDEV-6238,579877,,35 MTV - TMO Network - Add a Line on TMO network - all billing and offer options,,,,,Epic,,,,,,,035 MTV - Add a Line on TMO Network - all billing and offer options,
+Cancelled,DIGTDEV-6239,579878,,37 MTV - TMO Network - Upgrade Device to TMO network - TMO device - Single,,,,,Epic,,,,,,,037 MTV - Upgrade Device to TMO network - TMO device - Single,
+Cancelled,DIGTDEV-6240,579879,,39 MTV - TMO Network - Change Price Plan to device on TMO network (all options),,,,,Epic,,,,,,,039 MTV - Change Price Plan to device on TMO network (all options),
+Cancelled,DIGTDEV-6241,579880,,40 MTV - TMO Network - Upgrade Device from TMO to Sprint network,,,,,Epic,,,,,,,040 MTV - Upgrade Device from TMO to Sprint network,
+Definition,DIGTDEV-6242,579881,,51 MTV - BAN level discount,savely.vasilevsky@amdocs.com,,,,Epic,,,,,,,051 MTV - BAN level discount,
+User Story Creation,DIGTDEV-6243,579882,,"55 MTV - Add a Line - Single Line - BYOD, already enrolled to autopay, with T&C",savely.vasilevsky@amdocs.com,,,,Epic,,,,,,,"055 MTV - Add a Line - Single - BYOD - Basic Flow (without Shared Plan, with NTM TE offers, without Add-Ons and promotions, without accessories, already in AutoPay). Includes T&C",
+Cancelled,DIGTDEV-6244,579883,,"59 MTV - Add a Line - Single - BYOD/Purchase - all plans, accessories",savely.vasilevsky@amdocs.com,,,,Epic,,,,,,,"059 MTV - Add a Line - Single - BYOD/Purchase - all plans, accessories",
+Definition,DIGTDEV-6245,579884,,"74 MTV - Add a Line, Upgrade Device - payment for SIM",,,,,Epic,,,,,,,"74 MTV - Add a Line - Add a line, Upgrade Device – BYOD – payment for SIM",
+User Story Creation,DIGTDEV-6246,579885,,"79 MTV - Upgrade Device - Single Line - non-handset, loan (Prime/Sub-Prime) with down payment (regular and voluntary), in store, with add-ons/promotions change, no existing loan/lease, no deposit, no accessories",Amihay.Steinberg@Amdocs.com,,,,Epic,,,,,,,"MTV 79 - Upgrade Device - Single - add-ons, promotion; no existing loan/lease; in store; loan - Prime/Sub-Prime, down payments (regular + voluntary). No accessories",
+In Development,DIGTDEV-6247,579886,,"84 MTV - Add a Line - Single Line - non-handset, SRP (full price), with add-ons, with Catalog immediate automatic promotions on device, plan and/or add-on, no accessories, no autopay enrollment",,,,,Epic,,,,,,,"21 MTV - Upgrade Device - Single Line - non-handset, in store, SRP (full price), with change plan, add-on, promotion; no existing loan/lease; no accessories",
+In Development,DIGTDEV-6248,579887,,"88 MTV - Add a Line - Single Line - non-handset, loan (Prime) with down payments (regular and voluntary), in store, no add-ons, no accessories",Amihay.Steinberg@Amdocs.com,,,,Epic,,,,,,,"88 MTV - Add a Line - Single - Loan - Prime (no Shared plan), TE, down payments (regular + voluntary), in store, no accessories",
+Preparing,DIGTDEV-6249,579888,,"90 MTV - Upgrade Device - Multi Line (Sprint network), including change plan",zafrirr@amdocs.com,,,,Epic,,,,,,,"090 MTV - Upgrade Device - Multi (Sprint network), including change plan",
+Cancelled,DIGTDEV-6250,579889,,"to be deleted-Upgrade Device - Single - Subsidy Price (all plans types, TE/TI NTM), including on Web",zafrirr@amdocs.com,,,,Epic,,,,,,,"Upgrade Device - Single - Subsidy Price (all plans types, TE/TI NTM), including on Web",
+User Story Creation,DIGTDEV-6251,579890,,"91 MTV - Add a Line - Single Line - TI/TE NTM (moving all subscribers to TI/TE), including with / without autopay",savely.vasilevsky@amdocs.com,,,,Epic,,,,,,,"091 MTV -Add a Line - Single - TI/TE NTM (moving all subscribers to TI/TE), including with / without autopay",
+Definition,DIGTDEV-6252,579891,,23 MTV - Upgrade Device - Single - with Buy Back,,,,,Epic,,,,,,,023 MTV - Upgrade Device - Single - with Buy Back,
+Cancelled,DIGTDEV-6253,579892,,25 MTV - Upgrade Device - Multi (all networks),,,,,Epic,,,,,,,025 MTV - Upgrade Device - Multi (all networks),
+Definition,DIGTDEV-6254,579893,,26 MTV - Add a Line - Call Center,,,,,Epic,,,,,,,026 MTV - Add a Line - Purchase (all offer types) - CC,
+Cancelled,DIGTDEV-6255,579894,,27 MTV - Add a Line - Loan (all offer types) - CC,,,,,Epic,,,,,,,027 MTV - Add a Line - Loan (all offer types) - CC,
+In Development,DIGTDEV-6257,579896,,29 MTV - Change Price Plan - backdated change,,,,,Epic,,,,,,,029 MTV - Change Price Plan (all offer types) including backdated ,
+Definition,DIGTDEV-6258,579897,,30 MTV - Add/Remove Services - Call Center,,,,,Epic,,,,,,,030 MTV - Add/Remove Services - CC,
+Definition,DIGTDEV-6259,579898,,31 MTV - Upgrade Device - all scenarios - Call Center,,,,,Epic,,,,,,,031 MTV - Upgrade Device (all offer types) - CC,
+Definition,DIGTDEV-6260,579899,,"32 MTV - Add a Line to new customer created in National Retail (tentative) - SRP/loan, all offers",,,,,Epic,,,,,,,"032 MTV - Add a Line - to new customer created in National Retail (tentative) - purchase/loan, all offers (assuming call to Open BAN API)",
+Cancelled,DIGTDEV-6261,580000,,36 MTV - TMO Network - Upgrade Device to TMO network - Sprint device - change SIM,,,,,Epic,,,,,,,036 MTV - Upgrade Device to TMO network - Sprint device - change SIM,
+Cancelled,DIGTDEV-6262,580001,,38 MTV - TMO Network - Change SIM to device on TMO network,zafrirr@amdocs.com,,,,Epic,,,,,,,038 MTV - Change SIM to device on TMO network,
+Definition,DIGTDEV-6267,580006,,45 MTV - Cancel Subscriber,savely.vasilevsky@amdocs.com,,,,Epic,,,,,,,045 MTV - Maintenance - Cancel Subscriber,
+Definition,DIGTDEV-6268,580007,,46 MTV - Resume from Cancel,savely.vasilevsky@amdocs.com,,,,Epic,,,,,,,046 MTV - Maintenance - Resume from Cancel,
+Definition,DIGTDEV-6269,580008,,47 MTV - Suspend,savely.vasilevsky@amdocs.com,,,,Epic,,,,,,,047 MTV - Maintenance - Suspend,
+Definition,DIGTDEV-6270,580009,,48 MTV - Restore,savely.vasilevsky@amdocs.com,,,,Epic,,,,,,,048 MTV - Maintenance - Restore,
+Definition,DIGTDEV-6271,580010,,49 MTV - Change ownership,savely.vasilevsky@amdocs.com,,,,Epic,,,,,,,049 MTV - Maintenance - Change ownership,
+Definition,DIGTDEV-6272,580011,,50 MTV - Change resource,savely.vasilevsky@amdocs.com,,,,Epic,,,,,,,050 MTV - Maintenance - Change resource,
+Definition,DIGTDEV-6274,580013,,53 MTV - BAN level price plan and add-ons,savely.vasilevsky@amdocs.com,,,,Epic,,,,,,,053 MTV - Maintenance - BAN level price plan,
+Definition,DIGTDEV-6275,580014,,"56 MTV - Add a Line, Upgrade Device, Change Price Plan - Enroll to Autopay",zafrirr@amdocs.com,,,,Epic,,,,,,,"056 MTV - Add a Line - Add a Line, Upgrade Device, Change Price Plan - Enroll to Autopay",
+Definition,DIGTDEV-6276,580015,,"57 MTV - Add a Line, Upgrade Device, Change Price Plan - adding Autopay impact on existing subscribers",,,,,Epic,,,,,,,"057 MTV - Add a Line - Add a Line, Upgrade Device, Change Price Plan - adding Autopay impact on existing subscribers",
+Definition,DIGTDEV-6277,580016,,"65 MTV - Add a Line - Multi Line - 1 Loan, 1 SRP (full price) in store, no BOGO/BOGX, all either TE or TI",savely.vasilevsky@amdocs.com,,,,Epic,,,,,,,"65 MTV - Add a Line - Multi - 1 Loan, 1 Purchase in store, no BOGO/BOGX, all either TE or TI",
+Definition,DIGTDEV-6278,580017,,"72 MTV - Add a Line - Single Line - Subsidy Price (all plans types), TE/TI, ETF",yaakov.slonimczyk@amdocs.com,,,,Epic,,,,,,,"072 MTV - Add a Line - Single - Subsidy Price (all plan types), TE/TI NTM, ETF",
+Cancelled,DIGTDEV-6279,580018,,"76 MTV - Upgrade Device - Single - TE/TI plans, add-ons, promotion; no existing loan/lease; BYOD. No accessories",milenag@amdocs.com,,,,Epic,,,,,,,"076 MTV - Upgrade Device - Single - TE/TI plans, add-ons, promotion; no existing loan/lease; BYOD. No accessories",
+Definition,DIGTDEV-6280,580019,,93 MTV - Add a Line - Single Line - with buy back,savely.vasilevsky@amdocs.com,,,,Epic,,,,,,,093 MTV - Add a Line - Single - with buy back,
+Definition,DIGTDEV-6281,580020,,"95 MTV - Add a Line - Multi Line - (rest of the scenarios), BOGO/BOGX - combinations of types (NTM Tier), other potential promotions",savely.vasilevsky@amdocs.com,,,,Epic,,,,,,,"095 MTV - Add a Line - Multi (rest of the scenarios), BOGO/BOGX - combinations of types (NTM Tier), other potential promotions",
+Definition,DIGTDEV-6282,580021,,96 MTV - Add a Line - Multi Line - additional scope (buy back for multi line order),savely.vasilevsky@amdocs.com,,,,Epic,,,,,,,096 MTV - Add a Line - Multi - additional scope (buy back for multi line order),
+Preparing,DIGTDEV-6283,580022,,"98 MTV - Add/Remove Services - Single Line - NVP BAN and subscriber level device and plan add-ons only, with immediate Catalog automatic promotions on stand alone add-ons",hedvag@amdocs.com,,,,Epic,,,,,,,"098 MTV - Add/Remove Services - Single Line - NVP BAN and subscriber level device and plan add-ons only, with immediate Catalog automatic promotions on add-ons",
+Definition,DIGTDEV-6284,580023,,C1 Cross activities,,,,,Epic,Tapas ITR8 (PI3): 01/02-01/15,Tapas ITR7 (PI3): 12/19-01/01,,,,,C1 Cross activities,
+Done,DIGTDEV-6285,580024,,82-1 MTV - AMIL Switch including extension - only customers with single subscribers are in Tapas,Doron.Badhav@amdocs.com,,,,Epic,,,,,,,82 MTV - AMIL Switch Final,
+Cancelled,DIGTDEV-6286,580025,,CANCELLED - Change Price Plan_April - CJ Testing,,,,,Epic,,,,,,,Change Price Plan_April - CJ Testing,
+Definition,DIGTDEV-6287,580026,,Add/Remove Services - April - CJ Testing,Swapnil.Sonawane@amdocs.com,,,,Epic,,,,,,,Add/Remove Services - April - CJ Testing,
+Done,DIGTDEV-6288,580027,,Add a line - June- CJ Testing,,,,,Epic,,,,,,,Add a line - June- CJ Testing,
+Definition,DIGTDEV-6289,580028,,Change PP - June - CJ Testing,,,,,Epic,,,,,,,Change PP - June - CJ Testing,
+Cancelled,DIGTDEV-6290,580029,,CANCELLED - Change Price plan - April - IST,,,,,Epic,,,,,,,Change Price plan - April - IST,
+Definition,DIGTDEV-6291,580030,,Add a line - June- IST,,,,,Epic,,,,,,,Add a line - June- IST,
+Cancelled,DIGTDEV-6292,580031,,CANCELLED - Change Price plan - June- IST,,,,,Epic,,,,,,,Change Price plan - June- IST,
+Cancelled,DIGTDEV-6293,580032,,CANCELLED - Discovery - Change Price Plan - April,,,,,Epic,,,,,,,Discovery - Change Price Plan - April,
+Cancelled,DIGTDEV-6294,580033,,CANCELLED - Discovery - Add/Remove Services - April,,,,,Epic,,,,,,,Discovery - Add/Remove Services - April,
+Cancelled,DIGTDEV-6295,580034,,CANCELLED - Discovery - Add a Line - June,,,,,Epic,,,,,,,Discovery - Add a Line - June,
+Definition,DIGTDEV-6296,580035,,Discovery - Add/Remove Services - June,,,,,Epic,,,,,,,Discovery - Add/Remove Services - June,
+Definition,DIGTDEV-6297,580036,,Discovery - Change Price Plan - June,,,,,Epic,,,,,,,Discovery - Change Price Plan - June,
+Definition,DIGTDEV-6298,580037,,Discovery - Upgrade Device - June,,,,,Epic,,,,,,,Discovery - Upgrade Device - June,
+Cancelled,DIGTDEV-6299,580038,,CANCELLED - Discovery - Add a Line - August,,,,,Epic,,,,,,,Discovery - Add a Line - August,
+Definition,DIGTDEV-6300,580039,,Discovery - Maintenance - Oct,,,,,Epic,,,,,,,Discovery - Maintenance - August,
+Definition,DIGTDEV-6301,580040,,Discovery - Upgrade Device - Oct,,,,,Epic,,,,,,,Discovery - Upgrade Device - August,
+Done,DIGTDEV-6302,580041,,Discovery - TMO Network - Oct,,,,,Epic,,,,,,,Discovery - TMO Network - August,
+Done,DIGTDEV-6303,580042,,Discovery - Add a Line - Post Oct,,,,,Epic,,,,,,,Discovery - Add a Line - November,
+Cancelled,DIGTDEV-6304,580043,,CANCELLED - Discovery - Change Price Plan - November,,,,,Epic,,,,,,,Discovery - Change Price Plan - November,
+Definition,DIGTDEV-6305,580044,,Discovery - Upgrade Device - November,,,,,Epic,,,,,,,Discovery - Upgrade Device - November,
+Definition,DIGTDEV-6306,580045,,Discovery - Add/Remove Services - November,,,,,Epic,,,,,,,Discovery - Add/Remove Services - November,
+Cancelled,DIGTDEV-6307,580046,,CANCELLED - Discovery - Maintenance - November,,,,,Epic,,,,,,,Discovery - Maintenance - November,
+Cancelled,DIGTDEV-6308,580047,,CANCELLED - Discovery - TMO Network - November,,,,,Epic,,,,,,,Discovery - TMO Network - November,
+Definition,DIGTDEV-6309,580048,,Add/Remove Services - April - IST Testing,,,,,Epic,,,,,,,Add/Remove Services - April - IST Testing,
+In Development,DIGTDEV-6310,580049,,AMIL - Cross Activities,,,,,Epic,Tapas ITR8 (PI3): 01/02-01/15,,,,,,AMIL - Cross Activities,
+Cancelled,DIGTDEV-6311,580050,,CANCELLED - Add a Line - August - CJ testing,,,,,Epic,,,,,,,Selenium_automation_flow for OC,
+Definition,DIGTDEV-6312,580051,,101 MTV - Add a Line - Multi Line - SRP/Loan - with changed Shared plan and individual plans and non-device add-ons,umesh.patel@amdocs.com,,,,Epic,,,,,,,101 MTV - Add a Line - Multi - Purchase/Loan - with changed Shared plan and individual plans and non-device add-ons,
+In Development,DIGTDEV-6313,580052,,103 MTV - Order History presentment,ashaym@amdocs.com,,,,Epic,,,,,,,103 MTV - Order History presentment,
+In Review,DIGTDEV-6314,580053,,"104 MTV - Change Price Plan, Add/Remove Services - Submitted order cancellation",ashaym@amdocs.com,,,,Epic,,,,,,,104 MTV - Submitted order cancellation before shipment,
+In Review,DIGTDEV-6315,580054,,"108 MTV - Upgrade Device, Add a Line - Installements on accessories",daniel.peyser@amdocs.com,,,,Epic,,,,,,,"108 MTV - Upgrade Device, Add a Line - Installements on accessories",
+In Development,DIGTDEV-6316,580055,,99 MTV - Change Price Plan - to TE/TI - individual and Shared plans - one order - with/without impact on existing subscribers,,,,,Epic,,,,,,,099 MTV - Change Price Plan - to TE/TI - individual and Shared plans - one order - with/without impact on existing subscribers,
+Definition,DIGTDEV-10075,593215,,NBA: (High Level) Create a MS to integrate NBA with CatalogOne,,,,,Epic,,,,,,,NBA Cat1 Integration,ScrumRunners
+User Story Creation,DIGTDEV-10041,592562,,14 MTV - NF (single sign on),,,,,Epic,,,,,,,014 MTV - NF (single sign on),
+Done,DIGTDEV-10042,592563,,"083-1 MTV - Change Plan - ODO Foundation - ODO operational foundation for data integrity, monitoring and maintenance",guym@amdocs.com,,,,Epic,,,,,,,"083-1 MTV - Change Plan - ODO Foundation - ODO operational foundation for data integrity, monitoring and maintenance",
+Cancelled,DIGTDEV-10043,592564,,CANCELLED - Upgrade Device - June - CJ testing,,,,,Epic,,,,,,,Upgrade Device - June - CJ testing,
+Definition,DIGTDEV-10048,593009,,127 MTV - Device Swap,zafrirr@amdocs.com,,,,Epic,,,,,,,127 MTV - Device Swap,
+Definition,DIGTDEV-10049,593010,,128 MTV - Waive/override of charges,amos.krayef@amdocs.com,,,,Epic,,,,,,,128 MTV - Waive/override of charges,
+Definition,DIGTDEV-10050,593011,,NFR - AMIL,,,,,Epic,,,,,,,NFR - AMIL,
+Cancelled,DIGTDEV-10051,593111,,122 MTV - Take-over order in shop to complete self-service order,,,,,Epic,,,,,,,122 MTV - Add a Line - Take-over order in shop to complete self-service order ,
+Cancelled,DIGTDEV-10052,593112,,116 MTV - Support port back with lease resume,savely.vasilevsky@amdocs.com,,,,Epic,,,,,,,116 MTV - Support port back with lease resume,
+Definition,DIGTDEV-10053,593113,,114 MTV - Add a Line - Single/Multi Line - Port In,savely.vasilevsky@amdocs.com,,,,Epic,,,,,,,114 MTV - Add a Line - Single - Port In ,
+Cancelled,DIGTDEV-10054,593114,,115 MTV - Upgrade Device - Change device type during upgrade,amos.krayef@amdocs.com,,,,Epic,,,,,,,115 MTV - Upgrade Device - Change device type during upgrade,
+Cancelled,DIGTDEV-10055,593115,,"117 MTV - OH for Web channel, including Fraud integration",,,,,Epic,,,,,,,"117 MTV - Upgrade Device - OH for Web channel, including Fraud integration",
+Cancelled,DIGTDEV-10056,593116,,118 MTV - OH for Mobile App channel,,,,,Epic,,,,,,,118 MTV - Change Plan - OH for Mobile App channel,
+Cancelled,DIGTDEV-10057,593117,,119 MTV - OH for RMS,,,,,Epic,,,,,,,119 MTV - Upgrade Device - OH for RMS,
+Definition,DIGTDEV-10058,593118,,"120 MTV - Upgrade Device, Add a Line - pre-order",,,,,Epic,,,,,,,"120 MTV - Upgrade Device, Add a Line - future dated orders",
+In Development,DIGTDEV-10059,593119,,110 MTV - Change Price Plan - Single Line - change to future date,daniel.peyser@amdocs.com,,,,Epic,,,,,,,110 MTV - Change Price Plan to Future Date,
+Definition,DIGTDEV-10060,593123,,"125 MTV - Upgrade Device, Add a Line - Immediate Payment",,,,,Epic,,,,,,,"125 MTV - Upgrade Device, Add a Line - Immediate Payment",
+Preparing,DIGTDEV-10061,593125,,126 MTV - Change Price Plan - Call Center,,,,,Epic,,,,,,,126 MTV - Change Price Plan via Call Center ,
+User Story Creation,DIGTDEV-10062,593126,,"124-1 MTV - Upgrade Device, Add a Line - handset, Family plan promotions",yank@amdocs.com,,,,Epic,,,,,,,"124 MTV - Upgrade Device, Add a Line, Change Price Plan - handset, Family plan promotions",
+Cancelled,DIGTDEV-10063,593132,,to be deleted-123 MTV - Upgrade Device - Device Returns,zafrirr@amdocs.com,,,,Epic,,,,,,,123 MTV - Upgrade Device - Device Returns,
+Definition,DIGTDEV-10064,593134,,"121 MTV - Upgrade Device, Add a Line - additional shipment methods (to store, dealer for pick-up, ship to carrier hub pick-up center)",,,,,Epic,,,,,,,"121 MTV - Upgrade Device, Add a Line - additional shipment methods (to store, dealer for pick-up, ship to carrier hub pick-up center)",
+Cancelled,DIGTDEV-10065,593136,,"to be deleted-105 MTV - Upgrade Device - Single/Multi - potential promotions support, free services promotions",zafrirr@amdocs.com,,,,Epic,,,,,,,"105 MTV - Upgrade Device - Single/Multi - potential promotions support, free services promotions",
+Definition,DIGTDEV-10066,593137,,"106 MTV - Change Price Plan - Single/Multi Line - potential promotions support in Discovery, free services promotions",Dana.Roffe@amdocs.com,,,,Epic,,,,,,,"106 MTV - Change Price Plan - Single/Multi - potential promotions support, free services promotions",
+Definition,DIGTDEV-10069,593142,,129 MTV - Mail in Rebate (MIR) - discount as per coupon,,,,,Epic,,,,,,,129 MTV - Mail in Rebate (MIR) - discount as per coupon,
+Cancelled,DIGTDEV-10070,593143,,130 MTV - Conditional installments on Accessories,,,,,Epic,,,,,,,130 MTV - Add a Line - Conditional installments on Accessories,
+Definition,DIGTDEV-10072,593146,,131 MTV - Multi - Multiple order types in one order,,,,,Epic,,,,,,,131 MTV - Upgrade Device - Multi - Multiple order types in one order,
+Definition,DIGTDEV-10080,593253,,"111 MTV - Upgrade Device, Add a Line - Support Apple Pay as payment method",savely.vasilevsky@amdocs.com,,,,Epic,,,,,,,"111 MTV - Upgrade Device, Add a Line - Support Apple Pay as payment method",
+Cancelled,DIGTDEV-10081,593254,,"112 MTV - Upgrade Device, Add a Line - Support Wallet setup and use as payment method",,,,,Epic,,,,,,,"112 MTV - Upgrade Device, Add a Line - Support Wallet setup and use as payment method",
+Definition,DIGTDEV-10122,594854,,Change price plan April - Security Testing,,,,,Epic,,,,,,,Change price plan April - Security Testing,
+Cancelled,DIGTDEV-10123,594855,,CANCELLED - Add Remove Services - April - PLAB,,,,,Epic,,,,,,,Add Remove Services - April - PLAB,
+Definition,DIGTDEV-10124,594856,,Change Price plan - April - PLAB,,,,,Epic,,,,,,,Change Price plan - April - PLAB,
+Definition,DIGTDEV-10252,596336,,NFR - DigitalOne,,,,,Epic,,,,,,,NFR - DigitalOne,
+Cancelled,DIGTDEV-10262,596424,,To be deleted -0 MTV - Shopping cart POC,Shilpa.Pathak@amdocs.com,,,,Epic,,,,,,,00 MTV - Shopping cart POC,
+Definition,DIGTDEV-10518,599427,,"105 MTV - Upgrade Device - Single/Multi Line - potential promotions support in Discovery, free services promotions",,,,,Epic,,,,,,,"105 MTV - Upgrade Device - Single/Multi - potential promotions support, free services promotions",
+Definition,DIGTDEV-10519,599429,,107 MTV - Add/Remove Services - potential promotions support in Discovery,Dana.Roffe@amdocs.com,,,,Epic,,,,,,,107 MTV - Add/Remove Services - potential promotions support,
+Cancelled,DIGTDEV-10527,599572,,to be deleted: UAT_Change Price Plan April,,,,,Epic,,,,,,,UAT_Change Price Plan April,
+Cancelled,DIGTDEV-10529,599575,,to be deleted,,,,,Epic,,,,,,,UAT_Add Remove Services - April,
+In Development,DIGTDEV-11073,604787,,71-1 MTV - Full PI/CM Load,daniel.peyser@amdocs.com,,,,Epic,,,,,,,71.1 MTV Full PI Load,
+Cancelled,DIGTDEV-11140,606298,,28 MTV - Add a Line - Subsidy (all offer types) - CC,,,,,Epic,,,,,,,28 MTV - Add a Line - Subsidy (all offer types) - CC,
+Cancelled,DIGTDEV-11141,606600,,52 MTV - Maintenance - BAN level discount - CC,,,,,Epic,,,,,,,52 MTV - Maintenance - BAN level discount - CC,
+Cancelled,DIGTDEV-11142,606601,,44 MTV - TMO Network - Upgrade Device from TMO to Sprint network - CC,,,,,Epic,,,,,,,44 MTV - TMO Network - Upgrade Device from TMO to Sprint network - CC,
+Cancelled,DIGTDEV-11143,606602,,41 MTV - TMO Network - Add a Line on TMO network - all billing and offer options - CC,,,,,Epic,,,,,,,41 MTV - TMO Network - Add a Line on TMO network - all billing and offer options - CC,
+Cancelled,DIGTDEV-11144,606603,,42 MTV - TMO Network - Upgrade Device to TMO network - TMO device - CC,,,,,Epic,,,,,,,42 MTV - TMO Network - Upgrade Device to TMO network - TMO device - CC,
+Cancelled,DIGTDEV-11145,606604,,43 MTV - TMO Network - Change Price Plan to device on TMO network (all options) - CC,,,,,Epic,,,,,,,43 MTV - TMO Network - Change Price Plan to device on TMO network (all options) - CC,
+Done,DIGTDEV-11147,606714,,16 MTV - BAN Lock,,,,,Epic,,,,,,,16 MTV - BAN Lock,
+Definition,DIGTDEV-11158,607807,,Return Payment Methods and existing Payment Instruments,,,,,Epic,,,,,,,MTV125 PAYMENT: Payments Methods,
+Definition,DIGTDEV-11163,607713,,Methods to Post Order Methods into the Database,,,,,Epic,,,,,,,MTV125 PAYMENT: Payment Persistence,
+Definition,DIGTDEV-11164,607813,,Expose PostPayment Services,,,,,Epic,,,,,,,MTV125 PAYMENT: Payment Management,
+Solution Definition,DIGTDEV-16049,696933,,"MTV104 - As an Analyst, I want to design an MS that returns Cancel Reason codes for Sky",,,,,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6314,,,We're Groot
+In Progress,DIGTDEV-16025,696657,,MTV104 - Create MS that returns Cancel Reason Codes for Sky,nikhilesh.murala@sprint.com,,115200,72000,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6314,115200,,We're Groot
+In Development,DIGTDEV-16050,696935,,"MTV104 - As a Developer, I want to complete all supporting coding and unit testing for MTV104",,,,,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6314,,,We're Groot
+In Progress,DIGTDEV-15729,694402,,MTV104 - Data mapping to SelfHealing event,mohammad.ahmed@sprint.com,,36000,0,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6314,36000,,We're Groot
+Preparing,DIGTDEV-15726,693899,,MTV104 - CORL Microservices - Create Junit tests,mohammad.ahmed@sprint.com,,57600,57600,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6314,57600,,We're Groot
+In Progress,DIGTDEV-15374,675243,,MTV104 - External MS - create Junit tests,Anuradha.Boddepalli@sprint.com,,86400,86400,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6314,86400,,We're Groot
+Preparing,DIGTDEV-15664,692855,,MTV104 - Code Review and revision - CORL MS,Anuradha.Boddepalli@sprint.com,,28800,28800,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6314,28800,,We're Groot
+In Progress,DIGTDEV-16026,696660,,MTV104 - Review code for memo and notification Microservices with Amdocs ,Anuradha.Boddepalli@sprint.com,,14400,14400,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14004,14400,,We're Groot
+In Development,DIGTDEV-16019,696496,,MTV104 - As a Tester I want to test all Microservices for MTV104,,,,,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14004,,,We're Groot
+Done,DIGTDEV-11441,611963,,143 MTV - Day 1 - AMIL switch,guy.menczel@amdocs.com,,,,Epic,,,,,,,143 MTV - Day 1 - AMIL switch,
+In Development,DIGTDEV-11445,611966,,144 MTV - Day 1 - TI/TE Validations,,,,,Epic,,,,,,,144 MTV - Day 1 - TI/TE Validations,
+Done,DIGTDEV-11448,611968,,145 MTV - Day 1 - C1 Legacy (shells) and NTM Implementation,Ron.Cohen@amdocs.com,,,,Epic,,,,,,,145 MTV - Day 1 - C1 Legacy Implementation (shells),
+Done,DIGTDEV-11449,611969,,147 MTV - Day 1 - Rules evaluation,Nir.Hadar@amdocs.com,,,,Epic,,,,,,,147 MTV - Day 1 - Rules evaluation,
+In Development,DIGTDEV-11451,611971,,146 MTV - Day 1 - NF,,,,,Epic,,,,,,,NFR - MTV146 - Day 1,
+In Development,DIGTDEV-11454,611973,,148 MTV - Day 1 - Security handling,,,,,Epic,,,,,,,148 MTV - Day 1 - Security handling,
+Definition,DIGTDEV-11666,614521,,MTV142 - Notification Service (POST) Front end application,jose.naranjo@sprint.com,,,,Epic,,,,,,,MTV142 - Notification Service (POST) Front end application,
+Cancelled,DIGTDEV-11692,614851,,to_be_deleted_Catalog Implementation - NTM TI offers - Part 2,maayan.benporat@amdocs.com,,,,Epic,,,,,,,"073 MTV - Change Price Plan - Single Subscriber - non-handset, TE offer, change from NVP to NVP, with add-ons change",
+Cancelled,DIGTDEV-11871,617903,,07 MTV - New Customer in National Retail store confirms T&C (capture signature in OC before submitting the order & update the product order fulfillment status that Service agreement during OH was generated),amosk@amdocs.com,,,,Epic,,,,,,,MTV7 T&C,
+Done,DIGTDEV-11872,617762,,04 MTV - AMIL Switch -REPLACED BY MTV 82,Doron.Badhav@amdocs.com,,,,Epic,,,,,,,MTV4 AMIL Switch,
+Cancelled,DIGTDEV-11877,617906,,12 MTV - New Customer in National Retail store brings his own device & activates the service with paying a deposit,amosk@amdocs.com,,,,Epic,,,,,,,MTV12 Deposit,
+Cancelled,DIGTDEV-11879,617907,,143 MTV - AMIL Switch Extension,Doron.Badhav@amdocs.com,,,,Epic,,,,,,,13 MTV - AMIlSwitch-Ext,
+Preparing,DIGTDEV-11899,618140,,"88-1 MTV - Add a Line - Single Line - non-handset, loan (Sub-Prime) with down payments (regular and voluntary), in store, no add-ons, no accessories",amos.krayef@amdocs.com,,,,Epic,,,,,,,"88.1 MTV - Add a Line - Single - Loan - Sub-Prime (no Shared plan), TE, down payments (regular + voluntary), in store, no accessories",
+Preparing,DIGTDEV-11900,618141,,"61-1 MTV - Add a Line - Single Line - non-handset, loan (Sub-Prime) without down payments, in store, no add-ons, no change to existing subscribers",zafrirr@amdocs.com,,,,Epic,,,,,,,"61.1 MTV - Add a Line - Single Line - non-handset, loan (Sub-Prime) without down payments, in store, no add-ons, no change to existing subscribers",
+Done,DIGTDEV-11902,618156,,149 MTV - Day 1 - Ongoing PI sync,Prajakta.Mohite@amdocs.com,,,,Epic,,,,,,,149 MTV - Ensemble Notifies on BAN changes,
+Definition,DIGTDEV-11931,619070,,132 MTV - Add/Remove Services - bundle add-ons promotions,amos.krayef@amdocs.com,,,,Epic,,,,,,,132 MTV - Add/Remove Services - bundle add-ons promotions,
+User Story Creation,DIGTDEV-11934,619084,,"87 MTV - Add a Line - Single Line - non-handset, SRP (full price), shipment to home",,,,,Epic,,,,,,,"87 MTV - Add a Line - Single - Purchase (all plans types), TE, shipment",
+In Development,DIGTDEV-11952,619206,,33-1 MTV - Order Handling fallout management - additional requirements,,,,,Epic,,,,,,,33.1 MTV - Order Fallout - OH Fallout Management,
+Definition,DIGTDEV-11995,619546,,140 MTV - Notification Service (POST) Outbound Transmission Capability,,,,,Epic,,,,,,,MTV140 - Notification Service (POST) Outbound Transmission Capability,
+Definition,DIGTDEV-12000,619548,,141 MTV - Notification Service (POST) Template Management Capability,,,,,Epic,,,,,,,MTV141 - Notification Service (POST) Template Management Capability,
+Cancelled,DIGTDEV-12011,619700,,150 MTV - upgrade device with device protection,,,,,Epic,,,,,,,150 upgrade device with device protection,
+Cancelled,DIGTDEV-12068,620105,,18 MTV - Load PI - To Delete,,,,,Epic,,,,,,,18 MTV - Load PI,
+Cancelled,DIGTDEV-12069,620106,,17 MTV - Load Customer - To Delete,,,,,Epic,,,,,,,17 MTV - Load Customer,
+Definition,DIGTDEV-12140,620719,,MS that exposes EPP's Payment and Wallet Services,,,,,Epic,,,,,,,MTV125 PAYMENT: EPP Gateway MS,
+Cancelled,DIGTDEV-12224,621146,,"111 MTV - Upgrade Device, Add a Line - Support Apple Pay as payment method",yaakov.slonimczyk@amdocs.com,,,,Epic,,,,,,,"111 MTV - Upgrade Device, Add a Line - Support Apple Pay as payment method",
+Definition,DIGTDEV-12269,622226,,Add a Line - June  -PLAB,,,,,Epic,,,,,,,Add a Line - June  -PLAB,
+Definition,DIGTDEV-12271,622227,,Add/Remove Services - June -PLAB,,,,,Epic,,,,,,,Add/Remove Services - June -PLAB,
+Definition,DIGTDEV-12272,622228,,Non-Digital - June -PLAB,,,,,Epic,,,,,,,Non-Digital - June -PLAB,
+Definition,DIGTDEV-12275,622229,,Discovery - Non-Digital - June,,,,,Epic,,,,,,,Discovery - Non-Digital - June,
+Definition,DIGTDEV-12276,622230,,Add a Line - Oct -PLAB,,,,,Epic,,,,,,,Add a Line - August -PLAB,
+Definition,DIGTDEV-12277,622309,,NFR - ODO ,,,,,Epic,,,,,,,NFR - ODO,
+Definition,DIGTDEV-12278,622231,,Add a Line  Oct -IST,,,,,Epic,,,,,,,Add a Line  August -IST,
+Definition,DIGTDEV-12279,622232,,Maintenance - Oct -PLAB,Tatyana.Kats@amdocs.com,,,,Epic,,,,,,,Maintenance - August -PLAB,
+Definition,DIGTDEV-12281,622233,,Discovery - Change Price Plan - Oct,,,,,Epic,,,,,,,Discovery - Change Price Plan - August,
+Definition,DIGTDEV-12282,622234,,Change Price Plan_Oct_PLAB,,,,,Epic,,,,,,,Change Price Plan_August_PLAB,
+Definition,DIGTDEV-12284,622235,,Upgrade Device - Oct- IST,,,,,Epic,,,,,,,Upgrade Device - August- IST,
+Definition,DIGTDEV-12285,622236,,TMO Network - Oct - PLAB,,,,,Epic,,,,,,,TMO Network - August - PLAB,
+Definition,DIGTDEV-12287,622237,,Change Price Plan_Post Oct- CJ Testing,,,,,Epic,,,,,,,Change Price Plan_November- CJ Testing,
+Definition,DIGTDEV-12289,622238,,Change Price Plan_Post Oct_PLAB,,,,,Epic,,,,,,,Change Price Plan_November_PLAB,
+Definition,DIGTDEV-12290,622239,,Change Price Plan_Post Oct- IST,,,,,Epic,,,,,,,Change Price Plan_November- IST,
+Definition,DIGTDEV-12291,622240,,Upgrade Device - November- CJ testing,,,,,Epic,,,,,,,Upgrade Device - November- CJ testing,
+Definition,DIGTDEV-12293,622241,,Add/Remove Services - November - CJ Testing,,,,,Epic,,,,,,,Add/Remove Services - November - CJ Testing,
+Definition,DIGTDEV-12294,622242,,Maintenance - November -PLAB,,,,,Epic,,,,,,,Maintenance - November -PLAB,
+Definition,DIGTDEV-12296,622243,,Maintenance - November -IST,,,,,Epic,,,,,,,Maintenance - November -IST,
+Definition,DIGTDEV-12297,622244,,TMO Network - November - IST,,,,,Epic,,,,,,,TMO Network - November - IST,
+Definition,DIGTDEV-12298,622245,,TMO Network - November - PLAB,,,,,Epic,,,,,,,TMO Network - November - PLAB,
+Definition,DIGTDEV-12314,622326,,Migration,,,,,Epic,,,,,,,Migration,
+Definition,DIGTDEV-12315,622327,,ODO - Cross Activities,,,,,Epic,,,,,,,ODO - Cross Activities,
+In Development,DIGTDEV-12316,622328,,OH Fallout (SKY) - Cross Activities,yifat.mandel@amdocs.com,,,,Epic,,,,,,,OH Fallout (SKY) - Cross Activities,
+Definition,DIGTDEV-12318,622330,,Core Dependencies tracking,,,,,Epic,,,,,,,Core Dependencies,
+Cancelled,DIGTDEV-12319,622331,,Archive,ErezR@Amdocs.com,,,,Epic,,,,,,,Archive,
+In Development,DIGTDEV-12501,624162,,"21 MTV - Upgrade Device - Single Line - non-handset, in store, SRP (full price); with change plan; no existing loan/lease; no accessories",,,,,Epic,,,,,,,"21.1 MTV - Upgrade Device - Single Line - non-handset, in store, SRP (full price); with change of add-on, promotion; no existing loan/lease; no accessories",
+In Development,DIGTDEV-12523,625806,,"152 MTV - Change Price Plan, Add/Remove Services - stand alone add-ons",Amihay.Steinberg@Amdocs.com,,,,Epic,,,,,,,"152 MTV Change Price Plan, Add/Remove Services - stand alone add-ons",
+Definition,DIGTDEV-12703,627342,,74-1 MTV - Add a Line - BYOD - Purchase SIM with shipment,,,,,Epic,,,,,,,74-1 MTV - Add a Line BYOD Purchase SIM with shipment,
+Definition,DIGTDEV-12744,628215,,MTV180 - Key Exchange Micro Service,jeff.johnston@sprint.com,,,,Epic,,,,,,,MTV180 - Key Exchange Micro Service,
+Definition,DIGTDEV-12776,629175,,Facade layer of Payment Domain,,,,,Epic,,,,,,,MTV125 PAYMENT: Payment Domain Facade MS,
+Definition,DIGTDEV-12927,630969,,Order Handling portion of MTV125,,,,,Epic,,,,,,,MTV125-1 PAYMENT: Captures/Order Handling,
+Definition,DIGTDEV-13024,631697,,"133 MTV - Insurance enhancements (2 level groups of insurance, insurance based on location)",,,,,Epic,,,,,,,"133 MTV - Insurance enhancements (2 level groups of insurance, insurance based on location)",
+Definition,DIGTDEV-13025,631698,,"135 MTV - Add a Line, Upgrade Device - credit limit checks",amos.krayef@amdocs.com,,,,Epic,,,,,,,"135 MTV - Add a Line, Upgrade Device - credit limit checks",
+Cancelled,DIGTDEV-13040,631908,,16 MTV - BAN Lock Issues,,,,,Epic,,,,,,,16 MTV - BAN Lock Issues,
+Cancelled,DIGTDEV-13041,631909,,16 MTV - BAN Lock Issues,,,,,Epic,,,,,,,16 MTV - BAN Lock Issues,
+Definition,DIGTDEV-13096,632229,,155 MTV - Add/Remove Services - Hybrid offers support (Legacy promotions),,,,,Epic,,,,,,,155 MTV - Add/Remove Services - Hybrid offers support (Legacy promotions),
+Definition,DIGTDEV-13368,634072,,00008-PI8-Post Day 1 - NFR - DigitalOne,,,,,Epic,,,,,,,00008-PI8-Post Day 1 - NFR - DigitalOne,
+On Hold,DIGTDEV-13382,634431,,MTV 181 Fallout Management Authorization Interface,,,,,User Story,Tapas IP (PI10): 18/9-24/9,,,,DIGTDEV-13589,,,OH_Fallouts (SKY) team
+Cancelled,DIGTDEV-13458,636055,,146 NF MTV D1 Post1,,,,,Epic,,,,,,,5 NF MTV D1 Post1,
+Definition,DIGTDEV-13459,636056,,6 NF MTV AMIL Post1,,,,,Epic,,,,,,,6 NF MTV AMIL Post1,
+Definition,DIGTDEV-13462,636057,,7 NF MTV ODO Post1,,,,,Epic,,,,,,,7 NF MTV ODO Post1,
+Definition,DIGTDEV-13463,636058,,8 NF MTV SKY Post1,,,,,Epic,,,,,,,8 NF MTV SKY Post1,
+Definition,DIGTDEV-13467,636137,,0001 NF MTV D1 Oct,,,,,Epic,,,,,,,1 NF MTV D1 Oct,
+Preparing,DIGTDEV-13468,636138,,0002 NF MTV AMIL Oct,,,,,Epic,,,,,,,2 NF MTV AMIL Oct,
+Definition,DIGTDEV-13469,636061,,9 NF MTV D1 Post2,,,,,Epic,,,,,,,9 NF MTV D1 Post2,
+Definition,DIGTDEV-13470,636062,,10 NF MTV AMIL Post2,,,,,Epic,,,,,,,10 NF MTV AMIL Post2,
+Definition,DIGTDEV-13471,636139,,0003 NF MTV ODO Oct,,,,,Epic,,,,,,,3 NF MTV ODO Oct,
+Definition,DIGTDEV-13472,636140,,0004 NF MTV SKY Oct,,,,,Epic,,,,,,,4 NF MTV SKY Oct,
+Definition,DIGTDEV-13473,636063,,11 NF MTV ODO Post2,,,,,Epic,,,,,,,11 NF MTV ODO Post2,
+Definition,DIGTDEV-13474,636064,,12 NF MTV SKY Post2,,,,,Epic,,,,,,,12 NF MTV SKY Post2,
+Definition,DIGTDEV-13475,636149,,138 MTV - Add/Remove Services - individual and Family plans for handset,,,,,Epic,,,,,,,138 MTV - Add/Remove Services - individual and Family plans for handset,
+Definition,DIGTDEV-13489,636234,,MTV177 - Refunds Microservice,jeff.johnston@sprint.com,,,,Epic,,,,,,,MTV177 - Refunds Microservice,
+Definition,DIGTDEV-13490,636239,,125-2 MTV Immediate Payment - Cash,jeff.johnston@sprint.com,,,,Epic,,,,,,,MTV125-2 Immediate Payment - Cash,
+Definition,DIGTDEV-13513,636432,,"163 MTV - Add/Remove Services, Change PP, Add a Line, Upgrade Device - manual promotion selection",zafrirr@amdocs.com,,,,Epic,,,,,,,"163 MTV - Add/Remove Services, Change PP, Add a Line, Upgrade Device - manual promotion selection",
+Definition,DIGTDEV-13514,636433,,"164 MTV - Add/Remove Services, Change PP, Add a Line, Upgrade Device - NBA integration",,,,,Epic,,,,,,,"164 MTV - Add/Remove Services, Change PP, Add a Line, Upgrade Device - NBA integration",
+Definition,DIGTDEV-13517,636437,,"165 MTV - Add/Remove Services, Change PP - promotions using promotions engine (Legacy and NTM)",,,,,Epic,,,,,,,"165 MTV - Add/Remove Services, Change PP - promotions using promotions engine (Legacy and NTM)",
+Definition,DIGTDEV-13518,636439,,"150 MTV - Upgrade Device, Add a Line - replacing protection plan for shipped devices",,,,,Epic,,,,,,,"150 MTV - Upgrade Device, Add a Line - replacing protection plan for shipped devices",
+Cancelled,DIGTDEV-13520,636441,,169 MTV - Order fallout management notifications,annau@amdocs.com,,,,Epic,,,,,,,169 MTV - Order fallout management notifications,
+Definition,DIGTDEV-13521,636442,,170 MTV - Add a Line - individual and Family plans for handset,,,,,Epic,,,,,,,170 MTV - Add a Line - individual and Family plans for handset,
+Definition,DIGTDEV-13525,636446,,136 MTV - Add a Line - Use originally effective RC rate,,,,,Epic,,,,,,,136 MTV - Add a Line - Use originally effective RC rate,
+Definition,DIGTDEV-13527,636448,,172 MTV - Lease,,,,,Epic,,,,,,,172 MTV - Lease,
+Cancelled,DIGTDEV-13538,636460,,137 MTV - Change Price Plan - individual and Family plans for handset,,,,,Epic,,,,,,,137 MTV - Change Price Plan - individual and Family plans for handset,
+Preparing,DIGTDEV-13539,636461,,154 MTV - Change Price Plan - change from individual to Family and vise versa (multiple orders),,,,,Epic,,,,,,,154 MTV - Change Price Plan - change from individual to Family and vise versa (multiple orders),
+Definition,DIGTDEV-13554,636476,,"94 MTV - Upgrade Device - Single Line - Subsidy Price (all plans types, TE/TI NTM), including on Web",,,,,Epic,,,,,,,"94 MTV - Upgrade Device - Single - Subsidy Price (all plans types, TE/TI NTM), including on Web",
+Definition,DIGTDEV-13555,636477,,123 MTV - Device Returns,zafrirr@amdocs.com,,,,Epic,,,,,,,123 MTV - Device Returns,
+Definition,DIGTDEV-13556,636478,,"153 MTV - Change Price Plan, Upgrade Device, Add a Line, Add/Remove Services - multi language support",,,,,Epic,,,,,,,"153 MTV - Change Price Plan, Upgrade Device, Add a Line, Add/Remove Services - multi language support",
+Definition,DIGTDEV-13557,636479,,154-1 MTV - Change Price Plan - change from individual to Family and vise versa (single order),Dana.Roffe@amdocs.com,,,,Epic,,,,,,,154-1 MTV - Change Price Plan - change from individual to Family and vise versa (single order),
+Definition,DIGTDEV-13558,636480,,"157 MTV - Add/Remove Services, Change PP, Add a Line, Upgrade Device - manual promotion conflict resolution",Dana.Roffe@amdocs.com,,,,Epic,,,,,,,"157 MTV - Add/Remove Services, Change PP, Add a Line, Upgrade Device - manual promotion conflict resolution",
+Definition,DIGTDEV-13559,636481,,"158 MTV - Change Price Plan, Upgrade Device, Add a Line, Add/Remove Services - stand alone add-ons presentment enhancements",,,,,Epic,,,,,,,"158 MTV - Change Price Plan, Upgrade Device, Add a Line, Add/Remove Services - stand alone add-ons presentment enhancements",
+User Story Creation,DIGTDEV-13560,636684,,"151 MTV - Change Price Plan, Upgrade Device, Add a Line, Add/Remove Services - cart retrieve",amosk@amdocs.com,,,,Epic,,,,,,,"151 MTV - Change Price Plan, Upgrade Device, Add a Line, Add/Remove Services - cart retrieve",
+Definition,DIGTDEV-13562,636685,,173 MTV - Dealer support in CC,,,,,Epic,,,,,,,173 MTV - Dealer support in CC,
+In Development,DIGTDEV-13564,636686,,176 MTV - AMIL Product Enrichment enhancement,KATIAM@Amdocs.com,,,,Epic,,,,,,,176 MTV - AMIL Product Enrichment enhancement,
+Cancelled,DIGTDEV-13565,636795,,"124-1 - Change Price Plan - handset, Family plan promotions",amos.krayef@amdocs.com,,,,Epic,,,,,,,"124-1 - Change Price Plan - handset, Family plan promotions",
+Preparing,DIGTDEV-13576,636691,,175 MTV - Submit Order validation,,,,,Epic,,,,,,,175 MTV - Submit Order validation,
+Cancelled,DIGTDEV-13579,636692,,176 MTV - AMIL Product Enrichment enhancement,,,,,Epic,,,,,,,176 MTV - AMIL Product Enrichment enhancement,
+Definition,DIGTDEV-13582,636693,,178 MTV - Legacy offers implementation,,,,,Epic,,,,,,,178 MTV - Legacy offers implementation,
+Definition,DIGTDEV-13584,636694,,179 MTV - Order key generation,,,,,Epic,,,,,,,179 MTV - Order key generation,
+Definition,DIGTDEV-13587,636697,,179 MTV - Order key generation,,,,,Epic,,,,,,,179 MTV - Order key generation,
+Cancelled,DIGTDEV-13588,636812,,139 MTV - Change Price Plan - Multi Line - individual plans only,,,,,Epic,,,,,,,139 MTV - Change Price Plan - Multi Line - individual plans only,
+Definition,DIGTDEV-13589,636698,,181 MTV - Order Fallout authorization,,,,,Epic,,,,,,,181 MTV - Order Fallout authorization,
+Preparing,DIGTDEV-13590,636699,,182 MTV - Service Discount with minimum lines condition,,,,,Epic,,,,,,,182 MTV - Service Discount with minimum lines condition,
+Definition,DIGTDEV-13591,636900,,"183 MTV - Upgrade Device, Add a Line - Failed order patch (shipping and payment details)",,,,,Epic,,,,,,,"183 MTV - Upgrade Device, Add a Line - Failed order patch (shipping and payment details)",
+Definition,DIGTDEV-13592,636902,,"184 MTV - Upgrade Device, Add a Line - Device Fulfilment complex scenarios",,,,,Epic,,,,,,,"184 MTV - Upgrade Device, Add a Line - Device Fulfilment complex scenarios",
+Preparing,DIGTDEV-13593,636903,,185 MTV - Service Agreement creation,,,,,Epic,,,,,,,185 MTV - Service Agreement creation,
+Definition,DIGTDEV-13645,637768,,20-1 MTV - MTV 20 EAI APIs replacement,,,,,Epic,,,,,,,20-1 MTV - EAI APIs replacement,
+Definition,DIGTDEV-13647,637769,,186 MTV - Automatic promotion conflict resolution,,,,,Epic,,,,,,,186 MTV - Automatic promotion conflict resolution,
+Cancelled,DIGTDEV-13649,637770,,132-1 MTV - Add/Remove Services - bundle add-ons promotions - validation in configuration,,,,,Epic,,,,,,,132-1 MTV - Add/Remove Services - bundle add-ons promotions - validation in configuration,
+Preparing,DIGTDEV-13818,638654,,"US Testing|OH Fallout Authorization|Design",,,,,Developer Story,Tapas IP (PI10): 18/9-24/9,,,,DIGTDEV-11952,,,OH_Fallouts (SKY) team
+Preparing,DIGTDEV-13822,638655,,"US Testing|OH Fallout Authorization|Execution",,,,,Developer Story,Tapas IP (PI10): 18/9-24/9,,,,DIGTDEV-11952,,,OH_Fallouts (SKY) team
+Preparing,DIGTDEV-13823,638656,,FM Documents handling,,,,,Developer Story,Tapas IP (PI10): 18/9-24/9,,,,DIGTDEV-11952,,,OH_Fallouts (SKY) team
+On Hold,DIGTDEV-13824,638658,,FM Authorization on user level,,,,,Developer Story,Tapas IP (PI10): 18/9-24/9,,,,DIGTDEV-11952,,,OH_Fallouts (SKY) team
+Preparing,DIGTDEV-13825,638659,,FM Authorization on WG level,,,,,Developer Story,Tapas IP (PI10): 18/9-24/9,,,,DIGTDEV-11952,,,OH_Fallouts (SKY) team
+Cancelled,DIGTDEV-13998,639858,,"124-1 MTV - Upgrade Device, Add a Line - handset, Family plan promotions",,,,,Epic,,,,,,,"124-1 MTV - Upgrade Device, Add a Line - handset, Family plan promotions",
+Definition,DIGTDEV-14000,639860,,171 MTV - COP,,,,,Epic,,,,,,,171 MTV - COP,
+Definition,DIGTDEV-14001,639861,,"125-2 - Upgrade Device, Add a Line - Immediate Payment - Cash",,,,,Epic,,,,,,,"125-2 - Upgrade Device, Add a Line - Immediate Payment - Cash",
+Definition,DIGTDEV-14003,639862,,125-3 MTV - Immediate Payment - Digital Wallet pay-means,,,,,Epic,,,,,,,125-3 MTV - Immediate Payment - Digital Wallet pay-means,
+Definition,DIGTDEV-14004,639863,,104-1 MTV - Cancel Order,,,,,Epic,,,,,,,104-1 MTV - Cancel Order,
+Definition,DIGTDEV-14006,640118,,187 MTV - Sub-activity level promotion,,,,,Epic,,,,,,,187 MTV - Sub-activity level promotion,
+Definition,DIGTDEV-14007,640119,,"104-1 MTV - Upgrade Device, Add a Line - Submitted order cancellation before shipment and following fallout",,,,,Epic,,,,,,,"104-1 MTV - Upgrade Device, Add a Line - Submitted order cancellation before shipment and following fallout",
+Definition,DIGTDEV-14112,640606,,"125-1 MTV - Upgrade Device, Add a Line - Immediate Payment - OH integration",,,,,Epic,,,,,,,"125-1 MTV - Upgrade Device, Add a Line - Immediate Payment - OH integration",
+Preparing,DIGTDEV-14206,640912,,"124 MTV - Change Price Plan - handset, Family plan promotions",ELVIRAN@Amdocs.com,,,,Epic,,,,,,,"124 MTV - Change Price Plan - handset, Family plan promotions",
+Cancelled,DIGTDEV-14324,641988,,29 MTV - Change Price Plan - backdated change - to be deleted,,,,,Epic,,,,,,,29 MTV - Change Price Plan - backdated change - to be deleted,
+Preparing,DIGTDEV-14352,642704,,D2D,,,,,Developer Story,Tapas IP (PI10): 18/9-24/9,,,,DIGTDEV-6229,,,Team 17 - Digital Macchiato - Moti Baruch
+Definition,DIGTDEV-14406,642898,,"88.2 MTV - Add a Line - Single - Loan - Prime/Sub-Prime (no Shared plan), TE/TI NTM, down payments (regular + voluntary), in store, no accessories, Integration with RMS",Amihay.Steinberg@Amdocs.com,,,,Epic,,,,,,,"88.2 MTV - Add a Line - Single - Loan - Prime/Sub-Prime (no Shared plan), TE/TI NTM, down payments (regular + voluntary), in store, no accessories, Integration with RMS",
+Cancelled,DIGTDEV-14409,643101,,10-1 MTV - Change Price Plan - Edit cart,,,,,Epic,,,,,,,10-1 MTV - Change Price Plan - Edit cart,
+Definition,DIGTDEV-14445,644039,,189 MTV - Enhanced price support,,,,,Epic,,,,,,,189 MTV - Enhanced price support,
+In Progress,DIGTDEV-15137,653068,,MTV104 - Execute Test cases for Create Notification MS (Internal Testing),ramya.allam@sprint.com,,57600,36000,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6314,57600,,We're Groot
+Preparing,DIGTDEV-15474,676517,,MTV104 - Execute Test cases for CORL MS (Internal Testing),ramya.allam@sprint.com,,57600,57600,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6314,57600,,We're Groot
+In Progress,DIGTDEV-15180,665377,,MTV104 - Execute Test cases for Create Memo MS (Internal testing),ramya.allam@sprint.com,,28800,21600,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6314,28800,,We're Groot
+Definition,DIGTDEV-14682,646643,,60-1 MTV - EAI APIs replacement,,,,,Epic,,,,,,,60-1 MTV - EAI APIs replacement,
+Definition,DIGTDEV-14714,647077,,103-3 MTV - Order History Presentment for Add/Remove Services - Single Line,,,,,Epic,,,,,,,103-3 MTV - Order History Presentment for Add/Remove Services - Single Line,
+Definition,DIGTDEV-14715,647078,,103-4 MTV - Order History Presentment for Add/Remove Services - Multi Line,,,,,Epic,,,,,,,103-4 MTV - Order History Presentment for Add/Remove Services - Multi Line,
+On Hold,DIGTDEV-14717,647080,,FM - Dev2Dev with Sprint,,,,,Developer Story,Tapas IP (PI10): 18/9-24/9,,,,,,,OH_Fallouts (SKY) team
+On Hold,DIGTDEV-14718,647081,,FM - get list of user for Re-assignment SLV,,,,,Developer Story,Tapas IP (PI10): 18/9-24/9,,,,,,,OH_Fallouts (SKY) team
+Definition,DIGTDEV-14721,647084,,177 MTV - Payment refund,,,,,Epic,,,,,,,177 MTV - Payment refund,
+Definition,DIGTDEV-14722,647085,,180 MTV - KeyExchange Micro Service,,,,,Epic,,,,,,,180 MTV - KeyExchange Micro Service,
+Definition,DIGTDEV-14723,647086,,140 MTV - Notification Service (POST) Outbound Transmission Capability,,,,,Epic,,,,,,,140 MTV - Notification Service (POST) Outbound Transmission Capability,
+Definition,DIGTDEV-14724,647087,,141 MTV - Notification Service (POST) Template Management Capability,,,,,Epic,,,,,,,141 MTV - Notification Service (POST) Template Management Capability,
+Definition,DIGTDEV-14725,647088,,142 MTV - Notification Service (POST) Front end application,,,,,Epic,,,,,,,142 MTV - Notification Service (POST) Front end application,
+Definition,DIGTDEV-14726,647089,,188 MTV - Autopay promotion cardinality,,,,,Epic,,,,,,,188 MTV - Autopay promotion cardinality,
+Definition,DIGTDEV-14732,647095,,"190 MTV - Upgrade Device, Add a Line - Tax calculation",,,,,Epic,,,,,,,"190 MTV - Upgrade Device, Add a Line - Tax calculation",
+Definition,DIGTDEV-14733,647096,,103-7 - Order History Presentment for Upgrade Device - Single Line - No Shipment,,,,,Epic,,,,,,,103-7 - Order History Presentment for Upgrade Device - Single Line - No Shipment,
+Definition,DIGTDEV-14734,647097,,103-8 MTV - Order History Presentment for Upgrade Device - Single/Multi Line - with or w/o Shipment,,,,,Epic,,,,,,,103-8 MTV - Order History Presentment for Upgrade Device - Single/Multi Line - with or w/o Shipment,
+Definition,DIGTDEV-14737,647099,,103-6 MTV - Order History Presentment for Add a line - Single/Multi Line - with or w/o Shipment,,,,,Epic,,,,,,,103-6 MTV - Order History Presentment for Add a line - Single/Multi Line - with or w/o Shipment,
+Definition,DIGTDEV-14738,647400,,103-5 MTV - Order History Presentment for Add a Line - Single Line - no Shipment,,,,,Epic,,,,,,,103-5 MTV - Order History Presentment for Add a Line - Single Line - no Shipment,
+Definition,DIGTDEV-14740,647401,,03-1 MTV - MTV 3 EAI APIs replacement,,,,,Epic,,,,,,,03-1 MTV - MTV 3 EAI APIs replacement,
+Preparing,DIGTDEV-14745,647318,,OC - D2D - Change Family Offering - Hide Existing Legacy Multi Line Offering,Tammy.Shalev@amdocs.com,,,,Developer Story,Tapas IP (PI10): 18/9-24/9,,,,DIGTDEV-6217,,,
+Definition,DIGTDEV-14747,647320,,103-1 MTV - Order History Presentment for Change Plan - Single Line,,,,,Epic,,,,,,,103 MTV - Order History Presentment ,
+Definition,DIGTDEV-14748,647321,,103-2 MTV - Order History Presentment for Change Plan - Multi Line,,,,,Epic,,,,,,,103-2 MTV - Order History Presentment for Change Plan - Multi Line,
+On Hold,DIGTDEV-14914,649245,,AMILValidateAddress -  Test Plan/Test Cases - IST  (Requires Acpt),david.lippold@sprint.com,,216000,216000,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,,216000,,BridgeBuilders
+Definition,DIGTDEV-14915,649246,649245,AMILValidateAddress  -  Create IST Test Cases,david.lippold@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-14916,649247,649245,AMILValidateAddress  -  Create Test Execution Plan Summary,david.lippold@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-14917,649248,649245,AMILValidateAddress -  Import test cases into testing tool,david.lippold@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-14919,649250,649245,AMILValidateAddress -  Test Resource Assignment,david.lippold@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+In Progress,DIGTDEV-15856,694608,,AMILWorkbench - (PI11) Updates for CL AT/ST Support DIGTIM-9090,Kurt.A.Preston@sprint.com,,115200,115200,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-15294,115200,,BridgeBuilders
+Backlog,DIGTDEV-14942,649273,,AMILValidateDevice -  Execute IST Test Cases,,,144000,144000,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,,144000,,BridgeBuilders
+Backlog,DIGTDEV-14918,649249,,AMILValidateAddress -  Execute IST Test Cases,,,115200,115200,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,,115200,,BridgeBuilders
+On Hold,DIGTDEV-14938,649269,,AMILValidateDevice -  Test Plan/Test Cases - IST  (Requires Acpt),david.lippold@sprint.com,,216000,216000,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,,216000,,BridgeBuilders
+Definition,DIGTDEV-14939,649270,649269,AMILValidateDevice  -  Create IST Test Cases,david.lippold@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-14940,649271,649269,AMILValidateDevice -  Create Test Execution Plan Summary,david.lippold@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-14941,649272,649269,AMILValidateDevice -  Import test cases into testing tool,david.lippold@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-14943,649274,649269,AMILValidateDevice  -  Test Resource Assignment,david.lippold@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+In Progress,DIGTDEV-14870,649200,,AMILCheckEquipmentInventory -  Execute IST Test Cases,,,86400,86400,Developer Story,BridgeB ITR22(PI10):9/4-9/24,BridgeB ITR23(PI11):9/25-10/08,,,,86400,,BridgeBuilders
+Preparing,DIGTDEV-15042,650917,,OC - Experience MS - Change Family Offering - Hide Existing Legacy Multi Line Offering,,,,,Developer Story,Tapas IP (PI10): 18/9-24/9,,,,DIGTDEV-6217,,,
+Cancelled,DIGTDEV-15166,653540,,MTV175 - Submit Order Validation,,,,,Epic,,,,,,,MTV175 - Submit Order Validation,
+Definition,DIGTDEV-15197,666119,,Epic for the Manage Charges Microservice,,,,,Epic,,,,,,, Manage Charges Microservice,
+Definition,DIGTDEV-15293,672590,,33-2 MTV - Additional enhancements for Fallout Mng,,,,,Epic,,,,,,,33-2 MTV - Additional enhancements for Fallout Mng,
+In Review,DIGTDEV-15294,672591,,192 MTV - CL AT/ST support,,,,,Epic,,,,,,,192 MTV - CL AT/ST support,
+Definition,DIGTDEV-15295,672592,,88-2 MTV - Loan - RMS integration,,,,,Epic,,,,,,,88-2 MTV - Loan - RMS integration,
+Definition,DIGTDEV-15296,672593,,88-2 MTV - Loan - RMS integration,,,,,Epic,,,,,,,88-2 MTV - Loan - RMS integration,
+Definition,DIGTDEV-15297,672594,,88-2 MTV - Loan - RMS integration,,,,,Epic,,,,,,,88-2 MTV - Loan - RMS integration,
+Definition,DIGTDEV-15298,672595,,MTV 144-1 - Validate TI/TE,,,,,Epic,,,,,,,MTV 144-1 - Validate TI/TE,
+Definition,DIGTDEV-15299,672598,,154-2 MTV - Change Price Plan - change from individual to Family and vise versa (multiple orders) - Merge,,,,,Epic,,,,,,,154-2 MTV - Change Price Plan - change from individual to Family and vise versa (multiple orders) - Merge,
+Definition,DIGTDEV-15300,672818,,71-2 MTV - PI Load - Promotions,,,,,Epic,,,,,,,71-2 MTV - PI Load - Promotions,
+Definition,DIGTDEV-15384,675953,,p202 - Initial Architecture,drew.loomer@projekt202.com,,,,Epic,,,,,,,p202 - Initial Architecture,
+Definition,DIGTDEV-15385,675954,,p202 - Components,,,,,Epic,,,,,,,p202 - Components,
+Definition,DIGTDEV-15386,675955,,p202 - Style Guide,,,,,Epic,,,,,,,p202 - Style Guide,
+Definition,DIGTDEV-15451,676145,,p202 - 10. Landing Page,,,,,Epic,,,,,,,p202 - 10. Landing Page,
+In Progress,DIGTDEV-15916,694965,,List (molecule),jonathan.brennan@projekt202.com,,,,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-15385,,,
+In Progress,DIGTDEV-15921,694870,,(UI) Landing page - React application for page elements,daniel.barbour@projekt202.com,,,,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-15451,,,
+Done,DIGTDEV-15431,676106,,"Special-use Text Field (e.g. phone, email, password, etc)",Jonathan.Darling@projekt202.com,,,,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-15385,,,
+In Progress,DIGTDEV-15954,695604,,Accordion (molecule),michael.salzman@projekt202.com,,,,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-15385,,,
+In Progress,DIGTDEV-15438,676114,,Left Rail Navigation,Cody.Silverglat@projekt202.com,,,,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-15385,,,
+Completed,DIGTDEV-16065,697743,676114,Create component,Cody.Silverglat@projekt202.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,
+In Progress,DIGTDEV-16066,697744,676114,Style component,Cody.Silverglat@projekt202.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,
+Definition,DIGTDEV-16067,697745,676114,UX desk check,Cody.Silverglat@projekt202.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,
+In Progress,DIGTDEV-16068,697746,676114,Write documentation,Cody.Silverglat@projekt202.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,
+In Progress,DIGTDEV-16069,697747,676114,Write tests,Cody.Silverglat@projekt202.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,
+Definition,DIGTDEV-16070,697748,676114,Confirm accessibility,Cody.Silverglat@projekt202.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,
+Definition,DIGTDEV-16071,697749,676114,"Open PR, update per comments",Cody.Silverglat@projekt202.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,
+Done,DIGTDEV-15434,676109,,Toggle Button,Cody.Silverglat@projekt202.com,,,,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-15385,,,
+Completed,DIGTDEV-15992,696018,676109,Create component,Cody.Silverglat@projekt202.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,
+Completed,DIGTDEV-15993,696019,676109,Style component,Cody.Silverglat@projekt202.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,
+Completed,DIGTDEV-15994,696020,676109,Write tests,Cody.Silverglat@projekt202.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,
+Completed,DIGTDEV-15995,696035,676109,Write documentation,Cody.Silverglat@projekt202.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,
+Completed,DIGTDEV-15996,696042,676109,UX desk check,Cody.Silverglat@projekt202.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,
+Completed,DIGTDEV-15997,696043,676109,"Open PR, update per comments",Cody.Silverglat@projekt202.com,,,,Sub-task,Tapas ITR23 (PI11): 25/9-8/10,,,,,,,
+Done,DIGTDEV-15861,694272,,Step Flow Tab (atom),Jonathan.Darling@projekt202.com,,,,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-15385,,,
+In Progress,DIGTDEV-15437,676113,,Toast Message,joshua.kemmerling@projekt202.com,,,,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-15385,,,
+Done,DIGTDEV-15998,696047,,Step Flow Tabs - Group,Jonathan.Darling@projekt202.com,,,,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-15385,,,
+In Progress,DIGTDEV-15934,695198,,(UI) Left Rail - Account Subscribers - Customer account integration,jonathan.brennan@projekt202.com,,,,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-15863,,,
+Backlog,DIGTDEV-15960,695612,,Top navigation - Micro Cart,,,,,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-15951,,,
+Done,DIGTDEV-15955,695607,,Top navigation - Core functionality,joshua.kemmerling@projekt202.com,,,,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-15951,,,
+Definition,DIGTDEV-15502,676183,,Add A Line - Subscriber,,,,,Epic,,,,,,,p202 - Add A Line - Subscriber,
+Definition,DIGTDEV-15505,676184,,Add A Line - Setup,,,,,Epic,,,,,,,p202 - Add A Line - Setup,
+Definition,DIGTDEV-15504,676185,,Checkout,,,,,Epic,,,,,,,p202 - Checkout,
+Definition,DIGTDEV-15515,676186,,Cart Review,,,,,Epic,,,,,,,p202 - Cart Review,
+Definition,DIGTDEV-15507,676187,,Accessories,,,,,Epic,,,,,,,p202 - Accessories,
+Definition,DIGTDEV-15520,676188,,Protection,,,,,Epic,,,,,,,Epic Name is Missing,
+Definition,DIGTDEV-15517,676189,,Device Details,,,,,Epic,,,,,,,p202 - Device Details,
+Definition,DIGTDEV-15518,676190,,Select Device,,,,,Epic,,,,,,,p202 - Select Device,
+Definition,DIGTDEV-15506,676191,,p202 - Upgrade: Manage Existing Device,,,,,Epic,,,,,,,p202 - Upgrade: Manage Existing Device,
+Definition,DIGTDEV-15510,676192,,Order Complete,,,,,Epic,,,,,,,p202 - Order Complete,
+Definition,DIGTDEV-15512,676193,,Agreements,,,,,Epic,,,,,,,p202 - Customer Agreements,
+Definition,DIGTDEV-15513,676194,,Scheduling,,,,,Epic,,,,,,,p202 - Scheduling,
+Definition,DIGTDEV-15508,676195,,Micro Cart,,,,,Epic,,,,,,,p202 - Micro Cart,
+Definition,DIGTDEV-15509,676196,,Plan Card - Display and Functionality,,,,,Epic,,,,,,,p202 - Plan Card - Display and Functionality,
+Definition,DIGTDEV-15501,676197,,Change Plan,,,,,Epic,,,,,,,p202 - Change Plan,
+Definition,DIGTDEV-15521,676198,,Filtering,,,,,Epic,,,,,,,p202 - Filtering,
+Definition,DIGTDEV-15511,676199,,80. Add/Remove Services,,,,,Epic,,,,,,,p202 - 80. Add Services,
+Definition,DIGTDEV-15503,676300,,Add Services Line Modal,,,,,Epic,,,,,,,p202 - Add Services Line Modal,
+Definition,DIGTDEV-15514,676301,,Services Card - Display and Functionality,,,,,Epic,,,,,,,p202 - Services Card - Display and Functionality,
+Definition,DIGTDEV-15516,676302,,21. Subscriber Information,,,,,Epic,,,,,,,p202 - 21. Subscriber Information,
+Definition,DIGTDEV-15519,676303,,p202 - 20. Account Dashboard,,,,,Epic,,,,,,,p202 - 20. Account Dashboard,
+Definition,DIGTDEV-15500,676304,,Left Rail - Transaction Summary,,,,,Epic,,,,,,,p202 - Left Rail - Transaction Summary,
+Definition,DIGTDEV-15499,676305,,Left Rail - Customer information,,,,,Epic,,,,,,,p202 - Left Rail - Customer information,
+Cancelled,DIGTDEV-15472,676505,,p202 - 20. Account Dashboard,,,,,Epic,,,,,,,p202 - 20. Account Dashboard,
+Definition,DIGTDEV-15613,691460,,p202 - Multi-Line Price Plan Changes,,,,,Epic,,,,,,,p202 - Multi-Line Price Plan Changes,
+Preparing,DIGTDEV-14989,650150,,MTV103-3 - Testing - Write & Execute negative test cases with External Micro-service error. (Add/Remove Services),Arafat.Hossain@sprint.com,,57600,57600,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14714,57600,,OMG
+Preparing,DIGTDEV-11437,611939,,MTV103-1 - Testing Story - Insert order item data to WDM Tables. 'Change Price Plan' scenarios ,Arafat.Hossain@sprint.com,,54000,86400,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6313,54000,,OMG
+Preparing,DIGTDEV-14540,644936,,MTV103-3 - Testing - Execute & Validate MTV-19 (Add / Remove Services) Scenarios Negative test cases.,Marina.Medeiros@sprint.com,,36000,36000,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6313,36000,,OMG
+Preparing,DIGTDEV-12019,619680,,MTV103-3 - Testing Story - Insert order item data to WDM Tables.  'Add or Remove Services' Scenarios,Arafat.Hossain@sprint.com,,86400,86400,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6313,86400,,OMG
+Plan,DIGTDEV-15737,694412,,AMILQueryBuyBackPriceList  - Configure Channel for new API,,,10800,10800,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,10800,,BridgeBuilders
+Definition,DIGTDEV-15738,694413,694412,AMILQueryBuyBackPriceList - Configure Channel for the new service,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Plan,DIGTDEV-15739,694414,,AMILQueryBuyBackPriceList  -  Test Plan/Test Cases - IST  (Requires Acpt) ,,,144000,144000,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,144000,,BridgeBuilders
+Definition,DIGTDEV-15740,694415,694414,AMILQueryBuyBackPriceList -  Create IST Test Cases,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15741,694416,694414,AMILQueryBuyBackPriceList -  Create Test Execution Plan Summary,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15742,694417,694414,AMILQueryBuyBackPriceList -  Import test cases into testing tool,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15743,694418,694414,AMILQueryBuyBackPriceList -  Test Resource Assignment,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+In Progress,DIGTDEV-15750,694425,,AMILQueryBuyBackPriceList - Create Design document(s),,,28800,28800,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,28800,,BridgeBuilders
+Definition,DIGTDEV-15751,694426,694425,AMILQueryBuyBackPriceList - Create and Validate new YAML in support of new service,Debbie.A.Miller@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15752,694427,694425,AMILQueryBuyBackPriceList - Create IDD (Interface Design Document),Debbie.A.Miller@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15753,694428,694425,AMILQueryBuyBackPriceList - Obtain the .xsds for request/response in support of the new service,Debbie.A.Miller@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Plan,DIGTDEV-15756,694431,,AMILQueryBuyBackPriceList - Construct new API Framework,,,3600,3600,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,3600,,BridgeBuilders
+Definition,DIGTDEV-15757,694432,694431,"AMILQueryBuyBackPriceList - Create Package, Resources, EG, Default Flow and Upload YAML",,,0,0,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,0,,BridgeBuilders
+Plan,DIGTDEV-15758,694433,,AMILQueryBuyBackPriceList - Create new Error Handling process flow,,,100800,100800,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,100800,,BridgeBuilders
+Definition,DIGTDEV-15759,694434,694433,AMILQueryBuyBackPriceList - Create Error Handling routine and validate,,,0,0,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,0,,BridgeBuilders
+Plan,DIGTDEV-15760,694435,,AMILQueryBuyBackPriceList - Create new Monitoring Event for the process flow,,,28800,28800,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,28800,,BridgeBuilders
+Definition,DIGTDEV-15762,694437,694435,AMILQueryBuyBackPriceList - Monitoring event creation and validation,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,
+Plan,DIGTDEV-15763,694438,,AMILQueryBuyBackPriceList - Create Message Transformation for input,,,216000,216000,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,108000,,BridgeBuilders
+Definition,DIGTDEV-15764,694439,694438,AMILQueryBuyBackPriceList - Creation of message transformation for input ,,,108000,108000,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,108000,,
+Plan,DIGTDEV-15765,694440,,AMILQueryBuyBackPriceList -  Create new stub/simulator flows,,,28800,28800,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,28800,,BridgeBuilders
+Definition,DIGTDEV-15766,694441,694440,AMILQueryBuyBackPriceList - Creation of stub/simulator flow (for potential unit test by AMIL and D1),,,0,0,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,0,,BridgeBuilders
+Plan,DIGTDEV-15767,694442,,AMILQueryBuyBackPriceList -  Create Message Transformation  for response,,,108000,108000,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,108000,,BridgeBuilders
+Definition,DIGTDEV-15768,694443,694442,AMILQueryBuyBackPriceList - Creation of message transformation for response,,,0,0,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,0,,BridgeBuilders
+Plan,DIGTDEV-15769,694444,,AMILQueryBuyBackPriceList - Create new API main process flow (Requires Acpt),,,100800,100800,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,100800,,BridgeBuilders
+Definition,DIGTDEV-15770,694445,694444,AMILQueryBuyBackPriceList - Setup fxml for main flow,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15771,694446,694444,AMILQueryBuyBackPriceList - Confirm requirements for NFR are met,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15772,694447,694444,AMILQueryBuyBackPriceList - Validate request and response using stubs,,,0,0,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,0,,BridgeBuilders
+Definition,DIGTDEV-15773,694448,694444,AMILQueryBuyBackPriceList  - Changes to adhere to Standards,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,
+Plan,DIGTDEV-15788,694540,,AMILQueryBuyBackProductList  - Configure Channel for new API,,,10800,10800,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,10800,,BridgeBuilders
+Definition,DIGTDEV-15789,694541,694540,AMILQueryBuyBackProductList - Configure Channel for the new service,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Plan,DIGTDEV-15790,694542,,AMILQueryBuyBackProductList -  Test Plan/Test Cases - IST  (Requires Acpt) ,,,144000,144000,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,144000,,BridgeBuilders
+Definition,DIGTDEV-15791,694543,694542,AMILQueryBuyBackProductList -  Create IST Test Cases,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15792,694544,694542,AMILQueryBuyBackProductList -  Create Test Execution Plan Summary,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15793,694545,694542,AMILQueryBuyBackProductList -  Import test cases into testing tool,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15794,694546,694542,AMILQueryBuyBackProductList -  Test Resource Assignment,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+In Progress,DIGTDEV-15795,694547,,AMILQueryBuyBackProductList - Create Design document(s),,,28800,28800,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,28800,,BridgeBuilders
+Definition,DIGTDEV-15796,694548,694547,AMILQueryBuyBackProductList - Create and Validate new YAML in support of new service,Debbie.A.Miller@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15797,694549,694547,AMILQueryBuyBackProductList - Create IDD (Interface Design Document),Debbie.A.Miller@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15798,694550,694547,AMILQueryBuyBackProductList - Obtain the .xsds for request/response in support of the new service,Debbie.A.Miller@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Plan,DIGTDEV-15801,694553,,AMILQueryBuyBackProductList - Construct new API Framework,,,3600,3600,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,3600,,BridgeBuilders
+Definition,DIGTDEV-15802,694554,694553,"AMILQueryBuyBackProductList - Create Package, Resources, EG, Default Flow and Upload YAML",,,0,0,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,0,,BridgeBuilders
+Plan,DIGTDEV-15803,694555,,AMILQueryBuyBackProductList - Create new Error Handling process flow,,,100800,100800,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,100800,,BridgeBuilders
+Definition,DIGTDEV-15804,694556,694555,AMILQueryBuyBackProductList - Create Error Handling routine and validate,,,0,0,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,0,,BridgeBuilders
+Plan,DIGTDEV-15805,694557,,AMILQueryBuyBackProductList - Create new Monitoring Event for the process flow,,,28800,28800,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,28800,,BridgeBuilders
+Definition,DIGTDEV-15806,694558,694557,AMILQueryBuyBackProductList - Monitoring event creation and validation,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,
+Plan,DIGTDEV-15807,694559,,AMILQueryBuyBackProductList - Create Message Transformation for input,,,216000,216000,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,108000,,BridgeBuilders
+Definition,DIGTDEV-15808,694560,694559,AMILQueryBuyBackProductList - Creation of message transformation for input ,,,108000,108000,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,108000,,
+Plan,DIGTDEV-15809,694561,,AMILQueryBuyBackProductList -  Create Message Transformation  for response,,,108000,108000,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,108000,,BridgeBuilders
+Definition,DIGTDEV-15810,694562,694561,AMILQueryBuyBackProductList - Creation of message transformation for response,,,0,0,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,0,,BridgeBuilders
+Plan,DIGTDEV-15811,694563,,AMILQueryBuyBackProductList - Create new API main process flow (Requires Acpt),,,100800,100800,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,100800,,BridgeBuilders
+Definition,DIGTDEV-15812,694564,694563,AMILQueryBuyBackProductList - Setup fxml for main flow,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15813,694565,694563,AMILQueryBuyBackProductList - Confirm requirements for NFR are met,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15814,694566,694563,AMILQueryBuyBackProductList - Validate request and response using stubs,,,0,0,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,0,,BridgeBuilders
+Definition,DIGTDEV-15815,694567,694563,AMILQueryBuyBackProductList  - Changes to adhere to Standards,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,
+Plan,DIGTDEV-15820,694572,,AMILQueryBuyBackProductList -  Create new stub/simulator flows,,,28800,28800,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,28800,,BridgeBuilders
+Definition,DIGTDEV-15821,694573,694572,AMILQueryBuyBackProductList - Creation of stub/simulator flow (for potential unit test by AMIL and D1),,,0,0,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,0,,BridgeBuilders
+Plan,DIGTDEV-15822,694574,,AMILQueryBuyBackConditionQuestionList -  Create Message Transformation  for response,,,108000,108000,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,108000,,BridgeBuilders
+Definition,DIGTDEV-15823,694575,694574,AMILQueryBuyBackConditionQuestionList - Creation of message transformation for response,,,0,0,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,0,,BridgeBuilders
+Plan,DIGTDEV-15824,694576,,AMILQueryBuyBackConditionQuestionList -  Create new stub/simulator flows,,,28800,28800,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,28800,,BridgeBuilders
+Definition,DIGTDEV-15825,694577,694576,AMILQueryBuyBackConditionQuestionList - Creation of stub/simulator flow (for potential unit test by AMIL and D1),,,0,0,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,0,,BridgeBuilders
+Plan,DIGTDEV-15830,694582,,AMILQueryBuyBackConditionQuestionList - Construct new API Framework,,,3600,3600,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,3600,,BridgeBuilders
+Definition,DIGTDEV-15831,694583,694582,"AMILQueryBuyBackConditionQuestionList - Create Package, Resources, EG, Default Flow and Upload YAML",,,0,0,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,0,,BridgeBuilders
+In Progress,DIGTDEV-15832,694584,,AMILQueryBuyBackConditionQuestionList - Create Design document(s),,,28800,28800,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,28800,,BridgeBuilders
+Definition,DIGTDEV-15833,694585,694584,AMILQueryBuyBackConditionQuestionList - Create and Validate new YAML in support of new service,Debbie.A.Miller@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15834,694586,694584,AMILQueryBuyBackConditionQuestionList - Create IDD (Interface Design Document),Debbie.A.Miller@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15835,694587,694584,AMILQueryBuyBackConditionQuestionList - Obtain the .xsds for request/response in support of the new service,Debbie.A.Miller@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Plan,DIGTDEV-15836,694588,,AMILQueryBuyBackConditionQuestionList - Create Message Transformation for input,,,216000,216000,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,108000,,BridgeBuilders
+Definition,DIGTDEV-15837,694589,694588,AMILQueryBuyBackConditionQuestionList - Creation of message transformation for input ,,,108000,108000,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,108000,,
+Plan,DIGTDEV-15840,694592,,AMILQueryBuyBackConditionQuestionList - Create new API main process flow (Requires Acpt),,,100800,100800,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,100800,,BridgeBuilders
+Definition,DIGTDEV-15841,694593,694592,AMILQueryBuyBackConditionQuestionList - Setup fxml for main flow,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15842,694594,694592,AMILQueryBuyBackConditionQuestionList - Confirm requirements for NFR are met,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15843,694595,694592,AMILQueryBuyBackConditionQuestionList - Validate request and response using stubs,,,0,0,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,0,,BridgeBuilders
+Definition,DIGTDEV-15844,694596,694592,AMILQueryBuyBackConditionQuestionList  - Changes to adhere to Standards,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,
+Plan,DIGTDEV-15845,694597,,AMILQueryBuyBackConditionQuestionList - Create new Error Handling process flow,,,100800,100800,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,100800,,BridgeBuilders
+Definition,DIGTDEV-15846,694598,694597,AMILQueryBuyBackConditionQuestionList - Create Error Handling routine and validate,,,0,0,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,0,,BridgeBuilders
+Plan,DIGTDEV-15847,694599,,AMILQueryBuyBackConditionQuestionList - Create new Monitoring Event for the process flow,,,28800,28800,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,28800,,BridgeBuilders
+Definition,DIGTDEV-15848,694600,694599,AMILQueryBuyBackConditionQuestionList - Monitoring event creation and validation,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,
+Plan,DIGTDEV-15849,694601,,AMILQueryBuyBackConditionQuestionList -  Test Plan/Test Cases - IST  (Requires Acpt) ,,,144000,144000,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,144000,,BridgeBuilders
+Definition,DIGTDEV-15850,694602,694601,AMILQueryBuyBackConditionQuestionList -  Create IST Test Cases,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15851,694603,694601,AMILQueryBuyBackConditionQuestionList -  Create Test Execution Plan Summary,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15852,694604,694601,AMILQueryBuyBackConditionQuestionList -  Import test cases into testing tool,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15853,694605,694601,AMILQueryBuyBackConditionQuestionList -  Test Resource Assignment,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Plan,DIGTDEV-15854,694606,,AMILQueryBuyBackConditionQuestionList  - Configure Channel for new API,,,10800,10800,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,10800,,BridgeBuilders
+Definition,DIGTDEV-15855,694607,694606,AMILQueryBuyBackConditionQuestionList - Configure Channel for the new service,,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-15863,694287,,p202 - Left Rail,,,,,Epic,,,,,,,p202 - Left Rail,
+Definition,DIGTDEV-15951,695564,,p202 - Top Navigation,,,,,Epic,,,,,,,p202 - Top Navigation,
+Definition,DIGTDEV-15953,695587,,p202 - Authenticate and Authorize Customer,,,,,Epic,,,,,,,p202 - Authenticate and Authorize Customer,
+Definition,DIGTDEV-15989,695906,,p202 - Autopay,,,,,Epic,,,,,,,p202 - Autopay,
+Definition,DIGTDEV-15987,695754,,p202 - Rep Login,,,,,Epic,,,,,,,p202 - Rep Login,
+Definition,DIGTDEV-15990,695908,,p202 - Present Device Protection,,,,,Epic,,,,,,,p202 - Present Device Protection,
+Preparing,DIGTDEV-16018,696481,,MTV104 - Ginger Automation Test Flow CreateMemo MS,ramya.allam@sprint.com,,57600,57600,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6314,57600,,We're Groot
+Preparing,DIGTDEV-16024,696655,,Spike : AppDynamics monitoring configuration and setup  ,vivekreddy.doma@sprint.com,,3600,43200,Feature,Tapas ITR23 (PI11): 25/9-8/10,,,,,3600,,ScrumRunners
+In Progress,DIGTDEV-16027,696558,,MTV181 - Testing - Execute test cases for User Reassignment Role API,Zhanara.Zhorobaeva@sprint.com,,57600,57600,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-13589,57600,,WHO
+Preparing,DIGTDEV-16028,696561,,MTV181 - Testing - Execute UI test cases to validate mapped API,Zhanara.Zhorobaeva@sprint.com,,57600,57600,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-13589,57600,,WHO
+Preparing,DIGTDEV-16033,696567,,MTV181 - Testing - Write & Execute test cases for User Role Management (with Fallout),Zhanara.Zhorobaeva@sprint.com,,57600,57600,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-13589,57600,,WHO
+In Progress,DIGTDEV-16029,696563,,MTV181 - Ginger Testing - Automated all CRUD & User Role API's,Arafat.Hossain@sprint.com,,57600,36000,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-13589,57600,,WHO
+Completed,DIGTDEV-16042,696752,,MTV103 - Adding ODER_STATUS_CHANGE_REASON mapping and JUNIT,Mario.Ponciano@sprint.com,,57600,0,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,,57600,,OMG
+In Progress,DIGTDEV-16053,696956,,MTV104 - Create Validations for ExternalService and ErrorHandling ,Anuradha.Boddepalli@sprint.com,,,,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6314,,,We're Groot
+In Progress,DIGTDEV-16073,698440,,MTV181 - validate admin users,mahesh.menon@sprint.com,,28800,21600,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-13589,28800,,WHO
+In Progress,DIGTDEV-16074,698441,,MTV181 - Provide ability to Validate Admin Users,abdul.a.shaik@sprint.com,,57600,72000,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-13589,57600,,WHO
+In Progress,DIGTDEV-16083,698745,,AMILQueryBuyBackProductList - Design mapping for AMIL call to Brightstar,Debbie.A.Miller@sprint.com,,86400,57600,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,86400,,BridgeBuilders
+Definition,DIGTDEV-16084,698746,698745,AMILQueryBuyBackProductList System requirements,Debbie.A.Miller@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-16085,698747,698745,AMILQueryBuyBackProductList create mapping document,Debbie.A.Miller@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+In Progress,DIGTDEV-16086,698748,,AMILQueryBuyBackPriceList - Design mapping for AMIL call to Brightstar,Debbie.A.Miller@sprint.com,,57600,28800,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,57600,,BridgeBuilders
+Definition,DIGTDEV-16087,698749,698748,AMILQueryBuyBackPriceList System requirements,Debbie.A.Miller@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-16088,698750,698748,AMILQueryBuyBackPriceList create mapping document,Debbie.A.Miller@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+In Progress,DIGTDEV-16089,698751,,AMILQueryBuyBackConditionQuestionList - Design mapping for AMIL call to Brightstar,Debbie.A.Miller@sprint.com,,86400,57600,Developer Story,BridgeB ITR23(PI11):9/25-10/08,,,,DIGTDEV-6232,86400,,BridgeBuilders
+Definition,DIGTDEV-16090,698752,698751,AMILQueryBuyBackConditionQuestionList System requirements,Debbie.A.Miller@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+Definition,DIGTDEV-16091,698753,698751,AMILQueryBuyBackConditionQuestionList create mapping document,Debbie.A.Miller@sprint.com,,,,Sub-task,BridgeB ITR23(PI11):9/25-10/08,,,,,,,BridgeBuilders
+In Progress,DIGTDEV-16129,698922,,MTV103 - Code Review & Support - Vinicius,vinicius.oliveira@sprint.com,,36000,21600,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,,36000,,OMG
+Definition,DIGTDEV-16130,698863,,MTV209 - Manage Charges OC/OH,,,,,Epic,,,,,,,MTV209 - Manage Charges OC/OH,
+In Progress,DIGTDEV-16132,699082,,MTV103 - Code Review & Support - Mario,Mario.Ponciano@sprint.com,,28800,10800,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-6313,28800,,OMG
+In Progress,DIGTDEV-16133,699085,,MTV125.1 Update the HLD and create a mapping strategy document for MTV 125.1,mahesh.menon@sprint.com,,86400,86400,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-12927,86400,,WHO
+In Progress,DIGTDEV-16135,699099,,MTV103-5 - Identify the table/columns for Add a Line scenario,purushotham.veeregowda@sprint.com,,54000,21600,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14738,54000,,OMG
+In Progress,DIGTDEV-16138,699184,,MTV103 - Implement common mechanism for service fallout status update,vinicius.oliveira@sprint.com,,43200,28800,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,,43200,,OMG
+Solution Definition,DIGTDEV-16139,699314,,"MTV103 - As an Analyst, I want to implement Design changes required to handle standalone addOns",,,,,User Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14747,,,OMG
+In Progress,DIGTDEV-16140,699315,,"MTV103 - As an analyst,  want to Understand the implementation on standalone addOns and productOrder structure for Standalone Addons",Pavan.Shetty@sprint.com,,18000,18000,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14747,18000,,OMG
+Preparing,DIGTDEV-16141,699316,,"MTV103 - As an analyst, I want to analyze the impacts the ORE to handle standalone addOns.",Pavan.Shetty@sprint.com,,18000,18000,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14747,18000,,OMG
+Preparing,DIGTDEV-16142,699318,,"MTV103 - As an analyst, I want to Implement design changes to Order_master table to handle standalone addOns",Pavan.Shetty@sprint.com,,28800,28800,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14747,28800,,OMG
+Preparing,DIGTDEV-16143,699319,,"MTV103 - As an analyst, I want to Implement design changes to order_line_details table to handle standalone addOns.",Pavan.Shetty@sprint.com,,18000,18000,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14747,18000,,OMG
+Preparing,DIGTDEV-16144,699320,,"MTV103 - As an analyst, I want to Implement design changes to order_line_soc table to handle standalone addOns",Pavan.Shetty@sprint.com,,18000,18000,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14747,18000,,OMG
+Preparing,DIGTDEV-16145,699321,,"MTV103 - As an analyst, I want to Implement design changes to phone_config table to handle standalone addOns. ",Pavan.Shetty@sprint.com,,28800,28800,Developer Story,Tapas ITR23 (PI11): 25/9-8/10,,,,DIGTDEV-14747,28800,,OMG

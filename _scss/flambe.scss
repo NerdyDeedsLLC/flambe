@@ -80,7 +80,7 @@ main#iteration-info {
                 }
             }
 
-            select{
+            input.faux-selected ~ select{
                 height:auto;
                 position:absolute;
                 z-index:100;
@@ -247,7 +247,13 @@ $picker-dimensions: 30px;
                     color: transparent;
                 } /* Firefox 18- */
             }
+            &.input-field.filter-select{
+                position:fixed;
+                left:-1000000px;
+                opacity:0;
+            }
         }
+
     }
     button.picker-pushers {
         width: $picker-dimensions;
