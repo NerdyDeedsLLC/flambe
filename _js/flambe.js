@@ -166,13 +166,25 @@ var CSV = {};
     /**
      * Converts an array of tokenized lines into an array of object literals, using the header's tokens for each object's keys.
      */
-    function assembleObjects(tokenizedLines) {
+    function assembleObjects(tokenizedLines, headerKeys=tokenizedLines[0]) {
         _I("ES5 FUNCTION: assembleObjects", "tokenizedLines", tokenizedLines);
         var i, j,
             tokenizedLine, obj, key,
             objects = [],
-            keys = tokenizedLines[0];
+            keys = [];
 
+        if([...new Set(headerKeys)].length !== tokenizedLines.length){
+            const cleanKey = (key) => (' '+key.replace(/[^\w\d ]|custom|field/gim, '')).replace(/( .)/gim, (v1=>v1.toUpperCase().trim())).replace("RemainingEstimate2", 'TotalledEstimates')
+            headerKeys.forEach(key => {
+                key=cleanKey(key)
+                if(keys.indexOf(key) === -1) return keys.push(key);
+                let existingInstancesOfSameKey=keys.filter(instance=>new RegExp(key, 'gim').test(instance));
+                return keys.push(key + (existingInstancesOfSameKey.length + 1));
+            });
+        }
+        console.log("FILE INGESTED! Parse, unique header keys:", keys)
+
+        
         for (i = 1; i < tokenizedLines.length; i++) {
             tokenizedLine = tokenizedLines[i];
 
@@ -182,7 +194,6 @@ var CSV = {};
                 }
 
                 obj = {};
-
                 for (j = 0; j < keys.length; j++) {
                     key = keys[j];
 
@@ -342,7 +353,7 @@ let fileBuffer = []                                                             
     , idealDayCount = null
     , targetSlot = null;
 
-// APPLICATION SOURCE ============================================================================ ������ ����� indicated by encircled digits (➀-➈)
+// APPLICATION SOURCE ============================================================================ ������ ����� indicated by encircled digits (➀-➈)
 const init = () => {                                                                                      		// ⓿ Initiate application, chaining steps 1-3 above to file input's onChange
     _I("\n\n====== INIT ======\n");
     iterationName.value = recall('iterationName', '') || "Team Byrnedown - Iteration ";                  // Seed the value set for the iteration's name (or blank if none is stored)...
@@ -369,21 +380,21 @@ const init = () => {                                                            
     }
 
     totalItrDayPicker.placeholder = startingLength;
-    syncSpinner(startingLength);                                                                            //## ➜➜➜ � 
+    syncSpinner(startingLength);                                                                            //## ➜➜➜ � 
 
-    resizeBufferArraysAndRebuildSlots();                                                                    //@@ ➜➜➜ ︎� 
-    syncSpinner();                                                                                          //## ➜➜➜ � 
+    resizeBufferArraysAndRebuildSlots();                                                                    //@@ ➜➜➜ ︎� 
+    syncSpinner();                                                                                          //## ➜➜➜ � 
 
     input.addEventListener('change', e => {                                                                 //$ onChange Event handler for the individual <LI>'s; Allows files ot be added
         _I("EVENT: input.addEventListener('change') e", e);
         if (targetSlot != null && input.files.length === 1) {                                                 // (Since, in the case of a bulk upload attempt, we'd have no slot and more than 1 file)
-            return addOrReplaceSingleFileAndParse();                                                        //!! ➜➜➜ � 
+            return addOrReplaceSingleFileAndParse();                                                        //!! ➜➜➜ � 
         }
     });
 };
 
 const insertFileNodeBetween = (e, trgObj = e.target) => {
-    _I("FUNCTION: insertFileNodeBetween", "e", e, "trgObj", trgObj);                                        //$$ Ⓓ ���︎ 
+    _I("FUNCTION: insertFileNodeBetween", "e", e, "trgObj", trgObj);                                        //$$ Ⓓ ���︎ 
 // _(e, trgObj);
     if (trgObj.tagName !== 'LI') {
         // e.preventDefault();
@@ -392,8 +403,8 @@ const insertFileNodeBetween = (e, trgObj = e.target) => {
     let targetIndex = trgObj.dataset.slot;
     fileBuffer.splice(targetIndex, 0, '');
     namedFiles.splice(targetIndex, 0, '');
-    syncSpinner(((totalItrDayPicker.placeholder / 1) + 1));                                                 //## ➜➜➜ � 
-    resizeBufferArraysAndRebuildSlots();                                                                    //@@ ➜➜➜ � 
+    syncSpinner(((totalItrDayPicker.placeholder / 1) + 1));                                                 //## ➜➜➜ � 
+    resizeBufferArraysAndRebuildSlots();                                                                    //@@ ➜➜➜ � 
 };
 
 const syncSelect = (e, val) => {
@@ -413,11 +424,12 @@ const setSelect = (sel, val) => {
     syncSelect({ target: sel }, val);
 };
 
-let allFilters = {};
+let allFilters = [];
 
 let ALLTEAMS = [];
 let ALLITRS  = [];
 let ALLMTVS  = [];
+let fileJSONdForFilters = [];
 const generateTeamsAndIterationLists = () => {
     ALLTEAMS = [];
     ALLITRS  = [];
@@ -425,21 +437,23 @@ const generateTeamsAndIterationLists = () => {
     for (let files in fileBuffer) {
         let file = fileBuffer[files];
         if (file != null && file !== '') {
-            let teamsInFile = JSON.stringify(file.fileData, ['Custom field (Scrum Team)']);                 // Rip out all the teams in each file...
-                teamsInFile = JSON.parse(teamsInFile).flatMap(d => d['Custom field (Scrum Team)']);         // ... then flatten the results into a 1-dimensional array.
-            let itrsInFile  = JSON.stringify(file.fileData, ['Sprint']);                                    // ... then do the same for iterations.
-                itrsInFile  = JSON.parse(itrsInFile).flatMap(d  => d['Sprint']);
-            let mtvsInFile  = JSON.stringify(file.fileData, ['Sprint']);                                    // ... then do the same for mtvs.
-                mtvsInFile  = JSON.parse(mtvsInFile).flatMap(d  => d['!!!!!MTV_FIELD_NAME_HERE!!!!!']);     // TODO: break the filter selection system into its own class or method(s)
-            ALLTEAMS        = [...teamsInFile, ...ALLTEAMS];                                                // Append the new data to the running variable
-            ALLITRS         = [...itrsInFile, ...ALLITRS];
-            ALLMTVS         = [...mtvsInFile, ...ALLMTVS];
+            fileJSONdForFilters.push(JSON.parse(JSON.stringify(file.fileData, ['ScrumTeam', 'Sprint', 'Sprint2', 'Sprint3', 'Sprint4', 'EpicLink', 'EpicName'])));
+            fileJSONdForFilters.flat().forEach(flatRec=>{
+                // let flatRec = record;
+                if(flatRec.ScrumTeam != '') 	  		{ALLTEAMS.push(flatRec.ScrumTeam); console.log(flatRec.ScrumTeam) }
+                if(flatRec.Sprint4 != '') 	  		    {ALLITRS.push( flatRec.Sprint4);console.log(flatRec.Sprint4) }
+                else if(flatRec.Sprint3 != '') 			{ALLITRS.push( flatRec.Sprint3);console.log(flatRec.Sprint3) }
+                else if(flatRec.Sprint2 != '')  		{ALLITRS.push( flatRec.Sprint2);console.log(flatRec.Sprint2) }
+                else if(flatRec.Sprint != '') 	    	{ALLITRS.push( flatRec.Sprint);console.log(flatRec.Sprint) }
+                if(flatRec.EpicName)                    {ALLMTVS.push(flatRec.EpicName);}
+            })
         }
     }
+    console.log('fileJSONdForFilters',fileJSONdForFilters)
     ALLTEAMS = [...new Set(ALLTEAMS)].sort();                                                               // Finally, reduce em all to collections containing only unique elements
     ALLITRS  = [...new Set(ALLITRS)].sort();
     ALLMTVS  = [...new Set(ALLMTVS)].sort();
-
+    console.log('ALLTEAMS',    ALLTEAMS,    'ALLITRS',    ALLITRS,    'ALLMTVS',    ALLMTVS);
 
     let teamsDD       = qs('#selTeam'),
         itrsDD        = qs('#selIteration'),
@@ -450,20 +464,20 @@ const generateTeamsAndIterationLists = () => {
     mtvsDD.innerHTML  = '<option>Show All Iterations</option><option>'  + ALLMTVS.join('</option><option>')  + '</option>';
     teamsDD.addEventListener('change', syncSelect);
     itrsDD.addEventListener( 'change', syncSelect);
-    ALLMTVS.addEventListener('change', syncSelect);
+    mtvsDD.addEventListener('change', syncSelect);
 
 };
 setSelect('#selTeam',      recall('selTeam'));
 setSelect('#selIteration', recall('selIteration'));
 setSelect('#selMTV',       recall('selMTV'));
 // eslint-disable-next-line
-const removeFileAtIndex = (trgBtn, isFilled) => {                                                                 //%% Ⓔ ���︎  Remove the file from the slot whose trashcan was clicked (both in the buffer and the UI)
+const removeFileAtIndex = (trgBtn, isFilled) => {                                                                 //%% Ⓔ ���︎  Remove the file from the slot whose trashcan was clicked (both in the buffer and the UI)
     _I("FUNCTION: removeFileAtIndex", "trgBtn", trgBtn, "isFilled", isFilled);
     let ind = trgBtn.dataset.index;
     if (findLastIndexOf(namedFiles, /.+/) === 0) {
         namedFiles[0] = retain('namedFiles', '');
         fileBuffer[0] = retain('fileBuffer', '');
-        return resizeBufferArraysAndRebuildSlots();                                                         //@@ ➜➜➜ � 
+        return resizeBufferArraysAndRebuildSlots();                                                         //@@ ➜➜➜ � 
     }
 // _(ind, trgBtn);
     if (isFilled) {
@@ -474,11 +488,11 @@ const removeFileAtIndex = (trgBtn, isFilled) => {                               
         fileBuffer.splice(ind, 1);
         incDec(1);
     }
-    return resizeBufferArraysAndRebuildSlots();                                                             //@@ ➜➜➜ � 
+    return resizeBufferArraysAndRebuildSlots();                                                             //@@ ➜➜➜ � 
 };
 
 
-const resizeBufferArraysAndRebuildSlots = (newLen = ((totalItrDayPicker.placeholder / 1) + 1)) => {               //@@ Ⓑ ���︎ Destroys the current buffer and UI, rebuilding them to reflect new state
+const resizeBufferArraysAndRebuildSlots = (newLen = ((totalItrDayPicker.placeholder / 1) + 1)) => {               //@@ Ⓑ ���︎ Destroys the current buffer and UI, rebuilding them to reflect new state
     _I("FUNCTION: resizeBufferArraysAndRebuildSlots", newLen);
     if (typeof (namedFiles) == 'undefined' || isNaN(newLen) || newLen < 0) return false;
     let oldLen = (namedFiles && namedFiles.length) ? namedFiles.length / 1 : 0,
@@ -532,11 +546,11 @@ const resizeBufferArraysAndRebuildSlots = (newLen = ((totalItrDayPicker.placehol
     }
     while (sortableList.childElementCount > 0) sortableList.childNodes[0].remove();
     sortableList.insertAdjacentHTML('beforeEnd', opStr);
-    qsa('li').forEach(li => li.addEventListener('click', insertFileNodeBetween));                         //$$ ➜➜➜ � 
+    qsa('li').forEach(li => li.addEventListener('click', insertFileNodeBetween));                         //$$ ➜➜➜ � 
 
     generateTeamsAndIterationLists();
 };
-const addOrReplaceSingleFileAndParse = (slotId = targetSlot, liObj = qs('#file-slot-' + slotId)) =>                     //!! Ⓐ ���︎ Inserts (or updates) a file at the specified slot (in both the buffer and the UI)
+const addOrReplaceSingleFileAndParse = (slotId = targetSlot, liObj = qs('#file-slot-' + slotId)) =>                     //!! Ⓐ ���︎ Inserts (or updates) a file at the specified slot (in both the buffer and the UI)
 {
     let fileObj = input.files[0],
         fileName = fileObj.name;
@@ -572,14 +586,14 @@ const addOrReplaceSingleFileAndParse = (slotId = targetSlot, liObj = qs('#file-s
         )
         .then(() => {
 // _('...resolved\n".then()" #2');
-            resizeBufferArraysAndRebuildSlots();                                                            //@@ ➜➜➜ ︎� 
+            resizeBufferArraysAndRebuildSlots();                                                            //@@ ➜➜➜ ︎� 
             doneButton.disabled = false;
-            doneButton.addEventListener('click', runReport);                                                 //** ➜➜➜ ︎� 
+            doneButton.addEventListener('click', runReport);                                                 //** ➜➜➜ ︎� 
             return;
         });
 };
 
-const runReport = (obj = doneButton) => {                                                                    //** ���︎ Ⓗ    Execute the preview grid and graphing methods 
+const runReport = (obj = doneButton) => {                                                                    //** ���︎ Ⓗ    Execute the preview grid and graphing methods 
     //  offerToPerformDayOneOverrideAdjustment()
     // safeBuffer = Object.assign([], );
     let pvTable = qs('.preview-table');
@@ -607,7 +621,7 @@ const runReport = (obj = doneButton) => {                                       
     ISSUE_KEYS = [];
     DEBUG_DATA = [];
 
-    getDistinctKeysFromFiles();                                                                             //^^ ➜➜➜ � 
+    getDistinctKeysFromFiles();                                                                             //^^ ➜➜➜ � 
 };
 function checkFilterMatch(fullDaysRecords, teamFilt, itrFilt) {
     function escapeRegExp(string) {
@@ -635,7 +649,7 @@ function checkFilterMatch(fullDaysRecords, teamFilt, itrFilt) {
     return false;
 }
 
-const getDistinctKeysFromFiles = () => {                                                                    //^^ ���︎ Ⓕ    Iterate through our files, constructing a unique JSON structure from them 
+const getDistinctKeysFromFiles = () => {                                                                    //^^ ���︎ Ⓕ    Iterate through our files, constructing a unique JSON structure from them 
     safeBuffer = Object.assign([], JSON.parse(recall('fileBuffer')));                                                             // Duplicate the file buffer (so we're not mucking up our original, "pure" copy. This one's "safe" to screw with
 
     while (safeBuffer.lastIndexOf('') === (safeBuffer.length - 1)) safeBuffer.pop();                         // Discard any blank indicies And the END of the stack. Those are "missing" days.
@@ -650,10 +664,10 @@ const getDistinctKeysFromFiles = () => {                                        
         } else INTERPOL8D.push(files);                                                                      //  ... UNLESS it IS flagged for interpolation, in which case add it to that collection  
     }
 
-    remapDataSoIssueIDIsPrimaryKey();                                                                       //&& ➜➜➜ �
+    remapDataSoIssueIDIsPrimaryKey();                                                                       //&& ➜➜➜ �
 };
 
-const remapDataSoIssueIDIsPrimaryKey = () => {                                                              //&& Ⓖ �︎�︎�︎    Iterate finalized buffer, and concatinated generate output data
+const remapDataSoIssueIDIsPrimaryKey = () => {                                                              //&& Ⓖ �︎�︎�︎    Iterate finalized buffer, and concatinated generate output data
     _I("FUNCTION: remapDataSoIssueIDIsPrimaryKey");
     let temp_store = [];                                                                                        // Create a temporary, empty collection...
     ISSUE_KEYS.forEach(r => {                                                                               //    ... Iterate through our unique keys from all files (from getDistinctKeysFromFiles)...
@@ -686,7 +700,7 @@ const remapDataSoIssueIDIsPrimaryKey = () => {                                  
         INTERPOL8D.forEach(itp => COMBD_DATA[cbd][itp] = '---');
     });
 
-    processParentChildRelationships();                                                                      //⦾! ➜➜➜ �
+    processParentChildRelationships();                                                                      //⦾! ➜➜➜ �
 };
 
 const showRecordDetails = (e, targetLink = e.target) => {
@@ -702,7 +716,7 @@ const showRecordDetails = (e, targetLink = e.target) => {
     targetLink.insertAdjacentHTML('afterEnd', flatData);
 };
 let quickIndex;
-const processParentChildRelationships = () => {                                                             //⦾! Ⓘ �︎�︎�︎ Correllates the parent tasks to their corresponding sub-tasks 
+const processParentChildRelationships = () => {                                                             //⦾! Ⓘ �︎�︎�︎ Correllates the parent tasks to their corresponding sub-tasks 
     _I("FUNCTION: processParentChildRelationships");
     const createJIRALink = (IssueId, isParent = false) => {
         // _I("FUNCTION: createJIRALink", "IssueId", IssueId, "isParent", isParent);
@@ -1316,14 +1330,14 @@ totalItrDayPicker.addEventListener('mouseOut', () => { activeInteraction = false
 totalItrDayPicker.addEventListener('blur', () => { activeInteraction = false; ongoing = false; });
 window.addEventListener('click', released);
 
-const syncSpinner = (hardValue = null) => {                                                                   //## Ⓒ ���︎ 
+const syncSpinner = (hardValue = null) => {                                                                   //## Ⓒ ���︎ 
     _I("FUNCTION: syncSpinner", "hardValue", hardValue);
     if (hardValue != null && !isNaN(hardValue)) totalItrDayPicker.placeholder = hardValue;
     TOTALITRDAYS = getDayCountFromPicker();
     let control = totalItrDayPicker.parentElement;
     offset = (totalItrDayPicker.getBoundingClientRect().height + 2);
     control.style = "--value:" + (TOTALITRDAYS * offset * -1) + "px";
-    resizeBufferArraysAndRebuildSlots();                                                                    //@@ ➜➜➜ ︎� 
+    resizeBufferArraysAndRebuildSlots();                                                                    //@@ ➜➜➜ ︎� 
 };
 
 
@@ -1336,7 +1350,7 @@ const incDec = (dir, mechanical = true, dly = 750, scale = 1) => {
     if (adjVal <= 1) adjVal = 1;
     if (adjVal > 60) adjVal = 60;
     totalItrDayPicker.placeholder = adjVal;
-    syncSpinner();                                                                                           //## ➜➜➜ � 
+    syncSpinner();                                                                                           //## ➜➜➜ � 
     mechanical = false;
     if (ongoing && !mechanical) ongoingtimer = window.setTimeout(() => incDec(dir, false, dly, scale), dly);
 };
