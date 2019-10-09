@@ -294,8 +294,8 @@ const DEBUG_MODE = false;    //--> NOT TO BE SET TO 'TRUE' IN PRODUCTION USE - C
 const INFO_TRACE = false;    //--> NOT TO BE SET TO 'TRUE' IN PRODUCTION USE - CONTROLS CONSOLE LOGS AND EXCESSIVE MEMORY CONSUMPTION
 
 const d = document                                       // ⥱ Alias - document
-    , qs = (s) => d.querySelector(s)                        // ⥱ Alias - querySelector
-    , qsa = (s) => [...d.querySelectorAll(s)]                // ⥱ Alias - querySelectorAll
+    , qs = (s,scope=d) => scope.querySelector(s)                        // ⥱ Alias - querySelector
+    , qsa = (s,scope=d) => [...scope.querySelectorAll(s)]                // ⥱ Alias - querySelectorAll
     , _ = (...args) => (DEBUG_MODE) ? console.log.call(this, ...args) : false     // ⥱ Alias - _
     , _I = (...args) => (DEBUG_MODE && INFO_TRACE) ? console.info.call(this, ...args) : false     // ⥱ Alias - _
     , _T = (...args) => (DEBUG_MODE) ? console.table.call(this, ...args) : false     //eslint-disable-line

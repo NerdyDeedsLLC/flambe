@@ -6,7 +6,14 @@
     box-sizing: border-box;
     font-family: sans-serif;
 }
- 
+ .tagline {
+     display:block;
+     width:188px;
+     height:36px;
+     position:absolute;
+     right:0;
+     top:28px;
+ }
 .remove-buttons {
     background-image: url('data: image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"%3E%3Cpath d="M17.6 1.8c0 .7-.5 1.2-1.2 1.2H7.6C7 3 6.4 2.5 6.4 1.8 5.1 2.1 2 3 2 4.4l.2 1.3c3.2 3 15.8 3.1 19.5.3l.3-1.6C22 3 19 2 17.6 1.8zm3 7L18 22c-1.1 1.3-3.6 2-6 2s-5-.7-6-2C5.4 19.1 4 13.2 3.3 8.6 6.4 10 10.7 10 12.2 10c1.7 0 5.5-.1 8.5-1.3zM7.7 2c1 0 1.7-1.1 1.7-2h5.4c0 .9.8 2 1.7 2H7.6z"/%3E%3C/svg%3E');
     width: 20px;
@@ -33,7 +40,7 @@ body {
     width: 100vw;
     // height: 100vh;
     // max-height: 100%;
-    padding: 40px 0 70px;
+    padding: 0px 0 70px;
     margin: 0;
 }
 
@@ -42,15 +49,84 @@ main#iteration-info {
     position: relative;
     margin: 0 auto;
 
+    nav.tab-bar {
+        border-bottom: 1px solid #94949f;
+        padding:10px 0 0;
+        text-align:right;
+        position:relative;
+
+        a.tab-bar-tab {
+            display:inline-block;
+            min-width:25%;
+            text-align:center;
+            color:#AAA;
+            text-decoration:none;
+            background:#FFF;
+            padding:5px 10px;
+            border: 1px solid #94949f;
+            border-radius:10px 10px 0 0;
+            border-bottom:0 none;
+            margin-left:5px;
+            transition: 0.3s all ease-in-out;
+
+            &.active {
+                background-color:#eee;
+                color:#111;
+                padding-bottom:6px;
+                margin-bottom:-2px;
+            }
+        }
+        
+        &::before {
+            content:attr(data-category);
+            display:block;
+            position:absolute;
+            font-weight:900;
+            font-style:italic;
+            font-size:24px;
+            left:0;
+            top:10px;
+            color:#CCC;
+
+        }
+    }
+
     section.form-fields {
         margin: 5px 0 15px;
-        padding: 20px 10px 60px;
+        padding: 20px 10px 10px;
         border: 1px solid #94949f;
         border-radius: 10px 10px 0 0;
         display: block;
         min-width: 100%;
         width: 100%;
         position: relative;
+        background-color:#EEE;
+
+        &::before {
+            content:'1';
+            display:block;
+            position:absolute;
+            width:96px;
+            height:96px;
+            line-height:128px;
+            font-weight:900;
+            text-align: right;
+
+            font-size:96px;
+            left:-112px;
+            border-radius: 50%;
+            top:0;
+            background-color:#DDD;
+            color:white;
+
+        }
+        &:nth-of-type(2)::before {
+            content:'2';
+        }
+        
+        &:nth-of-type(3)::before {
+            content:'3';
+        }
 
         div.itr-form-field {
             margin: 10px 0 0px;
@@ -151,6 +227,49 @@ main#iteration-info {
             max-width: 49%;
             flex: 1 1 48%;
             display: inline-block;
+        }
+
+        &.tab-panel {
+            margin:0 0 20px;
+            border-top:0;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            position: relative;
+            min-height: 80px;
+            transition: 0.3s all ease-in-out;
+
+            &::before {
+                top:-30px;
+            }
+
+            .clearer {
+                max-height:0;
+                overflow:hidden;
+                transition: 0.3s all ease-in-out;
+            }
+
+            div.itr-form-field {
+                max-height: 0;
+                overflow:hidden;
+                position:absolute;
+                top:0;
+                transition: 0.3s all ease-in-out;
+                max-width:640px;
+                transition: 0.3s all ease-in-out;
+
+                &.visible {
+                    max-height:200px;
+                    height: 200px;
+
+                    input, select {
+                        max-width:calc(100% - 20px);
+                    }
+
+                    &+.clearer {
+                        max-height:300px;
+                    }
+                }
+            }
         }
     }
 }
