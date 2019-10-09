@@ -290,8 +290,8 @@ var CSV = {};
 //!! =====================================================================================================================================
 // DECLARATIONS //==================================================================================================================
 // Shortcut aliases and Helper functions //-----------------------------------------------------------------------------------------
-const DEBUG_MODE = true;    //--> NOT TO BE SET TO 'TRUE' IN PRODUCTION USE - CONTROLS CONSOLE LOGS AND EXCESSIVE MEMORY CONSUMPTION
-const INFO_TRACE = true;    //--> NOT TO BE SET TO 'TRUE' IN PRODUCTION USE - CONTROLS CONSOLE LOGS AND EXCESSIVE MEMORY CONSUMPTION
+const DEBUG_MODE = false;    //--> NOT TO BE SET TO 'TRUE' IN PRODUCTION USE - CONTROLS CONSOLE LOGS AND EXCESSIVE MEMORY CONSUMPTION
+const INFO_TRACE = false;    //--> NOT TO BE SET TO 'TRUE' IN PRODUCTION USE - CONTROLS CONSOLE LOGS AND EXCESSIVE MEMORY CONSUMPTION
 
 const d = document                                       // ⥱ Alias - document
     , qs = (s) => d.querySelector(s)                        // ⥱ Alias - querySelector
@@ -411,8 +411,13 @@ const insertFileNodeBetween = (e, trgObj = e.target) => {
 
 const syncSelect = (e, val) => {
     let trg = e.target;
-    val = (val != null) ? val : trg.value;
     let txtBox = trg.previousElementSibling.previousElementSibling;
+    console.log(val)
+    if(val == null || val === '') val = trg.value;
+    if(trg.selectedIndex === 0 || (trg.selectedOptions && trg.selectedOptions.length === 0)) val = '';
+    if(trg.selectedOptions && trg.selectedOptions.length > 1){
+        val = [...trg.selectedOptions].map(option=>option.value).join()
+    }
     txtBox.value = val;
     retain(trg.id, val);
     trg.blur();
@@ -426,8 +431,10 @@ const setSelect = (sel, val='') => {
     syncSelect({ target: sel }, val);
 };
 
-let allFilters = [];
-
+let allFilters = [],
+    teamsDD    = qs('#selTeam'),
+    itrsDD     = qs('#selIteration'),
+    mtvsDD     = qs('#selMTV');
 let ALLTEAMS = [], ALLTEAMS_SET=false;
 let ALLITRS  = [], ALLITRS_SET=false;
 let ALLMTVS  = [], ALLMTVS_SET=false;
@@ -458,9 +465,7 @@ const generateTeamsAndIterationLists = () => {
     }
     // console.log('fileJSONdForFilters',fileJSONdForFilters)
     // console.log('\n\nALLTEAMS',    ALLTEAMS,    '\n\nALLITRS',    ALLITRS,    '\n\nALLMTVS',    ALLMTVS);
-    let teamsDD       = qs('#selTeam'),
-        itrsDD        = qs('#selIteration'),
-        mtvsDD        = qs('#selMTV');
+    
 
     if(!ALLTEAMS_SET){
         ALLTEAMS = [...new Set(ALLTEAMS)].sort();                                                               // Finally, reduce em all to collections containing only unique elements
@@ -475,22 +480,41 @@ const generateTeamsAndIterationLists = () => {
         itrsDD.addEventListener( 'change', syncSelect);
         ALLITRS_SET=true;
     }
+    let justKeys = [];
     if(!ALLMTVS_SET){
         ALLMTVS   = [...new Set(ALLMTVS)].sort();
 
-        mtvsDD.innerHTML  = '<option value="">Show All MTV\'s</option><option value="' +
-                            [...new Set(ALLMTVS.map(mtvEntry=>{
-                                let [mtvName, mtvID] = mtvEntry;
-                                // console.log('rplcr', mtvName, mtvID);
-                                var padder = '000',
-                                    output = mtvName.replace(/^(\d{1,3}-\d)/gim, '$1 MTV').replace(/mtv ?(\d{1,3})/gim, '$1 MTV');
-                                    output = output.replace(/(\d{1,3}(?:[.-]\d)?)( (?:NF )?MTV)/gim, (match, p1, p2)=>{
-                                                p1 = ('' + parseInt(p1));
-                                                return padder.slice(-(3-p1.length)) + p1 + p2;
-                                            });
-                                return `${output.replace(/000(\d\d\d)/gim, '$1')}~~~~~${mtvID}`;
-                            }))].sort().join('</option><option value="').replace(/<option value="(.*?)~~~~~(.*?)<\/option>/gim, '<option value="$2">$1</option>') + '</option>';
-    
+        mtvsDD.innerHTML  = '<option value="">Show All MTV\'s</option>' +
+                            [...new Set(
+                                ALLMTVS.map(
+                                    mtvEntry=>{
+                                        let [mtvName, mtvID] = mtvEntry;
+                                        // console.log('rplcr', mtvName, mtvID);
+                                        var padder = '0000',
+                                            output = mtvName;
+
+                                        if(/^MTV/i.test(output)){
+                                            output = output.trim().replace(/^MTV ?(\d{1,3})([.-]\d+)?\b/i, '___$1_$2___');
+                                        }else if(/^(\d{1,3})([-.]\d)? (NF )?MTV/i.test(output)){
+                                            output = output.trim().replace(/^(\d{1,3})([-.]\d+)? (NF )?MTV/i, '___$1_$2___$3')
+                                        }else if(/^(\d{1,3})([-.]\d+)\b/.test(output)){
+                                            output = output.trim().replace(/^(\d{1,3})([.-]\d+)?\b/i, '___$1_$2___');
+                                        }
+                                        output = output.replace(/^___(\d+?)_([-.]\d)___(NF ).*/, (match, p1, p2, p3)=>{p1 = parseInt(p1) + ''; return padder.slice(0, (3 - p1.length)) + p1 + p2 + '-NF-MTV';});
+                                        output = output.replace(/^___(\d+?)_([-.]\d).*/, (match, p1, p2)=>{p1 = parseInt(p1) + ''; return padder.slice(0, (3 - p1.length)) + p1 + p2 + '-MTV';});
+                                        output = output.replace(/^___(\d+?)____.*/, (match, p1)=>{p1 = parseInt(p1) + ''; return padder.slice(0, (3 - p1.length)) + p1 + '-MTV';});
+                                        output = output + '::' + mtvName.replace(/MTV ?[\d\. \-]+?\b/gim, '').replace(/^\-?[\d \-]+?\b/gim, '').replace(/^[\.\-]\d( \-)? /gim, '');
+                                        
+                                        justKeys.push(mtvID);
+                                        output=`${output}~~~~~${mtvID}`;
+                                        console.log(output);
+                                        return output;
+                                    }
+                                )
+                                   
+                            )].sort().join('</option><option value="').replace(/<option value="(.*?)~~~~~(.*?)<\/option>/gim, '<option value="$2">$1</option>') + '</option>';
+        justKeys = [...new Set(justKeys)];
+        console.log('justKeys', justKeys, justKeys.join())
         mtvsDD.addEventListener('change', syncSelect);
         ALLMTVS_SET=true;
     }
@@ -658,11 +682,11 @@ function checkFilterMatch(fullDaysRecords, refinements) {
         return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
     }
 
-    console.warn(refinements);
+    console.warn('refinements', refinements);
 
     let teamFilt = refinements.team,
         itrFilt  = refinements.itr,
-        mtvFilt  = refinements.mtv;
+        mtvFilt  = [...mtvsDD.selectedOptions].map(option=>option.value).join();
 
     teamFilt = (teamFilt == null || teamFilt == '' || teamFilt == '*' || teamFilt.indexOf('Show All') === 0) ? '.*': escapeRegExp(teamFilt);
     itrFilt  = (itrFilt  == null || itrFilt  == '' || itrFilt  == '*' || itrFilt.indexOf('Show All')  === 0) ? '.*': escapeRegExp(itrFilt);
@@ -693,7 +717,7 @@ function checkFilterMatch(fullDaysRecords, refinements) {
                         )
                     )
                     &&
-                    (mtvFilt==null || (mtvFilt != null && rtc['EpicLink'] != null && rtc['EpicLink'].match(mtvFilt)))
+                    (mtvFilt==null || (mtvFilt != null && rtc['EpicLink'] != null && mtvFilt.match(rtc['EpicLink'])))
 
                 );
             }
