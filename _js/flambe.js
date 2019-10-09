@@ -688,6 +688,12 @@ function checkFilterMatch(fullDaysRecords, refinements) {
         itrFilt  = refinements.itr,
         mtvFilt  = [...mtvsDD.selectedOptions].map(option=>option.value).join();
 
+    if(mtvFilt != '') {
+        itrFilt=''
+        itrsDD.value=''
+        qs('#txtIteration').value='';
+    }
+
     teamFilt = (teamFilt == null || teamFilt == '' || teamFilt == '*' || teamFilt.indexOf('Show All') === 0) ? '.*': escapeRegExp(teamFilt);
     itrFilt  = (itrFilt  == null || itrFilt  == '' || itrFilt  == '*' || itrFilt.indexOf('Show All')  === 0) ? '.*': escapeRegExp(itrFilt);
 

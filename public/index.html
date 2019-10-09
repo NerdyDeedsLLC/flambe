@@ -33,22 +33,24 @@
                 </div>
                 <button id="picker-inc" class="picker-pushers" onmousedown="incDec(1);" onmouseup="released()"></button>
             </div>
+            <br><br><hr>
 
-            <div class='half-width itr-form-field'>
+            <div class='full-width itr-form-field' style="margin-top:30px; margin-bottom:20px;">
+                <input id="txtTeam" name="txtTeam" type="text" required class="input-field filter-select" autocomplete="false"
+                    placeholder="" />
+                <label for="txtTeam" class="txtTeam-label">- Select Team -</label>
+                <select id="selTeam" name="selTeam" placeholder="Select Team" ></select>
+            </div>
+            <hr><br>
+
+            <div class='full-width itr-form-field'>
                 <input id="txtIteration" name="txtIteration" type="text" required class="input-field filter-select"
                     autocomplete="false" placeholder="" />
                 <label for="txtIteration" class="txtIteration-label">- Select Iteration -</label>
                 <select id="selIteration" name="selIteration" placeholder="Select Iteration" ></select>
             </div>
 
-            <div class='half-width itr-form-field'>
-                <input id="txtTeam" name="txtTeam" type="text" required class="input-field filter-select" autocomplete="false"
-                    placeholder="" />
-                <label for="txtTeam" class="txtTeam-label">- Select Team -</label>
-                <select id="selTeam" name="selTeam" placeholder="Select Team" ></select>
-            </div>
-
-
+            <center style="padding-top:15px;">- OR -</center>
             <div class='full-width itr-form-field'>
                 <input id="txtMTV" name="txtMTV" type="text" required class="input-field filter-select" autocomplete="false"
                     placeholder="" />
