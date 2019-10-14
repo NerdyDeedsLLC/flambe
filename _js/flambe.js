@@ -507,14 +507,14 @@ const generateTeamsAndIterationLists = () => {
                                         
                                         justKeys.push(mtvID);
                                         output=`${output}~~~~~${mtvID}`;
-                                        console.log(output);
+                                        // console.log(output);
                                         return output;
                                     }
                                 )
                                    
                             )].sort().join('</option><option value="').replace(/<option value="(.*?)~~~~~(.*?)<\/option>/gim, '<option value="$2">$1</option>') + '</option>';
         justKeys = [...new Set(justKeys)];
-        console.log('justKeys', justKeys, justKeys.join())
+        // console.log('justKeys', justKeys, justKeys.join())
         mtvsDD.addEventListener('change', syncSelect);
         ALLMTVS_SET=true;
     }
@@ -650,6 +650,7 @@ const addOrReplaceSingleFileAndParse = (slotId = targetSlot, liObj = qs('#file-s
 const runReport = (obj = doneButton) => {                                                                    //** ���︎ Ⓗ    Execute the preview grid and graphing methods 
     //  offerToPerformDayOneOverrideAdjustment()
     // safeBuffer = Object.assign([], );
+    qs('#loading').className = 'visible';
     let pvTable = qs('.preview-table');
     if (pvTable) pvTable.remove();
     FILESLOADED = fileBuffer.filter(fb => fb != '').length;                                                // Increment our "number of files we've read" counter...
@@ -1391,7 +1392,11 @@ const postProcessData = () => {
         
     }).then((res) => {
         renderCHARt(idealDayCount, dataToGraph);
-    });
+    }).then(res=>{
+        qs('#loading').className = '';
+
+    })
+    ;
 };
 //!! =====================================================================================================================================
 
