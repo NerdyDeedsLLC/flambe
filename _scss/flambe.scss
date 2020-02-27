@@ -926,11 +926,16 @@ button.add-record {
     bottom:0;
     z-index: 10000;
     text-align:center;
+    overflow:auto;
+    max-height:100vh;
+    max-width:100%;
+    height:100%;
+    background: #000A;
     
     &::before {
         content:'';
         background: #000A;
-        width:100vw;
+        width:100%;
         height:100vh;
         display:block;
         
@@ -945,7 +950,7 @@ button.add-record {
         border:2px solid black;
         background-color:#EEE;
         border-radius:10px;
-        overflow:hidden;
+        overflow:visible;
         position:absolute;
         left:50%;
         top:50%;
@@ -953,7 +958,8 @@ button.add-record {
         box-shadow:0 20px 40px #000A;
         font-size:14px;
         width:900px;
-        
+        margin-bottom:100px;
+
 
         tr {
             border-spacing:0;
