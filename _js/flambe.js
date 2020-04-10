@@ -190,7 +190,11 @@ var CSV = {};
 
             if (tokenizedLine.length > 0) {
                 if (tokenizedLine.length > keys.length) {
-                    throw new SyntaxError('not enough header fields');
+                    // throw new SyntaxError('not enough header fields');
+                    console.warn('The file being ingested has fewer columns than those earlier in the same report; this can cause erratic data results.\n',
+                                 'More to the point, however, this is almost certainly a result of a story being DELETED FROM JIRA ENTIRELY, vs. simply\n',
+                                  'being removed from the active sprint. If you\'re seeing this warning, this IS something you should investigate.');
+
                 }
 
                 obj = {};
