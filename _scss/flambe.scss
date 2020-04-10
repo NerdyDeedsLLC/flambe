@@ -12,7 +12,7 @@
     width: 20px;
     height: 20px;
     float: right;
-    background-color: transparent;
+ background-color: transparent;
     border: 0 none;
     margin: 6px 10px 0 0;
     cursor: pointer;
@@ -217,7 +217,7 @@ $picker-dimensions: 30px;
         }
         input {
             font-family: inherit;
-            background-color: #fff0;
+ background-color: #fff0;
             border: 0 none;
             display: inline-block;
             position: absolute;
@@ -262,7 +262,7 @@ $picker-dimensions: 30px;
         line-height: $picker-dimensions;
         padding: 0;
         border-radius: 0 #{$picker-dimensions * 0.1} #{$picker-dimensions * 0.1} 0;
-        background-color: #ddd;
+ background-color: #ddd;
         box-shadow: inset 2px 2px 2px #eee, inset -2px -2px 2px #ccc;
         margin: 0 0 0 -8px;
 
@@ -411,10 +411,10 @@ div.sort-order {
                 transform: scale(0.95);
             }
             &[data-value='interpolated']::before {
-                background-color: #EECCFFCC;
+ background-color: #EECCFFCC;
             }
             &[data-value='stored']::before {
-                background-color: #0f01;
+ background-color: #0f01;
             }
         }
 
@@ -503,15 +503,15 @@ button.add-record {
             cursor: pointer;
 
             &.start-new {
-                background-color: #700;
-                background-color: #fff;
+ background-color: #700;
+ background-color: #fff;
                 color: #700c;
                 border-width: 1px;
                 border-color: inherit;
             }
             &.done-sorting {
-                background-color: #070;
-                background-color: #fff;
+ background-color: #070;
+ background-color: #fff;
                 color: #070;
                 border-width: 1px;
                 border-color: inherit;
@@ -519,11 +519,11 @@ button.add-record {
 
             &:hover {
                 &.start-new {
-                    background-color: #700;
+ background-color: #700;
                     color: #fff;
                 }
                 &.done-sorting {
-                    background-color: #070;
+ background-color: #070;
                     color: #fff;
                 }
             }
@@ -729,10 +729,10 @@ button.add-record {
     
     th {
         border: 1px solid black;
-        background-color: #eee;
+ background-color: #eee;
     
         &.dim {
-            background-color: #bbb;
+ background-color: #bbb;
         }
     }
     
@@ -749,7 +749,7 @@ button.add-record {
     }
     
     tr.total-row, tr.ideal-row {
-        background-color:#CCC;
+ background-color:#CCC;
         font-weight: bold;
     
         td {
@@ -757,12 +757,12 @@ button.add-record {
             text-align: right;
             &.over {
                 box-shadow: inset 1px 1px 5px red, inset -1px 1px 5px red, inset 1px -1px 5px red, inset -1px -1px 5px red;
-                background-color: #FCC;
+ background-color: #FCC;
             }
             
             &.under {
                 box-shadow: inset 1px 1px 5px green, inset -1px 1px 5px green, inset 1px -1px 5px green, inset -1px -1px 5px green;
-                background-color: #CFC;
+ background-color: #CFC;
             }
             &.extra-dim {
                 background: #AAA;
@@ -805,7 +805,7 @@ button.add-record {
         // min-width:50vw;
         border-spacing:0;
         border:2px solid black;
-        background-color:#EEE;
+ background-color:#EEE;
         border-radius:10px;
         overflow:visible;
         position:absolute;
@@ -868,11 +868,11 @@ button.add-record {
         }
 
         th {
-            background-color:#666;
+ background-color:#666;
             color:#CCC;
             
             &:first-child:last-child {
-                background-color:#000;
+ background-color:#000;
                 color:#FFF;
                 padding:12px;
                 border-radius:9px 9px 0 0;
@@ -910,10 +910,10 @@ button.add-record {
     padding: 5px 0;
     margin-left:10px;
     border-radius:10px;
-    background-color:#FFF;
+ background-color:#FFF;
 
     &:last-of-type {
-        background-color: #1992AC;
+ background-color: #1992AC;
         border-color: #115A6C;
         font-weight:bold;
         color:white;
@@ -947,7 +947,7 @@ button.add-record {
     &-window {
         border-spacing:0;
         border:2px solid black;
-        background-color:#EEE;
+ background-color:#EEE;
         border-radius:10px;
         overflow:hidden;
         position:absolute;
@@ -974,10 +974,10 @@ button.add-record {
             margin-left:10px;
             margin:20px 0 0 10px;
             border-radius:10px;
-            background-color:#FFF;
+ background-color:#FFF;
 
             &:last-of-type {
-                background-color: #1992AC;
+ background-color: #1992AC;
                 border-color: #115A6C;
                 font-weight:bold;
                 color:white;
@@ -1059,7 +1059,7 @@ div.extra-details {
     &::after,
     &::before {
         content: '';
-        background-color: transparent;
+ background-color: transparent;
         width: 25px;
         height: 25px;
         position: absolute;
@@ -1083,7 +1083,7 @@ aside.sort-key {
     border: 1px solid black;
     border-radius: 8px;
     width: 280px;
-    background-color: white;
+ background-color: white;
     z-index: 10;
     padding: 14px 13px 0px 8px;
     left: calc(100% + 10px);
@@ -1138,7 +1138,7 @@ aside.sort-key {
         }
         &.key-item-1 {
             &::after {
-                background-color: #eaeaea;
+ background-color: #eaeaea;
                 border: 1px solid darken(#9a9a9a, 20%);
             }
             em {
@@ -1148,7 +1148,7 @@ aside.sort-key {
         }
         &.key-item-2 {
             &::after {
-                background-color: #eeffee;
+ background-color: #eeffee;
                 border: 1px solid darken(#eeffee, 20%);
             }
             em {
@@ -1158,7 +1158,7 @@ aside.sort-key {
         }
         &.key-item-3 {
             &::after {
-                background-color: #ffeaeb;
+ background-color: #ffeaeb;
                 border: 1px solid darken(#ffeaeb, 20%);
             }
             em {
@@ -1173,7 +1173,7 @@ aside.sort-key {
                 font-size: 18px;
                 line-height: 19px;
                 color: #900;
-                background-color: #ffffaa;
+ background-color: #ffffaa;
                 border: 1px solid darken(#ffff00, 10%);
             }
             b {
@@ -1192,7 +1192,7 @@ aside.sort-key {
                 font-size: 18px;
                 line-height: 19px;
                 color: #ff0;
-                background-color: #f00;
+ background-color: #f00;
                 border: 1px solid darken(#f00, 10%);
             }
             b {
@@ -1224,7 +1224,7 @@ aside.sort-key {
         border-color: transparent;
         box-shadow: 0 10px 10px #000;
         color: black;
-        background-color:#FFFFFF;
+ background-color:#FFFFFF;
         font-weight: normal;
         right:-130px;
         z-index: 10;
@@ -1370,7 +1370,7 @@ td.major-alert {color: red !important;}
 
    span {
       display:block;
-      background-color:#666;
+ background-color:#666;
       height:2px;
       width:21px;
       position:absolute;
@@ -1418,7 +1418,7 @@ td.major-alert {color: red !important;}
     //   max-width:130px;
       border-top:2px solid #CCC;
       border-bottom:2px solid #CCC;
-      background-color:#666;
+ background-color:#666;
       margin:27px 0 0 -31px;
       animation-timing-function:linear;
       height:100vh;
@@ -1584,47 +1584,48 @@ form{
 }
 
 // Menu open animation
-@keyframes openMenu {
-   0% {margin-top:27px; margin-left:-30px; background-color:#666; border-bottom-color:#6660; max-height:2px; max-width:21px; padding:0;}
-   9% {margin-top:27px; margin-left:-30px; background-color:#666; border-bottom-color:#6660; max-height:2px; max-width:21px; padding:0;}
-   17% {transform:rotate(0deg); margin-top:30px; margin-left:-30px; background-color:#666; border-bottom-color:#666; max-height:2px; max-width:21px; padding:0;}
-   19% {transform:rotate(-10deg); margin-top:40px; margin-left:-30px; background-color:#666; border-bottom-color:#666; max-height:2px; max-width:21px; padding:0;}
-   21% {transform:rotate(10deg); margin-top:30px; margin-left:-30px; background-color:#666; border-bottom-color:#666; max-height:2px; max-width:21px; padding:0;}
-   24% {transform:rotate(12deg); margin-top:34px; margin-left:-30px; background-color:#666; border-bottom-color:#666; max-height:2px; max-width:21px; padding:0;}
-   26% {transform:rotate(0deg); margin-top:40px; margin-left:-30px; background-color:#666; border-bottom-color:#666; max-height:2px; max-width:21px; padding:0;}
-   27% {transform:rotate(-5deg); margin-top:35px; margin-left:-30px; background-color:#666; border-bottom-color:#666; max-height:2px; max-width:21px; padding:0;}
-   28% {transform:rotate(3deg); margin-top:40px; margin-left:-30px; background-color:#666; border-bottom-color:#666; max-height:2px; max-width:21px; padding:0;}
-   29% {transform:rotate(0deg); margin-top:40px; margin-left:-30px; background-color:#666; border-bottom-color:#666; max-height:2px; max-width:21px; padding:0;}
-   30% {transform:rotate(0deg); margin-top:40px; margin-left:-30px; background-color:#666; border-bottom-color:#666; max-height:2px; max-width:21px; padding:0;}
-   40% {transform:rotate(0deg); margin-top:40px; margin-left:-30px; background-color:#666; border-bottom-color:#666; max-height:2px; max-width:21px; padding:0;}
-   55% {transform:rotate(0deg); margin-top:40px; margin-left:-20px; background-color:#666; border-bottom-color:#666; max-height:6px; max-width:11px; padding:0;}
-   60% {margin-top:40px; margin-left:-150px; background-color:#666; border-bottom-color:#666; max-height:2px; max-width:120px; padding:0;}
-   70% {margin-top:40px; margin-left:-150px; background-color:#666; border-bottom-color:#666; max-height:2px; max-width:120px; padding:0; box-shadow: 0 0 0 #0000;}
-   85% {margin-top:40px; margin-left:-160px; border-top-color:#666; border-bottom-color:#666;  max-width:120px; padding:20px 10px 10px 0; max-height:150px; background-color:#FFFA; box-shadow: 0 5px 8px #000a;}
-   100% {margin-top:40px; margin-left:-160px; border-top-color:#666; border-bottom-color:#666;  max-width:120px; padding:20px 10px 10px 0; max-height:150px; background-color:#FFFA; box-shadow: 0 5px 8px #000a;}
+@keyframes openMenu  {
+           0%        {                          margin-top:27px;    margin-left: -30px; background-color:#666; border-bottom-color:#6660; max-height:2px;           max-width:21px;            padding:0;}
+           9%        {                          margin-top:27px;    margin-left: -30px; background-color:#666; border-bottom-color:#6660; max-height:2px;           max-width:21px;            padding:0;}
+           17%       {transform:rotate(0deg);   margin-top:30px;    margin-left: -30px; background-color:#666;     border-bottom-color:#666; max-height:2px;            max-width:21px;   padding:0;}
+           19%       {transform:rotate(-10deg); margin-top:40px;    margin-left: -30px; background-color:#666;     border-bottom-color:#666; max-height:2px;            max-width:21px;   padding:0;}
+           21%       {transform:rotate(10deg);  margin-top:30px;    margin-left: -30px; background-color:#666;     border-bottom-color:#666; max-height:2px;            max-width:21px;   padding:0;}
+           24%       {transform:rotate(12deg);  margin-top:34px;    margin-left: -30px; background-color:#666;     border-bottom-color:#666; max-height:2px;            max-width:21px;   padding:0;}
+           26%       {transform:rotate(0deg);   margin-top:40px;    margin-left: -30px; background-color:#666;     border-bottom-color:#666; max-height:2px;            max-width:21px;   padding:0;}
+           27%       {transform:rotate(-5deg);  margin-top:35px;    margin-left: -30px; background-color:#666;     border-bottom-color:#666; max-height:2px;            max-width:21px;   padding:0;}
+           28%       {transform:rotate(3deg);   margin-top:40px;    margin-left: -30px; background-color:#666;     border-bottom-color:#666; max-height:2px;            max-width:21px;   padding:0;}
+           29%       {transform:rotate(0deg);   margin-top:40px;    margin-left: -30px; background-color:#666;     border-bottom-color:#666; max-height:2px;            max-width:21px;   padding:0;}
+           30%       {transform:rotate(0deg);   margin-top:40px;    margin-left: -30px; background-color:#666;     border-bottom-color:#666; max-height:2px;            max-width:21px;   padding:0;}
+           40%       {transform:rotate(0deg);   margin-top:40px;    margin-left: -30px; background-color:#666;     border-bottom-color:#666; max-height:2px;            max-width:21px;   padding:0;}
+           55%       {transform:rotate(0deg);   margin-top:40px;    margin-left: -20px; background-color:#666;     border-bottom-color:#666; max-height:6px;            max-width:11px;   padding:0;}
+           60%       {                          margin-top:40px;    margin-left:-150px; background-color:#666; border-bottom-color:#666;  max-height:2px;           max-width:120px;           padding:0;}
+           70%       {                          margin-top:40px;    margin-left:-150px; background-color:#666; border-bottom-color:#666;  max-height:2px;           max-width:120px;           padding:0;        box-shadow:      0            0                 0                       #0000;}
+           85%       {                          margin-top:40px;    margin-left:-160px; border-top-color:#666; border-bottom-color:#666;  max-width:120px;          padding:20px               10px              10px             0;           max-height:150px; background-color:#FFFA; box-shadow: 0 5px 8px #000a;}
+           100%      {                          margin-top:40px;    margin-left:-160px; border-top-color:#666; border-bottom-color:#666;  max-width:120px;          padding:20px               10px              10px             0;           max-height:150px; background-color:#FFFA; box-shadow: 0 5px 8px #000a;}
 }
 
-// Menu close animation
+//         Menu      close                      animation
 @keyframes closeMenu {
-   0% {transform:scaley(1); margin-top:40px; margin-left:-160px; background-color:#FFFA; border-top-color:#666; border-bottom-color:#666; max-height:150px; max-width:120px; padding:20px 10px 10px 0;}
-   10% {transform:scaley(1); margin-top:50px; margin-left:-160px; background-color:#FFFA; border-top-color:#666; border-bottom-color:#666; max-height:150px; max-width:120px; padding:20px 10px 10px 0;}
-   20% {transform:scaley(.05);  margin-top:15px; margin-left:-160px; background-color:#FFFA; border-top-color:#666; border-bottom-color:#666; max-height:2px; max-width:120px; padding:20px 10px 10px 0;}
-   28% {transform:scaley(-0.75);  margin-top:17px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#666; max-height:2px; max-width:120px; padding:20px 10px 10px 0;}
-   35% {transform:scaley(0.05);  margin-top:15px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#666; max-height:2px; max-width:120px; padding:20px 10px 10px 0;}
-   41% {transform:scaley(0.5);  margin-top:15px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#666; max-height:2px; max-width:120px; padding:20px 10px 10px 0;}
-   46% {transform:scaley(0.05);  margin-top:15px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#666; max-height:2px; max-width:120px; padding:20px 10px 10px 0;}
-   50% {transform:scaley(-0.25);  margin-top:17px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#666; max-height:2px; max-width:120px; padding:20px 10px 10px 0;}
-   53% {transform:scaley(0.05);  margin-top:15px; margin-left:-160px; background-color:#BBB; border-top-color:#666; border-bottom-color:#666; max-height:2px; max-width:120px; padding:20px 10px 10px 0;}
-   55% {transform:scaley(0.5);  margin-top:15px; margin-left:-160px; background-color:#BBB; border-top-color:#666; border-bottom-color:#666; max-height:2px; max-width:120px; padding:20px 10px 10px 0;}
-   56% {transform:scaley(0.05);  margin-top:15px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#666; max-height:2px; max-width:120px; padding:20px 10px 10px 0;}
-   57% {transform:scaley(-0.25);  margin-top:17px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#666; max-height:2px; max-width:120px; padding:20px 10px 10px 0;}
-   58% {transform:scaley(0.05);  margin-top:15px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#666; max-height:2px; max-width:120px; padding:20px 10px 10px 0;}
-   60% {transform:scaley(1);  margin-top:30px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#FFF0; max-height:1px; max-width:120px; padding:0px 10px 0px 0;}
-   75% {transform:scaley(1);  margin-top:30px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#FFF0; max-height:1px; max-width:120px; padding:0px 10px 0px 0;}
-   78% {transform:scaley(1);  margin-top:30px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#FFF0; max-height:1px; max-width:120px; padding:0px 10px 0px 0;}
-   88% {transform:scaley(1);  margin-top:30px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#FFF0; max-height:1px; max-width:120px; padding:0px 10px 0px 0;}
-   95% {transform:scaley(1.15);  margin-top:28px; margin-left:-185px; background-color:#666; border-top-color:#666; border-bottom-color:#FFF0; max-height:12px; max-width:110px; padding:0px 10px 0px 0;}
-   98% {transform:scaley(1.25);  margin-top:28px; margin-left:-185px; background-color:#666; border-top-color:#666; border-bottom-color:#FFF0; max-height:12px; max-width:110px; padding:0px 10px 0px 0;}
-   99% {transform:scaley(1);  margin-top:30px; margin-left:-30px; background-color:#666; border-top-color:#666; border-bottom-color:#FFF0; max-height:2px; max-width:21px; padding:0;}
-   100% {transform:scaley(1);  margin-top:30px; margin-left:-31px; background-color:#666; border-top-color:#666; border-bottom-color:FFF0; max-height:1px; max-width:21px; padding:0;}  
+           0%        {transform:scaley(1);      margin-top:40px;    margin-left:-160px; background-color:#FFFA;    border-top-color:#666;    border-bottom-color:#666;  max-height:150px; max-width:120px; padding:20px 10px              10px                    0;}
+           10%       {transform:scaley(1);      margin-top:50px;    margin-left:-160px; background-color:#FFFA;    border-top-color:#666;    border-bottom-color:#666;  max-height:150px; max-width:120px; padding:20px 10px              10px                    0;}
+           20%       {transform:scaley(.05);    margin-top:15px;    margin-left:-160px; background-color:#FFFA;    border-top-color:#666;    border-bottom-color:#666;  max-height:2px;   max-width:120px; padding:20px 10px              10px                    0;}
+           28%       {transform:scaley(-0.75);  margin-top:17px;    margin-left:-160px; background-color:#666;     border-top-color:#666;    border-bottom-color:#666;  max-height:2px;   max-width:120px; padding:20px 10px              10px                    0;}
+           35%       {transform:scaley(0.05);   margin-top:15px;    margin-left:-160px; background-color:#666;     border-top-color:#666;    border-bottom-color:#666;  max-height:2px;   max-width:120px; padding:20px 10px              10px                    0;}
+           41%       {transform:scaley(0.5);    margin-top:15px;    margin-left:-160px; background-color:#666;     border-top-color:#666;    border-bottom-color:#666;  max-height:2px;   max-width:120px; padding:20px 10px              10px                    0;}
+           46%       {transform:scaley(0.05);   margin-top:15px;    margin-left:-160px; background-color:#666;     border-top-color:#666;    border-bottom-color:#666;  max-height:2px;   max-width:120px; padding:20px 10px              10px                    0;}
+           50%       {transform:scaley(-0.25);  margin-top:17px;    margin-left:-160px; background-color:#666;     border-top-color:#666;    border-bottom-color:#666;  max-height:2px;   max-width:120px; padding:20px 10px              10px                    0;}
+           53%       {transform:scaley(0.05);   margin-top:15px;    margin-left:-160px; background-color:#BBB;     border-top-color:#666;    border-bottom-color:#666;  max-height:2px;   max-width:120px; padding:20px 10px              10px                    0;}
+           55%       {transform:scaley(0.5);    margin-top:15px;    margin-left:-160px; background-color:#BBB;     border-top-color:#666;    border-bottom-color:#666;  max-height:2px;   max-width:120px; padding:20px 10px              10px                    0;}
+           56%       {transform:scaley(0.05);   margin-top:15px;    margin-left:-160px; background-color:#666;     border-top-color:#666;    border-bottom-color:#666;  max-height:2px;   max-width:120px; padding:20px 10px              10px                    0;}
+           57%       {transform:scaley(-0.25);  margin-top:17px;    margin-left:-160px; background-color:#666;     border-top-color:#666;    border-bottom-color:#666;  max-height:2px;   max-width:120px; padding:20px 10px              10px                    0;}
+           58%       {transform:scaley(0.05);   margin-top:15px;    margin-left:-160px; background-color:#666;     border-top-color:#666;    border-bottom-color:#666;  max-height:2px;   max-width:120px; padding:20px 10px              10px                    0;}
+           60%       {transform:scaley(1);      margin-top:30px;    margin-left:-160px; background-color:#666;     border-top-color:#666;    border-bottom-color:#FFF0; max-height:1px;   max-width:120px; padding:0px  10px              0px                     0;}
+           75%       {transform:scaley(1);      margin-top:30px;    margin-left:-160px; background-color:#666;     border-top-color:#666;    border-bottom-color:#FFF0; max-height:1px;   max-width:120px; padding:0px  10px              0px                     0;}
+           78%       {transform:scaley(1);      margin-top:30px;    margin-left:-160px; background-color:#666;     border-top-color:#666;    border-bottom-color:#FFF0; max-height:1px;   max-width:120px; padding:0px  10px              0px                     0;}
+           88%       {transform:scaley(1);      margin-top:30px;    margin-left:-160px; background-color:#666;     border-top-color:#666;    border-bottom-color:#FFF0; max-height:1px;   max-width:120px; padding:0px  10px              0px                     0;}
+           95%       {transform:scaley(1.15);   margin-top:28px;    margin-left:-185px; background-color:#666;     border-top-color:#666;    border-bottom-color:#FFF0; max-height:12px;  max-width:110px; padding:0px  10px              0px                     0;}
+           98%       {transform:scaley(1.25);   margin-top:28px;    margin-left:-185px; background-color:#666;     border-top-color:#666;    border-bottom-color:#FFF0; max-height:12px;  max-width:110px; padding:0px  10px              0px                     0;}
+           99%       {transform:scaley(1);      margin-top:30px;    margin-left:-30px; background-color:#666;     border-top-color:#666;    border-bottom-color:#FFF0; max-height:2px;   max-width:21px;  padding:0;}
+           100%      {transform:scaley(1);      margin-top:30px;    margin-left:-31px; background-color:#666;     border-top-color:#666;    border-bottom-color:FFF0;  max-height:1px;   max-width:21px;  padding:0;}  
 }
+#adjustement-panel {overflow: auto !important;}#adjustement-panel > table {top: 0 !important;margin: 100px auto !important;-webkit-transform: translate(-50%, 0) !important;transform: translate(-50%, 0) !important;}#adjustement-panel::before {position: fixed !important;}
