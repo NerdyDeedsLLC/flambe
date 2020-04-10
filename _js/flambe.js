@@ -178,7 +178,8 @@ var CSV = {};
 
             if (tokenizedLine.length > 0) {
                 if (tokenizedLine.length > keys.length) {
-                    throw new SyntaxError('not enough header fields');
+                    // throw new SyntaxError('not enough header fields');
+                    console.warn("The file you have just loaded contains the wrong number of header fields. This is usually indicative of either a long-running story being deleted mid-iteration, or that Theresa, scrum-master for Victor's teams has some 'splainin' to doooo.");
                 }
 
                 obj = {};
