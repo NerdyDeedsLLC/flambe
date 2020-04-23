@@ -774,42 +774,42 @@ button.add-record {
 }
 
 #adjustement-panel {
-    border-radius:10px;
-    display:inline-block;
-    position:fixed;
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
+    border-radius: 10px;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1500vh;
     z-index: 10000;
-    text-align:center;
+    text-align: center;
     
     &::before {
-        content:'';
+        content: '';
         background: #000A;
-        width:100vw;
-        height:100vh;
-        display:block;
-        
-        position:absolute;
-        top:0;
-        left:0;
-        z-index:-1;
+        width: 100vw;
+        height: 100%;
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
     }
     table {
-        // min-width:50vw;
-        border-spacing:0;
-        border:2px solid black;
-        background-color:#EEE;
-        border-radius:10px;
-        overflow:hidden;
-        position:absolute;
-        left:50%;
-        top:50%;
-        transform:translate(-50%, -50%);
-        box-shadow:0 20px 40px #000A;
-        font-size:14px;
-        width:900px;
+        border-spacing: 0;
+        border: 2px solid black;
+        background-color: #EEE;
+        border-radius: 10px;
+        overflow: hidden;
+        position: absolute;
+        left: calc(50% - 450px);
+        /* top: 50%; */
+        /* -webkit-transform: translate(-50%, -50%); */
+        /* transform: translate(-50%, -50%); */
+        box-shadow: 0 20px 40px #000A;
+        font-size: 14px;
+        width: 900px;
+    
         
 
         tr {
