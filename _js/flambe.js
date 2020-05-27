@@ -383,14 +383,27 @@ const init = () => {                                                            
     });
 };
 
-const insertFileNodeBetween = (e, trgObj = e.target) => {
-    _I("FUNCTION: insertFileNodeBetween", "e", e, "trgObj", trgObj);                                        //$$ Ⓓ ⬅⬅⬅︎ 
-// _(e, trgObj);
-    if (trgObj.tagName !== 'LI') {
+// const insertFileNodeBetween = (e, trgObj = e.target) => {
+//     _I("FUNCTION: insertFileNodeBetween", "e", e, "trgObj", trgObj);                                        //$$ Ⓓ ⬅⬅⬅︎ 
+// // _(e, trgObj);
+//     if (trgObj.tagName !== 'LI') {
+//         // e.preventDefault();
+//         return (e.cancelBubble = true);
+//     }
+//     let targetIndex = trgObj.dataset.slot;
+//     fileBuffer.splice(targetIndex, 0, '');
+//     namedFiles.splice(targetIndex, 0, '');
+//     syncSpinner(((totalItrDayPicker.placeholder / 1) + 1));                                                 //## ➜➜➜ 🅒 
+//     resizeBufferArraysAndRebuildSlots();                                                                    //@@ ➜➜➜ 🅑 
+// };
+
+const insertFileNodeBetween = (e, trg = e.target) => {
+    _I("FUNCTION: insertFileNodeBetween", "e", e, "trg", trg);                                        //$$ Ⓓ ⬅⬅⬅︎ 
+    if (!trg.dataset || !trg.dataset.insertion) {
         // e.preventDefault();
         return (e.cancelBubble = true);
     }
-    let targetIndex = trgObj.dataset.slot;
+    let targetIndex = +trg.dataset.insertion;
     fileBuffer.splice(targetIndex, 0, '');
     namedFiles.splice(targetIndex, 0, '');
     syncSpinner(((totalItrDayPicker.placeholder / 1) + 1));                                                 //## ➜➜➜ 🅒 
@@ -463,7 +476,7 @@ const removeFileAtIndex = (trgBtn, isFilled) => {                               
     } else {
         namedFiles.splice(ind, 1);
         fileBuffer.splice(ind, 1);
-        incDec(1);
+        incDec(-1);
     }
     return resizeBufferArraysAndRebuildSlots();                                                             //@@ ➜➜➜ 🅑 
 };
@@ -491,26 +504,21 @@ const resizeBufferArraysAndRebuildSlots = (newLen = ((totalItrDayPicker.placehol
         let pList = ' class="drag-drop" draggable="true" '
             , dSlot = ` data-slot="${(i > 0) ? i : 'S'}" `
             , fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
-                              ${namedFiles[i]}
-                              <button class="remove-buttons" data-index="${i}" 
-                                    onMouseUp="removeFileAtIndex(this, true)" />                            
+                              ${(namedFiles[i].length > 40) ? namedFiles[i].slice(0, 25) + ' <b>…</b> ' + namedFiles[i].slice(-70) : namedFiles[i]}
+                              <button class="remove-buttons" data-index="${i}" onMouseUp="removeFileAtIndex(this, true)" />                            
                            </label>`                                                                        //%% ➜➜➜ 🅔 
             , arrID = ` id="file-slot-${i}" `;
 
         if (namedFiles[i] == '') {
             if (i < interpolated) {                                                                       //%% ➜➜➜ 🅔 
                 fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
-                                No file specified (click to add, or leave blank to 
-                                    interpolate data from neighbors)
-                                <button class="remove-buttons" data-index="${i}" 
-                                    onMouseUp="removeFileAtIndex(this, false)" />                           
+                                No file specified (click to add, or leave blank to interpolate data from neighbors)
+                                <button class="remove-buttons" data-index="${i}" onMouseUp="removeFileAtIndex(this, false)" />  
                               </label>`;
                 pList += ' data-value="interpolated"';
             } else {
-                fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
-                                No file specified (click to add!)
-                               <button class="remove-buttons" data-index="${i}" 
-                                    onMouseUp="incDec(-1); released();" />
+                fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">No file specified (click to add!)
+                                <button class="remove-buttons" data-index="${i}" onMouseUp="incDec(-1); released();" />
 
                             </label>`;
             }
@@ -519,11 +527,18 @@ const resizeBufferArraysAndRebuildSlots = (newLen = ((totalItrDayPicker.placehol
 
         }
 
-        opStr = `<li ${arrID + dSlot + pList}>${fName}</li>` + opStr;
+        let determinedPos   =   dSlot.replace(/data-slot="(.*)"/, '$1').trim(),
+            newSlotMarkup   =   (determinedPos === 'S')
+                            ?   `<a href="#" class="rowInserter insertBelow" data-insertion="1"></a>`
+                            :   `<a href="#" class="rowInserter insertAbove" data-insertion="${determinedPos}"></a>
+                                 <a href="#" class="rowInserter insertBelow" data-insertion="${(+determinedPos + 1)}"></a>`
+                            ;   
+        newSlotMarkup = `<li ${arrID + dSlot + pList}>${newSlotMarkup}${fName}</li>`;
+        opStr = newSlotMarkup + opStr;
     }
     while (sortableList.childElementCount > 0) sortableList.childNodes[0].remove();
     sortableList.insertAdjacentHTML('beforeEnd', opStr);
-    qsa('li').forEach(li => li.addEventListener('click', insertFileNodeBetween));                         //$$ ➜➜➜ 🅓 
+    qsa('.rowInserter').forEach(li => li.addEventListener('click', insertFileNodeBetween));                         //$$ ➜➜➜ 🅓 
 
     generateTeamsAndIterationLists();
 };
@@ -1328,8 +1343,9 @@ const incDec = (dir, mechanical = true, dly = 750, scale = 1) => {
     if (adjVal > 60) adjVal = 60;
     totalItrDayPicker.placeholder = adjVal;
     syncSpinner();                                                                                           //## ➜➜➜ 🅒 
-    mechanical = false;
-    if (ongoing && !mechanical) ongoingtimer = window.setTimeout(() => incDec(dir, false, dly, scale), dly);
+    // mechanical = false;
+    // incDec(dir, false, dly, scale)
+    // if (ongoing && !mechanical) ongoingtimer = window.setTimeout(() => , dly);
 };
 
 
