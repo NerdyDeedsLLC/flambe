@@ -619,8 +619,8 @@ button.add-record {
     position: relative;
     max-width: calc(100% - 20px);
     margin: 0 auto;
-    overflow-x: auto;
-    border: 3px double #999;
+    // overflow-x: auto;
+    // border: 3px double #999;
     padding: 0 30px;
     margin-top: 25px;
 
@@ -1397,15 +1397,18 @@ td.major-alert {color: red !important;}
       opacity:0.7;
 
       &::before {
-         content:'hours remaining';
-         position:absolute;
-         white-space:nowrap;
-         top:calc(50% + 75px);
-         left:-40px;
-         opacity:0.5;
-         font-size:18px;
-         transform-origin:0 0;
-         transform:rotate(-90deg);
+        content: 'hours remaining';
+        position: absolute;
+        white-space: nowrap;
+        top: calc(50% + 75px);
+        left: -20px;
+        opacity: 0.5;
+        font-size: 18px;
+        -webkit-transform-origin: 0 0;
+        transform-origin: 0 0;
+        transform: rotate(-90deg);
+        line-height: 1;
+        height: 20px;
       }
    }
    
