@@ -1377,7 +1377,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
         }
     };
 
-    
+
 
 
     const c                  = document.getElementById("burndownOutput"),
@@ -1391,13 +1391,16 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
         canvasHeight         = 550,
         canvasWidth          = 1050,
         gridRowScale         = 50 / (Math.max(...remainingHoursPerDay) / 10),
-        gridColWidth         = Math.round(canvasWidth / (totalDaysInIteration)),
+        gridColWidth         = Math.floor(canvasWidth / (totalDaysInIteration)),
         gridRowHeight        = 50,
         plot                 = (day, val) => [plotX(day), plotY(val)],
         plotX                = (day)      => readableRound(gridSideMargins + (gridColWidth * day) + (gridColWidth / 2)),
         plotY                = (val)      => canvasHeight - (gridScaleMultipliers * val) + gridVertMargins;
 
-    canvasWidth              = (1 + totalDaysInIteration) * gridColWidth;
+    canvasWidth              = (totalDaysInIteration) * gridColWidth;
+
+
+    console.log("totalDaysInIteration", totalDaysInIteration, "\nremainingHoursPerDay: ", remainingHoursPerDay, "\niterationStartingHrs: ", iterationStartingHrs, "\nidealPlottedPtValues: ", idealPlottedPtValues, "\ninterpolatedIndicies: ", interpolatedIndicies, "\ncolorsForActualHours: ", colorsForActualHours, "\npageSettings: ", pageSettings, "\nlargestActualHrValue", largestActualHrValue, "\nadjustedRowUnitValue: ", adjustedRowUnitValue, "\ngridScaleMultipliers: ", gridScaleMultipliers, "\ngridSideMargins: ", gridSideMargins, "\ngridVertMargins: ", gridVertMargins, "\ncanvasHeight: ", canvasHeight, "\ncanvasWidth: ", canvasWidth, "\ngridRowScale: ", gridRowScale, "\ngridColWidth: ", gridColWidth, "\ngridRowHeight: ", gridRowHeight, "\nplot: ", plot, "\nplotX: ", plotX, "\nplotY: ", plotY, "\ncanvasWidth: ", canvasWidth);
 
 
 
@@ -1745,8 +1748,9 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
         ctx.textAlign = "right";
             ctx.fillStyle = '#666';
             ctx.font = '20px sans-serif';
-            let teamsDD = qs('#selTeam').value;
+            let teamsDD = qs('#txtTeam').value;
             let teamName = teamsDD || 'All Teams'
+            console.log('teamsDD, teamName :', teamsDD, teamName);
             ctx.fillText(iterationName.value, 1090, 90);
             ctx.font = '16px sans-serif';
             ctx.fillText(teamName, 1080, 120);
