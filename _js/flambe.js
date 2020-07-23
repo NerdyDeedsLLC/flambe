@@ -1567,7 +1567,7 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
                 let hourDifference = ideal - actual;
 
                 // _(ideal, actual, hourDifference)
-                if (actual < ideal) {
+                if (actual <= ideal) {
                     bar.fillRect(plotX(i) + barShift, canvasHeight + gridVertMargins, barWidth, (-actual * gridRowScale));
                     bar.fillStyle = colorsForActualHours[i + 1];
                     bar.fillRect(plotX(i) + barShift, (canvasHeight + gridVertMargins) + (-actual * gridRowScale), barWidth, (gridRowScale * -hourDifference));
