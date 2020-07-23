@@ -178,7 +178,8 @@ var CSV = {};
 
             if (tokenizedLine.length > 0) {
                 if (tokenizedLine.length > keys.length) {
-                    throw new SyntaxError('not enough header fields');
+                    // throw new SyntaxError('not enough header fields');
+                    console.warn("The file you have just loaded contains the wrong number of header fields. This is usually indicative of either a long-running story being deleted mid-iteration, or that Theresa, scrum-master for Victor's teams has some 'splainin' to doooo.");
                 }
 
                 obj = {};
@@ -382,14 +383,27 @@ const init = () => {                                                            
     });
 };
 
-const insertFileNodeBetween = (e, trgObj = e.target) => {
-    _I("FUNCTION: insertFileNodeBetween", "e", e, "trgObj", trgObj);                                        //$$ Ⓓ ⬅⬅⬅︎ 
-// _(e, trgObj);
-    if (trgObj.tagName !== 'LI') {
+// const insertFileNodeBetween = (e, trgObj = e.target) => {
+//     _I("FUNCTION: insertFileNodeBetween", "e", e, "trgObj", trgObj);                                        //$$ Ⓓ ⬅⬅⬅︎ 
+// // _(e, trgObj);
+//     if (trgObj.tagName !== 'LI') {
+//         // e.preventDefault();
+//         return (e.cancelBubble = true);
+//     }
+//     let targetIndex = trgObj.dataset.slot;
+//     fileBuffer.splice(targetIndex, 0, '');
+//     namedFiles.splice(targetIndex, 0, '');
+//     syncSpinner(((totalItrDayPicker.placeholder / 1) + 1));                                                 //## ➜➜➜ 🅒 
+//     resizeBufferArraysAndRebuildSlots();                                                                    //@@ ➜➜➜ 🅑 
+// };
+
+const insertFileNodeBetween = (e, trg = e.target) => {
+    _I("FUNCTION: insertFileNodeBetween", "e", e, "trg", trg);                                        //$$ Ⓓ ⬅⬅⬅︎ 
+    if (!trg.dataset || !trg.dataset.insertion) {
         // e.preventDefault();
         return (e.cancelBubble = true);
     }
-    let targetIndex = trgObj.dataset.slot;
+    let targetIndex = +trg.dataset.insertion;
     fileBuffer.splice(targetIndex, 0, '');
     namedFiles.splice(targetIndex, 0, '');
     syncSpinner(((totalItrDayPicker.placeholder / 1) + 1));                                                 //## ➜➜➜ 🅒 
@@ -462,7 +476,7 @@ const removeFileAtIndex = (trgBtn, isFilled) => {                               
     } else {
         namedFiles.splice(ind, 1);
         fileBuffer.splice(ind, 1);
-        incDec(1);
+        incDec(-1);
     }
     return resizeBufferArraysAndRebuildSlots();                                                             //@@ ➜➜➜ 🅑 
 };
@@ -490,26 +504,21 @@ const resizeBufferArraysAndRebuildSlots = (newLen = ((totalItrDayPicker.placehol
         let pList = ' class="drag-drop" draggable="true" '
             , dSlot = ` data-slot="${(i > 0) ? i : 'S'}" `
             , fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
-                              ${namedFiles[i]}
-                              <button class="remove-buttons" data-index="${i}" 
-                                    onMouseUp="removeFileAtIndex(this, true)" />                            
+                              ${(namedFiles[i].length > 40) ? namedFiles[i].slice(0, 25) + ' <b>…</b> ' + namedFiles[i].slice(-70) : namedFiles[i]}
+                              <button class="remove-buttons" data-index="${i}" onMouseUp="removeFileAtIndex(this, true)" />                            
                            </label>`                                                                        //%% ➜➜➜ 🅔 
             , arrID = ` id="file-slot-${i}" `;
 
         if (namedFiles[i] == '') {
             if (i < interpolated) {                                                                       //%% ➜➜➜ 🅔 
                 fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
-                                No file specified (click to add, or leave blank to 
-                                    interpolate data from neighbors)
-                                <button class="remove-buttons" data-index="${i}" 
-                                    onMouseUp="removeFileAtIndex(this, false)" />                           
+                                No file specified (click to add, or leave blank to interpolate data from neighbors)
+                                <button class="remove-buttons" data-index="${i}" onMouseUp="removeFileAtIndex(this, false)" />  
                               </label>`;
                 pList += ' data-value="interpolated"';
             } else {
-                fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">
-                                No file specified (click to add!)
-                               <button class="remove-buttons" data-index="${i}" 
-                                    onMouseUp="incDec(-1); released();" />
+                fName = ` <label for="input" onMouseDown="setTargetSlot(${i})">No file specified (click to add!)
+                                <button class="remove-buttons" data-index="${i}" onMouseUp="incDec(-1); released();" />
 
                             </label>`;
             }
@@ -518,11 +527,18 @@ const resizeBufferArraysAndRebuildSlots = (newLen = ((totalItrDayPicker.placehol
 
         }
 
-        opStr = `<li ${arrID + dSlot + pList}>${fName}</li>` + opStr;
+        let determinedPos   =   dSlot.replace(/data-slot="(.*)"/, '$1').trim(),
+            newSlotMarkup   =   (determinedPos === 'S')
+                            ?   `<a href="#" class="rowInserter insertBelow" data-insertion="1"></a>`
+                            :   `<a href="#" class="rowInserter insertAbove" data-insertion="${determinedPos}"></a>
+                                 <a href="#" class="rowInserter insertBelow" data-insertion="${(+determinedPos + 1)}"></a>`
+                            ;   
+        newSlotMarkup = `<li ${arrID + dSlot + pList}>${newSlotMarkup}${fName}</li>`;
+        opStr = newSlotMarkup + opStr;
     }
     while (sortableList.childElementCount > 0) sortableList.childNodes[0].remove();
     sortableList.insertAdjacentHTML('beforeEnd', opStr);
-    qsa('li').forEach(li => li.addEventListener('click', insertFileNodeBetween));                         //$$ ➜➜➜ 🅓 
+    qsa('.rowInserter').forEach(li => li.addEventListener('click', insertFileNodeBetween));                         //$$ ➜➜➜ 🅓 
 
     generateTeamsAndIterationLists();
 };
@@ -1327,8 +1343,9 @@ const incDec = (dir, mechanical = true, dly = 750, scale = 1) => {
     if (adjVal > 60) adjVal = 60;
     totalItrDayPicker.placeholder = adjVal;
     syncSpinner();                                                                                           //## ➜➜➜ 🅒 
-    mechanical = false;
-    if (ongoing && !mechanical) ongoingtimer = window.setTimeout(() => incDec(dir, false, dly, scale), dly);
+    // mechanical = false;
+    // incDec(dir, false, dly, scale)
+    // if (ongoing && !mechanical) ongoingtimer = window.setTimeout(() => , dly);
 };
 
 
@@ -1346,9 +1363,20 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
     // 500, 450, 400, 350, 300, 250, 200, 150, 100, 50*, 0*
     // totalDaysInIteration = 10;
     // remainingHoursPerDay = [500,475,375,450,200,250];
+
+    let par = document.getElementById("burndownOutput").parentNode;
+    let oHTML = document.getElementById("burndownOutput").outerHTML;
+    document.getElementById("burndownOutput").remove();
+    par.insertAdjacentHTML('beforeEnd', oHTML);
+
+    syncSpinner();
     remainingHoursPerDay     = remainingHoursPerDay.slice(0, FILESLOADED);
+    console.info(totalItrDayPicker.placeholder);
+    totalDaysInIteration    -= 1;
     
     let iterationStartingHrs = remainingHoursPerDay[0],
+        totDaysInItrWithSeed = totalDaysInIteration + 1,
+
         idealPlottedPtValues = [iterationStartingHrs],
         interpolatedIndicies = [],
         colorsForActualHours = ["#009900"],
@@ -1360,27 +1388,35 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
         }
     };
 
-    
+
 
 
     const c                  = document.getElementById("burndownOutput"),
+        ctx                  = c.getContext("2d"),
         popoverObj           = document.getElementById("popover"),
         wholePi              = Math.PI * 2;
+
     let largestActualHrValue = Math.max(...remainingHoursPerDay),
         adjustedRowUnitValue = largestActualHrValue / 10,
         gridScaleMultipliers = 50 / adjustedRowUnitValue,
-        gridSideMargins      = 50, //(canvasWidth - (gridColWidth * totalDaysInIteration)) / 2;
+        gridSideMargins      = 50,
         gridVertMargins      = 50,
         canvasHeight         = 550,
         canvasWidth          = 1050,
         gridRowScale         = 50 / (Math.max(...remainingHoursPerDay) / 10),
-        gridColWidth         = Math.round(canvasWidth / (totalDaysInIteration)),
-        gridRowHeight        = 50,
-        plot                 = (day, val) => [plotX(day), plotY(val)],
-        plotX                = (day)      => readableRound(gridSideMargins + (gridColWidth * day) + (gridColWidth / 2)),
-        plotY                = (val)      => canvasHeight - (gridScaleMultipliers * val) + gridVertMargins;
+        gridColWidth         = Math.floor(canvasWidth / totDaysInItrWithSeed),
+        gridRowHeight        = 50;
 
-    canvasWidth              = (1 + totalDaysInIteration) * gridColWidth;
+    const plot               = (day, val) => [plotX(day), plotY(val)],
+          plotX              = (day)      => readableRound(gridSideMargins + (gridColWidth * day) + (gridColWidth / 2)),
+          plotY              = (val)      => canvasHeight - (gridScaleMultipliers * val) + gridVertMargins
+        //   LightenDarkenColor = (col,amt) => (+('0x'+col.replace('#',''))+amt*0x010101).toString(16).padStart(6,0);  
+
+    // canvasWidth              = gridColWidth * (totalDaysInIteration - 1) - gridSideMargins;
+    
+
+
+    console.log("totalDaysInIteration", totalDaysInIteration, "\nremainingHoursPerDay: ", remainingHoursPerDay, "\niterationStartingHrs: ", iterationStartingHrs, "\nidealPlottedPtValues: ", idealPlottedPtValues, "\ninterpolatedIndicies: ", interpolatedIndicies, "\ncolorsForActualHours: ", colorsForActualHours, "\npageSettings: ", pageSettings, "\nlargestActualHrValue", largestActualHrValue, "\nadjustedRowUnitValue: ", adjustedRowUnitValue, "\ngridScaleMultipliers: ", gridScaleMultipliers, "\ngridSideMargins: ", gridSideMargins, "\ngridVertMargins: ", gridVertMargins, "\ncanvasHeight: ", canvasHeight, "\ncanvasWidth: ", canvasWidth, "\ngridRowScale: ", gridRowScale, "\ngridColWidth: ", gridColWidth, "\ngridRowHeight: ", gridRowHeight, "\nplot: ", plot, "\nplotX: ", plotX, "\nplotY: ", plotY, "\ncanvasWidth: ", canvasWidth);
 
 
 
@@ -1421,9 +1457,9 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
         }
     })();
     const seedIdealPoints = (() => {
-        let idealHoursPerDay = readableRound(iterationStartingHrs / (totalDaysInIteration - 1), 2, true);
+        let idealHoursPerDay = readableRound(iterationStartingHrs / (totDaysInItrWithSeed - 1), 2, true);
 
-        for (let i = 0; i < totalDaysInIteration - 1; i++) {
+        for (let i = 0; i < totDaysInItrWithSeed - 1; i++) {
             idealPlottedPtValues.push(idealPlottedPtValues[i] - idealHoursPerDay);
         }
     })();
@@ -1435,10 +1471,10 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
     const drawBGGridPanel = () => {
         clearGrid();
         ctx.lineWidth = "2";
-        ctx.fillStyle = '#999';
         ctx.strokeStyle = "#000";
-        ctx.fillRect(gridVertMargins, gridVertMargins, canvasWidth, canvasHeight);
         ctx.strokeRect(gridVertMargins, gridVertMargins, canvasWidth, canvasHeight);
+        ctx.fillStyle = '#eaeaea';
+        ctx.fillRect(gridVertMargins, gridVertMargins, canvasWidth-1, canvasHeight);
     };
 
     const drawColPanels = () => {
@@ -1541,7 +1577,6 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
         preSeedPointColors();
     };
 
-    var ctx = c.getContext("2d");
     drawBaseGrid();
     drawIdealLine();
     plotIdealPoints();
@@ -1611,47 +1646,79 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
         }
     };
 
-    let drawActualLabels = (dayIndex) => {
+    let drawActualLabels = (dayIndex, drawText) => {
 
         if (dayIndex > remainingHoursPerDay.length - 1 || dayIndex > DAYSLOADED) return '';
         let actual = remainingHoursPerDay[dayIndex],
             ideal = idealPlottedPtValues[dayIndex],
             overUnder = ideal - actual;
         if (overUnder === 0) return '';
-        let xOffset = -30,
-            percentage = -readableRound(100 - ((ideal / actual) * 100), 1) + '%',
-            hours = "(" + readableRound(overUnder, 2, true) + " hrs)";
 
-        if (overUnder < 0) {
-// _('' + colorsForActualHours[dayIndex + 1]);
-            ctx.textAlign = "left";
+        let xOffset     = 0,
+            hours       = -readableRound(overUnder, 0, true),
+            percentage  = readableRound(100 - ((ideal / actual) * 100), 0),
+            plsMinHrs   = (hours > 0) ? '+' : '',
+            plsMinPerct = (hours > 0) ? '+' : '-';
+            hours       = plsMinHrs + hours + 'h';
+            percentage  = percentage + '%';
 
-            ctx.font = 'bold 16px monospace';
-            ctx.fillStyle = colorsForActualHours[dayIndex+1];
-            ctx.fillText("BEHIND!", plotX(dayIndex) + xOffset, plotY(remainingHoursPerDay[dayIndex]) - 15);
+        // if (overUnder < 0) {
+            let lblXLoc = plotX(dayIndex) + xOffset,
+                lblYLoc = plotY(remainingHoursPerDay[dayIndex]),
+                widthMx = gridColWidth * 0.95,
+                ln1Text = plsMinPerct,
+                ln2Text = percentage,
+                ln3Text = hours,
+                hrColor = colorsForActualHours[dayIndex+1],
+                yPosAdj = (overUnder <= 0) ? -42 : 37;
+                lblYLoc = yPosAdj + lblYLoc;
 
-            ctx.font = '12px monospace';
-            ctx.fillStyle = '#666';
-            ctx.fillText(hours, plotX(dayIndex) + xOffset - 5, plotY(remainingHoursPerDay[dayIndex]) - 30);
-
-            ctx.font = 'bold 22px monospace';
-            ctx.fillStyle = '#000';
-            ctx.fillText(percentage, plotX(dayIndex) + xOffset + 5, plotY(remainingHoursPerDay[dayIndex]) - 40);
-
-        } else {
-            ctx.font = '20px monospace';
-            ctx.fillStyle = colorsForActualHours[dayIndex + 1];
-            ctx.fillText("AHEAD!", plotX(dayIndex) + xOffset, plotY(remainingHoursPerDay[dayIndex]) + 30);
-
-            ctx.font = '14px monospace';
-            ctx.fillStyle = '#666';
-            ctx.fillText(hours, plotX(dayIndex) + xOffset - 10, plotY(remainingHoursPerDay[dayIndex]) + 45);
-
-            ctx.font = '26px monospace';
-            ctx.fillStyle = '#000';
-            ctx.fillText(percentage, plotX(dayIndex) + xOffset - 7, plotY(remainingHoursPerDay[dayIndex]) + 70);
-
+        if(!drawText){
+            ctx.fillStyle = yPosAdj < 0 ? "transparent" : "#FFF6";
+            ctx.fillRect((lblXLoc - (widthMx / 2) - 5), (lblYLoc - 17), (widthMx + 10), 50);
+        }else{
+            ctx.textAlign = "center";
+            ctx.font = 'bold 36px monospace';       ctx.fillStyle = '#FFF';     ctx.fillText(ln1Text, lblXLoc - 1, lblYLoc -  1, widthMx); 
+            ctx.font = 'bold 36px monospace';       ctx.fillStyle = '#000';     ctx.fillText(ln1Text, lblXLoc + 1, lblYLoc +  1, widthMx); 
+            ctx.font = 'bold 36px monospace';       ctx.fillStyle = hrColor;    ctx.fillText(ln1Text, lblXLoc + 0, lblYLoc +  0, widthMx); 
+            ctx.font = 'bold 20px monospace';       ctx.fillStyle = '#FFF';     ctx.fillText(ln2Text, lblXLoc - 1, lblYLoc + 16, widthMx); 
+            ctx.font = 'bold 20px monospace';       ctx.fillStyle = '#000';     ctx.fillText(ln2Text, lblXLoc + 1, lblYLoc + 18, widthMx); 
+            ctx.font = 'bold 20px monospace';       ctx.fillStyle = hrColor;    ctx.fillText(ln2Text, lblXLoc + 0, lblYLoc + 17, widthMx); 
+            ctx.font = '12px monospace';            ctx.fillStyle = '#666';     ctx.fillText(ln3Text, lblXLoc + 0, lblYLoc + 29, widthMx);
         }
+
+
+
+        //     // ctx.textAlign = "left";
+
+        //     // ctx.font = 'bold 16px monospace';
+        //     // ctx.fillStyle = ;
+        //     // ctx.fillText("BEHIND!", plotX(dayIndex) + xOffset, plotY(remainingHoursPerDay[dayIndex]) - 15);
+
+        //     // ctx.font = '12px monospace';
+        //     // ctx.fillStyle = '#666';
+        //     // ctx.fillText(hours, plotX(dayIndex) + xOffset - 5, plotY(remainingHoursPerDay[dayIndex]) - 30);
+
+        //     // ctx.font = 'bold 22px monospace';
+        //     // ctx.fillStyle = '#000';
+        //     // ctx.fillText(percentage, plotX(dayIndex) + xOffset + 5, plotY(remainingHoursPerDay[dayIndex]) - 40);
+
+        // } else {
+        //     ctx.textAlign = "center";
+
+        //     ctx.font = '12px monospace';
+        //     ctx.fillStyle = colorsForActualHours[dayIndex + 1];
+        //     ctx.fillText("AHEAD!", plotX(dayIndex) + xOffset, plotY(remainingHoursPerDay[dayIndex]) + 30);
+
+        //     ctx.font = '10px monospace';
+        //     ctx.fillStyle = '#666';
+        //     ctx.fillText(hours, plotX(dayIndex) + xOffset - 10, plotY(remainingHoursPerDay[dayIndex]) + 40);
+
+        //     ctx.font = '14px monospace';
+        //     ctx.fillStyle = '#000';
+        //     ctx.fillText(percentage, plotX(dayIndex) + xOffset - 7, plotY(remainingHoursPerDay[dayIndex]) + 55);
+
+        // }
         //           
     };
 
@@ -1688,7 +1755,11 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
                 segs.stroke(segment);
                 segs.fill(segment);
             }
-            drawActualLabels(i);
+            drawActualLabels(i, false);
+        }
+
+        for (let i = 0; i <= dataObj.length; i++) {
+            drawActualLabels(i, true);
         }
     };
 
@@ -1728,8 +1799,9 @@ function renderCHARt(totalDaysInIteration, remainingHoursPerDay) {
         ctx.textAlign = "right";
             ctx.fillStyle = '#666';
             ctx.font = '20px sans-serif';
-            let teamsDD = qs('#selTeam').value;
+            let teamsDD = qs('#txtTeam').value;
             let teamName = teamsDD || 'All Teams'
+            console.log('teamsDD, teamName :', teamsDD, teamName);
             ctx.fillText(iterationName.value, 1090, 90);
             ctx.font = '16px sans-serif';
             ctx.fillText(teamName, 1080, 120);
