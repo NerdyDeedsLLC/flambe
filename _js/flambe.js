@@ -651,7 +651,7 @@ const getDistinctKeysFromFiles = () => {                                        
         if (file !== 'INTERPOLATED') {                                                                        //  ... Assuming it's not flagged for interpolation, 
             safeBuffer[files].fileData = checkFilterMatch(file.fileData, recall('selTeam'), recall('selIteration'));            // PERFORM TEAM AND ITR FILTRATION HERE
             let keySet = JSON.stringify(file.fileData, ['Issue key']);                                       //    ... pull out a flattened string containing ONLY the 'Issue key' columns
-            keySet = keySet.match(/DIGTDEV-\d{4,6}/g);                                                                 //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
+            keySet = keySet.match(/\bBSWM[A-Z0-9]{0,4}-\d{2,6}\b/g);                                                                 //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
             if (keySet != null && keySet !== '' && Array.isArray(keySet) && keySet.length > 0) ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])];                                          //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
         } else INTERPOL8D.push(files);                                                                      //  ... UNLESS it IS flagged for interpolation, in which case add it to that collection  
     }
@@ -672,13 +672,15 @@ const remapDataSoIssueIDIsPrimaryKey = () => {                                  
 
     for (let files in safeBuffer) {
         let file = safeBuffer[files];
-// _('file', file);
-// _('safeBuffer[files]', safeBuffer[files]);
         if (file !== 'INTERPOLATED') {
             file = file.fileData;
-// _('file', file);
+            console.groupCollapsed('Ingested File')
+            console.log('file :', file);
+            console.groupEnd();
             file.forEach(f => {
+            console.log('f :', f);
                 if (f && f['Issue key'] && f['Issue key'] != null && f['Issue key'] !== '') {
+                    console.log('f[\'Issue key\'] :', f['Issue key']);
                     COMBD_DATA[f['Issue key']][files] = f;
                     if (DEBUG_MODE) DEBUG_DATA[f['Issue key']][files] = JSON.stringify(f);
                 }
