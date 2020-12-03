@@ -714,7 +714,7 @@ const processParentChildRelationships = () => {                                 
     _I("FUNCTION: processParentChildRelationships");
     const createJIRALink = (IssueId, isParent = false) => {
         // _I("FUNCTION: createJIRALink", "IssueId", IssueId, "isParent", isParent);
-        let hrefUrl = `href="https://jira.sprintdd.com/browse/${IssueId}"' `,
+        let hrefUrl = `href="https://jirasw.t-mobile.com/browse/${IssueId}"' `,
             clsName = `class="issue-${isParent ? 'parent-' : ''}link iss-hvr-lnk" `;
         let wndoTrg = `target="_blank" `,
             issueID = IssueId.replace(/(\d+)/gi, '<b>$1</b>');
