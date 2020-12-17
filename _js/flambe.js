@@ -435,8 +435,8 @@ const generateTeamsAndIterationLists = () => {
     for (let files in fileBuffer) {
         let file = fileBuffer[files];
         if (file != null && file != '') {
-            let teamsInFile = JSON.stringify(file.fileData, ['Custom field (Scrum Team)']);                 // Rip out all the teams in each file...
-            teamsInFile = JSON.parse(teamsInFile).flatMap(d => d['Custom field (Scrum Team)']);           // ... then flatten the results into a 1-dimensional array.
+            let teamsInFile = JSON.stringify(file.fileData, ['Component/s']);                 // Rip out all the teams in each file...
+            teamsInFile = JSON.parse(teamsInFile).flatMap(d => d['Component/s']);           // ... then flatten the results into a 1-dimensional array.
             let itrsInFile = JSON.stringify(file.fileData, ['Sprint']);                                    // ... then do the same for iterations.
             itrsInFile = JSON.parse(itrsInFile).flatMap(d => d['Sprint']);
             ALLTEAMS = [...teamsInFile, ...ALLTEAMS];                                                // Append the new data to the running variable
@@ -630,7 +630,7 @@ function checkFilterMatch(fullDaysRecords, teamFilt, itrFilt) {
         let filteredRecords = fullDaysRecords.filter(
             rtc => {
                 return (
-                    (teamFilt && rtc['Custom field (Scrum Team)'] != null && rtc['Custom field (Scrum Team)'].match(teamFilt))
+                    (teamFilt && rtc['Component/s'] != null && rtc['Component/s'].match(teamFilt))
                     &&
                     (itrFilt && rtc['Sprint'] != null && rtc['Sprint'].match(itrFilt))
                 );
@@ -977,7 +977,7 @@ const performDayOneOverrideAdjustment = () => {
         dayOneSet         = fileBuffer[1]["fileData"],
         seededFlat        = seededSet.flatMap(s   => s["Issue key"]),
         dayOneFlat        = dayOneSet.flatMap(s   => s["Issue key"]),
-        teamKeyStr        = 'Custom field (Scrum Team)',
+        teamKeyStr        = 'Component/s',
         seededFlatKeys    = '_' + seededFlat.join('_') + '_',
         // dayOneFlatKeys = '|' + dayOneFlat.join('|') + '|';
 
