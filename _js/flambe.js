@@ -693,21 +693,53 @@ const remapDataSoIssueIDIsPrimaryKey = () => {                                  
     Object.keys(COMBD_DATA).forEach(cbd => {
         INTERPOL8D.forEach(itp => COMBD_DATA[cbd][itp] = '---');
     });
-
+    window.addEventListener('click', destroyExtantDetailPreviewers);
     processParentChildRelationships();                                                                      //⦾! ➜➜➜ 🅘
 };
 
-const showRecordDetails = (e, targetLink = e.target) => {
-    _I("FUNCTION: showRecordDetails", "e", e, "targetLink", targetLink);
-    if (targetLink.tagName != 'A') targetLink = targetLink.parentNode;
-    if (targetLink.tagName != 'A') return false;
+const destroyExtantDetailPreviewers = (forced=false) => {
+    console.log('window.pReviewing :', window.pReviewing);
+    if(!window.pReviewing || forced) [...qsa('.extra-details')].forEach(pp => pp.remove())
+
+};
+
+const pReviewing = (e, eventTarget = e.target, engaged = false) => {
+    if(engaged) {
+        window.pReviewing = true;
+        window.clearTimeout(window.pReviewTimer);
+    }
+    else window.pReviewTimer = window.setTimeout(()=>{window.pReviewing = false; destroyExtantDetailPreviewers(true)}, 500000 );
+}
+
+const showRecordDetails = (e, eventTarget = e.target || false) => {
+    if(!eventTarget) return false;
+    _I("FUNCTION: showRecordDetails", "e", e, "eventTarget", eventTarget);
+    let recordIdToDisplay = null;
+    
+    if(eventTarget.dataset && eventTarget.dataset.recid) recordIdToDisplay = eventTarget.dataset.recid;
+    else{
+        eventTarget = eventTarget.closest('.issue-link');
+        recordIdToDisplay = eventTarget.innerText;
+    }
+    if (recordIdToDisplay == null) return false;
+    console.log('recordIdToDisplay :', recordIdToDisplay);
     e.preventDefault(true);
-    const destroyExtantDetailPreviewers = () => [...qsa('.extra-details')].forEach(pp => pp.remove());
-    destroyExtantDetailPreviewers();
-    window.addEventListener('click', destroyExtantDetailPreviewers);
-    let gatheredDetails = quickIndex.getLatestDetails(targetLink.innerText),
-        flatData = '<div class="extra-details"><span>' + Object.entries(gatheredDetails).flat().join('</span><span>') + '</span></div>';
-    targetLink.insertAdjacentHTML('afterEnd', flatData);
+    destroyExtantDetailPreviewers(true);
+
+    function normalizeHours(inp){
+        if(inp == null || isNaN(inp)) return inp;
+        return toHours(inp) + 'h';
+    }
+    
+    let gatheredDetails = quickIndex.getLatestDetails(recordIdToDisplay),
+        flatData = '<div class="extra-details">' + (Object.entries(gatheredDetails).map(kvp=>{
+            if(kvp[1].trim() === '') return
+            return (kvp[1].trim() === '') ? '' : `<span>${kvp[0]}</span><span>${normalizeHours(kvp[1])}</span>`;
+
+        }).join('') + '</div>');
+    eventTarget.insertAdjacentHTML('beforeEnd', flatData);
+    qs('.extra-details').addEventListener('mouseover', (e)=>pReviewing(e, e.target, true));
+    qs('.extra-details').addEventListener('mouseout', (e)=>pReviewing(e, e.target));
 };
 let quickIndex;
 const processParentChildRelationships = () => {                                                             //⦾! Ⓘ ⬅︎⬅︎⬅︎ Correllates the parent tasks to their corresponding sub-tasks 
@@ -717,9 +749,9 @@ const processParentChildRelationships = () => {                                 
         let hrefUrl = `href="https://jirasw.t-mobile.com/browse/${IssueId}"' `,
             clsName = `class="issue-${isParent ? 'parent-' : ''}link iss-hvr-lnk" `;
         let wndoTrg = `target="_blank" `,
-            issueID = IssueId.replace(/(\d+)/gi, '<b>$1</b>');
+            issueID = IssueId.replace(/(\d-)(\d+)/gi, '$1<b>$2</b>');
 
-        return `<a ${hrefUrl + clsName + wndoTrg}>${issueID}</a>`;
+        return `<a ${hrefUrl + clsName + wndoTrg}>${issueID}</a><span class="record-reviewer" data-recid="${IssueId}" />`;
     };
 
     var toc = {};
@@ -803,6 +835,7 @@ const constructPreviewAndReportData = () => {                                   
             , newII = ''                                                                                 //   - Current (from the currently-iterated-over day in the row) Issue ID
             , newST = '';                                                                                //   - Current Status (in this case, we don't care what the previous one was, but need it at the issue scope)
 
+            console.log('issueName, issueData :', issueName, issueData);
         issueData.forEach((datRec, ix) => {                                                             // ...Iterate the issue's collected data (the "columns"), gathering...
             newRE = (datRec === '---') ? '---' : (datRec['Remaining Estimate'] || '---?');
             if (newRE === '---') {
@@ -858,9 +891,12 @@ const constructPreviewAndReportData = () => {                                   
     previewPanel.insertAdjacentHTML('beforeEnd', tblMarkup.replace(/<td>(0\*+?)h<\/td>/g, '<td class="major-alert">$1h</td>'));
     // previewPanel.insertAdjacentHTML('beforeEnd', tblMarkup.replace(/<td>0\*h<\/td>/g, '<td class="major-alert">0*h</td>'));
 
-    let linkHandlers = [...qsa('a.iss-hvr-lnk')].forEach(lnk => lnk.addEventListener('contextmenu', showRecordDetails));
-
-
+    [...qsa('a.iss-hvr-lnk')].forEach(lnk => {
+        // lnk.addEventListener('contextmenu', showRecordDetails);
+        let previewEyecon = lnk.nextElementSibling;
+        previewEyecon.addEventListener('mouseover', (e)=>{pReviewing(e, e.target, true); showRecordDetails(e, e.target);});
+        previewEyecon.addEventListener('mouseout', (e)=>pReviewing(e, e.target));
+    });
 
     createReportData();
 

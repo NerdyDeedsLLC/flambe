@@ -1,0 +1,920 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:x="urn:schemas-microsoft-com:office:excel"
+      xmlns="http://www.w3.org/TR/REC-html40">
+    <head>
+        <title>FLAMBÉ (Jira)</title>
+        <style type="text/css">
+         table {
+             mso-displayed-decimal-separator:"\.";
+             mso-displayed-thousand-separator:"\,";
+         }
+         body
+         {
+             margin: 0px;
+             font-size: 12px;
+             font-family: Arial, sans-serif;
+             color:black;
+         }
+
+        </style>
+        <META HTTP-EQUIV="Content-Type" Content="application/vnd.ms-excel; charset=UTF-8">
+        <!-- JRA-7598 - ensure fields (e.g. description) occupy only one cell - even fields containing newlines. -->
+        <!--
+             Vertical align all cells to the top, in order to align all issue rows of issuetable to the top,
+             since Excel does not use or save the css files it is hardcoded here.
+           -->
+        <style>
+         @page
+         {
+             mso-page-orientation:landscape;
+             margin:.25in .25in .5in .25in;
+             mso-header-margin:.5in;
+             mso-footer-margin:.25in;
+             mso-footer-data:"&R&P of &N";
+             mso-horizontal-page-align:center;
+             mso-vertical-page-align:center;
+         }
+
+         td.issuekey,
+         td.issuetype,
+         td.status {
+             mso-style-parent: "";
+             mso-number-format: \@;
+             text-align: left;
+         }
+         br
+         {
+             mso-data-placement:same-cell;
+         }
+
+         td
+         {
+             vertical-align: top;
+         }
+        </style>
+
+        <!--[if gte mso 9]><xml>
+            <x:ExcelWorkbook>
+            <x:ExcelWorksheets>
+            <x:ExcelWorksheet>
+            <x:Name>general_report</x:Name>
+            <x:WorksheetOptions>
+            <x:Print>
+            <x:ValidPrinterInfo/>
+            </x:Print>
+            </x:WorksheetOptions>
+            </x:ExcelWorksheet>
+            </x:ExcelWorksheets>
+            </x:ExcelWorkbook>
+            </xml><![endif]-->
+    </head>
+    <body>
+
+        <table border="1">
+            <tr bgcolor="#e20074" height="60">
+                <td colspan="17">
+                    <img src="https://jirasw.t-mobile.com/jira-logo-scaled.png" width="143" height="60" border="0" alt="FLAMBÉ (Jira)">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="17">
+                    <a href="https://jirasw.t-mobile.com/issues/?filter=49885">FLAMBÉ (Jira)</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="17">
+                    Displaying <strong>23</strong> issues at <strong>12/Feb/21 9:10 AM</strong>.
+                </td>
+            </tr>
+        </table>
+
+        
+
+
+                            <issuetable-web-component>
+                <table id="issuetable"  border="1" cellpadding="3" cellspacing="1" width="100%">
+                        <thead>
+        <tr class="rowHeader">
+            
+                                                            <th class="colHeaderLink headerrow-issuetype" data-id="issuetype">
+                            Issue Type
+                                                    </th>
+                                                
+                                                            <th class="colHeaderLink headerrow-issuekey" data-id="issuekey">
+                            Key
+                                                    </th>
+                                                
+                                                            <th class="colHeaderLink headerrow-status" data-id="status">
+                            Status
+                                                    </th>
+                                                
+                                                            <th class="colHeaderLink headerrow-assignee" data-id="assignee">
+                            Assignee
+                                                    </th>
+                                                
+                                                            <th class="colHeaderLink headerrow-components" data-id="components">
+                            Component/s
+                                                    </th>
+                                                
+                                                            <th class="colHeaderLink headerrow-created" data-id="created">
+                            Created
+                                                    </th>
+                                                
+                                                            <th class="colHeaderLink headerrow-updated" data-id="updated">
+                            Updated
+                                                    </th>
+                                                
+                                                            <th class="colHeaderLink headerrow-summary" data-id="summary">
+                            Summary
+                                                    </th>
+                                                
+                                                            <th class="colHeaderLink headerrow-priority" data-id="priority">
+                            Priority
+                                                    </th>
+                                                
+                                                            <th class="colHeaderLink headerrow-customfield_10100" data-id="customfield_10100">
+                            Sprint
+                                                    </th>
+                                                
+                                                            <th class="colHeaderLink headerrow-customfield_11006" data-id="customfield_11006">
+                            Issue Id
+                                                    </th>
+                                                
+                                                            <th class="colHeaderLink headerrow-customfield_12620" data-id="customfield_12620">
+                            Link to Feature in Jira Align
+                                                    </th>
+                                                
+                                                            <th class="colHeaderLink headerrow-timeoriginalestimate" data-id="timeoriginalestimate">
+                            Original Estimate
+                                                    </th>
+                                                
+                                                            <th class="colHeaderLink headerrow-timeestimate" data-id="timeestimate">
+                            Remaining Estimate
+                                                    </th>
+                                                
+                                                            <th class="colHeaderLink headerrow-timespent" data-id="timespent">
+                            Time Spent
+                                                    </th>
+                                                
+                                                            <th class="colHeaderLink headerrow-aggregatetimeestimate" data-id="aggregatetimeestimate">
+                            Σ Remaining Estimate
+                                                    </th>
+                                                
+                                                            <th class="colHeaderLink headerrow-aggregatetimespent" data-id="aggregatetimespent">
+                            Σ Time Spent
+                                                    </th>
+                                                                    </tr>
+    </thead>
+    <tbody>
+                    
+
+                <tr id="issuerow1459345" rel="1459345" data-issuekey="BSWMDBN2-5013" class="issuerow">
+                                            <td class="issuetype">    Story
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-5013" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-5013">BSWMDBN2-5013</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-yellow jira-issue-status-lozenge-indeterminate aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;Defined&lt;/span&gt;">Defined</span>    </td>
+                                            <td class="assignee">            Saisurya Pamidipati
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 04/Feb/21 11:38 AM </td>
+                                            <td class="updated"> 12/Feb/21 2:26 AM </td>
+                                            <td class="summary"><p>
+                Create Swagger for PAH update Event
+    </p>
+</td>
+                                            <td class="priority">           High
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1459345
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate">86400</td>
+                                            <td class="timeestimate">86400</td>
+                                            <td class="timespent"></td>
+                                            <td class="aggregatetimeestimate">86400</td>
+                                            <td class="aggregatetimespent"></td>
+                    </tr>
+
+
+                <tr id="issuerow1438776" rel="1438776" data-issuekey="BSWMDBN2-4863" class="issuerow">
+                                            <td class="issuetype">    Story
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4863" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4863">BSWMDBN2-4863</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-yellow jira-issue-status-lozenge-indeterminate aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;Defined&lt;/span&gt;">Defined</span>    </td>
+                                            <td class="assignee">            Nirav Patel
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 27/Jan/21 11:32 AM </td>
+                                            <td class="updated"> 09/Feb/21 3:45 PM </td>
+                                            <td class="summary"><p>
+                Request Status and Code in DB
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1438776
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate">144000</td>
+                                            <td class="timeestimate">144000</td>
+                                            <td class="timespent"></td>
+                                            <td class="aggregatetimeestimate">144000</td>
+                                            <td class="aggregatetimespent"></td>
+                    </tr>
+
+
+                <tr id="issuerow1433931" rel="1433931" data-issuekey="BSWMDBN2-4795" class="issuerow">
+                                            <td class="issuetype">    Story
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4795" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4795">BSWMDBN2-4795</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-yellow jira-issue-status-lozenge-indeterminate aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;Defined&lt;/span&gt;">Defined</span>    </td>
+                                            <td class="assignee">            Harika Kopparapu
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 26/Jan/21 5:45 PM </td>
+                                            <td class="updated"> 09/Feb/21 3:45 PM </td>
+                                            <td class="summary"><p>
+                Mongo DB Event Storage :   Create Shedlock
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1433931
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate">86400</td>
+                                            <td class="timeestimate">86400</td>
+                                            <td class="timespent"></td>
+                                            <td class="aggregatetimeestimate">86400</td>
+                                            <td class="aggregatetimespent"></td>
+                    </tr>
+
+
+                <tr id="issuerow1430409" rel="1430409" data-issuekey="BSWMDBN2-4786" class="issuerow">
+                                            <td class="issuetype">    Story
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4786" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4786">BSWMDBN2-4786</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-yellow jira-issue-status-lozenge-indeterminate aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;In Progress&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;jira-issue-status-tooltip-desc&quot;&gt;This issue is being actively worked on at the moment by the assignee.&lt;/span&gt;">In Progress</span>    </td>
+                                            <td class="assignee">            Carlos Jaramillo
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 26/Jan/21 12:01 PM </td>
+                                            <td class="updated"> 11/Feb/21 3:50 PM </td>
+                                            <td class="summary"><p>
+                COMPTEL_ACTIVATE_REQUEST
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1430409
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate">144000</td>
+                                            <td class="timeestimate">46800</td>
+                                            <td class="timespent">97200</td>
+                                            <td class="aggregatetimeestimate">46800</td>
+                                            <td class="aggregatetimespent">97200</td>
+                    </tr>
+
+
+                <tr id="issuerow1385246" rel="1385246" data-issuekey="BSWMDBN2-4606" class="issuerow">
+                                            <td class="issuetype">    Story
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4606" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4606">BSWMDBN2-4606</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-yellow jira-issue-status-lozenge-indeterminate aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;Defined&lt;/span&gt;">Defined</span>    </td>
+                                            <td class="assignee">            Ravi Varma Kusthapuram
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 12/Jan/21 4:32 PM </td>
+                                            <td class="updated"> 09/Feb/21 9:40 AM </td>
+                                            <td class="summary"><p>
+                Create MS code for network-provision-indicator Endpoint
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1385246
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate">144000</td>
+                                            <td class="timeestimate">144000</td>
+                                            <td class="timespent"></td>
+                                            <td class="aggregatetimeestimate">144000</td>
+                                            <td class="aggregatetimespent"></td>
+                    </tr>
+
+
+                <tr id="issuerow1385236" rel="1385236" data-issuekey="BSWMDBN2-4605" class="issuerow">
+                                            <td class="issuetype">    Story
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4605" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4605">BSWMDBN2-4605</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-yellow jira-issue-status-lozenge-indeterminate aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;In Progress&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;jira-issue-status-tooltip-desc&quot;&gt;This issue is being actively worked on at the moment by the assignee.&lt;/span&gt;">In Progress</span>    </td>
+                                            <td class="assignee">            Saikiran Nagala
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 12/Jan/21 4:26 PM </td>
+                                            <td class="updated"> 10/Feb/21 4:05 PM </td>
+                                            <td class="summary"><p>
+                Create Test Cases for network-provision-indicator Endpoint
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1385236
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate">144000</td>
+                                            <td class="timeestimate">72000</td>
+                                            <td class="timespent">72000</td>
+                                            <td class="aggregatetimeestimate">72000</td>
+                                            <td class="aggregatetimespent">72000</td>
+                    </tr>
+
+
+                <tr id="issuerow1347431" rel="1347431" data-issuekey="BSWMDBN2-4451" class="issuerow">
+                                            <td class="issuetype">    Story
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4451" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4451">BSWMDBN2-4451</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-yellow jira-issue-status-lozenge-indeterminate aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;Defined&lt;/span&gt;">Defined</span>    </td>
+                                            <td class="assignee">            Nirav Patel
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 30/Dec/20 12:49 PM </td>
+                                            <td class="updated"> 09/Feb/21 3:45 PM </td>
+                                            <td class="summary"><p>
+                Create DEEP.IO Send Unit Test
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1347431
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate">144000</td>
+                                            <td class="timeestimate">144000</td>
+                                            <td class="timespent"></td>
+                                            <td class="aggregatetimeestimate">144000</td>
+                                            <td class="aggregatetimespent"></td>
+                    </tr>
+
+
+                <tr id="issuerow1347427" rel="1347427" data-issuekey="BSWMDBN2-4450" class="issuerow">
+                                            <td class="issuetype">    Story
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4450" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4450">BSWMDBN2-4450</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-yellow jira-issue-status-lozenge-indeterminate aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;In Progress&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;jira-issue-status-tooltip-desc&quot;&gt;This issue is being actively worked on at the moment by the assignee.&lt;/span&gt;">In Progress</span>    </td>
+                                            <td class="assignee">            Anil Reddy
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 30/Dec/20 12:49 PM </td>
+                                            <td class="updated"> 10/Feb/21 3:01 PM </td>
+                                            <td class="summary"><p>
+                Create Method to send Deep.io Event 
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1347427
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate">144000</td>
+                                            <td class="timeestimate">79200</td>
+                                            <td class="timespent">64800</td>
+                                            <td class="aggregatetimeestimate">79200</td>
+                                            <td class="aggregatetimespent">64800</td>
+                    </tr>
+
+
+                <tr id="issuerow1347051" rel="1347051" data-issuekey="BSWMDBN2-4445" class="issuerow">
+                                            <td class="issuetype">    Story
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4445" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4445">BSWMDBN2-4445</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-yellow jira-issue-status-lozenge-indeterminate aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;Defined&lt;/span&gt;">Defined</span>    </td>
+                                            <td class="assignee">            Meenakumari Konanki
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 30/Dec/20 12:12 PM </td>
+                                            <td class="updated"> 09/Feb/21 3:13 PM </td>
+                                            <td class="summary"><p>
+                Create Unit Test Cases for call to AMIL API for additional attributes
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1347051
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate">144000</td>
+                                            <td class="timeestimate">144000</td>
+                                            <td class="timespent"></td>
+                                            <td class="aggregatetimeestimate">144000</td>
+                                            <td class="aggregatetimespent"></td>
+                    </tr>
+
+
+                <tr id="issuerow1347041" rel="1347041" data-issuekey="BSWMDBN2-4444" class="issuerow">
+                                            <td class="issuetype">    Story
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4444" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4444">BSWMDBN2-4444</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-yellow jira-issue-status-lozenge-indeterminate aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;In Progress&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;jira-issue-status-tooltip-desc&quot;&gt;This issue is being actively worked on at the moment by the assignee.&lt;/span&gt;">In Progress</span>    </td>
+                                            <td class="assignee">            Meenakumari Konanki
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 30/Dec/20 12:07 PM </td>
+                                            <td class="updated"> 10/Feb/21 3:51 PM </td>
+                                            <td class="summary"><p>
+                Create Unit Tests for Storing AMIL Requests and Replies
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1347041
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate">288000</td>
+                                            <td class="timeestimate">212400</td>
+                                            <td class="timespent">75600</td>
+                                            <td class="aggregatetimeestimate">212400</td>
+                                            <td class="aggregatetimespent">75600</td>
+                    </tr>
+
+
+                <tr id="issuerow1292420" rel="1292420" data-issuekey="BSWMDBN2-4306" class="issuerow">
+                                            <td class="issuetype">    Story
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4306" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4306">BSWMDBN2-4306</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-yellow jira-issue-status-lozenge-indeterminate aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;Dev Complete&lt;/span&gt;">Dev Complete</span>    </td>
+                                            <td class="assignee">            Mohamed Iraqi
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 15/Dec/20 11:18 AM </td>
+                                            <td class="updated"> 11/Feb/21 10:24 AM </td>
+                                            <td class="summary"><p>
+                Create Unit test for NPE Response API
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1292420
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate">108000</td>
+                                            <td class="timeestimate">86400</td>
+                                            <td class="timespent"></td>
+                                            <td class="aggregatetimeestimate">86400</td>
+                                            <td class="aggregatetimespent"></td>
+                    </tr>
+
+
+                <tr id="issuerow1292240" rel="1292240" data-issuekey="BSWMDBN2-4305" class="issuerow">
+                                            <td class="issuetype">    Story
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4305" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4305">BSWMDBN2-4305</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-yellow jira-issue-status-lozenge-indeterminate aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;In Progress&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;jira-issue-status-tooltip-desc&quot;&gt;This issue is being actively worked on at the moment by the assignee.&lt;/span&gt;">In Progress</span>    </td>
+                                            <td class="assignee">            Carlos Jaramillo
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 15/Dec/20 11:12 AM </td>
+                                            <td class="updated"> 11/Feb/21 3:50 PM </td>
+                                            <td class="summary"><p>
+                COMPTEL_DEACTIVATE_REQUEST
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1292240
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate">144000</td>
+                                            <td class="timeestimate">36000</td>
+                                            <td class="timespent">108000</td>
+                                            <td class="aggregatetimeestimate">36000</td>
+                                            <td class="aggregatetimespent">108000</td>
+                    </tr>
+
+
+                <tr id="issuerow1291977" rel="1291977" data-issuekey="BSWMDBN2-4303" class="issuerow">
+                                            <td class="issuetype">    Story
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4303" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4303">BSWMDBN2-4303</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-yellow jira-issue-status-lozenge-indeterminate aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;Defined&lt;/span&gt;">Defined</span>    </td>
+                                            <td class="assignee">            Ramesh Yadav
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 15/Dec/20 11:02 AM </td>
+                                            <td class="updated"> 09/Feb/21 3:45 PM </td>
+                                            <td class="summary"><p>
+                Create method to call NPE API
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1291977
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate">144000</td>
+                                            <td class="timeestimate">144000</td>
+                                            <td class="timespent"></td>
+                                            <td class="aggregatetimeestimate">144000</td>
+                                            <td class="aggregatetimespent"></td>
+                    </tr>
+
+
+                <tr id="issuerow1292003" rel="1292003" data-issuekey="BSWMDBN2-4302" class="issuerow">
+                                            <td class="issuetype">    Sub-task
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4302" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4302">BSWMDBN2-4302</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-green jira-issue-status-lozenge-done aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;Done&lt;/span&gt;">Done</span>    </td>
+                                            <td class="assignee">            Michael Duree
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 15/Dec/20 11:01 AM </td>
+                                            <td class="updated"> 27/Jan/21 9:23 AM </td>
+                                            <td class="summary"><p>
+            <span class="parentIssue">BSWMDBN2-4290</span>
+                CLONE - Submit Tickets to Create Production DB
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1292003
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate"></td>
+                                            <td class="timeestimate"></td>
+                                            <td class="timespent"></td>
+                                            <td class="aggregatetimeestimate"></td>
+                                            <td class="aggregatetimespent"></td>
+                    </tr>
+
+
+                <tr id="issuerow1291099" rel="1291099" data-issuekey="BSWMDBN2-4301" class="issuerow">
+                                            <td class="issuetype">    Sub-task
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4301" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4301">BSWMDBN2-4301</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-green jira-issue-status-lozenge-done aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;Done&lt;/span&gt;">Done</span>    </td>
+                                            <td class="assignee">            Michael Duree
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 15/Dec/20 11:00 AM </td>
+                                            <td class="updated"> 27/Jan/21 9:24 AM </td>
+                                            <td class="summary"><p>
+            <span class="parentIssue">BSWMDBN2-4290</span>
+                Submit Tickets to Create Test DB
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1291099
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate"></td>
+                                            <td class="timeestimate"></td>
+                                            <td class="timespent"></td>
+                                            <td class="aggregatetimeestimate"></td>
+                                            <td class="aggregatetimespent"></td>
+                    </tr>
+
+
+                <tr id="issuerow1291845" rel="1291845" data-issuekey="BSWMDBN2-4296" class="issuerow">
+                                            <td class="issuetype">    Story
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4296" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4296">BSWMDBN2-4296</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-blue-gray jira-issue-status-lozenge-new aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;New&lt;/span&gt;">New</span>    </td>
+                                            <td class="assignee">            Jason Olenhouse
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 15/Dec/20 10:53 AM </td>
+                                            <td class="updated"> 09/Feb/21 2:40 PM </td>
+                                            <td class="summary"><p>
+                Create Methods for Call to CHUB API
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1291845
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate">162000</td>
+                                            <td class="timeestimate">162000</td>
+                                            <td class="timespent"></td>
+                                            <td class="aggregatetimeestimate">162000</td>
+                                            <td class="aggregatetimespent"></td>
+                    </tr>
+
+
+                <tr id="issuerow1291823" rel="1291823" data-issuekey="BSWMDBN2-4295" class="issuerow">
+                                            <td class="issuetype">    Story
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4295" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4295">BSWMDBN2-4295</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-yellow jira-issue-status-lozenge-indeterminate aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;In Progress&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;jira-issue-status-tooltip-desc&quot;&gt;This issue is being actively worked on at the moment by the assignee.&lt;/span&gt;">In Progress</span>    </td>
+                                            <td class="assignee">            Jason Olenhouse
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 15/Dec/20 10:51 AM </td>
+                                            <td class="updated"> 11/Feb/21 3:19 PM </td>
+                                            <td class="summary"><p>
+                Create Unit Tests for Call to CHUB API
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1291823
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate">144000</td>
+                                            <td class="timeestimate">108000</td>
+                                            <td class="timespent">183600</td>
+                                            <td class="aggregatetimeestimate">108000</td>
+                                            <td class="aggregatetimespent">183600</td>
+                    </tr>
+
+
+                <tr id="issuerow1291527" rel="1291527" data-issuekey="BSWMDBN2-4292" class="issuerow">
+                                            <td class="issuetype">    Story
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4292" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4292">BSWMDBN2-4292</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-yellow jira-issue-status-lozenge-indeterminate aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;In Progress&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;jira-issue-status-tooltip-desc&quot;&gt;This issue is being actively worked on at the moment by the assignee.&lt;/span&gt;">In Progress</span>    </td>
+                                            <td class="assignee">            Harika Kopparapu
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 15/Dec/20 10:37 AM </td>
+                                            <td class="updated"> 09/Feb/21 9:49 AM </td>
+                                            <td class="summary"><p>
+                Event Orchestrator :   Setup Mock server for Event Orchestrator
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1291527
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate">144000</td>
+                                            <td class="timeestimate">144000</td>
+                                            <td class="timespent"></td>
+                                            <td class="aggregatetimeestimate">144000</td>
+                                            <td class="aggregatetimespent"></td>
+                    </tr>
+
+
+                <tr id="issuerow1291506" rel="1291506" data-issuekey="BSWMDBN2-4291" class="issuerow">
+                                            <td class="issuetype">    Story
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4291" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4291">BSWMDBN2-4291</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-green jira-issue-status-lozenge-done aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;Withdrawn&lt;/span&gt;">Withdrawn</span>    </td>
+                                            <td class="assignee">            Harika Kopparapu
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 15/Dec/20 10:34 AM </td>
+                                            <td class="updated"> 26/Jan/21 2:37 PM </td>
+                                            <td class="summary"><p>
+                Cassandra Event Storage :   Create Unit Test for Cassandra CRUD
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1291506
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate">144000</td>
+                                            <td class="timeestimate">144000</td>
+                                            <td class="timespent"></td>
+                                            <td class="aggregatetimeestimate">144000</td>
+                                            <td class="aggregatetimespent"></td>
+                    </tr>
+
+
+                <tr id="issuerow1291487" rel="1291487" data-issuekey="BSWMDBN2-4290" class="issuerow">
+                                            <td class="issuetype">    Story
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4290" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4290">BSWMDBN2-4290</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-yellow jira-issue-status-lozenge-indeterminate aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;In Progress&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;jira-issue-status-tooltip-desc&quot;&gt;This issue is being actively worked on at the moment by the assignee.&lt;/span&gt;">In Progress</span>    </td>
+                                            <td class="assignee">            Michael Duree
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 15/Dec/20 10:31 AM </td>
+                                            <td class="updated"> 12/Feb/21 8:11 AM </td>
+                                            <td class="summary"><p>
+                EventOrchestrator :   Define Database Schema for Orchastrator events
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1291487
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate">57600</td>
+                                            <td class="timeestimate">67500</td>
+                                            <td class="timespent">501300</td>
+                                            <td class="aggregatetimeestimate">67500</td>
+                                            <td class="aggregatetimespent">501300</td>
+                    </tr>
+
+
+                <tr id="issuerow1291047" rel="1291047" data-issuekey="BSWMDBN2-4288" class="issuerow">
+                                            <td class="issuetype">    Story
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4288" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4288">BSWMDBN2-4288</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-yellow jira-issue-status-lozenge-indeterminate aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;Defined&lt;/span&gt;">Defined</span>    </td>
+                                            <td class="assignee">            Michael Duree
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 15/Dec/20 10:28 AM </td>
+                                            <td class="updated"> 10/Feb/21 7:26 AM </td>
+                                            <td class="summary"><p>
+                DBSC saves event Data to Database
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1291047
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate">72000</td>
+                                            <td class="timeestimate">72000</td>
+                                            <td class="timespent"></td>
+                                            <td class="aggregatetimeestimate">72000</td>
+                                            <td class="aggregatetimespent"></td>
+                    </tr>
+
+
+                <tr id="issuerow1290906" rel="1290906" data-issuekey="BSWMDBN2-4287" class="issuerow">
+                                            <td class="issuetype">    Story
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4287" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4287">BSWMDBN2-4287</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-yellow jira-issue-status-lozenge-indeterminate aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;In Progress&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;jira-issue-status-tooltip-desc&quot;&gt;This issue is being actively worked on at the moment by the assignee.&lt;/span&gt;">In Progress</span>    </td>
+                                            <td class="assignee">            Michael Duree
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 15/Dec/20 10:00 AM </td>
+                                            <td class="updated"> 10/Feb/21 5:55 PM </td>
+                                            <td class="summary"><p>
+                Mongo Event Storage :  Create DB Scheme
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1290906
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate">115200</td>
+                                            <td class="timeestimate">79200</td>
+                                            <td class="timespent">57600</td>
+                                            <td class="aggregatetimeestimate">79200</td>
+                                            <td class="aggregatetimespent">57600</td>
+                    </tr>
+
+
+                <tr id="issuerow1290657" rel="1290657" data-issuekey="BSWMDBN2-4284" class="issuerow">
+                                            <td class="issuetype">    Story
+</td>
+                                            <td class="issuekey">
+
+    <a class="issue-link" data-issue-key="BSWMDBN2-4284" href="https://jirasw.t-mobile.com/browse/BSWMDBN2-4284">BSWMDBN2-4284</a>
+</td>
+                                            <td class="status">
+                <span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-yellow jira-issue-status-lozenge-indeterminate aui-lozenge-subtle jira-issue-status-lozenge-max-width-medium" data-tooltip="&lt;span class=&quot;jira-issue-status-tooltip-title&quot;&gt;In Progress&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;jira-issue-status-tooltip-desc&quot;&gt;This issue is being actively worked on at the moment by the assignee.&lt;/span&gt;">In Progress</span>    </td>
+                                            <td class="assignee">            Pavankumar Durgempudi
+    </td>
+                                            <td class="components">                        BSWMDBN2:DB Techquilla            </td>
+                                            <td class="created"> 15/Dec/20 9:51 AM </td>
+                                            <td class="updated"> 10/Feb/21 3:03 PM </td>
+                                            <td class="summary"><p>
+                Create DEEP.IO Unit Test
+    </p>
+</td>
+                                            <td class="priority">           Low
+    </td>
+                                            <td class="customfield_10100">DB Techquilla-21S04 02/10</td>
+                                            <td class="customfield_11006">    1290657
+</td>
+                                            <td class="customfield_12620"></td>
+                                            <td class="timeoriginalestimate">144000</td>
+                                            <td class="timeestimate">100800</td>
+                                            <td class="timespent">43200</td>
+                                            <td class="aggregatetimeestimate">100800</td>
+                                            <td class="aggregatetimespent">43200</td>
+                    </tr>
+                </tbody>
+    </table>
+    </issuetable-web-component>
+    <div class="end-of-stable-message"></div>
+            <table border="1" >
+<tr>
+    <td bgcolor="#f5f5f5" colspan="17"><font size="1">
+        Generated at Fri Feb 12 15:10:44 UTC 2021 by Jason Jurusz using Jira 8.5.1#805001-sha1:c5b54a7317f297e17ddad5bb52a1850cf2bdb4bc.
+    </font></td>
+</tr>
+</table>
+
+</body>
+</html>
