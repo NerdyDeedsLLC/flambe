@@ -49,7 +49,8 @@ gulp.task('server', function() {
         bigBrother.watch(PATHS.css.dest).on('change', bigBrother.reload);       // So be sure of your syntax!
     }else{
         bigBrother.init({
-            proxy: PATHS.serverProxy,
+            // proxy: PATHS.serverProxy,
+            proxy: "yourlocal.dev"
         });
     }
 });

@@ -295,6 +295,8 @@ const d = document                                       // ⥱ Alias - document
     , rote = window.localStorage                                                                	       	// Alias to the window's localStorage. Really these are all just helper functions that amuse me.
     , memories = () => rote.length                                                      		// Returns the count of how many memories are being held in rote storage
     , recall = (k, def = null) => { k = rote.getItem(k); return k ? k : (def ? def : null); }            		// Returns a memory value if present. If not, returns def if provided, null if not
+    , muse = (k, def = null) => { r = recall(k, def); return r === def ? r : JSON.parse(r); }
+
     , retain = (k, v) => rote.setItem(k, v) ? v : v                                        		// Creates a new memory for key k with value v, then returns v
     , reflect = (k, def = null) => retain(k, recall(k, def))                                        		// Runs a recall for a memory (value at key or null), then immediately retains it in memories
     , forget = (k) => rote.removeItem(k)                                                  		// Discrads the memories at key k
@@ -698,9 +700,7 @@ const remapDataSoIssueIDIsPrimaryKey = () => {                                  
 };
 
 const destroyExtantDetailPreviewers = (forced=false) => {
-    console.log('window.pReviewing :', window.pReviewing);
     if(!window.pReviewing || forced) [...qsa('.extra-details')].forEach(pp => pp.remove())
-
 };
 
 const pReviewing = (e, eventTarget = e.target, engaged = false) => {
@@ -734,7 +734,7 @@ const showRecordDetails = (e, eventTarget = e.target || false) => {
     let gatheredDetails = quickIndex.getLatestDetails(recordIdToDisplay),
         flatData = '<div class="extra-details">' + (Object.entries(gatheredDetails).map(kvp=>{
             if(kvp[1].trim() === '') return
-            return (kvp[1].trim() === '') ? '' : `<span>${kvp[0]}</span><span>${normalizeHours(kvp[1])}</span>`;
+            return (kvp[1].trim() === '') ? '' : `<span>${kvp[0]}</span><span>${teamDialog.performSubstitution(normalizeHours(kvp[1]))}</span>`;
 
         }).join('') + '</div>');
     eventTarget.insertAdjacentHTML('beforeEnd', flatData);
@@ -888,6 +888,8 @@ const constructPreviewAndReportData = () => {                                   
     let cbPanel = document.getElementById('filter-ckbox-panel');
     if (cbPanel) cbPanel.remove();
 
+    tblMarkup = teamDialog.performSubstitution(tblMarkup);
+
     previewPanel.insertAdjacentHTML('beforeEnd', tblMarkup.replace(/<td>(0\*+?)h<\/td>/g, '<td class="major-alert">$1h</td>'));
     // previewPanel.insertAdjacentHTML('beforeEnd', tblMarkup.replace(/<td>0\*h<\/td>/g, '<td class="major-alert">0*h</td>'));
 
@@ -905,6 +907,7 @@ const constructPreviewAndReportData = () => {                                   
     postProcessData();
 
 
+    window.asbestos.init();
 
 
     let interpString = '',
@@ -995,6 +998,8 @@ const syncAdjCheckboxes = (fromMaster = false) => {
 };
 
 // let seededSet, dayOneSet, revisedSeed, summaryTxts, summaryTots, seededFlat, lastMinAdds, seedFltKeys, missingStories, lastMinHrs;
+    
+
 
 const performDayOneOverrideAdjustment = () => {
     function locateCorrespondingRecord(needle, haystack, returnIndex=true){
@@ -1204,7 +1209,7 @@ const postProcessData = () => {
             rptStatuses[muStatus] = RPTString.match(statusRE).length;
             dispCkBoxes += `<input name="chk-${muStatus}" id="chk-${muStatus}" class='status-filter-checkboxes' type="checkbox" value="${rptStatuses[muStatus]}" checked="true" onChange="reFilterPreview(this)" /><label for="chk-${muStatus}">${status} (${rptStatuses[muStatus]})</label><br>`;
         });
-        document.getElementById('output-panels').insertAdjacentHTML('beforeEnd', '<aside id="filter-ckbox-panel" class="status-filters"><h2>Currently Showing:</h2><span id="record-ct"></span>' + dispCkBoxes + '</aside>');
+        document.getElementById('output-panels').insertAdjacentHTML('beforeEnd', '<aside id="filter-ckbox-panel" class="status-filters"><h2>Currently Showing:</h2><span id="record-ct"></span>' + dispCkBoxes + '<button class="asbestos-trigger"></button></aside>');
         reFilterPreview();
     }).then((res) => {
         _I("THENABLE -> ", "res", res);
