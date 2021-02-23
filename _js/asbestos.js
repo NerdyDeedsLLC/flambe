@@ -61,8 +61,8 @@ class Asbestos {
         assignees = [...new Set(assignees)];
         Object.values(sequences).forEach((seq) => {
             var startingEstHours = seq[0]["Remaining Estimate"],
-                hoursBurnedAtSomePoint = seq.some(
-                    (day) => day["Remaining Estimate"] < startingEstHours
+                hoursBurnedAtSomePoint = seq.every(
+                    (day) => day["Remaining Estimate"] >= startingEstHours
                 ),
                 finalAssignee = seq.reverse()[0]["Assignee"];
             seq.reverse();

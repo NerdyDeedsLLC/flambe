@@ -9,7 +9,7 @@ function round_to_precision(x, precision) {
 }
 
 const readableRound = (val, precision = 0, trimTrailing0s=1) => {
-    if (val == null || isNaN(val) || val == Infinity) return false; else val = parseFloat(val);
+    if (val == null || isNaN(val) || val == Infinity|| val == "") return false; else val = parseFloat(val);
     if (!isNaN(precision) && precision > 0 && trimTrailing0s === 1) trimTrailing0s = val.toString().indexOf('.') !== -1;
     let moddedPrecision = (isNaN(precision) || precision < 0) ? 1 : precision,
         fltPtAdjustment = (1 + new Array(moddedPrecision).fill(0).join('')) * 1;
@@ -304,7 +304,7 @@ const d = document                                       // ⥱ Alias - document
     /*eslint-enable*/
 
     , toHours = (val = null) => {                                                                   		// Converts the asinine JIRA output we're currently getting (seconds, across the board) to hours
-        if (val === '---') { return val; }                                                           		//  ... (except in the case of the starting value being '---' whereupon...
+        if (val === '---') { console.log('blankday'); return val; }                                                           		//  ... (except in the case of the starting value being '---' whereupon...
         if (val == null) { return '0*'; }                                        		                    //  ... we convert the value to something that still signifies the special case, but can also...
         if (isNaN(val)) { return '0**'; }                                        		                    //  ... we convert the value to something that still signifies the special case, but can also...
         return (val / 1 <= 0) ? 0 : parseFloat((val / 3600).toPrecision(3));                                       		//  ... still be coerced back into a number type by the interpreter)
@@ -643,31 +643,31 @@ function checkFilterMatch(fullDaysRecords, teamFilt, itrFilt) {
     return false;
 }
 
-const getDistinctKeysFromFiles = () => {                                                                    //^^ ⬅⬅⬅︎ Ⓕ    Iterate through our files, constructing a unique JSON structure from them 
-    safeBuffer = Object.assign([], JSON.parse(recall('fileBuffer')));                                                             // Duplicate the file buffer (so we're not mucking up our original, "pure" copy. This one's "safe" to screw with
+const getDistinctKeysFromFiles = () => {                                                                                                                                  // ^^ ⬅⬅⬅︎ Ⓕ    Iterate through our files, constructing a unique JSON structure from them 
+    safeBuffer = Object.assign([], JSON.parse(recall('fileBuffer')));                                                                                                     // Duplicate the file buffer (so we're not mucking up our original, "pure" copy. This one's "safe" to screw with
 
-    while (safeBuffer.lastIndexOf('') === (safeBuffer.length - 1)) safeBuffer.pop();                         // Discard any blank indicies And the END of the stack. Those are "missing" days.
-    while (safeBuffer.indexOf('') != -1) safeBuffer[safeBuffer.indexOf('')] = 'INTERPOLATED';               // (...since any blanks in the middle of the stack get flagged as needing to be interpolated)
-    for (let files in safeBuffer) {                                                                         // Iterate all the files we've collected into the buffer...
-        let file = safeBuffer[files];                                                                       //  ... Alias the file (for convenience).
-        if (file !== 'INTERPOLATED') {                                                                        //  ... Assuming it's not flagged for interpolation, 
-            safeBuffer[files].fileData = checkFilterMatch(file.fileData, recall('selTeam'), recall('selIteration'));            // PERFORM TEAM AND ITR FILTRATION HERE
-            let keySet = JSON.stringify(file.fileData, ['Issue key']);                                       //    ... pull out a flattened string containing ONLY the 'Issue key' columns
-            keySet = keySet.match(/\bBSWM[A-Z0-9]{0,4}-\d{2,6}\b/g);                                                                 //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
-            if (keySet != null && keySet !== '' && Array.isArray(keySet) && keySet.length > 0) ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])];                                          //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
-        } else INTERPOL8D.push(files);                                                                      //  ... UNLESS it IS flagged for interpolation, in which case add it to that collection  
+    while (safeBuffer.lastIndexOf('') === (safeBuffer.length - 1)) safeBuffer.pop();                                                                                      // Discard any blank indicies And the END of the stack. Those are "missing" days.
+    while (safeBuffer.indexOf('') != -1) safeBuffer[safeBuffer.indexOf('')] = 'INTERPOLATED';                                                                             // (...since any blanks in the middle of the stack get flagged as needing to be interpolated)
+    for (let files in safeBuffer) {                                                                                                                                       // Iterate all the files we've collected into the buffer...
+        let file = safeBuffer[files];                                                                                                                                     //  ... Alias the file (for convenience).
+        if (file !== 'INTERPOLATED') {                                                                                                                                    //  ... Assuming it's not flagged for interpolation, 
+            safeBuffer[files].fileData = checkFilterMatch(file.fileData, recall('selTeam'), recall('selIteration'));                                                      // PERFORM TEAM AND ITR FILTRATION HERE
+            let keySet = JSON.stringify(file.fileData, ['Issue key']);                                                                                                    //    ... pull out a flattened string containing ONLY the 'Issue key' columns
+            keySet = keySet.match(/\bBSWM[A-Z0-9]{0,4}-\d{2,6}\b/g);                                                                                                      //    ... and then search the pattern DIGTDEV-####(##) out (any 4-6-digit number)
+            if (keySet != null && keySet !== '' && Array.isArray(keySet) && keySet.length > 0) ISSUE_KEYS = [...new Set([...ISSUE_KEYS, ...keySet])];                     //    ... combine keySet and ISSUE_KEYS, remove duplicates, and convert back to an array.
+        } else INTERPOL8D.push(files);                                                                                                                                    //  ... UNLESS it IS flagged for interpolation, in which case add it to that collection  
     }
 
-    remapDataSoIssueIDIsPrimaryKey();                                                                       //&& ➜➜➜ 🅖
+    remapDataSoIssueIDIsPrimaryKey();                                                                                                                                     // && ➜➜➜ 🅖
 };
 
-const remapDataSoIssueIDIsPrimaryKey = () => {                                                              //&& Ⓖ ⬅︎⬅︎⬅︎    Iterate finalized buffer, and concatinated generate output data
+const remapDataSoIssueIDIsPrimaryKey = () => {                                                                                                                            // && Ⓖ ⬅︎⬅︎⬅︎    Iterate finalized buffer, and concatinated generate output data
     _I("FUNCTION: remapDataSoIssueIDIsPrimaryKey");
-    let temp_store = [];                                                                                        // Create a temporary, empty collection...
-    ISSUE_KEYS.forEach(r => {                                                                               //    ... Iterate through our unique keys from all files (from getDistinctKeysFromFiles)...
-        temp_store.push(r['Issue key']);                                                                    //    ... stuff 'em into said temp array...
-        COMBD_DATA[r] = new Array(safeBuffer.length).fill('');                                              //    ... and create an index to house the data within our Combined Data collection
-        if (DEBUG_MODE) DEBUG_DATA[r] = new Array(safeBuffer.length).fill('');                               //    (... and if we're debugging, may as well make a slot a flattened string copy too)
+    let temp_store = [];                                                                                                                                                  // Create a temporary, empty collection...
+    ISSUE_KEYS.forEach(r => {                                                                                                                                             //    ... Iterate through our unique keys from all files (from getDistinctKeysFromFiles)...
+        temp_store.push(r['Issue key']);                                                                                                                                  //    ... stuff 'em into said temp array...
+        COMBD_DATA[r] = new Array(safeBuffer.length).fill('');                                                                                                            //    ... and create an index to house the data within our Combined Data collection
+        if (DEBUG_MODE) DEBUG_DATA[r] = new Array(safeBuffer.length).fill('');                                                                                            //    (... and if we're debugging, may as well make a slot a flattened string copy too)
     });
 
     let prevDay, prevData;
@@ -712,7 +712,7 @@ const pReviewing = (e, eventTarget = e.target, engaged = false) => {
 }
 
 const showRecordDetails = (e, eventTarget = e.target || false) => {
-    if(!eventTarget) return false;
+    if(!eventTarget || !eventTarget.innerText) return false;
     _I("FUNCTION: showRecordDetails", "e", e, "eventTarget", eventTarget);
     let recordIdToDisplay = null;
     
@@ -791,6 +791,11 @@ const processParentChildRelationships = () => {                                 
         let results = quickIndex.find(qI => qI.key === key);
         return (results && results.sts) ? results.sts : '';
     };
+    quickIndex.getAssignee = (key) => {
+        // _I("FUNCTION: getAssignee", "key", key);
+        let results = quickIndex.find(qI => qI.key === key);
+        return (results && results.ass) ? results.ass : '';
+    };
     quickIndex.getLatestDetails = (key) => {
         // _I("FUNCTION: getLatestDetails", "key", key);
         let results = quickIndex.find(qI => qI.key === key);
@@ -800,9 +805,14 @@ const processParentChildRelationships = () => {                                 
     constructPreviewAndReportData();
 
 };
-const constructPreviewAndReportData = () => {                                                         // ⓺ iterate concatinated output data, look for concern-suggestive trends and build our markup
+const toggleGridWidth = (e, trg=e.target) => {
+    let panel  = qs('#output-panels'),
+        button = qs('#GrowShrink');
+    button.classList.toggle('expand');
+    setTimeout(()=>panel.classList.toggle('skinny'), 550);
+}
+const constructPreviewAndReportData = () => {                                                                 // ⓺ iterate concatinated output data, look for concern-suggestive trends and build our markup
     const ensureValidValue = (variable, value, altVal = value, tolerateEmptyStr = false) => {
-        _I("FUNCTION: ensureValidValue", "variable", variable, "value", value, "altVal", altVal, "tolerateEmptyStr", tolerateEmptyStr);
         return (
             typeof (value) === undefined
             || value == null
@@ -813,55 +823,58 @@ const constructPreviewAndReportData = () => {                                   
 
     };
 // _('constructPreviewAndReportData', COMBD_DATA);
-    let MRKUP = [],                                                                                    // Collection of markup that'll we'll used to render both the HTML preview and the ultimate XLSX file output
-        _I_ = '||--||';                                                                                // The string delimiter we're using to distinguish one chunk of data from another. Our "Split-target"
-    Object.entries(COMBD_DATA).forEach((dataRecord, ind) => {                                          // Iterate across each Issue (the "rows") that we've ingested data for, to extract the following data:
+    let MRKUP = [],                                                                                           // Collection of markup that'll we'll used to render both the HTML preview and the ultimate XLSX file output
+        _I_ = '||--||';                                                                                       // The string delimiter we're using to distinguish one chunk of data from another. Our "Split-target"
+    Object.entries(COMBD_DATA).forEach((dataRecord, ind) => {                                                 // Iterate across each Issue (the "rows") that we've ingested data for, to extract the following data:
 
         // _(dataRecord);
-        let issueName = dataRecord[0]                                                                 //   - The specific issue being examined (just the name; eg. 'DIGIT-12345'. Also serves as the array key)
-            , issueData = dataRecord[1]                                                                 //   - The specific issue being examined (all the data for all the days for the files provided)
-            , colCt = issueData.length                                                                  //   - How many "columns" we're looking at
-            , opSts = ''
-            , ROWOP = ''                                                                                 //   - The iteratively-constructed markup for the "row" corresponding to the issue being examined
-            , opHrs = 0
-            , flags = ''                                                                                 //   - The empty collection of flags, to be joined & processed later in the loop
-            , reCtr = 1                                                                                  //   - Counter for how many consecutive days the Remaining Estimate has languished, unchanged
-            , ctCtr = 1                                                                                  //   - Iteration-length counter for how many consecutive days the Remaining Estimate goes unchanged
-            , oldRE = ''                                                                                 //   - Previous (from the previous-iterated-over day in the row) Remaining Hours Estimate
-            , oldPI = ''                                                                                 //   - Previous (from the previous-iterated-over day in the row) Parent ID
-            , oldII = ''                                                                                 //   - Previous (from the previous-iterated-over day in the row) Issue ID
-            , newRE = ''                                                                                 //   - Current (from the currently-iterated-over day in the row) Remaining Hours Estimate
-            , newPI = ''                                                                                 //   - Current (from the currently-iterated-over day in the row) Parent ID
-            , newII = ''                                                                                 //   - Current (from the currently-iterated-over day in the row) Issue ID
-            , newST = '';                                                                                //   - Current Status (in this case, we don't care what the previous one was, but need it at the issue scope)
-
+        let   issueName = dataRecord[0]                                                                       //   - The specific issue being examined (just the name; eg. 'DIGIT-12345'. Also serves as the array key)
+            , issueData = dataRecord[1]                                                                       //   - The specific issue being examined (all the data for all the days for the files provided)
+            , colCt = issueData.length                                                                        //   - How many "columns" we're looking at
+            // , opSts = ''
+            , ROWOP = ''                                                                                      //   - The iteratively-constructed markup for the "row" corresponding to the issue being examined
+            // , opHrs = 0
+            , flags = ''                                                                                      //   - The empty collection of flags, to be joined & processed later in the loop
+            // , reCtr = 1                                                                                       //   - Counter for how many consecutive days the Remaining Estimate has languished, unchanged
+            // , ctCtr = 1                                                                                       //   - Iteration-length counter for how many consecutive days the Remaining Estimate goes unchanged
+            // , oldRE = ''                                                                                      //   - Previous (from the previous-iterated-over day in the row) Remaining Hours Estimate
+            // , oldPI = ''                                                                                      //   - Previous (from the previous-iterated-over day in the row) Parent ID
+            // , oldII = ''                                                                                      //   - Previous (from the previous-iterated-over day in the row) Issue ID
+            , newRE = ''                                                                                      //   - Current (from the currently-iterated-over day in the row) Remaining Hours Estimate
+            // , newPI = ''                                                                                      //   - Current (from the currently-iterated-over day in the row) Parent ID
+            // , newII = ''                                                                                      //   - Current (from the currently-iterated-over day in the row) Issue ID
+            // , newST = ''                                                                                      //   - Current Status (in this case, we don't care what the previous one was, but need it at the issue scope)
+            ;
             console.log('issueName, issueData :', issueName, issueData);
-        issueData.forEach((datRec, ix) => {                                                             // ...Iterate the issue's collected data (the "columns"), gathering...
+        issueData.forEach((datRec, ix) => {                                                                   // ...Iterate the issue's collected data (the "columns"), gathering...
             newRE = (datRec === '---') ? '---' : (datRec['Remaining Estimate'] || '---?');
             if (newRE === '---') {
-                ROWOP = ROWOP + _I_ + '---';                                                           // Tack the current day being iterated past's Est. hours remaining onto the end of the issue being iterated past
+                ROWOP = ROWOP + _I_ + '---';                                                                  // Tack the current day being iterated past's Est. hours remaining onto the end of the issue being iterated past
             } else
-                ROWOP = ROWOP + _I_ + toHours(newRE) + 'h';                                               // Tack the current day being iterated past's Est. hours remaining onto the end of the issue being iterated past
+                ROWOP = ROWOP + _I_ + toHours(newRE) + 'h';                                                   // Tack the current day being iterated past's Est. hours remaining onto the end of the issue being iterated past
         });
-        ROWOP = quickIndex.lastStatus(issueName) + _I_ + quickIndex.pathedName(issueName) + ROWOP;                                                           // STATUS | JIRA ID | PARENT ID | ISSUE ID | DAY 1 | DAY 2 | ... | DAY n | flags |
+        ROWOP = quickIndex.lastStatus(issueName)  + _I_ 
+              + quickIndex.pathedName(issueName)  + _I_ + 
+              + quickIndex.getAssignee(issueName) + ROWOP;            // STATUS | JIRA ID | PARENT ID | ISSUE ID | DAY 1 | DAY 2 | ... | DAY n | flags |
+        ROWOP = quickIndex.lastStatus(issueName) + _I_ + quickIndex.pathedName(issueName) + _I_   + quickIndex.getAssignee(issueName) + ROWOP;            // STATUS | JIRA ID | PARENT ID | ISSUE ID | DAY 1 | DAY 2 | ... | DAY n | flags |
         for (var backfill = colCt; backfill <= namedFiles.length - 1; backfill++) {
             ROWOP += _I_ + 'XxXxX';
         }
-        MRKUP.push(ROWOP.split(_I_));                                                                  // Convert it to an iterable collection and push it onto the bottom of the output markup stack
+        MRKUP.push(ROWOP.split(_I_));                                                                         // Convert it to an iterable collection and push it onto the bottom of the output markup stack
     });
 
-    let colHeaders = ['Current Status', 'Issue ID', 'Seed Day']                  // Define always-present column headers (| Current Status | JIRA ID | Parent ID | Issue ID | Seed Day |)
-        , dateArr = [];                                                                               // Array holding the labels for each column, each of which represent the file being examined
-    if (dateField.checkValidity()) {                                                                   // Since we can't date-stamp a column if the user didn't give us a date, see if they did. IF they did...
-        if (colHeaders[4] === 'Seed Day') colHeaders[4] += "<br>" + dateField.value;                     // Append the Seed Date to the seed column header (if currently unset)
-        let startDate = new Date(dateField.value).getTime();                                           // Get the epoch value of the StartDate
-        let dayCt = 1;                                                                                 // Increment the number of days we're venturing forth from the start date. This is used to ignore weekends
-        while (dateArr.length < namedFiles.length - 1 && dayCt < namedFiles.length * 2) {                                                    // Keep going until we have at least 10 days
-            let incrementedDate = new Date(startDate + (dayCt * 86400000));                            // Add 24 hours to the daying bering iterated across
-            if (incrementedDate.getDay() > 0 && incrementedDate.getDay() < 6)                          // If the now-incremented date falls on a M-F...
-                dateArr.push('Day ' + (dateArr.length + 1) + '<br />' +                                //    ... add both the day number... 
-                    incrementedDate.toLocaleDateString());                                  //    ... and the date that works out to to the stack.
-            dayCt++;                                                                                   // Increment the day counter whether we added to stack or not (since we skip over weekends and holidays)
+    let colHeaders = ['Current Status', 'Issue ID', 'Seed Day']                                               // Define always-present column headers (| Current Status | JIRA ID | Parent ID | Issue ID | Seed Day |)
+        , dateArr = [];                                                                                       // Array holding the labels for each column, each of which represent the file being examined
+    if (dateField.checkValidity()) {                                                                          // Since we can't date-stamp a column if the user didn't give us a date, see if they did. IF they did...
+        if (colHeaders[4] === 'Seed Day') colHeaders[4] += "<br>" + dateField.value;                          // Append the Seed Date to the seed column header (if currently unset)
+        let startDate = new Date(dateField.value).getTime();                                                  // Get the epoch value of the StartDate
+        let dayCt = 1;                                                                                        // Increment the number of days we're venturing forth from the start date. This is used to ignore weekends
+        while (dateArr.length < namedFiles.length - 1 && dayCt < namedFiles.length * 2) {                     // Keep going until we have at least 10 days
+            let incrementedDate = new Date(startDate + (dayCt * 86400000));                                   // Add 24 hours to the daying bering iterated across
+            if (incrementedDate.getDay() > 0 && incrementedDate.getDay() < 6)                                 // If the now-incremented date falls on a M-F...
+                dateArr.push('Day ' + (dateArr.length + 1) + '<br />' +                                       //    ... add both the day number... 
+                    incrementedDate.toLocaleDateString());                                                    //    ... and the date that works out to to the stack.
+            dayCt++;                                                                                          // Increment the day counter whether we added to stack or not (since we skip over weekends and holidays)
         }
     } else {
         for (let i = 1; i <= namedFiles.length - 1; i++)
@@ -872,7 +885,7 @@ const constructPreviewAndReportData = () => {                                   
     }
 
     colHeaders = [...colHeaders, ...dateArr];
-    let tblMarkup = '<h1>' + iterationName.value + '</h1>' +
+    let tblMarkup = '<button id="GrowShrink" class="contract" onclick="toggleGridWidth(this)"></button><h1>' + iterationName.value + '</h1>' +
         '<table class="preview-table" cellspacing="0">'
         , hdrMarkup = '<thead><tr><th>' + colHeaders.join('</th><th>').replace(/>XXXDay/g, ' class="dim">Day') +
             '</th>'
@@ -1227,7 +1240,8 @@ const postProcessData = () => {
                         nCell = cell.nextSibling,
                         nCellVal = nCell.innerText;
                     while (nCell && nCellVal === '' || nCellVal === '---') {
-                        if (nCell && nCell.innerText) {
+                        if (nCell && nCell.innerText && nCell.innerText !== '') {
+                        console.log('nCell.innerText :', nCell.innerText);
                             nCell = nCell.nextSibling;
                             nCellVal = nCell.innerText;
                         } else {
@@ -1259,7 +1273,7 @@ const postProcessData = () => {
                 major           = [],
                 critical        = [],
                 row             = rowObj.children,                                                                              // NodeList of the cells' DOM objects for the row being examined
-                rowHrs          = rowObj.innerText.replace(/[A-Z-]{8}\d{5}/gi, '').replace(/(\d+)h/gi, '$1 ').match(/\d+/gi),  // Array of hours representing all columns in this row (ex        : [8, 8, 7, 6, 4, 2, 0, 0, 0, 0, 0])
+                rowHrs          = rowObj.innerText.replace(/[A-Z-]{8}\d{5}/gi, '').replace(/([\d\.]+)h/gi, '$1 ').match(/[\d\.]+/gi),  // Array of hours representing all columns in this row (ex        : [8, 8, 7, 6, 4, 2, 0, 0, 0, 0, 0])
                 totHrsCols      = rowHrs.length,                                                                                // Number of hours columns being examined (ex                    : 11, for a std length itr)
                 seedHours       = num(rowHrs[0]),                                                                               // Number of hours in seed column (ex                            : 8, for an 8h seed)
                 rowHoursFlat    = rowHrs.join('').replace(/ /g, ''),
@@ -1273,10 +1287,12 @@ const postProcessData = () => {
                 newStoryMidItr  = false,
                 delStoryFromItr = false,
                 allItrZeroedOut = rowHoursFlat === allZeroes,
-                noChangeFor72   = rowHrs.slice(-3).join('') === new Array(3).fill(finalDaysHours).join(''),
-                noChangeInItr   = rowHoursFlat              === new Array(totHrsCols).fill(finalDaysHours).join('').replace(/ /g, ''),
-                zeroesAllItr    = parseInt(rowHrs.join('')) === 0,
+                noChangeFor72   = rowHrs.length > 4 && new Set(rowHrs.slice(-3)).size === 1,
+                zeroesAllItr    = noChangeFor72 === true && [...new Set(rowHrs.slice(2))][0] === 0,
+                noChangeInItr   = !!noChangeFor72 && !zeroesAllItr && new Set(rowHrs.slice(2)).size === 1,
                 runningValues   = seedHours;
+                console.log('rowHrs.slice(2, rowHrs.length) :', rowHrs.slice(2, rowHrs.length));
+                console.log('noChangeInItr ||| noChangeFor72 :', noChangeInItr, '|||', noChangeFor72);
 
             for (var colIdx = row.length - 1; colIdx >= 2; colIdx--) {
                 let col = row[colIdx];
@@ -1290,8 +1306,12 @@ const postProcessData = () => {
 
             if (!noChangeInItr && devHasBegun && /DEFINITION/i.test(seedStatus)) minor.push('Wrong Status|Work has begun on this story, therefore it must be out of definition phase!');
             if (seedHours === 0 && !/COMPLETED|DEMO/i.test(seedStatus)) medium.push('Hours not set!|The iteration was begin without an hour estimate being set for this story!');
-            else if (noChangeInItr && noChangeFor72 && !/COMPLETED|DEMO/i.test(seedStatus)) medium.push('No movement!|There has been no change in the status/hours burned for this story for the full period of the iteration!');
-            if (!noChangeInItr && noChangeFor72) medium.push('Development Stalled!|There has been no change in the status/hours burned for this story in the last 3 days!');
+            else if(noChangeFor72 && !zeroesAllItr){
+                if(noChangeInItr) medium.push('No movement!|There has been no change in the status/hours burned for this story for the full period of the iteration!');
+                else medium.push('Development Stalled!|There has been no change in the status/hours burned for this story in the last 3 days!');
+            }
+            // else if (noChangeInItr2 && noChangeFor72 && !/COMPLETED|DEMO/i.test(seedStatus)) medium.push('No movement!|There has been no change in the status/hours burned for this story for the full period of the iteration!');
+            // if (!noChangeInItr2 && noChangeFor72) medium.push('Development Stalled!|There has been no change in the status/hours burned for this story in the last 3 days!');
             if (newStoryMidItr) {
                 if (FILESLOADED > 2)
                     major.push('Story added mid-iteration!|This story which did not exist on the Seed Day has appeared in the iteration!');
@@ -1316,6 +1336,7 @@ const postProcessData = () => {
             [...qsa("#output-panels tr.preview-row td:nth-child(" + (i+3) + ")")].forEach((td,idx)=>{
                 let iText = td.innerText.replace(/[^\d\.]/g,'') / 1 || 0;
                 sum += iText;
+                console.log('sum :', sum);
                 if(i===0){ // Seed Column
                     idealRow[0] = readableRound(sum,2,true);
                     for(var ir=1; ir<idealRow.length; ir++) idealRow[ir] = readableRound(sum - ((sum / (TOTALITRDAYS)) * ir),2, true);
@@ -1328,8 +1349,8 @@ const postProcessData = () => {
                 }
             });
         }
-        let idealRowMarkup = `<tr class="ideal-row"><td colspan="2" class="total-label">Total (Ideal):</td><td>${idealRow.join('h</td><td>')}h</td></tr>`,
-            totalRowMarkup = `<tr class="total-row"><td colspan="2" class="total-label">Total (Actual):</td>${totalRow.join('')}</tr>`;
+        let idealRowMarkup = `<tr class="ideal-row"><td colspan="3" class="total-label">Total (Ideal):</td><td>${idealRow.join('h</td><td>')}h</td></tr>`,
+            totalRowMarkup = `<tr class="total-row"><td colspan="3" class="total-label">Total (Actual):</td>${totalRow.join('')}</tr>`;
         qs('.preview-table tbody').insertAdjacentHTML('beforeEnd', idealRowMarkup);
         qs('.preview-table tbody').insertAdjacentHTML('beforeEnd', totalRowMarkup);
 
