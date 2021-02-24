@@ -73,7 +73,7 @@ class Asbestos {
                 assignees.splice(assignees.indexOf(finalAssignee), 1);
         });
         let rval = assignees.length > 0 ? teamDialog.performSubstitution(`<li>${assignees.join("</li><li>")}</li>`) : '';
-        console.log('rval :', rval);
+        // console.log('rval :', rval);
         return rval;
     }
 }

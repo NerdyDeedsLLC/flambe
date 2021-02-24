@@ -59,8 +59,8 @@ class TeamDialog {
         if(attemptToParse){
             let parsedComponents = emailToLearn.replace(/@.+|\d/g,'').match(/([A-Z])([A-Z][a-z]+)/);
             if(parsedComponents != null && parsedComponents.length > 2){
-                personData['tmdata-fname'] = parsedComponents[1];
-                personData['tmdata-lname'] = parsedComponents[2];
+                personData['tmdata-fname'] = parsedComponents[1] || "";
+                personData['tmdata-lname'] = parsedComponents[2] || "";
             }
         }
         newPerson[emailToLearn] = personData;
@@ -72,21 +72,24 @@ class TeamDialog {
 
     performSubstitution(stringToSub){
         const emailRE = /\b[A-Z]{1,2}\w+@\w+\.\w{2,8}\b/gim;
-        console.log('performSubstitution(stringToSub) :',stringToSub);
+        // console.log('performSubstitution(stringToSub) :',stringToSub);
         let retVal = stringToSub.replace(this.subSearchRE, (s, m1)=>{
-            console.log('m1 :', m1);
+            // console.log('m1 :', m1);
             if(this.teamList[m1]){
                 let foundPerson = this.teamList[m1];
-                console.log('foundPerson :', foundPerson);
+                // console.log('foundPerson :', foundPerson);
                 return `${foundPerson['tmdata-fname']} ${foundPerson['tmdata-lname']}`;
             }
         });
         
-        if(emailRE.test(retVal) && confirm('Whoa there boss! Looks like you got some unknown emails there. You want I should try to learn them?')){
-            let newEmails = retVal.match(emailRE);
-            newEmails.forEach(addr=>this.autoLearn(addr))
+        if(emailRE.test(retVal)){
+            if(window.autoLearn === true || confirm('Whoa there boss! Looks like you got some unknown emails there. You want I should try to learn them?')){
+                window.autoLearn = true;
+                let newEmails = retVal.match(emailRE);
+                newEmails.forEach(addr=>this.autoLearn(addr))
+            }
         }
-        return retVal;
+        return retVal == null ? stringToSub : retVal;
     }
     
     showMessage(message, color=[100,255,100], delay=1.75){
@@ -131,15 +134,15 @@ class TeamDialog {
         });
         if(this.memberSel.value !== "" && !someContent) {
             if(!this.deleteMode){
-                console.log(this.memberSel, this.teamList)
+                // console.log(this.memberSel, this.teamList)
                 this.deleteMode = true;
                 return this.showMessage("Clicking Save or Done again will DELETE selected team member.", [255,100,100], 20);
             }else{
                 this.deleteMode = false;
-                console.log(window.tl = this.teamList);
+                // console.log(window.tl = this.teamList);
                 window.ms=this.memberSel;
                 let saveResult = delete this.teamList[this.memberSel.value.split('|')[0]];
-                console.log(this.teamList);
+                // console.log(this.teamList);
                 if(saveResult === true){
                     this.showMessage("Team member removed.", [255,100,100]);
                     this.timer = setTimeout(()=>this.memberSel.selectedIndex=0, 1000);
@@ -166,8 +169,8 @@ class TeamDialog {
         let memSel = this.memberSel.value;
         let flds=this.formFields;
         flds=Object.fromEntries(flds.map(fld=>[fld.name,fld]))
-        console.log(flds);
-        if(memSel !== '') console.log(memSel=memSel.split('|'));
+        // console.log(flds);
+        if(memSel !== '') (memSel=memSel.split('|'));
         flds['tmdata-email'].dataset.initial = flds['tmdata-email'].value = memSel[0] || '';
         flds['tmdata-fname'].dataset.initial = flds['tmdata-fname'].value = memSel[1] || '';
         flds['tmdata-lname'].dataset.initial = flds['tmdata-lname'].value = memSel[2] || '';

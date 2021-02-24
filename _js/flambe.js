@@ -719,7 +719,7 @@ const showRecordDetails = (e, eventTarget = e.target || false) => {
     if(eventTarget.dataset && eventTarget.dataset.recid) recordIdToDisplay = eventTarget.dataset.recid;
     else{
         eventTarget = eventTarget.closest('.issue-link');
-        recordIdToDisplay = eventTarget.innerText;
+        if(eventTarget && eventTarget.innerText) recordIdToDisplay = eventTarget.innerText;
     }
     if (recordIdToDisplay == null) return false;
     console.log('recordIdToDisplay :', recordIdToDisplay);
