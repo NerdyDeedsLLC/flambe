@@ -1251,6 +1251,24 @@ const postProcessData = () => {
         const num = val => val ? parseInt(val.replace(/\D/gi, '')) : 0;
         const formatFlags = (type, flagColl) => (!Array.isArray(flagColl) || flagColl.length === 0) ? '' : '<a href="#" class="flag-icons ' + type + '-icon"></a><dl><dt>' + flagColl.join('</dd><dt>').replace(/\|/g, '</dt><dd>') + '</dd></dl>';
 
+        /**
+            noChangeInItr   = rowHrs.splice(2, rowHrs.length).reduce((acc, cur) => (acc === true || cur !== acc) ? true : acc) === true,
+            noChangeFor72   = rowHrs.slice(-3).every(v=>v===rowHrs[rowHrs.length-1]),
+            _(rowHrs,totHrsCols,seedHours,rowHoursFlat,last72HoursFlat, noChangeInItr,noChangeFor72);
+            if (!noChangeInItr && devHasBegun && /DEFINITION/i.test(seedStatus)) minor.push('Wrong Status|Work has begun on this story, therefore it must be out of definition phase!');
+            if (seedHours === 0 && !/COMPLETED|DEMO/i.test(seedStatus)) medium.push('Hours not set!|The iteration was begin without an hour estimate being set for this story!');
+            if (noChangeFor72) medium.push('Development Stalled!|There has been no change in the status/hours burned for this story in the last 3 days!');
+            if (noChangeInItr) medium.push('No movement!|There has been no change in the status/hours burned for this story for the full period of the iteration!');
+            if (newStoryMidItr) {
+            if (FILESLOADED > 2)
+            major.push('Story added mid-iteration!|This story which did not exist on the Seed Day has appeared in the iteration!');
+            }
+            if (delStoryFromItr) major.push('Story removed from iteration!|This story, which has been tracked from the Seed Day no longer appears in the iteration!')
+            _(major, medium, minor)
+            row[0].innerHTML += formatFlags('major', major);
+            if (major && major.length == 0) row[0].innerHTML += formatFlags('medium', medium);
+            if (major && major.length == 0 && medium && medium.length == 0) row[0].innerHTML += formatFlags('minor', minor);
+        */
 
         rowNodes.forEach((rowObj, rowIdx) => {
            

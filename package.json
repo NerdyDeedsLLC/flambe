@@ -24,14 +24,15 @@
   },
   "homepage": "https://github.com/NerdyDeedsLLC/flambe#readme",
   "dependencies": {
-    "exceljs": "^1.13.0"
+    "exceljs": "^1.13.0",
+    "localforage": "^1.9.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@typescript-eslint/eslint-plugin": "^2.1.0",
     "@typescript-eslint/parser": "^2.1.0",
     "async": "^2.6.3",
-    "browser-sync": "^2.26.13",
+    "browser-sync": "^2.26.14",
     "eslint": "^6.3.0",
     "gulp": "^4.0.0",
     "gulp-autoprefixer": "^6.0.0",
