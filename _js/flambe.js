@@ -800,6 +800,12 @@ const processParentChildRelationships = () => {                                 
     constructPreviewAndReportData();
 
 };
+const toggleGridWidth = (e, trg=e.target) => {
+    let panel  = qs('#output-panels'),
+        button = qs('#GrowShrink');
+    button.classList.toggle('expand');
+    setTimeout(()=>panel.classList.toggle('skinny'), 550);
+}
 const constructPreviewAndReportData = () => {                                                         // ⓺ iterate concatinated output data, look for concern-suggestive trends and build our markup
     const ensureValidValue = (variable, value, altVal = value, tolerateEmptyStr = false) => {
         _I("FUNCTION: ensureValidValue", "variable", variable, "value", value, "altVal", altVal, "tolerateEmptyStr", tolerateEmptyStr);
@@ -872,7 +878,7 @@ const constructPreviewAndReportData = () => {                                   
     }
 
     colHeaders = [...colHeaders, ...dateArr];
-    let tblMarkup = '<h1>' + iterationName.value + '</h1>' +
+    let tblMarkup = '<button id="GrowShrink" class="contract" onclick="toggleGridWidth(this)"></button><h1>' + iterationName.value + '</h1>' +
         '<table class="preview-table" cellspacing="0">'
         , hdrMarkup = '<thead><tr><th>' + colHeaders.join('</th><th>').replace(/>XXXDay/g, ' class="dim">Day') +
             '</th>'

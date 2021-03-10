@@ -1,21 +1,22 @@
-import localforage from "localforage";
+import localforage from "./localforage";
+/*
+// document.getElementById("app").innerHTML = `
+//   Open your console to see the results of things in motion!
+// `;
 
-document.getElementById("app").innerHTML = `
-  Open your console to see the results of things in motion!
-`;
+// console.clear();
+// localforage.clear();
 
-console.clear();
-localforage.clear();
-const t1Key  = "T1_Key";
-const t2Key  = "T2_Key";
 
-console.log(localforage);
-
-class DB extends localforage {
-    constructor (...args){
-        super(...args);
+class DB extends localforage{
+    constructor(props) {
+        super(props);
+        
+        this.props = props;
         this.name = name;
         this.tables = (this.tables == null) ? this.createInstance({ name: "localforage_tables" }) : this.tables;
+        const t1Key  = "T1_Key";
+        const t2Key  = "T2_Key";
     }
 
     useTable(...tableNames){
@@ -67,3 +68,5 @@ class DB extends localforage {
         // })
     const db = new DB('flambe');
     db.schema().then(t=>console.log("Currently-stored tables within localforage:", t));
+
+    */

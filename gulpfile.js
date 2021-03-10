@@ -13,22 +13,32 @@ var PATHS = {                                                   // Paths to dist
     'html' : {
         'source': './public/*.html',
         'dest': 'public/'
+    },
+    'node' : {
+        'source': './_js/*.js',
+        'dest':   './_js/bundle.js',
+        'format': 'umd'
     }
 };
 
-var gulp, sass, babel, autoprefixer, shell, postcss, rucksack, bigBrother, runCLICmd;
 
-gulp         = require('gulp');
 
-sass         = require('gulp-sass');                            // Provides CSS PRE-processing (via a light-weight wrapper around node-sass, itself a Node binding for libsass/Sass)
-babel        = require('gulp-babel');                           // Automatically converts ES6 code into CommonJS
-autoprefixer = require('gulp-autoprefixer');                    // Applies prefixes for common and popular platforns and browsers (-ms-, -webkit-)
-runCLICmd    = require('gulp-run-command').default;             // Allows for the execution of Bash shell commands directly from gulp.
-shell        = require('gulp-shell');                           // Provides CSS POST-processing
-postcss      = require('gulp-postcss');                         // Provides CSS POST-processing
-rucksack     = require('rucksack-css');                         // CSS Post-processor rules (responsiveness, hex conversions, certain polyfills)
+const   gulp         = require('gulp'),
+        sourcemaps   = require('gulp-sourcemaps'),                                 // Automatically converts ES6 code into CommonJS
 
-bigBrother   = require('browser-sync').create();                // TODO: Detect and terminate any instances already running?
+        rollup       = require('gulp-better-rollup'),
+        resolve      = require('rollup-plugin-node-resolve'),
+        commonjs     = require('rollup-plugin-commonjs'),
+        babel        = require('rollup-plugin-babel'),
+        localforage  = require('localforage'),                                     // CSS Post-processor rules (responsiveness, hex conversions, certain polyfills)
+
+        sass         = require('gulp-sass'),                                       // Provides CSS PRE-processing (via a light-weight wrapper around node-sass, itself a Node binding for libsass/Sass)
+        autoprefixer = require('gulp-autoprefixer'),                               // Applies prefixes for common and popular platforns and browsers (-ms-, -webkit-)
+        postcss      = require('gulp-postcss'),                                    // Provides CSS POST-processing
+        rucksack     = require('rucksack-css'),                                    // CSS Post-processor rules (responsiveness, hex conversions, certain polyfills)
+        
+        // runCLICmd    = require('gulp-run-command').default,                     // Allows for the execution of Bash shell commands directly from gulp.
+        sync         = require('browser-sync').create();                           // TODO : Detect and terminate any instances already running?
  
 // function cl(){
 //     console.log.apply(console, arguments);
@@ -36,24 +46,26 @@ bigBrother   = require('browser-sync').create();                // TODO: Detect 
 
 gulp.task('server', function() {
     if(DESIGN_MODE){
-        bigBrother.init({
+        sync.init({
             server: PATHS.html.dest,
         });
-        bigBrother.notify('<b>Server initialized.</b><br>Serving files from <ul><li>HTML: ' + PATHS.html.dest + '</li><li>JS: ' + PATHS.js.dest + '</li><li>CSS: ' + PATHS.css.dest + '</li></ul>Watching for changes...', 5000);
+        sync.notify('<b>Server initialized.</b><br>Serving files from <ul><li>HTML: ' + PATHS.html.dest + '</li><li>JS: ' + PATHS.js.dest + '</li><li>CSS: ' + PATHS.css.dest + '</li></ul>Watching for changes...', 5000);
 
         // Big Brother is watching you...
-        bigBrother.watch(PATHS.html.source).on('change', bigBrother.reload);    // BrowserSync is comin' to town!
-        bigBrother.watch(PATHS.js.source).on('change', build_js);               // He sees your code a-changin'
-        bigBrother.watch(PATHS.js.dest).on('change', bigBrother.reload);        // He knows when changes pass!
-        bigBrother.watch(PATHS.css.source).on('change', build_css);             // He can't recover from errors, 
-        bigBrother.watch(PATHS.css.dest).on('change', bigBrother.reload);       // So be sure of your syntax!
+        sync.watch(PATHS.html.source).on('change', sync.reload);    // BrowserSync is comin' to town!
+        sync.watch(PATHS.js.source).on('change', build_js);               // He sees your code a-changin'
+        sync.watch(PATHS.js.dest).on('change', sync.reload);        // He knows when changes pass!
+        sync.watch(PATHS.css.source).on('change', build_css);             // He can't recover from errors, 
+        sync.watch(PATHS.css.dest).on('change', sync.reload);       // So be sure of your syntax!
     }else{
-        bigBrother.init({
+        sync.init({
             // proxy: PATHS.serverProxy,
             proxy: "yourlocal.dev"
         });
     }
 });
+
+
 
 function build_css(){
     var sassSettings = {
@@ -86,17 +98,19 @@ function build_css(){
     .pipe(sass(sassSettings).on('error', sass.logError))
     .pipe(postcss([ rucksack(rucksackSettings) ]))
     .pipe(autoprefixer(autoprefixerSettings))
-    .pipe(bigBrother.stream())
+    .pipe(sync.stream())
     .pipe(gulp.dest(PATHS.css.dest))
-    .on('change', bigBrother.reload);
+    .on('change', sync.reload);
 }
 
-function build_js(){
+function build_js() {
     return gulp.src(PATHS.js.source)
-    .pipe(babel())
-    .on('error', onError)
-    .pipe(gulp.dest(PATHS.js.dest))
-    .on('change', bigBrother.reload);
+        .pipe(sourcemaps.init())                            // note that UMD and IIFE format requires `name` but it will be inferred from the source file name `mylibrary.js`
+        .pipe(rollup({plugins: [resolve(),commonjs(), babel()]}, 'umd'))          // save sourcemap as separate file (in the same folder)
+        .pipe(sourcemaps.write(''))
+        .pipe(gulp.dest(gulp.dest(PATHS.js.dest)))
+        .on('error', onError)
+        .on('change', sync.reload);
 }
 
 
@@ -114,18 +128,4 @@ function onError(err) {
     this.emit('end');
   }
 
-const shellSettings = {
-    PATH: process.env.PATH,
-    verbose: true,
-    shell: '/usr/local/Cellar/bash/4.4.23/bin/bash'
-};
-
-gulp.task('cleanup', function(){
-    return gulp.src('*.js', {read: false})
-      .pipe(shell([
-        'killall gulp && killall open && echo "Purged all instances of gulp, node, and open."'
-       // 'killall gulp && killall node && killall open && echo "Purged all instances of gulp, node, and open."'
-      ], shellSettings));
-});
-gulp.task('greet',   shell.task('echo Hello, World!'));
 gulp.task('default', gulp.parallel('greet', 'css', 'js', 'server'));
