@@ -1,4 +1,5 @@
-class Asbestos {
+import "./modules/global.js";
+export default class Asbestos {
     constructor() {
         this.list = [];
         this.dialog       = null

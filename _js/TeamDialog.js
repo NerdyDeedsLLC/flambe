@@ -1,4 +1,5 @@
-class TeamDialog {
+import {d, qs, qsa, _, _I, _T, rote, memories, recall, muse, retain, reflect, forget, fugue, toHours, setTargetSlot, findLastIndexOf} from "./modules/global.js";
+export default class TeamDialog {
     constructor() {
         this.initialized = false;
         this.deleteMode  = false;
