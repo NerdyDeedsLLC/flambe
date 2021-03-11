@@ -2,7 +2,7 @@ class TeamDialog {
     constructor() {
         this.initialized = false;
         this.deleteMode  = false;
-        this.teamList    = muse('teamlist', {}); 
+        this.teamList    = muse('teamlist', {"SPamidi7@gsm1900.org":{"tmdata-email":"SPamidi7@gsm1900.org","tmdata-fname":"Sai","tmdata-lname":"Pamidi"},"PDurgem1@gsm1900.org":{"tmdata-email":"PDurgem1@gsm1900.org","tmdata-fname":"Pavan","tmdata-lname":"Durgempudi"},"MDuree1@gsm1900.org":{"tmdata-email":"MDuree1@gsm1900.org","tmdata-fname":"Michael","tmdata-lname":"Duree"},"HKoppar1@gsm1900.org":{"tmdata-email":"HKoppar1@gsm1900.org","tmdata-fname":"Harika","tmdata-lname":"Koppar"},"JOlenho1@gsm1900.org":{"tmdata-email":"JOlenho1@gsm1900.org","tmdata-fname":"Jason","tmdata-lname":"Olenhouse"},"RYadav23@gsm1900.org":{"tmdata-email":"RYadav23@gsm1900.org","tmdata-fname":"Roshan","tmdata-lname":"Yadav"},"CJarami7@gsm1900.org":{"tmdata-email":"CJarami7@gsm1900.org","tmdata-fname":"Carlos","tmdata-lname":"Jaramillo"},"MIraqi1@gsm1900.org":{"tmdata-email":"MIraqi1@gsm1900.org","tmdata-fname":"Mohammad","tmdata-lname":"Iraqi"},"MKonank1@gsm1900.org":{"tmdata-email":"MKonank1@gsm1900.org","tmdata-fname":"Meena","tmdata-lname":"Konanki"},"AReddy1@gsm1900.org":{"tmdata-email":"AReddy1@gsm1900.org","tmdata-fname":"Anil","tmdata-lname":"Reddy"},"NPatel56@gsm1900.org":{"tmdata-email":"NPatel56@gsm1900.org","tmdata-fname":"Nirav","tmdata-lname":"Patel"},"xw889417@ad.sprint":{"tmdata-email":"xw889417@ad.sprint","tmdata-fname":"X","tmdata-lname":"W"},"tv568045@ad.sprint":{"tmdata-email":"tv568045@ad.sprint","tmdata-fname":"Ravi","tmdata-lname":"K"}}); 
         this.subSearchRE = '';
         this.dialogObj   = qs('#team');
         this.memberSel   = qs('#team-members');
