@@ -775,7 +775,7 @@ button.add-record {
                     &:nth-of-type(-n + 1) {
                         text-align: left;
                     }
-                    &:nth-of-type(-n + 3) {
+                    &:nth-of-type(-n + 2) {
                         text-align: center;
                     }
 
@@ -815,11 +815,11 @@ button.add-record {
             font-size:11px;
         }
     
-        &:nth-child(-n + 4) a {
+        &:nth-child(-n + 3) a {
             font-size:11px;
         }
     
-        &:nth-child(n + 4) {
+        &:nth-child(n + 3) {
             width: 4%;
             text-align: right;
             
