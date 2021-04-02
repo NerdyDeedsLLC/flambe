@@ -128,4 +128,4 @@ function onError(err) {
     this.emit('end');
   }
 
-gulp.task('default', gulp.parallel('greet', 'css', 'js', 'server'));
+gulp.task('default', gulp.parallel('css', 'js', 'server'));
