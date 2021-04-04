@@ -3,13 +3,22 @@
 <head>
     <title>Flambé :: BURNIN' DOWN THE HOUSE!</title>
     <meta charset="utf-8">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500&family=Teko:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/lib/css/hydrometer.css">
+    <link rel="stylesheet" href="/lib/css/upsydownsy.css">
+    <script type="module" src="./lib/js/ui/hydrometer.js"></script>
+    <script type="module" src="./lib/js/ui/upsydownsy.js"></script>
 </head>
     
 <body>
     <div class="calendarRange"></div>
 
-    <script type="module" src="./lib/js/db/db.js"></script>
-    
-    </body>
+    <hydro-meter></hydro-meter>
+    <hydro-meter value="220" max="300"></hydro-meter>
+    <hydro-meter></hydro-meter>
+    <upsy-downsy delta='up' value='216'></upsy-downsy>
+    <hydro-meter></hydro-meter>
+</body>
 
 </html>

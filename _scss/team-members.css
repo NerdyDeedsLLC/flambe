@@ -1,0 +1,313 @@
+@charset "UTF-8";
+.team, .team * {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  font-family: system-ui;
+  font-size: 12px;
+  position: relative;
+}
+
+#team-blotter {
+  display: none;
+  background: #000C;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.team {
+  width: 480px;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  justify-items: stretch;
+  -webkit-box-pack: stretch;
+      -ms-flex-pack: stretch;
+          justify-content: stretch;
+  -ms-flex-line-pack: stretch;
+      align-content: stretch;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  padding: 0;
+  background-color: #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  -webkit-box-shadow: 0 20px 20px #0009;
+          box-shadow: 0 20px 20px #0009;
+  position: fixed;
+  border: 2px solid #666;
+  top: 50%;
+  -webkit-transform: translatey(-100%);
+          transform: translatey(-100%);
+  z-index: 10;
+}
+
+.team, .team.hidden {
+  display: none;
+  visibility: hidden;
+}
+
+.team:visible + #team-blotter, .team.hidden:visible + #team-blotter {
+  display: block;
+}
+
+.team.visible {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  visibility: visible;
+}
+
+.team.visible + #team-blotter {
+  display: block;
+}
+
+.team.visible + #team-blotter ~ * {
+  -webkit-filter: contrast(0) brightness(0.5) blur(5px);
+          filter: contrast(0) brightness(0.5) blur(5px);
+  opacity: 0.3;
+  z-index: -1;
+}
+
+.team > h1 {
+  background-color: #666;
+  width: 100%;
+  margin: 0;
+  padding: 5px 5px 8px 10px;
+  color: #DDDE;
+  height: 26px;
+  line-height: 16px;
+  font-size: 14px;
+  font-weight: 400;
+  text-shadow: 1px 1px 0 #333;
+}
+
+.team > h1 button {
+  padding: 0;
+  margin: 0;
+  line-height: 0;
+  font-size: 19px;
+  height: 16px;
+  width: 16px;
+  float: right;
+  background-color: transparent;
+  border-radius: 50%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 455 455'%3E%3Ccircle cx='227.6' cy='227.6' r='227.6' fill='%23c00'/%3E%3Cpath fill='%23A00' d='M455 228A228 228 0 0150 370 228 228 0 00370 50c52 41 85 105 85 178z'/%3E%3Cpath fill='%23fff' d='M331 331c-8 9-22 9-31 0l-72-72-73 72c-9 9-23 9-31 0-9-8-9-22 0-31l72-72-72-73c-9-9-9-23 0-31 8-9 22-9 31 0l73 72 72-72c9-9 23-9 31 0 9 8 9 22 0 31l-72 73 72 72c9 9 9 23 0 31z'/%3E%3C/svg%3E");
+  border: 1px solid #000A;
+}
+
+.team > label {
+  width: 100%;
+  padding: 10px;
+  background-color: #bbb;
+  border-bottom: 1px solid #999;
+  margin-bottom: 5px;
+}
+
+.team > label > select {
+  width: 100%;
+  margin: 0;
+  border-radius: 3px;
+  padding: 3px;
+  background-color: #eee;
+}
+
+.team > div {
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 auto;
+          flex: 0 0 auto;
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #aaa;
+  min-width: 330px;
+}
+
+.team > div.button-panel {
+  min-width: 100%;
+  background-color: #bbb;
+  padding: 5px 10px 3px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-top: 30px;
+}
+
+.team > div.button-panel .btn {
+  width: 110px;
+  border: 1px solid black;
+  font-size: 11px;
+  height: 19px;
+  border-radius: 4px;
+  line-height: 7px;
+  padding: 0;
+  margin: 0;
+  text-shadow: -1px -1px 0 #000C;
+}
+
+.team > div.button-panel .btn.cancel {
+  background: #444;
+  color: #EEE;
+  opacity: 0.9;
+}
+
+.team > div.button-panel .btn.save {
+  width: 100px;
+  background: -webkit-gradient(linear, left top, left bottom, from(#fffc), to(#fff8));
+  background: linear-gradient(#fffc, #fff8);
+  text-shadow: -1px -1px 0 #FFFC;
+  color: #04369aCC;
+  border-color: #04369a;
+  font-weight: 600;
+}
+
+.team > div.button-panel .btn.save.close {
+  background: -webkit-gradient(linear, left top, left bottom, from(#0856ff), to(#04369a));
+  background: linear-gradient(#0856ff, #04369a);
+  color: #fff;
+  border-color: #fff8;
+  text-shadow: -1px -1px 0 #000C;
+  font-weight: 400;
+}
+
+.team > div.button-panel span {
+  display: inline-block;
+  -webkit-box-flex: 1;
+      -ms-flex: 1 0 auto;
+          flex: 1 0 auto;
+  min-width: 300px;
+  text-align: right;
+}
+
+.team > div.team-member {
+  background: #EEE;
+  border-radius: 10px;
+  padding: 0;
+  margin: 10px 10px 0 10px;
+}
+
+.team > div.team-member .team-member-data {
+  display: block;
+  padding: 0 0 0 10px;
+  height: 32px;
+  line-height: 32px;
+  margin: 5px 0 5px;
+}
+
+.team > div.team-member .team-member-data > label {
+  display: inline-block;
+  width: 80px;
+  font-size: 11px;
+  text-indent: 10px;
+}
+
+.team > div.team-member .team-member-data > input {
+  width: 200px;
+  border-radius: 3px;
+  border: 1px solid #999;
+}
+
+.team > div.team-member-avatar {
+  min-width: 116px;
+  max-width: 116px;
+  border-radius: 10px;
+  background-color: #bbb;
+}
+
+.team > div.team-member-avatar > span {
+  display: block;
+  width: 96px;
+  height: 96px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #888;
+}
+
+.team > div.team-member-avatar > span::before {
+  content: var(--pic, "👤");
+  font-size: 96px;
+  display: block;
+  background: #EEE;
+  width: 96px;
+  height: 96px;
+  border-radius: 8px;
+}
+
+.team > div.team-member-avatar > span::after {
+  content: '✏️';
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  font-size: 12px;
+  -webkit-transform: scalex(-1);
+          transform: scalex(-1);
+  background: #FFFc;
+  width: 20px;
+  border-radius: 0 75% 0 0;
+}
+
+.team #tm-message {
+  position: absolute;
+  width: 90%;
+  height: 24px;
+  background: var(--bgcolor, #0705);
+  color: #0009;
+  text-align: center;
+  left: 5%;
+  bottom: 28px;
+  line-height: 24px;
+  border-radius: 50px 50px 0 0;
+  overflow: hidden;
+  max-height: 0;
+  font-weight: bold;
+  -webkit-animation: hide-team-dialog 0.25s ease-in-out forwards;
+          animation: hide-team-dialog 0.25s ease-in-out forwards;
+  display: none;
+}
+
+.team #tm-message.show {
+  -webkit-animation: show-team-dialog 0.25s ease-in-out forwards;
+          animation: show-team-dialog 0.25s ease-in-out forwards;
+}
+
+@-webkit-keyframes show-team-dialog {
+  0% {
+    max-height: 0;
+  }
+  100% {
+    max-height: 24px;
+  }
+}
+
+@keyframes show-team-dialog {
+  0% {
+    max-height: 0;
+  }
+  100% {
+    max-height: 24px;
+  }
+}
+
+@-webkit-keyframes hide-team-dialog {
+  0% {
+    max-height: 24px;
+  }
+  100% {
+    max-height: 0;
+  }
+}
+
+@keyframes hide-team-dialog {
+  0% {
+    max-height: 24px;
+  }
+  100% {
+    max-height: 0;
+  }
+}
+/*# sourceMappingURL=team-members.css.map */

@@ -15,7 +15,7 @@ var PATHS = {                                                   // Paths to dist
         'dest': 'public/'
     },
     'node' : {
-        'source': './_js/*.js',
+        'source': './_js/**/*.js',
         'dest':   './_js/bundle.js',
         'format': 'umd'
     }
@@ -108,7 +108,7 @@ function build_js() {
         .pipe(sourcemaps.init())                            // note that UMD and IIFE format requires `name` but it will be inferred from the source file name `mylibrary.js`
         .pipe(rollup({plugins: [resolve(),commonjs(), babel()]}, 'umd'))          // save sourcemap as separate file (in the same folder)
         .pipe(sourcemaps.write(''))
-        .pipe(gulp.dest(gulp.dest(PATHS.js.dest)))
+        .pipe(gulp.dest(PATHS.js.dest))
         .on('error', onError)
         .on('change', sync.reload);
 }

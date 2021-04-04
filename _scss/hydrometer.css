@@ -1,0 +1,80 @@
+@charset "UTF-8";
+/*
+    Usage:  <hydro-meter value="100" max="200" size="100"></hydro-meter>
+    Value:  How much of the meter is filled
+    Max:    The meter's total capacity (its value when filled to 100%)
+    Size:   Optional (defaults to 100)
+*/
+hydro-meter {
+  --animated-liquid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='150 0 200 250' %3E%3Cpath fill='%23000000CC'%3E%3Canimate attributeName='d' from='M-50 2016V6c100-19 100 19 200 0s100 19 200 0v2010H0z' to='M150 2016V6c100-19 100 19 200 0s100 19 200 0v2010H0z' dur='10s' repeatCount='indefinite' /%3E%3C/path%3E%3Cpath fill='%23000000AA'%3E%3Canimate attributeName='d' from='M150 2016V6c100-19 100 19 200 0s100 19 200 0v2010H0z' to='M-50 2016V6c100-19 100 19 200 0s100 19 200 0v2010H0z' dur='6s' repeatCount='indefinite' /%3E%3C/path%3E%3C/svg%3E");
+  --scaled:calc(var(--progress) * (var(--dimensions) / 100));
+  --light-color:hsl(var(--progress), 100%, 60%);
+  --fill-color:hsl(var(--progress),  100%, 40%);
+  --dark-color:hsl(var(--progress),  100%, 35%);
+  --value: var(--value, 0);
+  --dimensions: var(--size, 100);
+  --progress:calc(var(--value) / var(--max) * 100);
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  position: relative;
+  outline: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  pointer-events: none;
+  display: block;
+  margin: 0;
+  counter-reset: val var(--value);
+  height: calc(1px * var(--dimensions));
+  width: calc(1px * var(--dimensions));
+  max-width: calc(1px * var(--dimensions));
+  -webkit-transform: scale(1);
+          transform: scale(1);
+  border: 1px solid black;
+  overflow: hidden;
+  font-size: calc(0.33px * var(--dimensions));
+  font-weight: 900;
+  font-family: system-ui;
+  line-height: 0.6;
+  border-radius: 10px;
+}
+
+hydro-meter, hydro-meter * {
+  -webkit-transition: 0.5s all ease-in-out;
+  transition: 0.5s all ease-in-out;
+}
+
+hydro-meter::before, hydro-meter::after {
+  counter-reset: max var(--max);
+  content: counter(val) " ── " counter(max);
+  padding-top: calc(.18px * var(--dimensions));
+  word-spacing: 1000px;
+  display: block;
+  position: absolute;
+  text-align: center;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+hydro-meter::before {
+  color: var(--fill-color);
+  z-index: -1;
+}
+
+hydro-meter::after {
+  background-color: var(--fill-color);
+  color: white;
+  -webkit-mask: var(--animated-liquid);
+          mask: var(--animated-liquid);
+  -webkit-mask-position: 0 calc((var(--dimensions) - var(--scaled)) * 1px + (var(--dimensions) / 100 * 1px));
+          mask-position: 0 calc((var(--dimensions) - var(--scaled)) * 1px + (var(--dimensions) / 100 * 1px));
+  -webkit-mask-repeat: repeat-x;
+          mask-repeat: repeat-x;
+  z-index: 1;
+}
+/*# sourceMappingURL=hydrometer.css.map */

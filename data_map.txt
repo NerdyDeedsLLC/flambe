@@ -1,0 +1,31 @@
+Sprints
+    Dates
+        Worklogs
+            People
+    Stories
+        Worklogs
+        Teams
+            People
+        People
+            Teams
+    Teams
+        People
+
+Defining a Sprint
+    Name of Sprint
+    Date Range
+        Start
+        End
+    Seed File
+
+    User Creates a Sprint
+        Database Record is Created
+            SprintName
+            SprintStart
+            SprintEnd
+            [1:∞]  DayRecords          - ARRAY   : Dates     (20210402-00)
+            [1:∞]  StoryRecords        - ARRAY   : IssueIDs  (SC004-02)
+            [1:∞]  PeopleRecords       - ARRAY   : TeamNames (person@email.com)
+            [1:∞]       TeamRecords    - ARRAY   : TeamNames (BravoTeam)
+            [1:∞]  TeamRecords         - ARRAY   : TeamNames (BravoTeam)
+            [1:∞]       PeopleRecords  - ARRAY   : TeamNames (person@email.com)
