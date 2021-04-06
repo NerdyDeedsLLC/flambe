@@ -1,0 +1,163 @@
+/*
+    Usage:  <upsy-downsy delta="up" value="216"></hydro-meter>
+    all-stories:        How many stories are in the sprint overall, regarldess of their state
+    stories-in-state:   The total count of issues in the sprint known to be in this state
+    state:              The state ("In Progress", "Blocked" "Dev Complete", etc) this unique bar is to represent
+
+    <progress-bar all-stories="31" stories-in-state="2" state="Defined"></progress-bar>
+    <progress-bar all-stories="31" stories-in-state="1" state="In Progress"></progress-bar>
+    <progress-bar all-stories="31" stories-in-state="1" state="Blocked"></progress-bar>
+
+    // <div class="story-popover">
+    //     <jira-issue id="SW-123" href="http://link.to.jira/123" owner="Jurusz, Jason" avatar="http://path.to.pic" storypoints="5" state="Defined">Some Story</jira-issue>
+    //     <jira-issue id="SW-234" href="http://link.to.jira/234" owner="Barrow, Ashley" storypoints="8" state="In Progress">A Different Story</jira-issue>
+    //     <jira-issue id="SW-345" href="http://link.to.jira/345" owner="Olenhouse, Jason" storypoints="13" state="Defined">Another Pending Story</jira-issue>
+    //     <jira-issue id="SW-456" href="http://link.to.jira/456" owner="Tapias, Jose" storypoints="3" state="Blocked">A BLOCKED Story</jira-issue>
+    // </div>
+*/
+progress-bar {
+    display: block;
+    background: #aaa;
+    width: 100%;
+    height: 25px;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    margin: 2px 0;
+
+    background-position: 5px 4px;
+    box-shadow: inset -2px 2px 3px #0003;
+
+    &::before,
+    &::after {
+        content: "";
+        position: absolute;
+        display: block;
+        width: calc(100% - 38px);
+        height: calc(100% - 8px);
+        right: 4px;
+        top: 4px;
+    }
+
+    &::before {
+        box-shadow: inset -2px 2px 3px #0003;
+        background: #ccc;
+        border-radius: 4px;
+        border: 1px solid #0006;
+    }
+
+    &::after {
+        --diff-count: calc( (100% - 48px) * (var(--stories-in-state) / var(--all-stories) ) );
+        right: unset;
+        left: 36px;
+        background: white;
+        width: var(--diff-count);
+        height: 9px;
+        top: 7px;
+        border-radius: 0 3px 3px 0;
+        // width:calc(100% - 48px);
+    }
+
+    
+    &.defined {      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23FFF' d='M26 10c1.1 0-.2 2.6-1.2 1.7.4 6.2-8.6 4.8-8.8 3.3-.2 1.4-5.5 3-6-1-4 .5-3.8-3.3-3.4-3.5-1 .4-4.7-4.2 1.3-6-1.2-3 4.5-6.2 6.4-3 1.5-1.8 8-1.7 8 1.5 2.5-.5 5.7 1.2 3.7 7zM3 20c-1 .2-1.1-.3-1-1.3-1.5.1-.8-1.2 0-1.7 1.3-.8 2.7-.4 2 1 .8.1 0 1.8-1 2zm3-5c.6-2 2.8-1 2 0 1.5-1 2.8.6 2 2 .2.5.2 1.4-1 1-1.8 1-3.2.3-3-1-.6-.7-1-1.4 0-2z'/%3E%3C/svg%3E"); }
+    &.in-progress {  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 35 33'%3E%3Cpath fill='%23FFF' d='M15 15c0-1.4-1.6-3.6-3-3-.6.6 0 .6 0 1l3 2zm5 3l2-4 5 9H15l4-4-6.4-3.7c.2.4.4 1 .4 1.7v5c.3.3.3.7 0 1-.3.3-.7.3-1 0h-1v-5c-.2-1.4-1.8-3-2-3 0 1-1 4-1 4l-3 5H3v-1c1-.8 1.6-1.8 2-3 .4-1.3.4-3.8 1-5 .6-3.3 1.3-2.4-4-5-1-2.8 0-2 0-2l2 1c-.1-1.2-.2-2.2 1-3 1.4-1 3.3-1 6 0 2.5 1.6 2.6 0 6 10l3 2zM8 8c-1-.8-2.5-.2-2 2l2 1c.6-1 .7-2.3 0-3zm5-2a3 3 0 110-6 3 3 0 010 6z'/%3E%3C/svg%3E");}
+    &.dev-complete { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 29'%3E%3Cpath fill='%23FFF' fill-rule='evenodd' d='M20 18a2 2 0 01-2 2H3a2 2 0 01-2-2V2c0-1.1.9-2 2-2h13l4 4v14zM15 1v5h-3V1H5v6h11V1h-1zm2 9H4v8h13v-8z'/%3E%3C/svg%3E");}
+    &.in-testing {   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 33 31'%3E%3Cpath fill='%23FFF' fill-rule='evenodd' d='M23 10v10c0 1-2.3 2.8-10.5 1.5l.5-.5c5.7.8 9-.2 9-1V10c0-.4 1-1.7 1-2 0 .8-4.2 1.8-9.4 1.2A6 6 0 0012 8c3 1 11-.3 11-1s-9.2-2.7-11 .1V6c1-.4 2.5-1 4.5-1C21.3 5 25 7 25 7s-2 2.4-2 3zm-7 2s5-.1 5 1c0 1-5 1-5 1v-2zm-2 8c1.3-.7 2-4.1 2-5 0 0 .6 1.1 5 0 1.9 6.7-7 5-7 5zm1-5A7 7 0 115 8.7V1c0-.6 1.3-1 3-1s3 .4 3 1v7.7a7 7 0 014 6.3zm-4.9-6.1v-7c0-.5-1-.9-2.1-.9-1.2 0-2.1.4-2.1 1v6.9A8.2 8.2 0 002 14c-.5 2.8 2 7 6 7a6 6 0 006-7c-.4-2-1.7-3.9-3.9-5.1zM8 20c-6 0-5.2-7-5-8 .6-.5.9-.6 1-.4-.7 1-.8 2.3 0 4l.9-.5a4.3 4.3 0 01-.3-3c.3.1.6.2 1.4-.1 2.2-1 2.7-.7 5 0 1 .3 1-1 2 0 1 2.2-.2 8-5 8z'/%3E%3C/svg%3E"); }
+    &.complete {     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-2 -2 28 38'%3E%3Cpath fill='%23FFF' fill-rule='evenodd' d='M17 3.6c-2.4 0-1.7 2-3.8 2H7.9c-2.1 0-1.4-2-3.8-2-2.3 0-2.3 1-2.3 2.3v8.6l-1 .2v-10c0-1 .9-1.9 1.9-1.9h4.5v.4C7.2 4.2 8 5 9 5h3c1 0 2-.8 2-1.8v-.4h4.4c.8 0 1.5.5 1.7 1.2l-2-1.2c-.2.3-.6.5-1 .8zm-5.3.9H9.4C8.6 4.5 8 3.9 8 3c0 0 .2-1.4 1.4-1.4a1.2 1.2 0 112.3 0C13 1.7 13.1 3 13.1 3c0 .8-.7 1.4-1.4 1.4zm-1.2-3.2a.4.4 0 100 .8.4.4 0 000-.8zm-5 14.2c1.3 1.4 1.8 1.5 2.3 3.3 1.6-8 8-12.8 9.4-14.1L22.5 8c-7.1 3-9.4 7-13.5 15.9C7.1 28 4 18.6.5 17.3c-.8-3.2 5-1.9 5-1.8zm-3.7 3.8v3.6c0 1.2 1 2.3 2.3 2.3h2.2c1.1 1 2 1.3 2.9 0H17c1.2 0 2.3-1 2.3-2.3V10.5l1-.7v14.7c0 1-.9 1.9-1.9 1.9H2.7c-1 0-1.9-.9-1.9-1.9v-6.4l1 1.2z'/%3E%3C/svg%3E"); }
+    &.blocked {
+        --stories-in-state: var(--stories-in-state, 0);
+        --conditional: calc(
+            (var(--stories-in-state) / var(--all-stories)) /
+                (var(--stories-in-state) / var(--all-stories))
+        );
+        // overflow:hidden;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-5 -3 33 73'%3E%3Cpath fill='%23CCC' fill-rule='evenodd' d='M4.515 20.485c-4.687-4.686-4.687-12.284 0-16.97 4.686-4.687 12.284-4.687 16.97 0 4.687 4.686 4.687 12.284 0 16.97-4.686 4.687-12.284 4.687-16.97 0zm16.22-16.22c-4.272-4.271-11.198-4.271-15.47 0-4.271 4.272-4.271 11.198 0 15.47 4.272 4.271 11.198 4.271 15.47 0 4.271-4.272 4.271-11.198 0-15.47zM6.684 15.496c-1.521-2.745-1.117-6.27 1.213-8.599 2.319-2.32 5.899-2.759 8.639-1.261l-9.852 9.86zm2.835 2.829c2.743 1.511 6.259 1.104 8.584-1.222 2.327-2.326 2.733-5.846 1.219-8.589l-9.803 9.811zm-.99-10.796c-1.698 1.697-2.199 4.112-1.563 6.263l7.826-7.826c-2.151-.636-4.566-.135-6.263 1.563zm10.505 2.679l-7.826 7.826c2.151.636 4.566.135 6.263-1.563 1.698-1.697 2.199-4.112 1.563-6.263z'/%3E%3Cpath fill='%23999' fill-rule='evenodd' d='M5.265 19.735c-4.271-4.272-4.271-11.198 0-15.47 4.272-4.271 11.198-4.271 15.47 0 4.271 4.272 4.271 11.198 0 15.47-4.272 4.271-11.198 4.271-15.47 0zM7.897 6.897c-2.325 2.324-2.701 5.827-1.191 8.569l9.76-9.76c-2.742-1.51-6.245-1.134-8.569 1.191zm11.397 1.637l-9.76 9.76c2.742 1.51 6.245 1.134 8.569-1.191 2.325-2.324 2.701-5.827 1.191-8.569z'/%3E%3Cpath fill='%23FFEA1C' fill-rule='evenodd' d='M4.515 60.485c-4.687-4.686-4.687-12.284 0-16.97 4.686-4.687 12.284-4.687 16.97 0 4.687 4.686 4.687 12.284 0 16.97-4.686 4.687-12.284 4.687-16.97 0zm16.22-16.22c-4.272-4.271-11.198-4.271-15.47 0-4.271 4.272-4.271 11.198 0 15.47 4.272 4.271 11.198 4.271 15.47 0 4.271-4.272 4.271-11.198 0-15.47zM6.684 55.496c-1.521-2.745-1.117-6.27 1.213-8.599 2.319-2.32 5.899-2.759 8.639-1.261l-9.852 9.86zm2.835 2.829c2.743 1.511 6.259 1.104 8.584-1.222 2.327-2.326 2.733-5.846 1.219-8.589l-9.803 9.811zm-.99-10.796c-1.698 1.697-2.199 4.112-1.563 6.263l7.826-7.826c-2.151-.636-4.566-.135-6.263 1.563zm10.505 2.679l-7.826 7.826c2.151.636 4.566.135 6.263-1.563 1.698-1.697 2.199-4.112 1.563-6.263z'/%3E%3Cpath fill='%23ED0012' fill-rule='evenodd' d='M5.265 59.735c-4.271-4.272-4.271-11.198 0-15.47 4.272-4.271 11.198-4.271 15.47 0 4.271 4.272 4.271 11.198 0 15.47-4.272 4.271-11.198 4.271-15.47 0zm2.632-12.838c-2.325 2.324-2.701 5.827-1.191 8.569l9.76-9.76c-2.742-1.51-6.245-1.134-8.569 1.191zm11.397 1.637l-9.76 9.76c2.742 1.51 6.245 1.134 8.569-1.191 2.325-2.324 2.701-5.827 1.191-8.569z'/%3E%3C/svg%3E");
+        background-size: 22px 64px;
+        background-position: 1
+            calc((1px * (var(--conditional) * -33)) + 1px);
+
+        &::before {
+            background: hsl(
+                calc(60 * var(--conditional)),
+                100%,
+                50%
+            );
+        }
+
+        &::after {
+            background: hsl(
+                0,
+                100%,
+                calc(100% - (50% * var(--conditional)))
+            );
+        }
+    }
+
+    &:hover .story-progress-popup:not(:empty) {
+        max-height: 500px;
+        transition: 2s all ease-out 0.5s;
+        z-index: 80;
+        box-shadow: 0 8px 13px #0008;
+    }
+
+    .story-progress-popup {
+        background: white;
+        z-index: 80;
+        width: 150%;
+        position: absolute;
+        top: 28px;
+        left: 64px;
+        border-radius: 0 0 4px 4px;
+        box-shadow: 0;
+        max-height: 0;
+        border-radius: 5px;
+
+        overflow-y: hidden;
+        transition: 0.25s all ease-out;
+
+        ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            &::before {
+                content: "";
+                background: red;
+            }
+        }
+
+        &::before {
+            content: "Status = '" var(--title) "'";
+            text-align: center;
+            background: #bbb;
+            display: block;
+            font-weight: 800;
+        }
+
+        .story-popup-issue {
+            border-top: 0 none;
+            a {
+                color: crimson;
+                font-weight: 500;
+                display: block;
+                padding: 5px 10px;
+                text-decoration: none;
+
+                &:hover {
+                    background: crimson;
+                    color: white;
+                }
+
+                &::before {
+                    content: "[" var(--issue-id) "] ";
+                }
+
+                &::after {
+                    content: " (" var(--owner) ")";
+                }
+            }
+            & + li {
+                border-top: 1px solid #aaa;
+            }
+        }
+    }
+}
+
