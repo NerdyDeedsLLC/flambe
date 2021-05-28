@@ -105,9 +105,9 @@ function build_css(){
 
 function build_js() {
     return gulp.src(PATHS.js.source)
-        .pipe(sourcemaps.init())                            // note that UMD and IIFE format requires `name` but it will be inferred from the source file name `mylibrary.js`
-        .pipe(rollup({plugins: [resolve(),commonjs(), babel()]}, 'umd'))          // save sourcemap as separate file (in the same folder)
-        .pipe(sourcemaps.write(''))
+        // .pipe(sourcemaps.init())                            // note that UMD and IIFE format requires `name` but it will be inferred from the source file name `mylibrary.js`
+        .pipe(rollup({plugins: [babel(),resolve(),commonjs()]}, 'umd'))          // save sourcemap as separate file (in the same folder)
+        // .pipe(sourcemaps.write(''))
         .pipe(gulp.dest(PATHS.js.dest))
         .on('error', onError)
         .on('change', sync.reload);

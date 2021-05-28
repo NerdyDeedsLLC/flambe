@@ -1,0 +1,292 @@
+/*
+    SAMPLE USAGE    
+    <jira-issue issue-id = "ISSUE-01" href = "http : //path.to/issue/in/jira" owner = "LastName, FirstName" owner-email = "owner@email.address" avatar = "url(http : //path.to/pic)" storypoints = "5" state = "Defined">Jira Issue Title</jira-issue>
+        issue-id    : The jira-issued id for the issue/story being rendered
+        href        : The URL() to the story IN jira
+        owner       : The person assigned to the task
+        owner-email : That person's email address
+        avatar      : The URL() to the avatar being used by that person IN Jira
+        storypoints : The stroypoint value of the issue
+        state       : The current progress state the story is resting in
+*/
+    
+   
+    
+    
+    
+jira-issue, .jira-issue {
+    
+    background:#b3b3b3 url(/avatars/NotFound.jpg);
+    margin:0 0 10px 30px;
+    max-width:360px;
+    width:100vw;
+    border-radius:0 50px 50px 0;
+    height:36px;
+    display:none;
+        
+    &, *, *::before, *::after {
+        transition:0.2s all ease-in-out;
+        position: relative;
+        box-sizing: border-box;
+        font-family: Hind;
+        outline: none;
+        display: block;
+        background-repeat: no-repeat !important;
+    }
+    
+    &::after {
+        content:'';
+        display:block;
+        position:absolute;
+        right:1px;
+        top:1px;
+        width:34px;
+        height:34px;
+        background:var(--avatar, url(/avatars/NotFound.jpg));
+        background-size:cover;
+        border-radius:50%;
+        border:1px solid #222;
+    }
+    
+    & > a {
+        display:block;
+        margin-left:20px;
+        padding:4px 80px 0 78px;
+        width:100%;
+        height:36px;
+        text-decoration:none;
+        color:inherit;
+        line-height:14px;
+        font-size:16px;
+        font-weight:300;
+        font-family:Teko;
+    
+        &::before {
+            content: var(--storypoints);
+            position:absolute;
+            top:-2px;
+            left:-40px;
+            background:#b3b3b3;
+            height:40px;
+            width:40px;
+            border-radius:50%;
+            text-align:center;
+            font:34px Teko;
+            font-weight:600;
+            line-height:48px;
+            z-index:10;
+            opacity:1;
+            animation:0.5s changed-to-sp forwards;
+        }
+        
+        &::after {
+            content:var(--issue-id);
+            background:#444; 
+            position:absolute;
+            left:-25px;
+            top:1px;
+            height:34px;
+            width:95px;
+            line-height:36px;
+            padding:5px 10px 0 30px;
+            color:white;
+            border-radius:0 20px 20px 0;
+            font:18px Teko;
+        }
+        
+    }
+    &::before {
+        content:var(--owner) ' \a ' var(--owner-email);
+        overflow:hidden;
+        padding:0;
+        max-width:0;
+        opacity:0;
+        background: #BBB;
+        white-space:pre;
+        position:absolute;
+        right:0;
+        height:58px;
+        border-radius:0 20px 20px 0;
+        transform:translate(100%, -11px);
+    }
+    &:hover {
+        background-color:#fff282;
+        
+        &, *, *::before, *::after {
+            transition:0.2s all ease-in-out;
+        }
+        
+        a {
+            &::before {
+                color:#ffea1c;
+                box-shadow:inset 0 0 0 2px #ffea1c, inset 0 0 13px black, inset 0 0 20px black;
+                text-shadow:1px 1px 0 black, -1px 1px 0 black, 1px -1px 0 black, -1px -1px 0 black;
+                animation:0.5s changed-to-i forwards;
+            }
+            
+            &::after {
+                color:#ffea1c;
+                text-shadow:1px 1px 0 black;
+            }
+        }
+        
+        &:hover {
+            z-index:100;
+            &::after {
+                transform:scale(2);
+                transition:0.3s transform ease-out 1.75s, 0.3s box-shadow ease-out 1.75s;
+                box-shadow: 0 4px 8px #0009;
+                z-index:20;
+                
+            }
+            
+            &::before {
+                content:var(--owner) ' \a ' var(--owner-email);
+                background: #BBB;
+                white-space:pre;
+                position:absolute;
+                right:0;
+                height:58px;
+                padding:3px 20px 0 30px;
+                transform:translate(100%, -11px);
+                max-width:300px;
+                opacity:1;
+                transition:0.2s all ease-out 1.75s;
+                box-shadow: 0 4px 8px #0009;
+                z-index:19;
+            }
+        }
+    }
+    @keyframes changed-to-i {
+        0%  { color:#CCC;}
+        40% { color:#CCC0; text-shadow:none;}
+        45%, 100% { content: 'i'; font-family:serif; line-height:43px; }
+        60% { color:#ffea1c00; text-shadow:none; }
+        100% {color:#ffea1c;}
+    }
+}
+
+// jira-issue {
+    
+    
+    
+//     & > a {
+//         display:block;
+//         margin-left:20px;
+//         padding:8px 10px 0 78px;
+//         width:100%;
+//         height:36px;
+//         text-decoration:none;
+//         color:inherit;
+//         line-height:26px;
+//         font-size:25px;
+//         font-weight:300;
+//         font-family:Teko;
+    
+//         &::before {
+//             content: var(--storypoints);
+//             display: block;
+//             position:absolute;
+//             top:-2px;
+//             left:-40px;
+//             background:#b3b3b3;
+//             height:40px;
+//             width:40px;
+//             border-radius:50%;
+//             text-align:center;
+//             font:34px Teko;
+//             font-weight:600;
+//             line-height:48px;
+//             z-index:10;
+//             opacity:1;
+//             animation:0.5s changed-to-sp forwards;
+//         }
+        
+//         &::after {
+//             content:var(--issue-id);
+//             background:#444; 
+//             position:absolute;
+//             left:-25px;
+//             top:1px;
+//             height:34px;
+//             width:95px;
+//             line-height:36px;
+//             padding:5px 10px 0 30px;
+//             color:white;
+//             border-radius:0 20px 20px 0;
+//             font:18px Teko;
+//         }
+        
+//     }
+//     &::before {
+//         content:var(--owner) ' \a ' var(--owner-email);
+//         display: block;
+//         overflow:hidden;
+//         padding:0;
+//         max-width:0;
+//         opacity:0;
+//         background: #BBB;
+//         white-space:pre;
+//         position:absolute;
+//         right:0;
+//         height:58px;
+//         border-radius:0 20px 20px 0;
+//         transform:translate(100%, -11px);
+//     }
+//     &:hover {
+//         background-color:#fff282;
+        
+//         &, *, *::before, *::after {
+//             transition:0.2s all ease-in-out;
+//         }
+        
+//         a {
+//             &::before {
+//                 color:#ffea1c;
+//                 box-shadow:inset 0 0 0 2px #ffea1c, inset 0 0 13px black, inset 0 0 20px black;
+//                 text-shadow:1px 1px 0 black, -1px 1px 0 black, 1px -1px 0 black, -1px -1px 0 black;
+//                 animation:0.5s changed-to-i forwards;
+//             }
+            
+//             &::after {
+//                 color:#ffea1c;
+//                 text-shadow:1px 1px 0 black;
+//             }
+//         }
+        
+//         &:hover {
+//             z-index:100;
+//             &::after {
+//                 transform:scale(2);
+//                 transition:0.3s transform ease-out 1.75s, 0.3s box-shadow ease-out 1.75s;
+//                 box-shadow: 0 4px 8px #0009;
+//                 z-index:20;
+                
+//             }
+            
+//             &::before {
+//                 content:var(--owner) ' \a ' var(--owner-email);
+//                 background: #BBB;
+//                 white-space:pre;
+//                 position:absolute;
+//                 right:0;
+//                 height:58px;
+//                 padding:3px 20px 0 30px;
+//                 transform:translate(100%, -11px);
+//                 max-width:300px;
+//                 opacity:1;
+//                 transition:0.2s all ease-out 1.75s;
+//                 box-shadow: 0 4px 8px #0009;
+//                 z-index:19;
+//             }
+//         }
+//     }
+//     @keyframes changed-to-i {
+//         0%  { color:#CCC;}
+//         40% { color:#CCC0; text-shadow:none;}
+//         45%, 100% { content: 'i'; font-family:serif; line-height:43px; }
+//         60% { color:#ffea1c00; text-shadow:none; }
+//         100% {color:#ffea1c;}
+//     }
+// }
+

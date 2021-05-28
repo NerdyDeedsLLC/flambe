@@ -1,0 +1,71 @@
+/*
+        Usage:  <micro-meter id="Day-1" value="14" max="216" label="Day 1" active="true"></micro-meter>
+        value:  How much of the meter is filled
+        max:    The meter's total capacity (its value when filled to 100%)
+        label:  What the text in the bar should read.
+        active: Whether or not the bar should be illuminated (true) or grayed (false) [Default True]
+    */
+micro-meter {
+  width: 100%;
+  min-width: 150px;
+  background: #ddd;
+  height: 13px;
+  line-height: 13px;
+  border-radius: 10px;
+  border: 1px solid #666;
+  margin-top: 2px;
+  overflow: hidden;
+  -webkit-box-shadow: inset 3px 3px 3px #0006;
+          box-shadow: inset 3px 3px 3px #0006;
+  position: relative;
+  display: block;
+}
+
+micro-meter + .meter-block-micrometer {
+  margin-top: 2px;
+}
+
+micro-meter::before, micro-meter::after {
+  content: attr(id);
+  display: block;
+  position: absolute;
+  font-size: 10px;
+  font-family: "Teko";
+  font-weight: 900;
+  line-height: 13px;
+  left: 0;
+  text-transform: uppercase;
+  text-indent: 7px;
+  letter-spacing: 0.66px;
+}
+
+micro-meter::before {
+  text-shadow: -1px -1px 0 #0006, 1px 1px 0 #0006;
+  text-shadow: 1px 1px 0 #6663, 1px -1px 0 #6663, -1px 1px 0 #6663, -1px -1px 0 #6663;
+  color: #fffb;
+  background-color: hsl(calc(var(--value) / var(--max) * 100), 100%, 39%);
+  width: calc(var(--value) / var(--max) * 100%);
+  border-radius: 0 5px 5px 0;
+  z-index: 2;
+  height: 11px;
+  overflow: hidden;
+  -webkit-box-shadow: inset 1px 1px 3px #0006;
+          box-shadow: inset 1px 1px 3px #0006;
+}
+
+micro-meter::after {
+  content: attr(id);
+  color: hsl(calc(var(--value) / var(--max) * 100), 100%, 39%);
+  position: absolute;
+  z-index: 1;
+}
+
+micro-meter.inert {
+  background: #444;
+}
+
+micro-meter.inert::before, micro-meter.inert::after {
+  color: #666;
+  text-shadow: 1px 1px 0 #0003, 1px -1px 0 #0003, -1px 1px 0 #0003, -1px -1px 0 #0003;
+}
+/*# sourceMappingURL=micro-meter.css.map */

@@ -22,6 +22,7 @@ hydro-meter {
     pointer-events:none;
     display:block;
     margin: 0;
+    background-color:#EEE;
     
     counter-reset: val var(--value);
     

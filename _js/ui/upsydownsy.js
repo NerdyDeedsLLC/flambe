@@ -2,7 +2,7 @@ export default class UpsyDownsy extends HTMLElement {
     render() {
         this.style.setProperty("--delta", "'" + (this.getAttribute('delta') || 'unchanged') + "'");
         this.style.setProperty("--value", '"' + (this.getAttribute('value') || '--') + '"');
-        this.style.setProperty("--size", (this.getAttribute('size') || '100'));
+        this.style.setProperty("--size", (this.getAttribute('size') || '150'));
     }
     
     connectedCallback() { // (2)

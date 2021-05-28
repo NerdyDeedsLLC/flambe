@@ -1,0 +1,171 @@
+:root {
+  --help-text-1-1:'# of burnable hours yesterday over how many actually were.';
+  --help-text-1-2:'The % change up or down this represents since then.';
+  --help-text-2-1:'# of burnable hours in the current sprint (to date) over how many actually were.';
+  --help-text-2-2:'Bar meters illustrating the number of total hours for each day that got burned.';
+}
+
+report-widget {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  width: 320px;
+  background-color: #666;
+  padding: 10px 5px;
+  margin: 10px 100px;
+  border-radius: 10px;
+}
+
+report-widget::before {
+  content: attr(title);
+  display: block;
+  -webkit-transform-origin: 0 100%;
+          transform-origin: 0 100%;
+  width: 150px;
+  height: 18px;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: #666;
+  position: absolute;
+  top: 0;
+  left: 0;
+  line-height: 18px;
+  font-size: 21px;
+  text-align: center;
+  -webkit-transform: rotate(-90deg) translate(calc(-100% + 10px), 4px);
+          transform: rotate(-90deg) translate(calc(-100% + 10px), 4px);
+}
+
+report-widget[type="yesterday"] {
+  --help-text-A:var(--help-text-1-1);
+  --help-text-B:var(--help-text-1-2);
+}
+
+report-widget[type="yesterday"] > * {
+  background-color: white;
+}
+
+report-widget[type="fullSprint"] {
+  --help-text-A:var(--help-text-2-1);
+  --help-text-B:var(--help-text-2-2);
+}
+
+report-widget[type="fullSprint"] hydro-meter {
+  background-color: white;
+}
+
+report-widget .help {
+  display: block;
+  position: absolute;
+  top: -17px;
+  right: -17px;
+  -webkit-transition: 0.25s -webkit-transform ease-out 1.75s;
+  transition: 0.25s -webkit-transform ease-out 1.75s;
+  transition: 0.25s transform ease-out 1.75s;
+  transition: 0.25s transform ease-out 1.75s, 0.25s -webkit-transform ease-out 1.75s;
+  background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 88 89'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0%25' x2='0%25' y1='100%25' y2='0%25'%3E%3Cstop offset='0%25' stop-color='%231C5C8E'/%3E%3Cstop offset='100%25' stop-color='%230093E5'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='%23FFF' fill-rule='evenodd' d='M55 8a25 25 0 110 50 25 25 0 010-50z'/%3E%3Cpath fill='%23666' fill-rule='evenodd' d='M65.5 64.3S62.3 65.7 58 68c-5.7 3-7.1 12.2-4 21L0 35c6.7.3 16 .7 19-1 5.8-3.4 4.3-34 36-34a33 33 0 0110.5 64.3zM55 8a25 25 0 100 50 25 25 0 000-50z'/%3E%3Cpath fill='%23003759' fill-rule='evenodd' d='M55 55a22 22 0 110-44 22 22 0 010 44zm0-42a20 20 0 100 40 20 20 0 000-40zm-8.1 34.5c.8 0 1.4-.1 2-.3L60 46l-.3-1.8c.5.2 1.2.2 2 .3v3.7H49.9l-3-.7zm9.8-5.7V25.2l1-.5c1.2-.5 1-.3 1 .1v17c0 1.8 1.1 2.9 1.6 3.5-2.2-.3-3.6-.2-3.6-3.5zm-.8-18.6a4 4 0 01-3.2-1.5h.2c2.2 0 4.1.2 4-4 0-1-.3-1.9-.9-2.5a4 4 0 01-.1 8zM50 30.4l1.2-.4c.3.2.5.4.6.8l-1.8.4v-.8z'/%3E%3Cpath fill='url(%23a)' fill-rule='evenodd' d='M55 54a21 21 0 110-42 21 21 0 010 42zm-.5-38c-2 0-3.5 1.6-3.5 3.5 0 2 1.5 3.5 3.5 3.5s3.5-1.6 3.5-3.5c0-2-1.6-3.5-3.5-3.5zm7.2 29.5c-3.4-.3-4-.7-4-4.7v-16c0-.4.2-.6-1 0a83 83 0 01-7.6 2.6l-1 2.8 2.2-.5c.8 0 1.4.4 1.6 1.1.2.4.3 1.2.3 2.4v7.6c0 4-.6 4.4-4.3 4.7L48 48h13l.7-2.5z'/%3E%3C/svg%3E") no-repeat;
+  width: 44px;
+  height: 44px;
+  -webkit-transform-origin: 0 100%;
+          transform-origin: 0 100%;
+  -webkit-transform: scale(0);
+          transform: scale(0);
+}
+
+report-widget:hover .help {
+  -webkit-transition: 0.25s -webkit-transform cubic-bezier(0.83, 2.17, 0.51, -0.05) 2s;
+  transition: 0.25s -webkit-transform cubic-bezier(0.83, 2.17, 0.51, -0.05) 2s;
+  transition: 0.25s transform cubic-bezier(0.83, 2.17, 0.51, -0.05) 2s;
+  transition: 0.25s transform cubic-bezier(0.83, 2.17, 0.51, -0.05) 2s, 0.25s -webkit-transform cubic-bezier(0.83, 2.17, 0.51, -0.05) 2s;
+  -webkit-transform: scale(1);
+          transform: scale(1);
+  top: -17px;
+  right: -17px;
+  z-index: 100;
+}
+
+report-widget:hover i.help::before, report-widget:hover i.help::after {
+  content: var(--help-text-A);
+  display: block;
+  position: absolute;
+  top: 0;
+  left: -280px;
+  background: #CCC;
+  border: 1px solid #3339;
+  -webkit-transform: translateY(150px);
+          transform: translateY(150px);
+  width: 142px;
+  line-height: 1.3;
+  font-size: 11px;
+  padding: 13px;
+  border-radius: 21px;
+  -webkit-box-shadow: inset 0 0 10px #EEE, 0 8px 12px #0004;
+          box-shadow: inset 0 0 10px #EEE, 0 8px 12px #0004;
+  text-align: center;
+  -webkit-transition: 0.2s all ease-in-out;
+  transition: 0.2s all ease-in-out;
+  opacity: 0;
+}
+
+report-widget:hover i.help::after {
+  content: var(--help-text-B);
+  left: -127px;
+}
+
+report-widget:hover i.help:hover:before, report-widget:hover i.help:hover:after {
+  opacity: 0.90;
+  -webkit-transition: 0.6s all ease-in-out;
+  transition: 0.6s all ease-in-out;
+}
+
+.team-silhouettes {
+  width: 180px;
+  height: 150px;
+}
+
+.toggler-panel {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  max-width: 125px;
+  margin-left: 5px;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+
+.toggler-panel [name="individuals-toggler"] {
+  position: fixed;
+  left: -10000px;
+}
+
+.toggler-panel [name="individuals-toggler"] + label {
+  color: #AAA;
+  font-weight: 800;
+  font-family: Teko;
+  font-size: 20px;
+  white-space: nowrap;
+}
+
+.toggler-panel [name="individuals-toggler"] + label:last-of-type {
+  text-align: right;
+}
+
+.toggler-panel [name="individuals-toggler"]:checked + label {
+  color: #999;
+}
+/*# sourceMappingURL=report-widget.css.map */

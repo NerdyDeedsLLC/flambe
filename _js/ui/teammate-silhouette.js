@@ -53,14 +53,15 @@ export default class TeammateSilhouette extends HTMLElement {
     }
 
     determineIconStyle(yestBurn, totalBurn, hoursPoss, wasAbsent){
-    console.log('yestBurn, totalBurn, hoursPoss, wasAbsent :', yestBurn, totalBurn, hoursPoss, wasAbsent);
+    // console.log('yestBurn, totalBurn, hoursPoss, wasAbsent :', yestBurn, totalBurn, hoursPoss, wasAbsent);
+    //name:"Reddy, Vivek", email:"vivek.reddy@t-mobile.com", hoursBurnedYesterday:0, hoursBurnedSprint:0, oooYesterday:"false", spCommitment: 2, spDone:0, storyCommitment:1, storiesDone:0
         let prctYest, prctTotal, iconStyle;
-        prctYest = yestBurn / 6;                                                                                // ... work out their ratio yesterday, and then use their comparitive totals to ascertain their icon:
+        prctYest = (yestBurn / 6).toPrecision(2);                                                                                // ... work out their ratio yesterday, and then use their comparitive totals to ascertain their icon:
 
         if(!hoursPoss) {                                                                                                    // Start of sprint. Everyone's green (ok). Not enough data to determine otherwise.
             return {"prctTotal":0, "prctYest":0, "iconStyle":'ok'};
         }else{                                                                                                              // Sprint already underway
-            prctTotal = totalBurn / hoursPoss;
+            prctTotal = (totalBurn / hoursPoss).toPrecision(2);
             if(prctTotal === 1){                                                                                            // IF the user has burned the same number of hours as the sprint has contained...
                 iconStyle = 'wow';                                                                                          // ...mark them a rockstar.
                 return {"prctTotal":1, "prctYest":1, "iconStyle":'wow'}

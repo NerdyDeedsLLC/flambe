@@ -1,0 +1,187 @@
+#jiraAuthRequired {
+    display:none;
+    width:50vw;
+    max-width: 600px;
+    margin:20vh auto 0;
+    border:2px solid #AAA;
+    border-radius: 20px;
+    padding:20px;
+    font-family: system-ui;
+    box-shadow: 0 10px 20px #0009;
+    background:#DEDEDE;
+}
+#jiraAuthRequired.show {
+    display:block;
+}
+
+#jiraAuthRequired h3 {
+    margin:0 0 5px 0;
+
+}
+
+#jiraAuthRequired header {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #BBB;
+}
+
+label:empty {
+    display: inline-block;
+    position:relative;
+    width:fit-content;
+    height:28px;
+    text-align: center;
+    transform: translateY(10px);
+    margin-left:20px;
+    
+}
+
+label:empty::before {
+    content:'[' attr(data-text) ']';
+    display:inline-block;
+    font-style: normal;
+    font-size: 10px;
+    cursor:pointer;
+    overflow:hidden;
+    max-height:0;
+    position: absolute;
+    left:0;
+    transition: 0.3s all cubic-bezier(1,-1.29,.59,3.09);
+    top:10px;
+    transform: translateX(-50%);
+}
+label:empty:hover::before {
+    max-height: 20px;
+    top:-10px;
+
+}
+
+label:empty::after {
+    position: absolute;
+    content:'?';
+    text-align: center;
+    font-style: normal;
+    background:teal;
+    border-radius: 50%;
+    display:inline-block;
+    width:16px;
+    height:16px;
+    line-height:16px;
+    font-size: 14px;
+    font-weight: bold;;
+    color:white;;
+    cursor:pointer;
+    top:0;
+    left:50%;
+    transform: translate(-50%, 3px);
+}
+
+input[type="checkbox"]{
+    position:fixed;
+    left:-10000000px;
+}
+
+#shortDesc, 
+#longDesc {
+    overflow:hidden;
+    max-height:150px;
+    transition: 0.25s all ease-in-out;
+    opacity: 1;
+    padding:5px 20px;
+    border:1px solid #aaa;
+    border-radius: 10px;
+    background:white;
+    font-size:85%;
+}
+
+#longDesc {
+    opacity: 0;
+    max-height:0;
+    padding:0 20px;
+}
+
+#showLongDesc:checked ~ h3 > label::before {
+    content:'[hide]'
+}
+#showLongDesc:checked ~ #shortDesc {
+    opacity: 0;
+    max-height:0;
+    padding:0 20px;
+}
+#showLongDesc:checked ~ #longDesc {
+    opacity: 1;
+    max-height:150px;
+    padding:5px 20px;
+}
+#jiraAuthRequired main {
+    display: flex;
+    flex-direction: column;
+    justify-content:center;
+    max-width: 85%;
+    margin:0 auto;
+    border:1px solid #aaa;
+    background:#EEE;
+    padding:25px;
+    border-radius: 10px;
+}
+
+#jiraAuthRequired main div span {
+    display: block;
+    width: 100%;
+}
+
+#jiraAuthRequired main div {
+    width:100%;
+    padding:5px 0 0 0;
+    display: flex;
+}
+
+#jiraAuthRequired main label {
+    min-width:120px;
+    padding: 3px 0 0 10px;
+}
+
+#jiraAuthRequired main div input {
+width:90%;
+font-size:110%;
+background-color:white;
+border:1px solid #666;
+border-radius: 5px;
+}
+
+#jiraAuthRequired main div em {
+display: block;
+font-size:75%;
+margin-bottom:10px
+}
+#jiraAuthRequired footer {
+padding:20px 10px 5px;
+text-align: right;
+}
+
+#jiraAuthRequired footer button {
+width:30%;
+border:1px solid #888;
+color:#888;
+border-radius: 10px;
+background-color: white;
+padding:5px 0;
+font-weight: 700;
+}
+
+#jiraAuthRequired footer button:first-of-type {
+background-color: #888;
+color:white;
+font-weight: 400;
+}
+
+
+
+
+
+
+
+
+
+
+

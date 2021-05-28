@@ -1,0 +1,235 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Minimal example of using Lovefield</title>
+    <script src="lib/js/lf/lovefield.js"></script>
+    <link rel='stylesheet' type='text/css' href='lib/css/install.css'>
+    
+  <body>
+      <form action="" onsubmit="return false" method="GET">
+      <section id="jiraAuthRequired">
+          <header>
+              <input type="checkbox" name="showLongDesc" id="showLongDesc">
+              <h3>You Jira User Credentials Are Required!
+                <label for="showLongDesc" data-text="why?" data-toggle="longDesc"></label>  
+              </h3>
+              <div id="shortDesc">Please provide your Jira Account credentials. </div>
+              <div id="longDesc">
+                    In order for the platform to performs actions like querying users' information and retrieving the list of Features applicable to your project,
+                    you will need to provide your Jira credentials. This data is not used beyond this initial login, and you should not need to do this again,
+                    unless you reset or reinstall the application.
+             </div>
+          </header>
+          <main>
+              <div>
+                    <label for="userName">Username:</label>
+                    <span>
+                        <input id="userName" name="userName" type="text" autocomplete="username">
+                        <em>(this is typically your T-MOBILE e-mail address or &laquo;Your NTID&raquo;@gsm1900.org)</em>
+                    </span>
+              </div>
+              <div>
+
+                  <label for="password">Password:</label>
+                  <span>
+                      <input type="password" name="password" id="password" autocomplete="current-password">
+                        <em>(the password you use when logging into Jira)</em>
+                  </span>
+                  
+              </div>
+
+            </main>
+            <footer>
+              <button id="skipBtn">Skip This Step</button>
+              <button id="authBtn">Authenticate Computer</button>
+
+          </footer>
+        </section>
+    </form>
+    <script>
+
+        
+// Creates the Database if none exists.
+function generateDatabaseSchema(){
+    
+    iDB = schemaBuilder;
+    return new Promise((resolve, reject) => {
+    schemaBuilder = lf.schema.create('fondue', 1);
+        // Adds the "fondueConfig" table to the "fondue" database
+        schemaBuilder.createTable('fondueConfig').
+            addColumn('userInstance', lf.Type.INTEGER).
+            addColumn('jiraHash', lf.Type.STRING).
+            addPrimaryKey(['userInstance']).
+            addNullable(['jiraHash']);
+
+        // Adds the "imports" table to the "fondue" database
+        schemaBuilder.createTable('imports').
+            addColumn('importId', lf.Type.INTEGER).
+            addColumn('sprintId', lf.Type.INTEGER).
+            addColumn('fileName', lf.Type.STRING).
+            addColumn('dayNumber', lf.Type.NUMBER).
+            addColumn('datePulled', lf.Type.DATE_TIME).
+            addPrimaryKey(['importId']);
+
+
+        // Adds the "sprints" table to the "fondue" database
+        schemaBuilder.createTable('sprints').
+            addColumn('sprintId', lf.Type.INTEGER).
+            addColumn('teamId', lf.Type.INTEGER).
+            addColumn('sprintName', lf.Type.STRING).
+            addColumn('sprintDaySpan', lf.Type.NUMBER).
+            addColumn('startDate', lf.Type.DATE_TIME).
+            addColumn('endDate', lf.Type.DATE_TIME).
+            addPrimaryKey(['sprintId']).
+            addNullable(['sprintDaySpan']);
+            // addIndex('idxSprints', ['sprintId'], false, lf.Order.DESC);
+
+        // Adds the "teams" table to the "fondue" database
+        schemaBuilder.createTable('teams').
+            addColumn('teamId', lf.Type.INTEGER).
+            addColumn('teamName', lf.Type.STRING).
+            addColumn('manager', lf.Type.STRING).
+            addPrimaryKey(['teamId']).
+            addNullable(['manager']);
+
+
+        // Adds the "personnel" table to the "fondue" database
+        schemaBuilder.createTable('personnel').
+            addColumn('personId', lf.Type.INTEGER).
+            addColumn('firstName', lf.Type.STRING).
+            addColumn('lastName', lf.Type.STRING).
+            addColumn('email', lf.Type.STRING).
+            addColumn('ADID', lf.Type.STRING).
+            addColumn('NTID', lf.Type.STRING).
+            addColumn('avatarURL', lf.Type.STRING).
+            addPrimaryKey(['personId']).
+            addNullable(['firstName','lastName','email','ADID','NTID','avatarURL']);
+
+
+        // Adds the "personnel" table to the "fondue" database
+        schemaBuilder.createTable('issues').
+            addColumn('issueId', lf.Type.INTEGER).
+            addColumn('jiraIssueId', lf.Type.INTEGER).
+            addColumn('issueType', lf.Type.STRING).
+            addColumn('issueKey', lf.Type.STRING).
+            addColumn('parentJiraId', lf.Type.STRING).
+            addColumn('status', lf.Type.STRING).
+            addColumn('assignee', lf.Type.STRING).
+            addColumn('component', lf.Type.STRING).
+            addColumn('created', lf.Type.DATE_TIME).
+            addColumn('updated', lf.Type.DATE_TIME).
+            addColumn('summary', lf.Type.STRING).
+            addColumn('priority', lf.Type.STRING).
+            addColumn('sprint', lf.Type.STRING).
+            addColumn('cfIssueId', lf.Type.STRING).
+            addColumn('cfFeatureLink', lf.Type.STRING).
+            addColumn('originalEst', lf.Type.NUMBER).
+            addColumn('remainingEst', lf.Type.NUMBER).
+            addColumn('timeSpent', lf.Type.NUMBER).
+            addColumn('totRemainingEst', lf.Type.NUMBER).
+            addColumn('totTimeSpent', lf.Type.NUMBER).
+            addPrimaryKey(['issueId']).
+            addNullable(['jiraIssueId','issueType','issueKey','parentJiraId','status','assignee','component','created','updated','summary','priority','sprint','cfIssueId','cfFeatureLink','originalEst','remainingEst','timeSpent','totRemainingEst','totTimeSpent']);
+            
+        return resolve(true);
+    });
+}
+
+function verifyJiraCredentialsPresent(configDBContents=null){
+    if(configDBContents == null || !Array.isArray(configDBContents)) throw new Error('Cannot Instantiate Database!');
+    if(configDBContents.length < 1) return toggleToCredentialCollector();
+        
+    console.log(configDBContents)
+    // TODO: Redirect user to GUI; this means we've already gotten their JIRA creds.
+}
+
+function toggleToCredentialCollector(){
+    document.getElementById('jiraAuthRequired').className="show";
+    document.getElementById('authBtn').addEventListener('click', ()=>{
+        let authString = btoa(`${document.getElementById('userName').value}:${document.getElementById('password').value}`);
+        var row = tFONDUE_CONFIG.createRow({
+            'userInstance': 1,
+            'jiraHash': 'Basic ' + authString,
+        });
+        return fondutabase.insertOrReplace().into(tFONDUE_CONFIG).values([row]).exec()
+        .then(checkForDatabase);
+    });
+}
+
+
+function checkForDatabase(){
+    console.log(schemaBuilder);
+    schemaBuilder.connect().then(function(db) {
+        fondutabase = db;
+        tFONDUE_CONFIG = fondutabase.getSchema().table('fondueConfig')
+        let retVal = fondutabase.select().from(tFONDUE_CONFIG).exec();
+        return retVal;
+    })
+    .then(verifyJiraCredentialsPresent)
+    .catch((err)=>{
+        if(attemptCount <= 3){
+            attemptCount++;
+            generateDatabaseSchema(iDB);
+        }else{
+            console.error(err);
+        }
+    });
+    
+}
+console.log(lf);
+var fondutabase, tFONDUE_CONFIG, attemptCount=0;
+var schemaBuilder;
+generateDatabaseSchema()
+.then((schemaBuilder)=>checkForDatabase(schemaBuilder))
+.catch((err)=>{
+    console.error('FONDON\'T: Error during setup: ', err);
+});
+  
+// function correctlySetJiraHash(){
+//     schemaBuilder.connect().then(function(db) {
+//     fondutabase = db;
+//     tFONDUE_CONFIG = fondutabase.getSchema().table('fondueConfig')
+//     var row = tFONDUE_CONFIG.createRow({
+//         'userInstance': 1,
+//         'jiraHash': 'Basic Skp1cnVzejFAZ3NtMTkwMC5vcmc6ODgyMjQ2NDZCYS8u',
+//     });
+//     return fondutabase.insertOrReplace().into(tFONDUE_CONFIG).values([row]).exec();
+// })
+// .then(function() {
+//     return fondutabase.select().from(tFONDUE_CONFIG).exec();
+// })
+// .then(function(results) {console.log(results)});
+// // function(db) {
+// //     fonDB = db;
+// //     tFONDUE_CONFIG = db.getSchema().table(fondueConfig)
+// //     fonDB.select().
+// //         from(fondueConfig).
+// //         exec()
+// //         .then(rows=>console.log(rows));
+    
+// // });
+// // function(db) {
+// //     fonDB = db;
+// //     tFONDUE_CONFIG = db.getSchema().table(fondueConfig)
+// //     fonDB.select().
+// //         from(fondueConfig).
+// //         exec()
+// //         .then(rows=>console.log(rows));
+    
+// // });
+// }
+
+// //   return db.insertOrReplace().into(item).values([row]).exec();
+// // }).then(function() {
+// //   return todoDb.select().from(item).where(item.done.eq(false)).exec();
+// // }).then(function(results) {
+// //   results.forEach(function(row) {
+// //     console.log(row['description'], 'before', row['deadline']);
+// //     document.body.textContent =
+// //         row['description'] + ' before ' + row['deadline'];
+// //   });
+// // });
+    </script>
+  </body>
+</html>

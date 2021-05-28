@@ -2,8 +2,146 @@
     Usage:  <teammate-silhouette name="" email="" burntotal="" previousburn="" ooo="false" ></teammate-silhouette>        
     Name         : Individual's Full Name
     Email        : Individual's Email Address
-    Burntotal    : Number of hours burned this sprint
-    Previousburn : Number of hours burned the previous day
+    BurnTotal    : Number of hours burned this sprint
+    PreviousBurn : Number of hours burned the previous day
+    HoursToDate  : Number of hours in the sprint so far
     OoO          : Was the individual out-of-office the previous day? (Default : false)
 */
+.team-silhouettes {
+  max-width: 270px;
+  width: 135px;
+  height: 100px;
+  padding: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -ms-flex-line-pack: justify;
+      align-content: space-between;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: #999;
+  border: 1px solid black;
+  border-radius: 8px;
+  position: relative;
+}
+
+.team-silhouettes teammate-silhouette {
+  display: inline-block;
+  max-width: 48px;
+  max-height: 48px;
+  min-width: 24px;
+  min-height: 24px;
+  width: 33%;
+  height: 33%;
+  -webkit-box-flex: 1;
+      -ms-flex: 1 1 auto;
+          flex: 1 1 auto;
+  position: relative;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin: 0;
+}
+
+.team-silhouettes teammate-silhouette.wow {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='3 0 27 33'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0%25' x2='0%25' y1='100%25' y2='0%25'%3E%3Cstop offset='0%25' stop-color='%23FF53'/%3E%3Cstop offset='100%25' stop-color='%23FFF3'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23a)' fill-rule='evenodd' d='M0 7.5C4.3 3.5 10 1 16 1a22 22 0 0116 7v25H0V7.5z'/%3E%3Cpath fill='%23FFDE' fill-rule='evenodd' d='M12.1 1h7.5L16 32.1h-.7L12.2 1z'/%3E%3Cpath fill='%23FFD7' fill-rule='evenodd' d='M2.7 7.3l4.2-4.7 8.8 29-.5.2L2.7 7.3zM28.9 7.2l-4.2-4.6-8.6 28.8.5.2L28.9 7.2z'/%3E%3Cpath fill='%23FFD3' fill-rule='evenodd' d='M0 16.4l1.3-3.2 14.5 18.7-.4.4L0 16.4z'/%3E%3Cpath fill='%23FFFED1' fill-rule='evenodd' d='M31 16.2l-1.3-3.3L15 31.8l.5.3L31 16.2z'/%3E%3Cpath fill='%23008F00' fill-rule='evenodd' d='M21.3 31.6c-.1 0-1.7.9-5 .9s-5-.9-5-1c-.5-.8-8-16-1-17 2-.6 3.5-1.6 3.5-2.9 0-.5-1.8-2.5-1.8-5.4C12 .7 16.3.7 16.3.7s4.2 0 4.2 5.5c0 2.9-1.8 4.9-1.8 5.4 0 1.3 1.5 2.3 3.4 2.8 7 1.1-.4 16.3-.8 17.2zm0 0zm-10 0z'/%3E%3Cpath fill='%23FFEA1C' fill-rule='evenodd' d='M32 21.4l-3.8.7-1.1 3.7-1.5-3.3-3.8.5 2.9-2.7-1.3-3.3 3.3 1.6 3-2.6-.9 3.7 3.2 1.7zM19 27l1.4 5.1-4.2-3-4.2 3 1.4-5-4-3.3 5-.1 1.8-5 1.7 5 5.2.1L19 27zM6.3 22.5L5 25.7l-1.1-3.6-3.8-.7L3 19.7 2.2 16l3 2.6L8.6 17l-1.3 3.3 3 2.7-3.9-.5z'/%3E%3Cpath fill='%2362540B' fill-rule='evenodd' d='M27.8 17.7v-.1l2-1.6-.6 2.4-1.4-.7zM17 21.6l-.9-2.5.2-.5 1 3H17zM6.2 18.3l.1-.3 2.2-1-1 2.5-1.3-1.2zM2.8 20l.6 2-3.4-.7L2.5 20h.3zm2.5.4l2.5.3 1 1h-.5l1.5 1.1-3.5-.4L5 25.7 4 23.2l1.2-2.7zm7.1 4.4l-.3 1-2.8-2.2h1.5l1.6 1.2zm2.8 2.1l4.2 3-1.4-5 1.6-1.4 3.5.1L19 27l1.4 5.1-4.2-3-4.2 3 1-3.4 2.2-1.6zm10.3-4.5l-3.7.5 2.7-2.5h.1l1 2zm1.7-2.4l1.8-.3 3 1.6-3.8.7-1.1 3.7-1-2.2 1-3.5z' opacity='.7'/%3E%3Cpath fill='%23FFF282' fill-rule='evenodd' d='M29.8 21.7l.4-1.3 1.8 1-2 .4-.2-.1zm-2.1-1.1L24.4 19l1.3 3.3-.2.2-3.7.5 2.9-2.7-1.3-3.3 3.3 1.6 3-2.6-.8 3.6-1.2 1zm-12.2 5h-3.7l-1-.7h.4l-1.4-1.2 4.7-.1 1.7-5 .8 2.5-1.5 4.5zm-7.3-3.3l.3-.8 1.7 1.5-1.4-.2-.6-.5zm-2-1.7l-3-2.6 1 3.7-.7.3-3.5-.6L3 19.7 2.2 16l3 2.6L8.6 17l-1.2 3-1 .6zM4.9 24l.3 1-.2.6-.5-1.7h.4zm9.6 4.8l-.5 1.7-2 1.4 1.2-4 1.3 1zm6.2-3.3H19l-.7-2 4.9.1-2.5 2zm6-1l.5 1v.2l-.6-1.3h.1z' opacity='.5'/%3E%3C/svg%3E");
+  -webkit-box-ordinal-group: 2;
+      -ms-flex-order: 1;
+          order: 1;
+}
+
+.team-silhouettes teammate-silhouette.wow:hover::after {
+  color: #700;
+  -webkit-filter: sepia(1) saturate(4) hue-rotate(55deg);
+          filter: sepia(1) saturate(4) hue-rotate(55deg);
+}
+
+.team-silhouettes teammate-silhouette.ok {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='3 0 27 33'%3E%3Cpath fill='%23b1d181' fill-rule='evenodd' d='M21.3 31.6c-.1 0-1.7.9-5 .9s-5-.9-5-1c-.5-.8-8-16-1-17 2-.6 3.5-1.6 3.5-2.9 0-.5-1.8-2.5-1.8-5.4C12 .7 16.3.7 16.3.7s4.2 0 4.2 5.5c0 2.9-1.8 4.9-1.8 5.4 0 1.3 1.5 2.3 3.4 2.8 7 1.1-.4 16.3-.8 17.2zm0 0zm-10 0z'/%3E%3C/svg%3E");
+  -webkit-box-ordinal-group: 3;
+      -ms-flex-order: 2;
+          order: 2;
+}
+
+.team-silhouettes teammate-silhouette.low {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='3 0 27 33'%3E%3Cpath fill='%23fff282' fill-rule='evenodd' d='M21.3 31.6c-.1 0-1.7.9-5 .9s-5-.9-5-1c-.5-.8-8-16-1-17 2-.6 3.5-1.6 3.5-2.9 0-.5-1.8-2.5-1.8-5.4C12 .7 16.3.7 16.3.7s4.2 0 4.2 5.5c0 2.9-1.8 4.9-1.8 5.4 0 1.3 1.5 2.3 3.4 2.8 7 1.1-.4 16.3-.8 17.2zm0 0zm-10 0z'/%3E%3C/svg%3E");
+  -webkit-box-ordinal-group: 4;
+      -ms-flex-order: 3;
+          order: 3;
+}
+
+.team-silhouettes teammate-silhouette.miss {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='3 0 27 33'%3E%3Cpath fill='%23E00' fill-rule='evenodd' d='M21.3 31.6c-.1 0-1.7.9-5 .9s-5-.9-5-1c-.5-.8-8-16-1-17 2-.6 3.5-1.6 3.5-2.9 0-.5-1.8-2.5-1.8-5.4C12 .7 16.3.7 16.3.7s4.2 0 4.2 5.5c0 2.9-1.8 4.9-1.8 5.4 0 1.3 1.5 2.3 3.4 2.8 7 1.1-.4 16.3-.8 17.2zm0 0zm-10 0z'/%3E%3C/svg%3E");
+  -webkit-box-ordinal-group: 5;
+      -ms-flex-order: 4;
+          order: 4;
+}
+
+.team-silhouettes teammate-silhouette.never {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='3 0 27 33'%3E%3Cpath fill='%23FF0' fill-rule='evenodd' d='M16 4c3 0 16 20.6 16 24 0 2.7-32 2.3-32 0C0 25.5 13.1 4 16 4z'/%3E%3Cpath fill='%23ED0012' fill-rule='evenodd' d='M0 28C0 25.5 13.1 4 16 4c3 0 16 20.6 16 24 0 2.7-32 2.3-32 0zM16 6C13.6 6 2 24.8 2 27c0 1.3 28 1.5 28 0 0-3-11.4-21-14-21z' opacity='.8'/%3E%3Cpath fill='%23830009' fill-rule='evenodd' d='M21.3 31.6c-.1 0-1.7.9-5 .9s-5-.9-5-1c-.5-.8-8-16-1-17 2-.6 3.5-1.6 3.5-2.9 0-.5-1.8-2.5-1.8-5.4C12 .7 16.3.7 16.3.7s4.2 0 4.2 5.5c0 2.9-1.8 4.9-1.8 5.4 0 1.3 1.5 2.3 3.4 2.8 7 1.1-.4 16.3-.8 17.2zm0 0zm-10 0z'/%3E%3C/svg%3E");
+  -webkit-box-ordinal-group: 6;
+      -ms-flex-order: 5;
+          order: 5;
+}
+
+.team-silhouettes teammate-silhouette.never:hover::after {
+  color: #700;
+  -webkit-filter: sepia(1) saturate(4) hue-rotate(-55deg);
+          filter: sepia(1) saturate(4) hue-rotate(-55deg);
+}
+
+.team-silhouettes teammate-silhouette.inert {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='3 0 27 33'%3E%3Cpath fill='%234B4A4B' fill-rule='evenodd' d='M21.3 31.6c-.1 0-1.7.9-5 .9s-5-.9-5-1c-.5-.8-8-16-1-17 2-.6 3.5-1.6 3.5-2.9 0-.5-1.8-2.5-1.8-5.4C12 .7 16.3.7 16.3.7s4.2 0 4.2 5.5c0 2.9-1.8 4.9-1.8 5.4 0 1.3 1.5 2.3 3.4 2.8 7 1.1-.4 16.3-.8 17.2zm0 0zm-10 0z'/%3E%3C/svg%3E");
+  -webkit-box-ordinal-group: 7;
+      -ms-flex-order: 6;
+          order: 6;
+  opacity: 0.35;
+}
+
+.team-silhouettes teammate-silhouette::after {
+  content: var(--name) "\a(" var(--email) ") \aHours Burned (yesterday): " var(--prctYest, 0) "%\aHours Burned (all sprint): " var(--prctTotal, 0) "%";
+  position: absolute;
+  display: block;
+  white-space: pre;
+  width: 256px;
+  height: 157px;
+  font: 14px Hind;
+  text-align: center;
+  opacity: 0.95;
+  padding-top: 45px;
+  line-height: 1.33;
+  left: 50%;
+  top: 0;
+  -webkit-transform: translate(-50%, calc(100% + 92px));
+          transform: translate(-50%, calc(100% + 92px));
+  background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 157'%3E%3Cdefs%3E%3Cfilter id='a' width='257' height='158' x='-1' y='-1' filterUnits='userSpaceOnUse'%3E%3CfeOffset dy='6' in='SourceAlpha'/%3E%3CfeGaussianBlur result='blurOut' stdDeviation='4'/%3E%3CfeFlood flood-color='%23000' result='floodOut'/%3E%3CfeComposite in='floodOut' in2='blurOut' operator='atop'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear'/%3E%3C/feComponentTransfer%3E%3CfeMerge%3E%3CfeMergeNode/%3E%3CfeMergeNode in='SourceGraphic'/%3E%3C/feMerge%3E%3C/filter%3E%3C/defs%3E%3Cg filter='url(%23a)'%3E%3Cpath fill='%23EEE' fill-rule='evenodd' stroke='%23918E8D' stroke-width='2' d='M25 32h73c15 0 22-13 29-20 7 7 15 20 29 20h73c4 0 8 4 8 8v84c0 4-4 8-8 8H25c-4 0-8-4-8-8V40c0-4 4-8 8-8z'/%3E%3C/g%3E%3C/svg%3E") no-repeat;
+  overflow: hidden;
+  max-height: 0;
+  padding: 0;
+  color: #EEE;
+  font-size: 0;
+  background-position: center;
+  -webkit-transition: 0.15s all ease-in;
+  transition: 0.15s all ease-in;
+  -webkit-transition-delay: 0s;
+          transition-delay: 0s;
+}
+
+.team-silhouettes teammate-silhouette:hover::after {
+  max-height: 157px;
+  color: #000;
+  font-size: 15px;
+  padding-top: 45px;
+  -webkit-transform: translate(-50%, 15px);
+          transform: translate(-50%, 15px);
+  -webkit-transition: 0.35s all ease-in, 0.38s font-size, 0s -webkit-filter;
+  transition: 0.35s all ease-in, 0.38s font-size, 0s -webkit-filter;
+  transition: 0.35s all ease-in, 0.38s font-size, 0s filter;
+  transition: 0.35s all ease-in, 0.38s font-size, 0s filter, 0s -webkit-filter;
+  -webkit-transition-delay: 0.85s;
+          transition-delay: 0.85s;
+  z-index: 100;
+}
 /*# sourceMappingURL=teammate-silhouette.css.map */

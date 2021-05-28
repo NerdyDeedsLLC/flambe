@@ -1,6 +1,6 @@
     export default class HydroMeter extends HTMLElement {
         render() {
-            this.style=`--value:${this.getAttribute('value') || 0}; --max:${this.getAttribute('max') || 100}; --size:${this.getAttribute('size') || 100};`;
+            this.style=`--value:${this.getAttribute('value') || 0}; --max:${this.getAttribute('max') || 100}; --size:${this.getAttribute('size') || 150};`;
         }
         
         connectedCallback() { // (2)

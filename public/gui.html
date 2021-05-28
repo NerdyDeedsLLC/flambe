@@ -1,0 +1,268 @@
+<html>
+
+<head>
+    <title>Flambé Part Deux :: Deux you... FONDUE!?</title>
+    <meta charset="utf-8">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500&family=Teko:wght@400;600&display=swap" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" type="text/css" href="./lib/css/gui.css"
+    >
+<!-- 
+    <link rel="stylesheet" type="text/css" href="./lib/css/hydrometer.css">
+    <script type="module" src="./lib/js/ui/hydrometer.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="./lib/css/upsydownsy.css">
+    <script type="module" src="./lib/js/ui/upsydownsy.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="./lib/css/teammate-silhouette.css">
+    <script type="module" src="./lib/js/ui/teammate-silhouette.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="./lib/css/micro-meter.css">
+    <script type="module" src="./lib/js/ui/micro-meter.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="./lib/css/progress-bars.css">
+    <script type="module" src="./lib/js/ui/progress-bars.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="./lib/css/jira-issue.css">
+    <script type="module" src="./lib/js/ui/jira-issue.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="./lib/css/report-widget.css">
+    <script type="module" src="./lib/js/ui/report-widget.js"></script> -->
+
+    <!-- <script src="lib/js/lf/lovefield.js"></script> -->
+    
+</head>
+    
+<body>
+    <div id="loading-overlay"></div>
+    <article id="flambe">
+        <input type="checkbox" id="paramsToggle" class="panel-togglers" >
+        <input type="checkbox" id="filterToggle" class="panel-togglers" checked>
+        <aside id="paramsAside">
+            <div id="params">
+                <input type="radio" name="radioGroupSteps" id="Step1Toggler" class="radio-togglers" checked>
+                <input type="radio" name="radioGroupSteps" id="Step2Toggler" class="radio-togglers">
+                <input type="radio" name="radioGroupSteps" id="Step3Toggler" class="radio-togglers">
+                <form id="paramPanel1-form" action="" onsubmit="return false;" novalidate="true">
+                    <label id="paramPanel1" class="param-accordion" for="Step1Toggler" data-step="I" data-label="Select/Create Sprint">
+                    <span class="panel-instructions">Select an existing Sprint from the dropdown below, or enter the name of a new one to create.</span>
+                    <div class="param-form select-sprint">
+                        <label for="sprint" class="actual-label">
+                            Sprint:
+                            <select name="sprint" id="sprint" aria-placeholder="Select Sprint">
+                                <option value="">Select the desired sprint...</option>
+                                <option value="">Creating a new sprint:</option>
+                                <option>Some Old Sprint</option>
+                            </select>
+                            <input type="text" name="sprint-new" id="sprint-new" placeholder="...or enter a name to create one." value="" required>
+                        </label>
+                        <label for="sprint-start-date" class="date-field">
+                            Start Date:
+                            <input type="date" name="sprint-start-date" id="sprint-start-date">
+                        </label>
+                        <label for="sprint-end-date" class="date-field">
+                            End Date:
+                            <input type="date" name="sprint-end-date" id="sprint-end-date" required>
+                        </label>
+                        <div class="button-panel">
+                            <label class="disabled step-buttons">⬆︎</label>
+                            <label class="step-buttons" for="Step2Toggler">⬇︎</label>
+                        </div>
+                    </div>
+                </label>
+            </form>
+            <form id="paramPanel2-form" action="" onsubmit="return false;" novalidate="true">
+                <label id="paramPanel2" class="param-accordion" data-step="II" data-label="Manage Data Files" for="Step2Toggler">
+                    <span class="panel-instructions">Select an existing Sprint from the dropdown below, or enter the name of a new one to create.</span>
+                    <div class="param-form data-files">
+                        <ul>
+                            <li class="data-file seed" data-sequence="0"><span id="day-0-pre-file" class="pre-file-selection"></span><input type="file" id="day-0-file" required><button class="trash-file"></button></li>
+                            <li class="insert-between" data-sequence="5"><button>Insert Record</button></li>
+                            <li class="data-file day-1" data-sequence="10"><span id="day-1-pre-file" class="pre-file-selection"></span><input type="file" id="day-1-file"><button class="trash-file"></button></li>
+                            <li class="insert-between" data-sequence="15"><button>Insert Record</button></li>
+                            <li class="data-file day-2" data-sequence="20"><span id="day-2-pre-file" class="pre-file-selection"></span><input type="file" id="day-2-file"><button class="trash-file"></button></li>
+                            <li class="insert-between" data-sequence="25"><button>Insert Record</button></li>
+                            <li class="data-file day-3" data-sequence="30"><span id="day-3-pre-file" class="pre-file-selection"></span><input type="file" id="day-3-file"><button class="trash-file"></button></li>
+                            <li class="insert-between" data-sequence="25"><button>Insert Record</button></li>
+                            <li class="data-file day-3" data-sequence="30"><span id="day-4-pre-file" class="pre-file-selection"></span><input type="file" id="day-4-file"><button class="trash-file"></button></li>
+                            <li class="insert-between" data-sequence="25"><button>Insert Record</button></li>
+                            <li class="data-file day-3" data-sequence="30"><span id="day-5-pre-file" class="pre-file-selection"></span><input type="file" id="day-5-file"><button class="trash-file"></button></li>
+                            <li class="insert-between" data-sequence="25"><button>Insert Record</button></li>
+                            <li class="data-file day-3" data-sequence="30"><span id="day-6-pre-file" class="pre-file-selection"></span><input type="file" id="day-6-file"><button class="trash-file"></button></li>
+                            <li class="insert-between" data-sequence="25"><button>Insert Record</button></li>
+                            <li class="data-file day-3" data-sequence="30"><span id="day-7-pre-file" class="pre-file-selection"></span><input type="file" id="day-7-file"><button class="trash-file"></button></li>
+                            <li class="insert-between" data-sequence="25"><button>Insert Record</button></li>
+                            <li class="data-file day-3" data-sequence="30"><span id="day-8-pre-file" class="pre-file-selection"></span><input type="file" id="day-8-file"><button class="trash-file"></button></li>
+                            <li class="insert-between" data-sequence="25"><button>Insert Record</button></li>
+                            <li class="data-file day-3" data-sequence="30"><span id="day-9-pre-file" class="pre-file-selection"></span><input type="file" id="day-9-file"><button class="trash-file"></button></li>
+                            <li class="insert-between" data-sequence="25"><button>Insert Record</button></li>
+                            <li class="data-file day-3" data-sequence="30"><span id="day-10-pre-file" class="pre-file-selection"></span><input type="file" id="day-10-file"><button class="trash-file"></button></li>
+                        </ul>
+                        
+                        <div class="button-panel">
+                            <label  class="previous step-buttons" for="Step1Toggler">⬆︎</label>
+                            <label  class="step-buttons" for="Step3Toggler">⬇︎</label>
+                        </div>
+                    </div>
+                </label>
+            </form>
+            <form id="paramPanel3-form" action="" onsubmit="return false;" novalidate="true">
+                <label id="paramPanel3" class="param-accordion" data-step="III" data-label="Report Settings" for="Step3Toggler">
+                    <div class="param-form report-options">
+                        <div class="button-panel">
+                            <input type="text" required="required">
+                            <label class="previous step-buttons" for="Step2Toggler">⬆︎</label>
+                            <label class="execute step-buttons"></label>
+                        </div>
+                    </div>
+                </label>
+        </form> 
+    </div>
+
+        
+            <label class="slide-panel" for="paramsToggle"></label>
+        </aside>
+        <main>
+            <header></header>
+            <section>
+                <div class="graph-output">
+                    <div class="graph-output-widgets">
+                        
+    
+    <!-- <report-widget type="yesterday"    burned="44" max="60" delta='up' deltav='314'></report-widget>
+    <report-widget type="fullSprint"   burned="220" max="300" daysInSprint="10" burnedPerDay="[51,59,32,14,44]"></report-widget>
+    <report-widget type="byTeamMember" data="raw-content" hoursToDate="150" mode="hours">
+        [
+            {"name":"Jurusz, Jason","email":"jason.jurusz@sprint.com","hoursBurnedYesterday":4,"hoursBurnedSprint":18,"oooYesterday":"false","spCommitment":7,"spDone":0,"storyCommitment":1,"storiesDone":0},
+            {"name":"Barrow, Ashley","email":"ashley.barrow@t-mobile.com","hoursBurnedYesterday":6,"hoursBurnedSprint":28,"oooYesterday":"false","spCommitment":5,"spDone":2,"storyCommitment":2,"storiesDone":1},
+            {"name":"Duree, Michael","email":"michael.duree@sprint.com","hoursBurnedYesterday":0,"hoursBurnedSprint":6,"oooYesterday":"true","spCommitment":13,"spDone":0,"storyCommitment":5,"storiesDone":0},
+            {"name":"Olenhouse, Jason","email":"jason.olenhouse@sprint.com","hoursBurnedYesterday":6,"hoursBurnedSprint":30,"oooYesterday":"false","spCommitment":3,"spDone":0,"storyCommitment":1,"storiesDone":0},
+            {"name":"Reddy, Vivek","email":"vivek.reddy@t-mobile.com","hoursBurnedYesterday":0,"hoursBurnedSprint":0,"oooYesterday":"false","spCommitment":2,"spDone":0,"storyCommitment":1,"storiesDone":0}
+        ]
+    </report-widget>
+    
+    <report-widget type="commitments" data="raw-content">
+       [
+            {"issue-id" : "1459345", "issue-type" : "Story", "issue-key" : "BSWMDBN2-5013", "owner" : "Pamidari, Sai", "owner-email"     : "SPamidi7@gsm1900.org", "avatar"   : "url(/avatars/SPamidi7.jpg)", "storypoints" : "2", "state"  : "Defined", "remaining-est"     : "86400", "original-est"  : "86400", "summary"  : "Create Swagger for PAH update Event" },
+            {"issue-id" : "1438776", "issue-type" : "Story", "issue-key" : "BSWMDBN2-4863", "owner" : "Patel, Nitesh", "owner-email"     : "NPatel56@gsm1900.org", "avatar"   : "url(/avatars/NPatel56.jpg)", "storypoints" : "3", "state"  : "Defined", "remaining-est"     : "144000", "original-est" : "144000", "summary" : "Request Status and Code in DB" },
+            {"issue-id" : "1433931", "issue-type" : "Story", "issue-key" : "BSWMDBN2-4795", "owner" : "Kopparchu, Harika", "owner-email" : "HKoppar1@gsm1900.org", "avatar"   : "url(/avatars/HKoppar1.svg)", "storypoints" : "5", "state"  : "Defined", "remaining-est"     : "86400", "original-est"  : "86400", "summary"  : "Mongo DB Event Storage  : Create Shedlock" },
+            {"issue-id" : "1430409", "issue-type" : "Story", "issue-key" : "BSWMDBN2-4786", "owner" : "Jaramillo, Carlos", "owner-email" : "CJarami7@gsm1900.org", "avatar"   : "url(/avatars/CJarami7.jpg)", "storypoints" : "8", "state"  : "In Progress", "remaining-est" : "72000", "original-est"  : "144000", "summary" : "COMPTEL_ACTIVATE_REQUEST" },
+            {"issue-id" : "1385246", "issue-type" : "Story", "issue-key" : "BSWMDBN2-4606", "owner" : "Jurusz, Jason", "owner-email"     : "tv568045@ad.sprint.com", "avatar" : "url(/avatars/tv568045.jpg)", "storypoints" : "2", "state"  : "Defined", "remaining-est"     : "144000", "original-est" : "144000", "summary" : "Create MS code for network-		provision-		indicator Endpoint" },
+            {"issue-id" : "1385236", "issue-type" : "Story", "issue-key" : "BSWMDBN2-4605", "owner" : "Jurusz, Jason", "owner-email"     : "xw889417@ad.sprint.com", "avatar" : "url(/avatars/xw889417.jpg)", "storypoints" : "3", "state"  : "In Progress", "remaining-est" : "86400", "original-est"  : "144000", "summary" : "Create Test Cases for network-		provision-		indicator Endpoint" },
+            {"issue-id" : "1347431", "issue-type" : "Story", "issue-key" : "BSWMDBN2-4451", "owner" : "Patel, Nitesh", "owner-email"     : "NPatel56@gsm1900.org", "avatar"   : "url(/avatars/NPatel56.jpg)", "storypoints" : "5", "state"  : "Defined", "remaining-est"     : "144000", "original-est" : "144000", "summary" : "Create DEEP.IO Send Unit Test" },
+            {"issue-id" : "1347427", "issue-type" : "Story", "issue-key" : "BSWMDBN2-4450", "owner" : "Reddy, Anil", "owner-email"       : "AReddy1@gsm1900.org", "avatar"    : "url(/avatars/AReddy1.svg)", "storypoints"  : "8", "state"  : "In Progress", "remaining-est" : "97200", "original-est"  : "144000", "summary" : "Create Method to send Deep.io Event " },
+            {"issue-id" : "1347051", "issue-type" : "Story", "issue-key" : "BSWMDBN2-4445", "owner" : "Konanki, Meena", "owner-email"    : "MKonank1@gsm1900.org", "avatar"   : "url(/avatars/MKonank1.svg)", "storypoints" : "13", "state" : "Defined", "remaining-est"     : "144000", "original-est" : "144000", "summary" : "Create Unit Test Cases for call to AMIL API for additional attributes" },
+            {"issue-id" : "1347041", "issue-type" : "Story", "issue-key" : "BSWMDBN2-4444", "owner" : "Konanki, Meena", "owner-email"    : "MKonank1@gsm1900.org", "avatar"   : "url(/avatars/MKonank1.svg)", "storypoints" : "2", "state"  : "In Progress", "remaining-est" : "230400", "original-est" : "288000", "summary" : "Create Unit Tests for Storing AMIL Requests and Replies" },
+            {"issue-id" : "1292420", "issue-type" : "Story", "issue-key" : "BSWMDBN2-4306", "owner" : "Iraqi, Mohammad", "owner-email"   : "MIraqi1@gsm1900.org", "avatar"    : "url(/avatars/MIraqi1.svg)", "storypoints"  : "3", "state"  : "Done", "remaining-est" : "108000", "original-est" : "108000", "summary" : "Create Unit test for NPE Response API" },
+            {"issue-id" : "1292240", "issue-type" : "Story", "issue-key" : "BSWMDBN2-4305", "owner" : "Jaramillo, Carlos", "owner-email" : "CJarami7@gsm1900.org", "avatar"   : "url(/avatars/CJarami7.jpg)", "storypoints" : "5", "state"  : "In Testing", "remaining-est" : "57600", "original-est"  : "144000", "summary" : "COMPTEL_DEACTIVATE_REQUEST" },
+            {"issue-id" : "1291977", "issue-type" : "Story", "issue-key" : "BSWMDBN2-4303", "owner" : "Yadav, Rakesh", "owner-email"     : "RYadav23@gsm1900.org", "avatar"   : "url(/avatars/RYadav23.jpg)", "storypoints" : "8", "state"  : "Defined", "remaining-est"     : "144000", "original-est" : "144000", "summary" : "Create method to call NPE API" },
+            {"issue-id" : "1291845", "issue-type" : "Story", "issue-key" : "BSWMDBN2-4296", "owner" : "Olenhouse, Jason", "owner-email"  : "JOlenho1@gsm1900.org", "avatar"   : "url(/avatars/JOlenho1.jpg)", "storypoints" : "13", "state" : "New", "remaining-est"         : "162000", "original-est" : "162000", "summary" : "Create Methods for Call to CHUB API" },
+            {"issue-id" : "1291823", "issue-type" : "Story", "issue-key" : "BSWMDBN2-4295", "owner" : "Olenhouse, Jason", "owner-email"  : "JOlenho1@gsm1900.org", "avatar"   : "url(/avatars/JOlenho1.jpg)", "storypoints" : "2", "state"  : "In Progress", "remaining-est" : "151200", "original-est" : "144000", "summary" : "Create Unit Tests for Call to CHUB API" },
+            {"issue-id" : "1291527", "issue-type" : "Story", "issue-key" : "BSWMDBN2-4292", "owner" : "Kopparchu, Harika", "owner-email" : "HKoppar1@gsm1900.org", "avatar"   : "url(/avatars/HKoppar1.svg)", "storypoints" : "3", "state"  : "In Progress", "remaining-est" : "144000", "original-est" : "144000", "summary" : "Event Orchestrator      : Setup Mock server for Event Orchestrator" },
+            {"issue-id" : "1291506", "issue-type" : "Story", "issue-key" : "BSWMDBN2-4291", "owner" : "Kopparchu, Harika", "owner-email" : "HKoppar1@gsm1900.org", "avatar"   : "url(/avatars/HKoppar1.svg)", "storypoints" : "5", "state"  : "Withdrawn", "remaining-est"   : "144000", "original-est" : "144000", "summary" : "Cassandra Event Storage : Create Unit Test for Cassandra CRUD" },
+            {"issue-id" : "1291487", "issue-type" : "Story", "issue-key" : "BSWMDBN2-4290", "owner" : "Duree, Michael", "owner-email"    : "MDuree1@gsm1900.org", "avatar"    : "url(/avatars/MDuree1.svg)", "storypoints"  : "8", "state"  : "Dev Complete", "remaining-est" : "132300", "original-est" : "57600", "summary"  : "EventOrchestrator       : Define Database Schema for Orchastrator events" },
+            {"issue-id" : "1291047", "issue-type" : "Story", "issue-key" : "BSWMDBN2-4288", "owner" : "Duree, Michael", "owner-email"    : "MDuree1@gsm1900.org", "avatar"    : "url(/avatars/MDuree1.svg)", "storypoints"  : "13", "state" : "Defined", "remaining-est"     : "72000", "original-est"  : "72000", "summary"  : "DBSC saves event Data to Database" },
+            {"issue-id" : "1290906", "issue-type" : "Story", "issue-key" : "BSWMDBN2-4287", "owner" : "Duree, Michael", "owner-email"    : "MDuree1@gsm1900.org", "avatar"    : "url(/avatars/MDuree1.svg)", "storypoints"  : "2", "state"  : "In Testing", "remaining-est" : "115200", "original-est" : "115200", "summary" : "Mongo Event Storage     : Create DB Scheme" },
+            {"issue-id" : "1290657", "issue-type" : "Story", "issue-key" : "BSWMDBN2-4284", "owner" : "Durgemadi, Pavin", "owner-email"  : "PDurgem1@gsm1900.org", "avatar"   : "url(/avatars/PDurgem1.jpg)", "storypoints" : "3", "state"  : "In Progress", "remaining-est" : "115200", "original-est" : "144000", "summary" : "Create DEEP.IO Unit Test" }
+        ]
+   </report-widget> -->
+</div>
+</div>
+</section>
+<footer></footer>
+</main>
+<aside id="filterAside"><label for="filterToggle" class="slide-panel"></label></aside>
+</article>
+<script src="./lib/js/modules/global.js" type="module"></script>
+<!-- <script src="./lib/js/pullXMLFromJira.js" type="module"></script> -->
+<script type="module">
+    import {test} from '/lib/js/JiraPuller.js'
+    console.log('CHANGED' + Date.now())
+
+</script>
+<script>
+    // console.log(window);
+    // class flambeGUI(){
+    //     constructor(...props) {
+    //         this.fieldList = {
+    //             'sprintDetails': {
+    //             'sprint'            : qs('#sprint'),
+    //             'sprint-new'        : qs('#sprint-new'),
+    //             'sprint-start-date' : qs('#sprint-start-date'),
+    //             'sprint-end-date'   : qs('#sprint-end-date')
+    //             }
+    //         };
+    //     }
+    // }
+    window.addEventListener('load', ()=>{
+        qs('#sprint-new').addEventListener('input', function(){ if(this.value !== ''){ qs('#sprint').selectedIndex = 1; }});
+        qs('#sprint').addEventListener('input', function(){ 
+            let textField = qs('#sprint-new');
+            textField.value = this.value;
+            textField.style = (this.selectedIndex > 1) ? "height:0; opacity:0; transition:0.1s all ease-out;" : "transition:0.1s all ease-out;" 
+        });
+        qs('#sprint-start-date').addEventListener('change', function(){ qs('#sprint-end-date').min = this.value; });
+       
+        // let activeForm, activeStepButtons;
+        // function getActiveSidePanelForm() {
+        //     activeForm = qs('[for="' + qs('.radio-togglers:checked').id + '"]');
+        //     // activeForm.removeAttribute('data-validpanel');
+        //     return activeForm.childNodes[0];
+        // }
+
+        // function getActiveSidePanelForm(returnValidityInsteadOfDOMObject=false) {
+        //     activeForm = qs('[for="' + qs('.radio-togglers:checked').id + '"] form');
+        //     activeStepButtons = qsa('.step-buttons', activeForm);
+
+        //     let activeFormValidity = activeForm.checkValidity();
+        //     activeForm.parentNode.dataset.validpanel = activeFormValidity;
+        //     console.log(activeForm.parentNode, activeForm.parentNode.dataset)
+        //     // activeForm.style.boxShadow = activeFormValidity ? '
+
+        //     qsa('input:required, select:required, textarea:required').forEach(formObj=>{
+        //         if(/step-buttons/.test(formObj.className)) {
+        //             if(activeFormValidity) formObj.classList.remove('disabled');
+        //             else formObj.classList.add('disabled');
+        //         }else{
+        //             console.log(formObj)
+        //             formObj.style.borderColor = (formObj.required && !formObj.checkValidity() || (formObj.tagName === 'SELECT' && !formObj.selectedIndex)) ? 'red' : 'blue';
+        //         }
+                
+        //     });
+
+            
+        //     let retVal = returnValidityInsteadOfDOMObject ? activeFormValidity : activeForm;
+        //     console.log(retVal);
+        //     return retVal;
+        // }
+
+        
+        // qsa('input, select, textarea').forEach(formField=>{
+        //     console.log(formField);
+        //     formField.addEventListener('input', (e, trg=e.target)=>{
+        //         console.log(trg, trg.tagName, /input|select|textarea/i.test(trg.tagName))
+        //         getActiveSidePanelForm();
+        //     })
+        //     formField.addEventListener('focus', (e, trg=e.target)=>{
+        //         console.log(trg, trg.tagName, /input|select|textarea/i.test(trg.tagName))
+        //         getActiveSidePanelForm();
+        //     })
+        //     formField.addEventListener('blur', (e, trg=e.target)=>{
+        //         console.log(trg, trg.tagName, /input|select|textarea/i.test(trg.tagName))
+        //         getActiveSidePanelForm();
+        //     })
+        // // });
+
+        // qsa('.param-accordion').forEach(panel => {
+        //     panel.addEventListener('click', (e)=>{if(getActiveSidePanelForm(true)){e.preventDefault();} })
+        // });
+    });
+</script>
+    
+</body>
+
+</html>
+
+

@@ -1,0 +1,213 @@
+/*
+    SAMPLE USAGE    
+    <jira-issue issue-id = "ISSUE-01" href = "http : //path.to/issue/in/jira" owner = "LastName, FirstName" owner-email = "owner@email.address" avatar = "url(http : //path.to/pic)" storypoints = "5" state = "Defined">Jira Issue Title</jira-issue>
+        issue-id    : The jira-issued id for the issue/story being rendered
+        href        : The URL() to the story IN jira
+        owner       : The person assigned to the task
+        owner-email : That person's email address
+        avatar      : The URL() to the avatar being used by that person IN Jira
+        storypoints : The stroypoint value of the issue
+        state       : The current progress state the story is resting in
+*/
+jira-issue, .jira-issue {
+  background: #b3b3b3 url(/avatars/NotFound.jpg);
+  margin: 0px 0px 10px 30px;
+  max-width: 360px;
+  width: 100vw;
+  border-radius: 0 50px 50px 0;
+  height: 36px;
+  display: none;
+}
+
+jira-issue, jira-issue *, jira-issue *::before, jira-issue *::after, .jira-issue, .jira-issue *, .jira-issue *::before, .jira-issue *::after {
+  -webkit-transition: 0.2s all ease-in-out;
+  transition: 0.2s all ease-in-out;
+  position: relative;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  font-family: Hind;
+  outline: none;
+  display: block;
+  background-repeat: no-repeat !important;
+}
+
+jira-issue::after, .jira-issue::after {
+  content: '';
+  display: block;
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  width: 34px;
+  height: 34px;
+  background: var(--avatar, url(/avatars/NotFound.jpg));
+  background-size: cover;
+  border-radius: 50%;
+  border: 1px solid #222;
+}
+
+jira-issue > a, .jira-issue > a {
+  display: block;
+  margin-left: 20px;
+  padding: 4px 80px 0 78px;
+  width: 100%;
+  height: 36px;
+  text-decoration: none;
+  color: inherit;
+  line-height: 14px;
+  font-size: 16px;
+  font-weight: 300;
+  font-family: Teko;
+}
+
+jira-issue > a::before, .jira-issue > a::before {
+  content: var(--storypoints);
+  position: absolute;
+  top: -2px;
+  left: -40px;
+  background: #b3b3b3;
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  text-align: center;
+  font: 34px Teko;
+  font-weight: 600;
+  line-height: 48px;
+  z-index: 10;
+  opacity: 1;
+  -webkit-animation: 0.5s changed-to-sp forwards;
+          animation: 0.5s changed-to-sp forwards;
+}
+
+jira-issue > a::after, .jira-issue > a::after {
+  content: var(--issue-id);
+  background: #444;
+  position: absolute;
+  left: -25px;
+  top: 1px;
+  height: 34px;
+  width: 95px;
+  line-height: 36px;
+  padding: 5px 10px 0 30px;
+  color: white;
+  border-radius: 0 20px 20px 0;
+  font: 18px Teko;
+}
+
+jira-issue::before, .jira-issue::before {
+  content: var(--owner) " \a" var(--owner-email);
+  overflow: hidden;
+  padding: 0;
+  max-width: 0;
+  opacity: 0;
+  background: #BBB;
+  white-space: pre;
+  position: absolute;
+  right: 0;
+  height: 58px;
+  border-radius: 0 20px 20px 0;
+  -webkit-transform: translate(100%, -11px);
+          transform: translate(100%, -11px);
+}
+
+jira-issue:hover, .jira-issue:hover {
+  background-color: #fff282;
+}
+
+jira-issue:hover, jira-issue:hover *, jira-issue:hover *::before, jira-issue:hover *::after, .jira-issue:hover, .jira-issue:hover *, .jira-issue:hover *::before, .jira-issue:hover *::after {
+  -webkit-transition: 0.2s all ease-in-out;
+  transition: 0.2s all ease-in-out;
+}
+
+jira-issue:hover a::before, .jira-issue:hover a::before {
+  color: #ffea1c;
+  -webkit-box-shadow: inset 0 0 0 2px #ffea1c, inset 0 0 13px black, inset 0 0 20px black;
+          box-shadow: inset 0 0 0 2px #ffea1c, inset 0 0 13px black, inset 0 0 20px black;
+  text-shadow: 1px 1px 0 black, -1px 1px 0 black, 1px -1px 0 black, -1px -1px 0 black;
+  -webkit-animation: 0.5s changed-to-i forwards;
+          animation: 0.5s changed-to-i forwards;
+}
+
+jira-issue:hover a::after, .jira-issue:hover a::after {
+  color: #ffea1c;
+  text-shadow: 1px 1px 0 black;
+}
+
+jira-issue:hover:hover, .jira-issue:hover:hover {
+  z-index: 100;
+}
+
+jira-issue:hover:hover::after, .jira-issue:hover:hover::after {
+  -webkit-transform: scale(2);
+          transform: scale(2);
+  -webkit-transition: 0.3s -webkit-transform ease-out 1.75s, 0.3s -webkit-box-shadow ease-out 1.75s;
+  transition: 0.3s -webkit-transform ease-out 1.75s, 0.3s -webkit-box-shadow ease-out 1.75s;
+  transition: 0.3s transform ease-out 1.75s, 0.3s box-shadow ease-out 1.75s;
+  transition: 0.3s transform ease-out 1.75s, 0.3s box-shadow ease-out 1.75s, 0.3s -webkit-transform ease-out 1.75s, 0.3s -webkit-box-shadow ease-out 1.75s;
+  -webkit-box-shadow: 0 4px 8px #0009;
+          box-shadow: 0 4px 8px #0009;
+  z-index: 20;
+}
+
+jira-issue:hover:hover::before, .jira-issue:hover:hover::before {
+  content: var(--owner) " \a" var(--owner-email);
+  background: #BBB;
+  white-space: pre;
+  position: absolute;
+  right: 0;
+  height: 58px;
+  padding: 3px 20px 0 30px;
+  -webkit-transform: translate(100%, -11px);
+          transform: translate(100%, -11px);
+  max-width: 300px;
+  opacity: 1;
+  -webkit-transition: 0.2s all ease-out 1.75s;
+  transition: 0.2s all ease-out 1.75s;
+  -webkit-box-shadow: 0 4px 8px #0009;
+          box-shadow: 0 4px 8px #0009;
+  z-index: 19;
+}
+
+@-webkit-keyframes changed-to-i {
+  0% {
+    color: #CCC;
+  }
+  40% {
+    color: #CCC0;
+    text-shadow: none;
+  }
+  45%, 100% {
+    content: 'i';
+    font-family: serif;
+    line-height: 43px;
+  }
+  60% {
+    color: #ffea1c00;
+    text-shadow: none;
+  }
+  100% {
+    color: #ffea1c;
+  }
+}
+
+@keyframes changed-to-i {
+  0% {
+    color: #CCC;
+  }
+  40% {
+    color: #CCC0;
+    text-shadow: none;
+  }
+  45%, 100% {
+    content: 'i';
+    font-family: serif;
+    line-height: 43px;
+  }
+  60% {
+    color: #ffea1c00;
+    text-shadow: none;
+  }
+  100% {
+    color: #ffea1c;
+  }
+}
+/*# sourceMappingURL=jira-issue.css.map */

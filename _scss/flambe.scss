@@ -53,7 +53,7 @@ main#iteration-info {
         position: relative;
 
         div.itr-form-field {
-            margin: 10px 0 0px;
+            margin: 10px 0 0;
             position: relative;
             & + div {
                 margin-top: 25px;
@@ -97,7 +97,7 @@ main#iteration-info {
                 max-height:0;
                 transition:0.33s all ease-in-out;
                 margin-top:-3px;
-                border-top:0px none;
+                border-top:0 none;
 
                 option {
                     font-size:14px;
@@ -133,7 +133,7 @@ main#iteration-info {
             .faux-select {
                 background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='16' fill='%23999' viewBox='-100 -100 800 600'%3E%3Cpath d='M250 360L100 100h300z'/%3E%3C/svg%3E") no-repeat right;
                 cursor:default;
-                border-bottom:0px none;
+                border-bottom:0 none;
                 &:invalid {
                     color:#AAA;
                 }
@@ -362,7 +362,7 @@ div.sort-order {
             width: calc(100% - 35px);
             height: 32px;
             font-size: 12px;
-            margin: 5px 0 0px 35px;
+            margin: 5px 0 0 35px;
             line-height: 32px;
             text-indent: 20px;
             cursor: pointer;
@@ -1146,7 +1146,7 @@ div.extra-details {
     margin-top: 30px;
     display: flex;
     flex-wrap: wrap;
-    box-shadow: -10px 10px 10px #0006, 10px 10px 10px #0006, 0px 20px 20px #0006;
+    box-shadow: -10px 10px 10px #0006, 10px 10px 10px #0006, 0 20px 20px #0006;
     font-size: 13px;
     z-index:100;
 
@@ -1177,7 +1177,7 @@ div.extra-details {
         content: '';
         background-color: #0000;
         width: 10px;
-        height: 0px;
+        height: 0;
         position: absolute;
         z-index: 50;
         top: -25px;
@@ -1203,7 +1203,7 @@ aside.sort-key {
     width: 280px;
     background-color: white;
     z-index: 10;
-    padding: 14px 13px 0px 8px;
+    padding: 14px 13px 0 8px;
     left: calc(100% + 10px);
     max-width: 45px;
     border: 1px solid #ccc;
@@ -1487,7 +1487,7 @@ td.major-alert {color: red !important;}
    animation:1.65s initialLoad forwards;
    animation:0.65s initialLoad forwards;
    position:absolute;
-   right:0px;
+   right:0;
    top:20px;
    text-align:right;
    z-index: 10000;
@@ -1572,11 +1572,11 @@ form {
    
       &:nth-of-type(1){
          transform:rotate(45deg);
-         margin-top:0px;
+         margin-top:0;
       }
       &:nth-of-type(2){
         transform:rotate(-45deg);
-         margin-top:0px;
+         margin-top:0;
       }
 
 
@@ -1587,7 +1587,7 @@ form {
       &::before {
          content:'SETTINGS';
          position:absolute;
-         top:0px;
+         top:0;
          left:-5px;
          font:bold italic 19px sans-serif;
          line-height:13px;
@@ -1745,12 +1745,12 @@ form{
    56% {transform:scaley(0.05);  margin-top:15px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#666; max-height:2px; max-width:120px; padding:20px 10px 10px 0;}
    57% {transform:scaley(-0.25);  margin-top:17px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#666; max-height:2px; max-width:120px; padding:20px 10px 10px 0;}
    58% {transform:scaley(0.05);  margin-top:15px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#666; max-height:2px; max-width:120px; padding:20px 10px 10px 0;}
-   60% {transform:scaley(1);  margin-top:30px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#FFF0; max-height:1px; max-width:120px; padding:0px 10px 0px 0;}
-   75% {transform:scaley(1);  margin-top:30px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#FFF0; max-height:1px; max-width:120px; padding:0px 10px 0px 0;}
-   78% {transform:scaley(1);  margin-top:30px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#FFF0; max-height:1px; max-width:120px; padding:0px 10px 0px 0;}
-   88% {transform:scaley(1);  margin-top:30px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#FFF0; max-height:1px; max-width:120px; padding:0px 10px 0px 0;}
-   95% {transform:scaley(1.15);  margin-top:28px; margin-left:-185px; background-color:#666; border-top-color:#666; border-bottom-color:#FFF0; max-height:12px; max-width:110px; padding:0px 10px 0px 0;}
-   98% {transform:scaley(1.25);  margin-top:28px; margin-left:-185px; background-color:#666; border-top-color:#666; border-bottom-color:#FFF0; max-height:12px; max-width:110px; padding:0px 10px 0px 0;}
+   60% {transform:scaley(1);  margin-top:30px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#FFF0; max-height:1px; max-width:120px; padding:0 10px 0 0;}
+   75% {transform:scaley(1);  margin-top:30px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#FFF0; max-height:1px; max-width:120px; padding:0 10px 0 0;}
+   78% {transform:scaley(1);  margin-top:30px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#FFF0; max-height:1px; max-width:120px; padding:0 10px 0 0;}
+   88% {transform:scaley(1);  margin-top:30px; margin-left:-160px; background-color:#666; border-top-color:#666; border-bottom-color:#FFF0; max-height:1px; max-width:120px; padding:0 10px 0 0;}
+   95% {transform:scaley(1.15);  margin-top:28px; margin-left:-185px; background-color:#666; border-top-color:#666; border-bottom-color:#FFF0; max-height:12px; max-width:110px; padding:0 10px 0 0;}
+   98% {transform:scaley(1.25);  margin-top:28px; margin-left:-185px; background-color:#666; border-top-color:#666; border-bottom-color:#FFF0; max-height:12px; max-width:110px; padding:0 10px 0 0;}
    99% {transform:scaley(1);  margin-top:30px; margin-left:-30px; background-color:#666; border-top-color:#666; border-bottom-color:#FFF0; max-height:2px; max-width:21px; padding:0;}
    100% {transform:scaley(1);  margin-top:30px; margin-left:-31px; background-color:#666; border-top-color:#666; border-bottom-color:FFF0; max-height:1px; max-width:21px; padding:0;}  
 }

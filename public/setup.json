@@ -1,0 +1,166 @@
+{
+    "personnel": [
+        {
+            "active":       true,
+            "avatarUrl":    "https://jirasw.t-mobile.com/secure/useravatar?avatarId=10350",
+            "displayName":  "Michael Duree",
+            "fName":        "Michael",
+            "lName":        "Duree",
+            "emailAddress": "Michael.Duree@t-mobile.com",
+            "key":          "JIRAUSER38320",
+            "name":         "MDuree1@gsm1900.org"
+        },
+        {
+            "active":       true,
+            "avatarUrl":    "https://jirasw.t-mobile.com/secure/useravatar?ownerId=JIRAUSER37436&avatarId=20121",
+            "displayName":  "Jason Jurusz",
+            "fName":        "Jason",
+            "lName":        "Jurusz",
+            "emailAddress": "Jason.Jurusz@t-mobile.com",
+            "key":          "JIRAUSER37436",
+            "name":         "JJurusz1@gsm1900.org"
+        },
+        {
+            "active":       true,
+            "avatarUrl":    "https://jirasw.t-mobile.com/secure/useravatar?avatarId=10347",
+            "displayName":  "Carlos Jaramillo",
+            "fName":        "Carlos",
+            "lName":        "Jaramillo",
+            "emailAddress": "Carlos.Jaramillo@t-mobile.com",
+            "key":          "JIRAUSER40596",
+            "name":         "CJarami7@gsm1900.org"
+        },
+        {
+            "active":       true,
+            "avatarUrl":    "https://jirasw.t-mobile.com/secure/useravatar?avatarId=14507",
+            "displayName":  "Meenakumari Konanki",
+            "fName":        "Meenakumari",
+            "lName":        "Konanki",
+            "emailAddress": "MeenaKumari.Konanki@t-mobile.com",
+            "key":          "JIRAUSER37747",
+            "name":         "MKonank1@gsm1900.org"
+        },
+        {
+            "active":       true,
+            "avatarUrl":    "https://jirasw.t-mobile.com/secure/useravatar?ownerId=npatel56%40gsm1900.org&avatarId=14207",
+            "displayName":  "Nirav Patel",
+            "fName":        "Nirav",
+            "lName":        "Patel",
+            "emailAddress": "Nirav.Patel56@T-Mobile.com",
+            "key":          "npatel56@gsm1900.org",
+            "name":         "NPatel56@gsm1900.org"
+        },
+        {
+            "active":       true,
+            "avatarUrl":    "https://jirasw.t-mobile.com/secure/useravatar?avatarId=10351",
+            "displayName":  "Mohamed Iraqi",
+            "fName":        "Mohamed",
+            "lName":        "Iraqi",
+            "emailAddress": "Mohamed.Iraqi1@T-Mobile.com",
+            "key":          "miraqi1@gsm1900.org",
+            "name":         "MIraqi1@gsm1900.org"
+        },
+        {
+            "active":       true,
+            "avatarUrl":    "https://jirasw.t-mobile.com/secure/useravatar?avatarId=14505",
+            "displayName":  "Pavankumar Durgempudi",
+            "fName":        "Pavankumar",
+            "lName":        "Durgempudi",
+            "emailAddress": "Pavankumar.Durgempudi@t-mobile.com",
+            "key":          "JIRAUSER41353",
+            "name":         "PDurgem1@gsm1900.org"
+        },
+        {
+            "active":       true,
+            "avatarUrl":    "https://jirasw.t-mobile.com/secure/useravatar?ownerId=JIRAUSER37435&avatarId=21120",
+            "displayName":  "Scot Mewbuorn",
+            "fName":        "Scot",
+            "lName":        "Mewbuorn",
+            "emailAddress": "Scot.Mewbuorn@t-mobile.com",
+            "key":          "JIRAUSER37435",
+            "name":         "SMewbuo1@gsm1900.org"
+        },
+        {
+            "active":       true,
+            "avatarUrl":    "https://jirasw.t-mobile.com/secure/useravatar?avatarId=10336",
+            "displayName":  "Ramesh Yadav",
+            "fName":        "Ramesh",
+            "lName":        "Yadav",
+            "emailAddress": "Ramesh.Yadav23@T-Mobile.com",
+            "key":          "ryadav23@gsm1900.org",
+            "name":         "RYadav23@gsm1900.org"
+        },
+        {
+            "active":       true,
+            "avatarUrl":    "https://jirasw.t-mobile.com/secure/useravatar?ownerId=JIRAUSER37563&avatarId=23055",
+            "displayName":  "Saisurya Pamidipati",
+            "fName":        "Saisurya",
+            "lName":        "Pamidipati",
+            "emailAddress": "Saisurya.Pamidipati@t-mobile.com",
+            "key":          "JIRAUSER37563",
+            "name":         "SPamidi7@gsm1900.org"
+        },
+        {
+            "active":       true,
+            "avatarUrl":    "https://jirasw.t-mobile.com/secure/useravatar?avatarId=10334",
+            "displayName":  "Ravi Varma Kusthapuram",
+            "fName":        "Ravi",
+            "lName":        "Kusthapuram",
+            "emailAddress": "RaviVarma.Kusthapuram@sprint.com",
+            "key":          "JIRAUSER37049",
+            "name":         "tv568045@ad.sprint.com"
+        },
+        {
+            "active":       true,
+            "avatarUrl":    "https://www.gravatar.com/avatar/de25621eef7e19407d991779a64ad8fe?d=mm&s=48",
+            "displayName":  "Saikiran Nagala",
+            "fName":        "Saikiran",
+            "lName":        "Nagala",
+            "emailAddress": "Saikiran.Nagala@sprint.com",
+            "key":          "JIRAUSER41625",
+            "name":         "xw889417@ad.sprint.com"
+        },
+        {
+            "active":       true,
+            "avatarUrl":    "https://jirasw.t-mobile.com/secure/useravatar?ownerId=JIRAUSER37563&avatarId=23055",
+            "displayName":  "Saisurya Pamidipati",
+            "fName":        "Saisurya",
+            "lName":        "Pamidipati",
+            "emailAddress": "Saisurya.Pamidipati@t-mobile.com",
+            "key":          "JIRAUSER37563",
+            "name":         "SPamidi7@gsm1900.org"
+        },
+        {
+            "active":       true,
+            "avatarUrl":    "https://jirasw.t-mobile.com/secure/useravatar?avatarId=10334",
+            "displayName":  "Ravi Varma Kusthapuram",
+            "fName":        "Ravi",
+            "lName":        "Kusthapuram",
+            "emailAddress": "RaviVarma.Kusthapuram@sprint.com",
+            "key":          "JIRAUSER37049",
+            "name":         "tv568045@ad.sprint.com"
+        },
+        {
+            "active":       true,
+            "avatarUrl":    "https://www.gravatar.com/avatar/de25621eef7e19407d991779a64ad8fe?d=mm&s=48",
+            "displayName":  "Saikiran Nagala",
+            "fName":        "Saikiran",
+            "lName":        "Nagala",
+            "emailAddress": "Saikiran.Nagala@sprint.com",
+            "key":          "JIRAUSER41625",
+            "name":         "xw889417@ad.sprint.com"
+        },
+        {
+            "active":       true,
+            "avatarUrl":    "https://jirasw.t-mobile.com/secure/useravatar?ownerId=JIRAUSER42926&avatarId=24103",
+            "displayName":  "Ashley Barrow",
+            "fName":        "Ashley",
+            "lName":        "Barrow",
+            "emailAddress": "Ashley.2.Barrow@t-mobile.com",
+            "key":          "JIRAUSER42926",
+            "name":         "ABarrow7@gsm1900.org",
+            "self":         "https://jirasw.t-mobile.com/rest/api/2/user?username=ABarrow7@gsm1900.org"
+        }
+    ]
+}
+// "[{\"active\":true,\"avatarUrl\":\"https://jirasw.t-mobile.com/secure/useravatar?avatarId=10350\",\"displayName\":\"Michael Duree\",\"fName\":\"Michael\",\"lName\":\"Duree\",\"emailAddress\":\"Michael.Duree@t-mobile.com\",\"key\":\"JIRAUSER38320\",\"name\":\"MDuree1@gsm1900.org\"},{\"active\":true,\"avatarUrl\":\"https://jirasw.t-mobile.com/secure/useravatar?ownerId=JIRAUSER37436&avatarId=20121\",\"displayName\":\"Jason Jurusz\",\"fName\":\"Jason\",\"lName\":\"Jurusz\",\"emailAddress\":\"Jason.Jurusz@t-mobile.com\",\"key\":\"JIRAUSER37436\",\"name\":\"JJurusz1@gsm1900.org\"},{\"active\":true,\"avatarUrl\":\"https://jirasw.t-mobile.com/secure/useravatar?avatarId=10347\",\"displayName\":\"Carlos Jaramillo\",\"fName\":\"Carlos\",\"lName\":\"Jaramillo\",\"emailAddress\":\"Carlos.Jaramillo@t-mobile.com\",\"key\":\"JIRAUSER40596\",\"name\":\"CJarami7@gsm1900.org\"},{\"active\":true,\"avatarUrl\":\"https://jirasw.t-mobile.com/secure/useravatar?avatarId=14507\",\"displayName\":\"Meenakumari Konanki\",\"fName\":\"Meenakumari\",\"lName\":\"Konanki\",\"emailAddress\":\"MeenaKumari.Konanki@t-mobile.com\",\"key\":\"JIRAUSER37747\",\"name\":\"MKonank1@gsm1900.org\"},{\"active\":true,\"avatarUrl\":\"https://jirasw.t-mobile.com/secure/useravatar?ownerId=npatel56%40gsm1900.org&avatarId=14207\",\"displayName\":\"Nirav Patel\",\"fName\":\"Nirav\",\"lName\":\"Patel\",\"emailAddress\":\"Nirav.Patel56@T-Mobile.com\",\"key\":\"npatel56@gsm1900.org\",\"name\":\"NPatel56@gsm1900.org\"},{\"active\":true,\"avatarUrl\":\"https://jirasw.t-mobile.com/secure/useravatar?avatarId=10351\",\"displayName\":\"Mohamed Iraqi\",\"fName\":\"Mohamed\",\"lName\":\"Iraqi\",\"emailAddress\":\"Mohamed.Iraqi1@T-Mobile.com\",\"key\":\"miraqi1@gsm1900.org\",\"name\":\"MIraqi1@gsm1900.org\"},{\"active\":true,\"avatarUrl\":\"https://jirasw.t-mobile.com/secure/useravatar?avatarId=14505\",\"displayName\":\"Pavankumar Durgempudi\",\"fName\":\"Pavankumar\",\"lName\":\"Durgempudi\",\"emailAddress\":\"Pavankumar.Durgempudi@t-mobile.com\",\"key\":\"JIRAUSER41353\",\"name\":\"PDurgem1@gsm1900.org\"},{\"active\":true,\"avatarUrl\":\"https://jirasw.t-mobile.com/secure/useravatar?ownerId=JIRAUSER37435&avatarId=21120\",\"displayName\":\"Scot Mewbuorn\",\"fName\":\"Scot\",\"lName\":\"Mewbuorn\",\"emailAddress\":\"Scot.Mewbuorn@t-mobile.com\",\"key\":\"JIRAUSER37435\",\"name\":\"SMewbuo1@gsm1900.org\"},{\"active\":true,\"avatarUrl\":\"https://jirasw.t-mobile.com/secure/useravatar?avatarId=10336\",\"displayName\":\"Ramesh Yadav\",\"fName\":\"Ramesh\",\"lName\":\"Yadav\",\"emailAddress\":\"Ramesh.Yadav23@T-Mobile.com\",\"key\":\"ryadav23@gsm1900.org\",\"name\":\"RYadav23@gsm1900.org\"},{\"active\":true,\"avatarUrl\":\"https://jirasw.t-mobile.com/secure/useravatar?ownerId=JIRAUSER37563&avatarId=23055\",\"displayName\":\"Saisurya Pamidipati\",\"fName\":\"Saisurya\",\"lName\":\"Pamidipati\",\"emailAddress\":\"Saisurya.Pamidipati@t-mobile.com\",\"key\":\"JIRAUSER37563\",\"name\":\"SPamidi7@gsm1900.org\"},{\"active\":true,\"avatarUrl\":\"https://jirasw.t-mobile.com/secure/useravatar?avatarId=10334\",\"displayName\":\"Ravi Varma Kusthapuram\",\"fName\":\"Ravi\",\"lName\":\"Kusthapuram\",\"emailAddress\":\"RaviVarma.Kusthapuram@sprint.com\",\"key\":\"JIRAUSER37049\",\"name\":\"tv568045@ad.sprint.com\"},{\"active\":true,\"avatarUrl\":\"https://www.gravatar.com/avatar/de25621eef7e19407d991779a64ad8fe?d=mm&s=48\",\"displayName\":\"Saikiran Nagala\",\"fName\":\"Saikiran\",\"lName\":\"Nagala\",\"emailAddress\":\"Saikiran.Nagala@sprint.com\",\"key\":\"JIRAUSER41625\",\"name\":\"xw889417@ad.sprint.com\"},{\"active\":true,\"avatarUrl\":\"https://jirasw.t-mobile.com/secure/useravatar?ownerId=JIRAUSER37563&avatarId=23055\",\"displayName\":\"Saisurya Pamidipati\",\"fName\":\"Saisurya\",\"lName\":\"Pamidipati\",\"emailAddress\":\"Saisurya.Pamidipati@t-mobile.com\",\"key\":\"JIRAUSER37563\",\"name\":\"SPamidi7@gsm1900.org\"},{\"active\":true,\"avatarUrl\":\"https://jirasw.t-mobile.com/secure/useravatar?avatarId=10334\",\"displayName\":\"Ravi Varma Kusthapuram\",\"fName\":\"Ravi\",\"lName\":\"Kusthapuram\",\"emailAddress\":\"RaviVarma.Kusthapuram@sprint.com\",\"key\":\"JIRAUSER37049\",\"name\":\"tv568045@ad.sprint.com\"},{\"active\":true,\"avatarUrl\":\"https://www.gravatar.com/avatar/de25621eef7e19407d991779a64ad8fe?d=mm&s=48\",\"displayName\":\"Saikiran Nagala\",\"fName\":\"Saikiran\",\"lName\":\"Nagala\",\"emailAddress\":\"Saikiran.Nagala@sprint.com\",\"key\":\"JIRAUSER41625\",\"name\":\"xw889417@ad.sprint.com\"},{\"active\":true,\"avatarUrl\":\"https://jirasw.t-mobile.com/secure/useravatar?ownerId=JIRAUSER42926&avatarId=24103\",\"displayName\":\"Ashley Barrow\",\"fName\":\"Ashley\",\"lName\":\"Barrow\",\"emailAddress\":\"Ashley.2.Barrow@t-mobile.com\",\"key\":\"JIRAUSER42926\",\"name\":\"ABarrow7@gsm1900.org\",\"self\":\"https://jirasw.t-mobile.com/rest/api/2/user?username=ABarrow7@gsm1900.org\"}]"
