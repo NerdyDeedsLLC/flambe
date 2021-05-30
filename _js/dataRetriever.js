@@ -1,11 +1,21 @@
 
-export default class dataRetriever {
-    static _jql
-    
+export default class DataRetriever {
+    #jql
+    #credentials
+
     set jql(jqlString){ 
         if(jqlString == null || jqlString === '') jqlString = `component in ("BSWMBE:Hot team", "BSWMDBN2:DB Scrum And Coke", "BSWMDBN2:DB Techquilla", "BSWMDBN2:Scrum Punch", "BSWMDBN2:DB Scrum Runner") AND Sprint in openSprints()`;
-        this._jql = '?jqlQuery=' + encodeURIComponent(jqlString) + '&tempMax=1000';
-    } get jql() { return this._jql }
+    } get jql() { 
+        function jiraEncodeURI(uri){ // No, I'm not a moron. I'm aware of encodeURIComponent. It's simply that Jira wants CERTAIN rules processed, and others not.
+            return uri.replace(/[ \s]+/g, '+')    // Replace...     ' ' (spaces)
+                      .replace(/:/g,      '%3A')  //                ':' (colons)
+                      .replace(/,/g,      '%2C')  //                ',' (commas)
+                      .replace(/"/g,      '%22')  //                '"' (quotes)
+                      .replace(/\(/g,     '%28')  //                '(' (open parentheses)
+                      .replace(/\)/g,     '%29'); //                ')' (close parentheses)
+        }
+        return jiraEncodeURI(this.#jql) + '&tempMax=1000' 
+    }
     
     set credentials(credentialData){
         if(credentialData==null) throw new SyntaxError('Missing credential data!');
@@ -19,16 +29,17 @@ export default class dataRetriever {
                 credPWord = credentialData[1];
             credentialData = btoa(`${credEmail}:${credPWord}`);
         }
-        this._credentials = credentialData;
-    } get credentials(){ return 'Basic ' + this._credentials }
+        this.#credentials = credentialData;
+    } get credentials(){ return 'Basic ' + this.#credentials }
     
     constructor() {
-        this._jql = `component in ("BSWMBE:Hot team", "BSWMDBN2:DB Scrum And Coke", "BSWMDBN2:DB Techquilla", "BSWMDBN2:Scrum Punch", "BSWMDBN2:DB Scrum Runner") AND Sprint in openSprints()`;
-        this._credentials = '';
+        console.log('DataRetriever has initialized!');
+        this.#jql = `component in ("BSWMBE:Hot team", "BSWMDBN2:DB Scrum And Coke", "BSWMDBN2:DB Techquilla", "BSWMDBN2:Scrum Punch", "BSWMDBN2:DB Scrum Runner") AND Sprint in openSprints()`;
+        this.#credentials = '';
     }
 
     ready(){
-        let isReady = (this._jql !== '' && this._credentials !== '');
+        let isReady = (this.jql !== '' && this.credentials !== 'Basic ');
         if(!isReady) console.warn("The user's credentials have not been set (more likely), or the search JQL is missing (less likely) within the JDR. \n  - Either way, no fondue for you til you do.")
         else console.log("JDR has everything it needs. You're cleared to proceed!");
         return isReady;
@@ -36,89 +47,89 @@ export default class dataRetriever {
 
     getXMLAsObj(xmlObj) {
         function getNodeAsArr(nodeChild) {
-        var nodeObj = getXMLAsObj(nodeChild),
-            nodeName = nodeChild.nodeName, finObj;
-    
-        // property names are unknown here,
-        // and so for-loop is used
-        if (Array.isArray(nodeObj)) {
-            finObj = nodeObj;
-        } else {
-            finObj = [nodeObj];
-        }
-    
-        return finObj;
+            var nodeObj = getXMLAsObj(nodeChild),
+                nodeName = nodeChild.nodeName, finObj;
+        
+            // property names are unknown here,
+            // and so for-loop is used
+            if (Array.isArray(nodeObj)) {
+                finObj = nodeObj;
+            } else {
+                finObj = [nodeObj];
+            }
+        
+            return finObj;
         }
     
         // get a node's value redefined to accomodate
         // attributes
         function getWithAttributes(val, node) {
-        var attrArr = node.attributes, attr, x, newObj;
-        if (attrArr) {
-            if (Array.isArray(val)) {
-            newObj = val;
-            } else if (typeof val === 'object') {
-            newObj = val;
-            for (x = attrArr.length; x--;) {
-                val[attrArr[x].name] = attrArr[x].nodeValue;
-            }                        
-            } else if (typeof val === 'string') {
-            if (attrArr.length) {
-                newObj = {};
+            var attrArr = node.attributes, attr, x, newObj;
+            if (attrArr) {
+                if (Array.isArray(val)) {
+                newObj = val;
+                } else if (typeof val === 'object') {
+                newObj = val;
                 for (x = attrArr.length; x--;) {
-                if (val) {
-                    newObj[attrArr[x].nodeValue] = val;                  
-                } else {
-                    newObj[attrArr[x].name] = attrArr[x].nodeValue;                  
+                    val[attrArr[x].name] = attrArr[x].nodeValue;
+                }                        
+                } else if (typeof val === 'string') {
+                if (attrArr.length) {
+                    newObj = {};
+                    for (x = attrArr.length; x--;) {
+                    if (val) {
+                        newObj[attrArr[x].nodeValue] = val;                  
+                    } else {
+                        newObj[attrArr[x].name] = attrArr[x].nodeValue;                  
+                    }
+                    }                                      
                 }
-                }                                      
+                } else {
+                newObj = val;
+                }
             }
-            } else {
-            newObj = val;
-            }
-        }
-        return newObj || val;
+            return newObj || val;
         }
     
         function getXMLAsObj(node) {
-        var nodeName, nodeType, 
-            strObj = "", finObj = {}, isStr = true, x;
-    
-        if (node) {
-            if (node.hasChildNodes()) {
-            node = node.firstChild;
-            do {
-                nodeType = node.nodeType;
-                nodeName = node.nodeName;
-                if (nodeType === 1) {
-                isStr = false;
-                // if array trigger, make this an array
-                if (nodeName.match(/Arr$/)) { 
-                    finObj[nodeName] = getNodeAsArr(node);
-                } else if (finObj[nodeName]) { 
-                    // if array already formed, push item to array
-                    // else a repeated node, redefine this as an array
-                    if (Array.isArray(finObj[nodeName])) {
-                    // if attribute... define on first attribute
-                    finObj[nodeName].push(
-                        getWithAttributes(getXMLAsObj(node), node)
-                    );
+            var nodeName, nodeType, 
+                strObj = "", finObj = {}, isStr = true, x;
+        
+            if (node) {
+                if (node.hasChildNodes()) {
+                node = node.firstChild;
+                do {
+                    nodeType = node.nodeType;
+                    nodeName = node.nodeName;
+                    if (nodeType === 1) {
+                    isStr = false;
+                    // if array trigger, make this an array
+                    if (nodeName.match(/Arr$/)) { 
+                        finObj[nodeName] = getNodeAsArr(node);
+                    } else if (finObj[nodeName]) { 
+                        // if array already formed, push item to array
+                        // else a repeated node, redefine this as an array
+                        if (Array.isArray(finObj[nodeName])) {
+                        // if attribute... define on first attribute
+                        finObj[nodeName].push(
+                            getWithAttributes(getXMLAsObj(node), node)
+                        );
+                        } else {
+                        finObj[nodeName] = [finObj[nodeName]];
+                        finObj[nodeName].push(
+                            getWithAttributes(getXMLAsObj(node), node)
+                        );
+                        }
                     } else {
-                    finObj[nodeName] = [finObj[nodeName]];
-                    finObj[nodeName].push(
-                        getWithAttributes(getXMLAsObj(node), node)
-                    );
+                        finObj[nodeName] = getWithAttributes(getXMLAsObj(node), node);
                     }
-                } else {
-                    finObj[nodeName] = getWithAttributes(getXMLAsObj(node), node);
+                    } else if (nodeType === 3) {
+                    strObj += node.nodeValue;
+                    }
+                } while ((node = node.nextSibling));
                 }
-                } else if (nodeType === 3) {
-                strObj += node.nodeValue;
-                }
-            } while ((node = node.nextSibling));
+                return isStr ? strObj : finObj;
             }
-            return isStr ? strObj : finObj;
-        }
         }
     
         return getXMLAsObj(xmlObj);
@@ -126,7 +137,7 @@ export default class dataRetriever {
     
     parseXMLObjData(xmlResults){
         let xmlNode = new DOMParser().parseFromString(xmlResults, 'text/xml'),
-            xmlJSON = getXMLAsObj(xmlNode),
+            xmlJSON = this.getXMLAsObj(xmlNode),
             pulledIssues = xmlJSON.rss.channel.item,
             readableDate = new Date().toLocaleString();
     
@@ -199,11 +210,12 @@ export default class dataRetriever {
         return parsedIssueDetails;
     }
 
-    getJiraData(JQL){
+    getJiraData(JQL=this.jql){
+        let loader = document.getElementById('loading-overlay')
+        loader.classList.toggle('on');
         console.log('Constructing request...')
         let xmlResults, myHeaders = new Headers();
-        myHeaders.append("Authorization", "Basic " + credentialData);
-        myHeaders.append("Cookie", "AWSALB=tSqsQiDM6xRnwAkDJwVyfWO6WLbD5fP99ekmoh1YyJR5LQI1zIW766YFk9qyhb2xtY0WbXTxW2Qa52e2BOlrmg3czb+g7UEfWtNJ7B4BunZllYkTtOhOKeCQ3QeN; AWSALBCORS=tSqsQiDM6xRnwAkDJwVyfWO6WLbD5fP99ekmoh1YyJR5LQI1zIW766YFk9qyhb2xtY0WbXTxW2Qa52e2BOlrmg3czb+g7UEfWtNJ7B4BunZllYkTtOhOKeCQ3QeN; JSESSIONID=C433D78A8704BAFD74A2C854FB3A61E9; atlassian.xsrf.token=BM4R-2E5N-4QKW-6H2V_17257220f18a3eb7a0946a9dde40543156f4a144_lin");
+        myHeaders.append("Authorization", this.credentials);
         
         let requestOptions = {
           method: 'GET',
@@ -212,9 +224,14 @@ export default class dataRetriever {
         };
         
         console.log('Performing requested retrieval...')
-        return fetch("http://0.0.0.0:8080/https://jirasw.t-mobile.com/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml" + this._jql, requestOptions)
-          .then(response => console.log('Data retrieved!') || response.text())
-          .then(result => parseXMLObjData(result))
+        return fetch("http://0.0.0.0:8080/https://jirasw.t-mobile.com/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=" + JQL, requestOptions)
+          .then(response => {
+              let jiraResponseBody = response.text();
+              console.log('Data retrieved!', jiraResponseBody);
+              return jiraResponseBody;
+          })
+          .then(result => this.parseXMLObjData(result))
+          .then(()=>loader.classList.toggle('on'))
           .catch(error => console.error('error', error));
     }
 }

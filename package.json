@@ -17,6 +17,17 @@
     "burndown",
     "chart"
   ],
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "useBuiltIns": "entry"
+        }
+      ]
+    ],
+    "plugins": ["@babel/plugin-proposal-class-properties"]
+  },
   "author": "@JJ (NerdyDeeds, LLC)",
   "license": "SEE LICENSE IN ./license.md",
   "bugs": {
