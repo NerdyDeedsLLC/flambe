@@ -15,6 +15,14 @@ const global_helper_functions = {
     , _E : (DEBUG_MODE) ? (...args) => {console.error.call(this, ...args); return args;} : noOp                      // ⥱ Alias - console.error
     , _T : (DEBUG_MODE) ? (...args) => {console.table.call(this, ...args); return args;} : noOp                      // ⥱ Alias - console.table
 
+    , MSTIMES: {
+        Y: 31536000000,
+        W: 604800000,
+        D: 86400000,
+        H: 3600000,
+        M: 60000,
+        S: 1000
+    }
     //                                                                                                                // Rote memory's storage 
     // /*eslint-disable*/
     // , rote :  W.localStorage                                                                                       // Alias to the window's localStorage. Really these are all just helper functions that amuse me.
@@ -40,6 +48,18 @@ const global_helper_functions = {
         for (var i = arr ? arr.length - 1 : 0; arr !== void (0) && val !== void (0) && i >= 0; i--)
             if (((val.constructor + '').match(/RegExp/) && arr[i].match(val)) || (val + '' == arr[i])) return (i);
         return -1;
+    }
+
+    , removeTimeFromDate(d){
+        d = (isNaN(d*1)) ? Date.parse(d) : new Date(d*1).getTime();
+        return isNaN(d) ? null : Date.parse(new Date(d).toISOString().slice(0,11) + '00:00:00.000Z');
+    }
+
+    , daysApart(d1, d2) {
+        d1 = removeTimeFromDate(d1);
+        d2 = removeTimeFromDate(d2);
+        if(isNaN(d1) || isNaN(d2)) return null;
+        return M.abs((d1 - d2) / MSTIMES.D)
     }
 };
 Object.assign(window, global_helper_functions);

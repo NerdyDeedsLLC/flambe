@@ -1,182 +1,286 @@
-#jiraAuthRequired {
-    display:none;
-    width:50vw;
-    max-width: 600px;
-    margin:20vh auto 0;
-    border:2px solid #AAA;
-    border-radius: 20px;
-    padding:20px;
-    font-family: system-ui;
-    box-shadow: 0 10px 20px #0009;
-    background:#DEDEDE;
-}
-#jiraAuthRequired.show {
-    display:block;
-}
-
-#jiraAuthRequired h3 {
-    margin:0 0 5px 0;
-
-}
-
-#jiraAuthRequired header {
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #BBB;
-}
-
-label:empty {
-    display: inline-block;
-    position:relative;
-    width:fit-content;
-    height:28px;
-    text-align: center;
-    transform: translateY(10px);
-    margin-left:20px;
-    
-}
-
-label:empty::before {
-    content:'[' attr(data-text) ']';
-    display:inline-block;
-    font-style: normal;
-    font-size: 10px;
-    cursor:pointer;
-    overflow:hidden;
-    max-height:0;
-    position: absolute;
-    left:0;
-    transition: 0.3s all cubic-bezier(1,-1.29,.59,3.09);
-    top:10px;
-    transform: translateX(-50%);
-}
-label:empty:hover::before {
-    max-height: 20px;
-    top:-10px;
-
-}
-
-label:empty::after {
-    position: absolute;
-    content:'?';
-    text-align: center;
-    font-style: normal;
-    background:teal;
-    border-radius: 50%;
-    display:inline-block;
-    width:16px;
-    height:16px;
-    line-height:16px;
-    font-size: 14px;
-    font-weight: bold;;
-    color:white;;
-    cursor:pointer;
-    top:0;
-    left:50%;
-    transform: translate(-50%, 3px);
-}
-
-input[type="checkbox"]{
+#JIRACredentialDialog {
+    width:100vw;
+    height:100vh;
     position:fixed;
-    left:-10000000px;
-}
+    top:0;
+    left:0;
+    z-index: 150;
+    background:#0009;
 
-#shortDesc, 
-#longDesc {
-    overflow:hidden;
-    max-height:150px;
-    transition: 0.25s all ease-in-out;
-    opacity: 1;
-    padding:5px 20px;
-    border:1px solid #aaa;
-    border-radius: 10px;
-    background:white;
-    font-size:85%;
-}
+    & ~ article {
+        filter: blur(10px);
+    }
 
-#longDesc {
-    opacity: 0;
-    max-height:0;
-    padding:0 20px;
-}
+    &.finished {
+        animation: 4s fadeout forwards;
+        &::after {
+            content:'✓';
+            color:#9afa71;
+            font-size:150px;
+            position:absolute;
+            top:45vh;
+            border:10px solid #9afa71;
+            width:200px;
+            height: 200px;
+            line-height: 220px;
+            text-align: center;
+            border-radius: 50%;
+            left:calc(50vw - 100px);
+            animation: 4s check forwards;
+    
+        }
 
-#showLongDesc:checked ~ h3 > label::before {
-    content:'[hide]'
-}
-#showLongDesc:checked ~ #shortDesc {
-    opacity: 0;
-    max-height:0;
-    padding:0 20px;
-}
-#showLongDesc:checked ~ #longDesc {
-    opacity: 1;
-    max-height:150px;
-    padding:5px 20px;
-}
-#jiraAuthRequired main {
-    display: flex;
-    flex-direction: column;
-    justify-content:center;
-    max-width: 85%;
-    margin:0 auto;
-    border:1px solid #aaa;
-    background:#EEE;
-    padding:25px;
-    border-radius: 10px;
-}
+        #jiraAuthRequired {
+            animation: 2s conclude forwards;
+        }
 
-#jiraAuthRequired main div span {
-    display: block;
-    width: 100%;
-}
+        & ~ article {
+            filter: blur(0);
+            transition: 0.5s filter linear 3.5s;
+        }
+    }
 
-#jiraAuthRequired main div {
-    width:100%;
-    padding:5px 0 0 0;
-    display: flex;
-}
 
-#jiraAuthRequired main label {
-    min-width:120px;
-    padding: 3px 0 0 10px;
-}
+    #jiraAuthRequired {
+        width:100vw;
+        display:none;
+        max-width: 600px;
+        margin:40vh auto 0;
+        border:2px solid #AAA;
+        border-radius: 20px;
+        padding:20px;
+        font-family: system-ui;
+        box-shadow: 0 10px 20px #0009;
+        background:#dedede;
 
-#jiraAuthRequired main div input {
-width:90%;
-font-size:110%;
-background-color:white;
-border:1px solid #666;
-border-radius: 5px;
-}
+        
 
-#jiraAuthRequired main div em {
-display: block;
-font-size:75%;
-margin-bottom:10px
-}
-#jiraAuthRequired footer {
-padding:20px 10px 5px;
-text-align: right;
-}
-
-#jiraAuthRequired footer button {
-width:30%;
-border:1px solid #888;
-color:#888;
-border-radius: 10px;
-background-color: white;
-padding:5px 0;
-font-weight: 700;
-}
-
-#jiraAuthRequired footer button:first-of-type {
-background-color: #888;
-color:white;
-font-weight: 400;
-}
+        &.show {
+            display:block;
+        }
+        
+        & h3 {
+            margin:0 0 5px 0;
+        
+        }
+        
+        & header {
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #BBB;
+        }
 
 
 
+
+
+
+        label:empty {
+            display: inline-block;
+            position:relative;
+            width:fit-content;
+            height:28px;
+            text-align: center;
+            transform: translateY(10px);
+            margin-left:20px;
+            
+            &::before {
+                content:'[' attr(data-text) ']';
+                display:inline-block;
+                font-style: normal;
+                font-size: 10px;
+                cursor:pointer;
+                overflow:hidden;
+                max-height:0;
+                position: absolute;
+                left:0;
+                transition: 0.3s all cubic-bezier(1,-1.29,.59,3.09);
+                top:10px;
+                transform: translateX(-50%);
+            }
+            &:hover::before {
+                max-height: 20px;
+                top:-10px;
+            
+            }
+            
+            &::after {
+                position: absolute;
+                content:'?';
+                text-align: center;
+                font-style: normal;
+                background:teal;
+                border-radius: 50%;
+                display:inline-block;
+                width:16px;
+                height:16px;
+                line-height:16px;
+                font-size: 14px;
+                font-weight: bold;;
+                color:white;;
+                cursor:pointer;
+                top:0;
+                left:50%;
+                transform: translate(-50%, 3px);
+            }
+        }
+        
+        
+        input[type="checkbox"]{
+            position:fixed;
+            left:-10000000px;
+        }
+        
+        #shortDesc, 
+        #longDesc {
+            overflow:hidden;
+            max-height:150px;
+            transition: 0.25s all ease-in-out;
+            opacity: 1;
+            padding:5px 20px;
+            border:1px solid #aaa;
+            border-radius: 10px;
+            background:white;
+            font-size:85%;
+        }
+        
+        #longDesc {
+            opacity: 0;
+            max-height:0;
+            padding:0 20px;
+        }
+        
+        #showLongDesc:checked ~ h3 > label::before {
+            content:'[hide]'
+        }
+        #showLongDesc:checked ~ #shortDesc {
+            opacity: 0;
+            max-height:0;
+            padding:0 20px;
+        }
+        #showLongDesc:checked ~ #longDesc {
+            opacity: 1;
+            max-height:150px;
+            padding:5px 20px;
+        }
+        & > .main {
+            display: flex;
+            flex-direction: column;
+            justify-content:center;
+            max-width: 85%;
+            margin:0 auto;
+            border:1px solid #aaa;
+            background:#EEE;
+            padding:25px;
+            border-radius: 10px;
+
+            & > div {
+                width:100%;
+                padding:5px 0 0 0;
+                display: flex;
+
+                span {
+                    display: block;
+                    width: 100%;
+                }
+                
+                label {
+                    min-width:120px;
+                    padding: 3px 0 0 10px;
+                }
+                
+                input {
+                    width:90%;
+                    font-size:110%;
+                    background-color:white;
+                    border:1px solid #666;
+                    border-radius: 5px;
+                }
+                
+                em {
+                    display: block;
+                    font-size:75%;
+                    margin-bottom:10px
+                }
+            }
+        
+        }
+        
+        & footer {
+            padding:20px 10px 5px;
+            text-align: right;
+
+            button {
+                width:30%;
+                border:1px solid #888;
+                color:#888;
+                border-radius: 10px;
+                background-color: white;
+                padding:5px 0;
+                font-weight: 700;
+            
+                &:first-of-type {
+                    background-color: #888;
+                    color:white;
+                    font-weight: 400;
+                }        
+            }
+            
+        }
+        
+    }
+
+}
+
+@keyframes conclude {
+    0% {
+        filter: blur(0) brightness(1) contrast(1) brightness(1)  contrast(1) brightness(1) sepia(0) hue-rotate(0) saturate(1) drop-shadow(0 0 0 transparent) brightness(1);
+        transform: scale(1);
+    }
+    33% {
+        filter: blur(15px) brightness(0.25) contrast(0.1) brightness(0.5)  contrast(0.5) brightness(1) sepia(1) hue-rotate(60deg) saturate(3) drop-shadow(0 0 50px #59a03e) brightness(2);
+        transform: scale(1.5);
+    }
+    66%, 100% {
+        filter: blur(15px) brightness(0.25) contrast(0.1) brightness(0.5)  contrast(0.5) brightness(1) sepia(1) hue-rotate(60deg) saturate(3) drop-shadow(0 0 250px #59a03e) brightness(1);
+        transform: scale(0);
+    }
+}
+
+@keyframes fadeout {
+    0%, 75% {
+        opacity:1;
+        transform: scale(1);
+        border-radius:0;
+    }
+    85%, 100% {
+        opacity:0;
+        transform: scale(0);
+        border-radius:50%;
+    }
+}
+
+@keyframes check {
+    0%, 24% {
+        opacity:0;
+    }
+    25%, 66% {
+        opacity:1;
+        transform: scale(1);
+    }
+    25% {
+        filter:none;
+    }
+    85% {
+        filter:drop-shadow(0 0 1px #39801f) drop-shadow(0 0 1px #39801f) drop-shadow(0 0 1px #39801f) drop-shadow(0 0 1px #39801f) drop-shadow(0 0 1px #39801f) drop-shadow(0 0 1px #39801f) drop-shadow(0 0 1px #39801f) drop-shadow(0 0 1px #39801f) drop-shadow(0 0 1px #39801f) drop-shadow(0 0 1px #39801f) drop-shadow(0 0 25px #39801f99);
+        
+    }
+    100% {
+        opacity:0;
+        transform: scale(0);
+        filter:none;
+    }
+}
 
 
 

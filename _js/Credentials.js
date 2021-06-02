@@ -3,7 +3,7 @@ export default class Credentials {
     #credentials
     #hasCreds
     
-    get creds() { 
+    get token() { 
         return this.#credentials
     }
     
@@ -15,27 +15,34 @@ export default class Credentials {
         console.log('Credentials has initialized!');
         this.#hasCreds    = false;
         this.#credentials = null;
-        this.configDBContents = null;
+        this.fondueConfigObj = null;
         this.dbConnection = null;
+        this.dialog = null;
     }
 
     destroyCredentialDialog() {
-        let dialog=document.getElementById('JIRACredentialDialog')
-        return dialog != null ? dialog.remove() : void(0);
+        return this.dialog != null ? this.dialog.remove() : void(0);
     }
 
 
     displayCredentialDialog() {
-        document.body.insertAdjacentHTML('afterBegin', this.generateCredentialDialog());
+        APP.insertAdjacentHTML('afterBegin', this.generateCredentialDialog());
+        this.dialog = qs('#JIRACredentialDialog');
         document.getElementById('authBtn').addEventListener('click', ()=>{
-            let authString = btoa(`${document.getElementById('userName').value}:${document.getElementById('password').value}`);
-            var row = this.dbConnection.createRow({
-                'userInstance': 1,
-                'jiraHash': 'Basic ' + authString,
-            });
-            return window.fondutabase.insertOrReplace().into(this.dbConnection).values([row]).exec()
+            return new Promise((resolve, reject)=>{
+                let authString = btoa(`${document.getElementById('userName').value}:${document.getElementById('password').value}`);
+                return resolve(window.fondutabase.insert('fondueConfig', {
+                    key: 'jiraHash',
+                    value: 'Basic ' + authString,
+                }))
+                ;
+
+            })
+            .then(() => this.dialog.classList.toggle('finished'))
+            .then(() => setTimeout(()=>{this.dialog.classList.toggle('finished'); this.destroyCredentialDialog()}, 4000))
+            .then(() => fondutabase.verifyDBConnectivity());
         });
-        return;
+        return ;
     }
 
     generateCredentialDialog() {
@@ -55,7 +62,7 @@ export default class Credentials {
                                     unless you reset or reinstall the application.
                             </div>
                         </header>
-                        <main>
+                        <div class="main">
                             <div>
                                     <label for="userName">Username:</label>
                                     <span>
@@ -70,49 +77,38 @@ export default class Credentials {
                                     <input type="password" name="password" id="password" autocomplete="current-password">
                                         <em>(the password you use when logging into Jira)</em>
                                 </span>
-                                
                             </div>
-
-                            </main>
-                            <footer>
-                                <button id="authBtn">Authenticate Computer</button>
-
+                        </div>
+                        <footer>
+                            <button id="authBtn">Authenticate Computer</button>
                         </footer>
                     </section>
                 </form>`;
     }
 
-    verifyJiraCredentials(configDBContents=null, dbConnection){
-        this.configDBContents = configDBContents;
-        this.dbConnection     = dbConnection;
+    verifyJiraCredentials(fondueConfigObj = null){
+        _I('Verifying presence of JIRA credentials...');
+        this.fondueConfigObj = fondueConfigObj;
+
         return new Promise((resolve, reject)=>{
-            this.destroyCredentialDialog();
-            if(configDBContents == null || !Array.isArray(configDBContents))
-                throw reject(new Error('Cannot Instantiate Database!'));
-                if(configDBContents && configDBContents[0] && configDBContents[0].jiraHash){
-                    this.#credentials = configDBContents[0].jiraHash;
-                    JDR.credentials   = this.creds;
-                    return resolve();
-                }
-                if(configDBContents.length < 1) return resolve(this.toggleToCredentialCollector());
-                throw reject(new Error('Unable to read from database table!'));
+            if(fondueConfigObj == null || !Array.isArray(fondueConfigObj)) {
+                _E('FATAL ERROR! Configuration Object provided is missing, malformed, or corrupted!', fondueConfigObj);
+                throw reject(new Error('Unable to read object.'));
+            }
+            let jiraHashKVP = fondueConfigObj.find(ent=>ent.key==='jiraHash');
+            if(jiraHashKVP != null){
+                _I('...success! Jira credentials securely loaded. No further authentication required.');
+                this.#credentials = jiraHashKVP.value;
+                JDR.credentials   = this.token;
+                return resolve();
+            }else{
+                _I('...unsuccessful. Config loaded, but Jira token is absent or corrupted. Transferrring user to Jira login credential collection dialog!');
+                return resolve(this.toggleToCredentialCollector());
+            }
         });
     }
     
     toggleToCredentialCollector(){
-        if(document.getElementById()){
-            this.destroyCredentialDialog();
-            return true;
-        }
-        this.displayCredentialDialog(); 
-        document.getElementById('authBtn').addEventListener('click', ()=>{
-            let authString = btoa(`${document.getElementById('userName').value}:${document.getElementById('password').value}`);
-            var row = this.dbConnection.createRow({
-                'userInstance': 1,
-                'jiraHash': 'Basic ' + authString,
-            });
-            return fondutabase.insertOrReplace().into(this.dbConnection).values([row]).exec()
-            .then(window.fondutabase.checkForDatabase);
-        });
+        return  (qs('#JIRACredentialDialog') != null) ? true : this.displayCredentialDialog(); 
     }
 }

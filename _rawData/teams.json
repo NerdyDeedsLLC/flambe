@@ -1,0 +1,44 @@
+[
+     {"jiraId": "11538", "jiraName": "_QE Intake", 						        "description": "QE Intake"}
+    ,{"jiraId": "24223", "jiraName": "BSWMDBN2:DB BTPS Testing Team", 			"description": "DB BTPS Testing Team"}
+    ,{"jiraId": "21495", "jiraName": "BSWMDBN2:DB Scrum And Coke", 				"description": "DB Scrum And Coke"}
+    ,{"jiraId": "21498", "jiraName": "BSWMDBN2:DB Techquilla", 					"description": "DB Techquilla"}
+    ,{"jiraId": "14703", "jiraName": "BSWMDBN2:Digital Billing Bravo Team", 	"description": "Digital Billing Bravo Team"}
+    ,{"jiraId": "14705", "jiraName": "BSWMDBN2:Digital Billing Charlie Team", 	"description": "Digital Billing Charlie Team"}
+    ,{"jiraId": "11424", "jiraName": "BSWMDBN2:Digital Billing DevOps FTE",     "description": "Digital Billing DevOps FTE"}
+    ,{"jiraId": "17020", "jiraName": "BSWMDBN2:Digital Billing Intake", 	    "description": "Digital Billing Intake"}
+    ,{"jiraId": "24205", "jiraName": "BSWMDBN2:Digital Billing Mario", 		    "description": "Digital Billing Mario"}
+    ,{"jiraId": "14706", "jiraName": "BSWMDBN2:Digital Billing Zelda Team",     "description": "Digital Billing Zelda Team"}
+    ,{"jiraId": "21494", "jiraName": "BSWMDBN2:Maverick", 						"description": "Maverick"}
+    ,{"jiraId": "22212", "jiraName": "BSWMDBN2:Production-Triage", 				"description": "Production-Triage"}
+    ,{"jiraId": "22213", "jiraName": "BSWMDBN2:Samson Blue Keep", 				"description": "Samson Blue Keep"}
+    ,{"jiraId": "22214", "jiraName": "BSWMDBN2:Samson Citrix", 					"description": "Samson Citrix"}
+    ,{"jiraId": "22215", "jiraName": "BSWMDBN2:Samson DBA Team", 				"description": "Samson DBA Team"}
+    ,{"jiraId": "22237", "jiraName": "BSWMDBN2:Samson DevOps", 					"description": "Samson DevOps"}
+    ,{"jiraId": "22216", "jiraName": "BSWMDBN2:Samson Digital Infra", 			"description": "Samson Digital Infra"}
+    ,{"jiraId": "26307", "jiraName": "BSWMDBN2:Samson Dracaredys", 				"description": "Samson Dracaredys"}
+    ,{"jiraId": "22217", "jiraName": "BSWMDBN2:Samson Dragon Stone", 			"description": "Samson Dragon Stone"}
+    ,{"jiraId": "22218", "jiraName": "BSWMDBN2:Samson Early Testing", 		    "description": "Samson Early Testing"}
+    ,{"jiraId": "22242", "jiraName": "BSWMDBN2:Samson Intake", 					"description": "Samson Intake"}
+    ,{"jiraId": "26306", "jiraName": "BSWMDBN2:Samson Java Snow", 				"description": "Samson Java Snow"}
+    ,{"jiraId": "22219", "jiraName": "BSWMDBN2:Samson Kafka Dragons", 		    "description": "Samson Kafka Dragons"}
+    ,{"jiraId": "22220", "jiraName": "BSWMDBN2:Samson Lordsport", 				"description": "Samson Lordsport"}
+    ,{"jiraId": "22221", "jiraName": "BSWMDBN2:Samson Price Plan", 				"description": "Samson Price Plan"}
+    ,{"jiraId": "22222", "jiraName": "BSWMDBN2:Samson Prod Bugs", 				"description": "Samson Prod Bugs"}
+    ,{"jiraId": "22223", "jiraName": "BSWMDBN2:Samson QAT Triage", 				"description": "Samson QAT Triage"}
+    ,{"jiraId": "22224", "jiraName": "BSWMDBN2:Samson RRT", 					"description": "Samson RRT"}
+    ,{"jiraId": "24901", "jiraName": "BSWMDBN2:Samson Security Test", 	    	"description": "Samson Security Test"}
+    ,{"jiraId": "22225", "jiraName": "BSWMDBN2:Samson SI Test", 				"description": "Samson SI Test"}
+    ,{"jiraId": "22226", "jiraName": "BSWMDBN2:Samson SI-IHAP", 				"description": "Samson SI-IHAP"}
+    ,{"jiraId": "22227", "jiraName": "BSWMDBN2:Samson Starks", 					"description": "Samson Starks"}
+    ,{"jiraId": "22228", "jiraName": "BSWMDBN2:Samson Storm Lands", 			"description": "Samson Storm Lands"}
+    ,{"jiraId": "22229", "jiraName": "BSWMDBN2:Samson Targaryen (MS-Eitan)",	"description": "Samson Targaryen (MS-Eitan)"}
+    ,{"jiraId": "22230", "jiraName": "BSWMDBN2:Samson Ultra South", 			"description": "Samson Ultra South"}
+    ,{"jiraId": "22231", "jiraName": "BSWMDBN2:Samson Westerlands", 			"description": "Samson Westerlands"}
+    ,{"jiraId": "22232", "jiraName": "BSWMDBN2:Samson Westeros", 				"description": "Samson Westeros"}
+    ,{"jiraId": "22233", "jiraName": "BSWMDBN2:Samson White Walker", 			"description": "Samson White Walker"}
+    ,{"jiraId": "22234", "jiraName": "BSWMDBN2:Samson Wild Fire", 				"description": "Samson Wild Fire"}
+    ,{"jiraId": "22236", "jiraName": "BSWMDBN2:Samson-Infra", 				    "description": "Samson-Infra"}
+    ,{"jiraId": "21496", "jiraName": "BSWMDBN2:Scrum Punch", 					"description": "Scrum Punch"}
+    ,{"jiraId": "22241", "jiraName": "BSWMDBN2:Switch Control", 				"description": "Switch Control"}
+]

@@ -36,6 +36,7 @@ export default class DataRetriever {
         console.log('DataRetriever has initialized!');
         this.#jql = `component in ("BSWMBE:Hot team", "BSWMDBN2:DB Scrum And Coke", "BSWMDBN2:DB Techquilla", "BSWMDBN2:Scrum Punch", "BSWMDBN2:DB Scrum Runner") AND Sprint in openSprints()`;
         this.#credentials = '';
+        this.loaderOverlay = null;
     }
 
     ready(){
@@ -211,8 +212,8 @@ export default class DataRetriever {
     }
 
     getJiraData(JQL=this.jql){
-        let loader = document.getElementById('loading-overlay')
-        loader.classList.toggle('on');
+        if(this.loaderOverlay == null) this.loaderOverlay = qs('#loading-overlay');
+        this.loaderOverlay.classList.toggle('on');
         console.log('Constructing request...')
         let xmlResults, myHeaders = new Headers();
         myHeaders.append("Authorization", this.credentials);
@@ -231,7 +232,67 @@ export default class DataRetriever {
               return jiraResponseBody;
           })
           .then(result => this.parseXMLObjData(result))
-          .then(()=>loader.classList.toggle('on'))
+          .then(()=>this.loaderOverlay.classList.toggle('on'))
           .catch(error => console.error('error', error));
+    }
+
+    getJiraProperties(property){
+        if(this.loaderOverlay == null) this.loaderOverlay = qs('#loading-overlay');
+        let availableProps = {
+            components: {
+                url: 'https://jirasw.t-mobile.com/rest/api/2/project/BSWMDBN2/components'
+            },
+            project: {
+                url: 'https://jirasw.t-mobile.com/rest/api/2/project/BSWMDBN2/components'
+            },
+            sprints: {
+                url: 'https://jirasw.t-mobile.com/rest/agile/1.0/board/8455/sprint?maxResults=150',
+                destination:'sprints',
+                cleanup: (records=>{
+                    records = JSON.parse(records).values;
+                    window.toInsert = []
+                    records.forEach(sprint=>{
+                        let dayGap = daysApart(new Date(sprint.startDate), new Date(sprint.endDate));
+                        sprint = Object.assign( sprint, 
+                                               {jiraId: sprint.id, 
+                                                startDate:      sprint.startDate ? (new Date(sprint.startDate)) : null, 
+                                                endDate:        sprint.endDate ? (new Date(sprint.endDate)) : null, 
+                                                activatedDate:  sprint.activatedDate ? (new Date(sprint.activatedDate)) : null, 
+                                                completeDate:   sprint.completeDate ? (new Date(sprint.completeDate)) : null
+                                                ,sprintLengthInDays: dayGap
+                                                // pullAssociations: new Array((isNaN(dayGap) ? null : dayGap))
+                                            });
+                        delete(sprint.self);
+                        delete(sprint.id);
+                        
+                        toInsert.push(sprint);
+                    })
+                    return toInsert
+                    // fondutabase.insert('sprints', toInsert);
+                })
+            }
+        }
+
+        let destinationURL = "http://0.0.0.0:8080/" + availableProps[property].url;
+        
+        console.log('getJiraProperties :', availableProps[property]);
+        
+        this.loaderOverlay.classList.toggle('on');
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", credentials.token);
+        myHeaders.append("Cookie", "AWSALB=K37aW7IayNAZyw3YsfiK4n4kDwonfAMJj6rAkKatjwdPnqt2nF7GrONtjmoe7bVPxjNBlVeWEesQ7y0jYEyalq8+0FYMK3C1QWvQeVfHKwvH2nF3CVQcAhbqhBHt; AWSALBCORS=K37aW7IayNAZyw3YsfiK4n4kDwonfAMJj6rAkKatjwdPnqt2nF7GrONtjmoe7bVPxjNBlVeWEesQ7y0jYEyalq8+0FYMK3C1QWvQeVfHKwvH2nF3CVQcAhbqhBHt; JSESSIONID=E31D87E6EB6D1038466AB6A32D31E9C2; atlassian.xsrf.token=BM4R-2E5N-4QKW-6H2V_091fc0aa625d0da3c8a0964cecd6ae6f466e258e_lin");
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        return  fetch(destinationURL, requestOptions)
+                .then(response => response.text())
+                .then(result => _(window.lastTransaction = result))
+                .then(result=>fondutabase.overwrite(availableProps[property].destination, availableProps[property].cleanup(result)))
+                .then(()=>this.loaderOverlay.classList.toggle('on'))
+                .catch(error => console.error('error', error));
     }
 }
