@@ -24,10 +24,15 @@ export default class Fondutabase {
 
     insert(table, fieldData){
         if(!Array.isArray(fieldData)) fieldData = [fieldData];
-    console.log('fieldData :', fieldData);
+        console.log('fieldData :', fieldData);
         var targetTable = this.db.getSchema().table(table);
         var allRows = fieldData.map(row=>targetTable.createRow(row));
         return this.db.insert().into(targetTable).values(allRows).exec()
+    }
+
+    delete(table, condition){
+        var targetTable = this.db.getSchema().table(table);
+        this.db.delete().from(targetTable).exec();
     }
 
     overwrite(table, fieldData){

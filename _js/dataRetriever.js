@@ -236,19 +236,27 @@ export default class DataRetriever {
           .catch(error => console.error('error', error));
     }
 
-    getJiraProperties(property){
+    seedSprints(){
+        let spo = qs('#sprint');
+        spo.options.length = 2;
+        return fondutabase.select('SELECT * FROM sprints')
+                .then(result=>spo.insertAdjacentHTML('beforeEnd', 
+                                                    _(result.map(sp=>`<option value="${sp.sprintId}" data-jiraid="${sp.jiraId}">${sp.name}</option>`).reverse().join())))
+    }
+
+    getJiraProperties(property, purgeBeforeRetrieval=false){
         if(this.loaderOverlay == null) this.loaderOverlay = qs('#loading-overlay');
         let availableProps = {
             components: {
                 url: 'https://jirasw.t-mobile.com/rest/api/2/project/BSWMDBN2/components'
             },
-            project: {
+            projects: {
                 url: 'https://jirasw.t-mobile.com/rest/api/2/project/BSWMDBN2/components'
             },
             sprints: {
                 url: 'https://jirasw.t-mobile.com/rest/agile/1.0/board/8455/sprint?maxResults=150',
                 destination:'sprints',
-                cleanup: (records=>{
+                cleanup: records=>{
                     records = JSON.parse(records).values;
                     window.toInsert = []
                     records.forEach(sprint=>{
@@ -269,7 +277,8 @@ export default class DataRetriever {
                     })
                     return toInsert
                     // fondutabase.insert('sprints', toInsert);
-                })
+                },
+                callBack: this.seedSprints
             }
         }
 
@@ -278,6 +287,11 @@ export default class DataRetriever {
         console.log('getJiraProperties :', availableProps[property]);
         
         this.loaderOverlay.classList.toggle('on');
+
+        if(purgeBeforeRetrieval) fondutabase.delete(availableProps[property].destination)
+        
+
+
         var myHeaders = new Headers();
         myHeaders.append("Authorization", credentials.token);
         myHeaders.append("Cookie", "AWSALB=K37aW7IayNAZyw3YsfiK4n4kDwonfAMJj6rAkKatjwdPnqt2nF7GrONtjmoe7bVPxjNBlVeWEesQ7y0jYEyalq8+0FYMK3C1QWvQeVfHKwvH2nF3CVQcAhbqhBHt; AWSALBCORS=K37aW7IayNAZyw3YsfiK4n4kDwonfAMJj6rAkKatjwdPnqt2nF7GrONtjmoe7bVPxjNBlVeWEesQ7y0jYEyalq8+0FYMK3C1QWvQeVfHKwvH2nF3CVQcAhbqhBHt; JSESSIONID=E31D87E6EB6D1038466AB6A32D31E9C2; atlassian.xsrf.token=BM4R-2E5N-4QKW-6H2V_091fc0aa625d0da3c8a0964cecd6ae6f466e258e_lin");
@@ -290,9 +304,10 @@ export default class DataRetriever {
 
         return  fetch(destinationURL, requestOptions)
                 .then(response => response.text())
-                .then(result => _(window.lastTransaction = result))
-                .then(result=>fondutabase.overwrite(availableProps[property].destination, availableProps[property].cleanup(result)))
-                .then(()=>this.loaderOverlay.classList.toggle('on'))
-                .catch(error => console.error('error', error));
+                .then(result   => window.lastTransaction = result)
+                .then(result   => fondutabase.overwrite(availableProps[property].destination, availableProps[property].cleanup(result)))
+                .then(result   => availableProps[property].callBack(result))
+                .then(()       => this.loaderOverlay.classList.toggle('on'))
+                .catch(error   => console.error('error', error));
     }
 }

@@ -25,12 +25,12 @@ var PATHS = {                                                   // Paths to dist
 
 const   gulp         = require('gulp'),
         sourcemaps   = require('gulp-sourcemaps'),                                 // Automatically converts ES6 code into CommonJS
-
-        rollup       = require('gulp-better-rollup'),
-        resolve      = require('rollup-plugin-node-resolve'),
+        shell        = require('gulp-shell');                                      // Permits gulp to run shell commands
+        rollup       = require('gulp-better-rollup'),                              // Allows for tress-shaking and import/export
+        resolve      = require('rollup-plugin-node-resolve'),                      // 
         commonjs     = require('rollup-plugin-commonjs'),
         babel        = require('rollup-plugin-babel'),
-        localforage  = require('localforage'),                                     // CSS Post-processor rules (responsiveness, hex conversions, certain polyfills)
+        // localforage  = require('localforage'),                                     // CSS Post-processor rules (responsiveness, hex conversions, certain polyfills)
 
         sass         = require('gulp-sass'),                                       // Provides CSS PRE-processing (via a light-weight wrapper around node-sass, itself a Node binding for libsass/Sass)
         autoprefixer = require('gulp-autoprefixer'),                               // Applies prefixes for common and popular platforns and browsers (-ms-, -webkit-)
@@ -128,4 +128,5 @@ function onError(err) {
     this.emit('end');
   }
 
-gulp.task('default', gulp.parallel('css', 'js', 'server'));
+gulp.task('cores',   shell.task('node cors.js'));
+gulp.task('default', gulp.parallel('cores', 'css', 'js', 'server'));
