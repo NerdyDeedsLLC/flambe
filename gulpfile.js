@@ -127,6 +127,8 @@ function onError(err) {
     console.log(err);
     this.emit('end');
   }
+  
 
-gulp.task('cores',   shell.task('node cors.js'));
-gulp.task('default', gulp.parallel('cores', 'css', 'js', 'server'));
+gulp.task('cleanse', shell.task('clear && lsof -t -i ":8080" -i ":8081" -i ":3000" -i ":3001" -i ":5000" -i ":5001" | xargs kill')); // Terminates any servers currently running on 8080, 8081, 3000, 3001, 5000, 5001
+gulp.task('cores',   shell.task('node cors.js'));                                                                           // Launches the CORS bypass proxy
+gulp.task('default', gulp.series('cleanse', gulp.parallel('cores', 'css', 'js', 'server')));                                // Fondue...?

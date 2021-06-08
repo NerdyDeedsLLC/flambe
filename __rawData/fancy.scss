@@ -1,0 +1,113 @@
+.fancy {
+  --dimensions      : 400;
+
+  
+  --sheen-color     : hsla(var(--progress), 100%, 90%, 1);
+  --gloss-color     : hsla(var(--progress), 100%, 40%, 0.2);
+  --gloss-undertone : hsla(var(--progress), 100%, 30%, 0.3);
+  border-radius     : 60%/10%;
+  
+
+  box-shadow: 0                                   calc(var(--dimensions) *  0.0375px) calc(var(--dimensions) * 0.0500px) #0007,
+              calc(var(--dimensions) *  0.0250px) calc(var(--dimensions) *  0.0250px) calc(var(--dimensions) * 0.0750px) #0006,
+    
+        inset 0                                   calc(var(--dimensions) * -0.1800px) calc(var(--dimensions) * 0.1800px) #0005,
+        inset calc(var(--dimensions) *  0.0250px) 0                                   calc(var(--dimensions) * 0.0250px) black,
+        inset calc(var(--dimensions) * -0.1000px) 0                                   calc(var(--dimensions) * 0.1000px) #0003,
+        inset 0                                   calc(var(--dimensions) * -0.8250px) 0                                  #fff,
+        inset 0                                   calc(var(--dimensions) * -0.8375px) calc(var(--dimensions) * 0.0750px) var(--gloss-undertone),
+        inset 0                                   calc(var(--dimensions) * -0.8500px) 3px                                var(--gloss-undertone),
+        inset 0                                   calc(var(--dimensions) * -0.8625px) calc(var(--dimensions) * 0.1075px) #fff3, 
+        inset 0                                   calc(var(--dimensions) * -0.8750px) calc(var(--dimensions) * 0.1075px) #0001,
+        inset 0                                   calc(var(--dimensions) * -0.8875px) calc(var(--dimensions) * 0.0500px) var(--gloss-color),
+        inset calc(var(--dimensions) *  0.0250px) calc(var(--dimensions) * -0.2500px) calc(var(--dimensions) * 0.0250px) black,
+        inset calc(var(--dimensions) * -0.1500px) calc(var(--dimensions) * -0.2500px) calc(var(--dimensions) * 0.1000px) #0003,
+        inset calc(var(--dimensions) *  0.1000px) calc(var(--dimensions) * -0.0250px) calc(var(--dimensions) * 0.1000px) #0003;
+
+    &::before,
+    &::after {
+        border-radius: 60%/9%;
+        opacity: 0.9;
+        line-height: 0.66;
+    }
+
+    &::after {
+        box-shadow: inset 0                                     0                                    calc(var(--dimensions) * 0.0500px)                                    black,
+                    inset 0                                     calc(var(--dimensions) * -0.1250px)  calc(var(--dimensions) * 0.1250px)                                    #0001,
+                    inset calc(var(--dimensions) *  0.0500px)   0                                    calc(var(--dimensions) * 0.0750px)                                    var(--fill-color),
+                    inset calc(var(--dimensions) *  0.0750px)   0                                    calc(var(--dimensions) * 0.1750px)                                    #fff7,
+                    inset calc(var(--dimensions) *  0.0750px)   0                                    calc(var(--dimensions) * 0.3000px)                                    calc(var(--dimensions) * 0.05px) #fff5,
+                    inset calc(var(--dimensions) * -0.1250px)   calc(var(--dimensions) * -0.1250px)  calc(var(--dimensions) * 0.1250px)                                    #0005,
+                    inset 0                                     calc(var(--dimensions) * -0.1000px)  0                                                                     var(--fill-color),
+                    inset 0                                     calc(var(--dimensions) *  0.7950px)  0                                  0                                  var(--fill-color),
+                    inset 0                                     calc(var(--dimensions) * -1.0000px)  0                                  calc(var(--dimensions) * 1.0000px) var(--dark-color);
+        color: var(--sheen-color);
+    }
+
+    &::before {
+            box-shadow: inset calc(var(--dimensions) *  0.075px)    0                                    calc(var(--dimensions) * 0.1750px)                                    white,
+                        inset calc(var(--dimensions) *  0.3250px)   0                                    calc(var(--dimensions) * 0.4250px)  calc(var(--dimensions) * 0.1px)   white;
+            background: linear-gradient(110deg, #00a3 70%, #0003);
+        }
+}
+
+center {
+    display         : flex;
+    width           : 98vw;
+    flex-direction  : row;
+    flex-wrap       : wrap;
+    justify-content : space-between;
+    align-items     : center;
+}
+
+.hydro-meter {
+    justify-self    : center;
+    left            : 20%;
+    transform       : translate(-50%, 0);
+}
+
+p:not(.hydro-meter) {
+    font-size       : 1.5rem;
+    font-family     : system-ui;
+    border-top      : calc(var(--dimensions) * 0.0050px) solid #0002;
+    border-left     : calc(var(--dimensions) * 0.0050px) solid #0002;
+
+    width           : 75%;
+    padding         : 1em 10%;
+    margin          : 2em auto 1em;
+    position        : relative;
+    background      : linen;
+    border-radius   : 0.4em;
+
+    &::after {
+        content           : "";
+        position          : absolute;
+        right             : 0;
+        top               : 50%;
+        width             : 0;
+        height            : 0;
+        border            : calc(var(--dimensions) * 0.0850px) solid transparent;
+        border-left-color : linen;
+        border-right      : 0;
+        border-bottom     : 0;
+        margin-top        : calc(var(--dimensions) * -0.0425px);
+        margin-right      : calc(var(--dimensions) * -0.0850px);
+    }
+}
+
+code {
+    font-size        : 1.5rem;
+    display          : block;
+    background-color : wheat;
+    //   width       : fit-content;
+    width            : 50%;
+    padding          : 1em 0.75em;
+    border           : calc(var(--dimensions) * 0.0200px) double white;
+    flex             : 0 0 auto;
+    margin-right     : 10%;
+    align-self       : flex-start;
+}
+
+* + p:not(.hydro-meter) {
+    padding-top      : 1em;
+}

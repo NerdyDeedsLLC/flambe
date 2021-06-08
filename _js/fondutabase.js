@@ -44,9 +44,18 @@ export default class Fondutabase {
     }
 
     // Usage: select('SELECT manager FROM sprints').then(rows=>console.log(rows))
-    select(tsql){
+    select(tsql, dryrun=false){
         let {db} = this;
+        const booleanConditions = {
+            '='  : 'eq',
+            '<>' : 'neq',
+            '>=' : 'gte',
+            '>'  : 'gt',
+            '<=' : 'lte',
+            '<'  : 'lt'
+        }
         const prefixColumn = (columnName, tableCollection) => {
+            console.log('prefixColumn = (columnName, tableCollection) :', columnName, tableCollection);
             columnName = columnName.trim().split('.');
             if(columnName[0] === '*') return void(0);
             if(columnName.length === 1) return Object.values(tableCollection)[0].schema[columnName[0]]
@@ -80,23 +89,51 @@ export default class Fondutabase {
         );
         tableQuery = tableMappings;
 
-        //# COLUMNS         Mext, lets grab the separated columns from the tSQL (e.g. '*'/'some, column, names'/'table.prefixed, column.names')
+        //# COLUMNS         Next, lets grab the separated columns from the tSQL (e.g. '*'/'some, column, names'/'table.prefixed, column.names')
         let columnQuery = targetData.COLUMNS.split(',').map(col=>prefixColumn(col, tableQuery));
+
+        //# CONDITIONS      Obtain the WHERE statements and evaluate them to construct the boolean value expression
+        //## ITERATIVE DEV ON THIS BIT: initial support: = and <>
+        let whereQuery = null, conditionResults = [], pseudoCond = [];
+        if(targetData.WHERE){
+            whereQuery = {};
+            targetData.WHERE.replace(/^(.*?)(?: *([=<>]+) *)(.*)$/, 
+                                                  (p, c1, op, c2)=>{
+                                                      window.c1 = whereQuery.c1 = prefixColumn(c1, tableQuery);
+                                                      window.op = whereQuery.op = [booleanConditions[op]];
+                                                      window.c2 = whereQuery.c2 = c2;
+                                                    //   return c1.eq(c2);
+                                                  });
+            console.log('whereQuery :', whereQuery = [whereQuery]);
+        }
+
         let pseudoColQuery = [...columnQuery];
         pseudoColQuery = pseudoColQuery[0] ? pseudoColQuery : '*'
         let pseudoQuery = ["SELECT", pseudoColQuery, 'FROM', ...Object.values(tableQuery).map(v=>v.name)];
+        if(whereQuery) pseudoQuery.push(...['WHERE', Object.values(whereQuery[0]).join(' ')])
         
         
         try {
             console.time('     ↳ ⏱');
             let result, runningQuery;
-            return Promise.resolve(
+            return !dryrun ? Promise.resolve(
                 result = Promise.resolve(db.select(...columnQuery))
                        .then(QUERY=>QUERY.from(...Object.values(tableQuery).map(v=>v.schema)))
+                       .then(QUERY=>{
+                           if(whereQuery == null) return QUERY;
+                           let q = whereQuery[0];
+                           return QUERY.where(q.c1[q.op](q.c2))
+                       })
                        .then(QUERY=>runningQuery=QUERY.exec()))
             .then(result=>console.groupCollapsed('▶️ 🟢 Executed tSQL from components: ', pseudoQuery.flat()) || console.log('     ↳ 🛠 Query Literal:', runningQuery) || result)
             .then(result=>console.log('     ↳ ✅ Transaction Succeeded!', result) || result)
-            .then(result=>console.timeEnd('     ↳ ⏱') || console.groupEnd() || result);
+            .then(result=>console.timeEnd('     ↳ ⏱') || console.groupEnd() || result)
+            :
+            Promise.resolve()
+            .then(result=>console.group('▶️ 🟡 DRY RUN: Executed tSQL from components: ', pseudoQuery.flat()) || console.log('     ↳ 🔕 Query Literal: Unavailable in Dry Run') || result)
+            .then(result=>console.log('     ↳ 🔕 Transaction Status: Unavailable in Dry Run!'))
+            .then(result=>console.timeEnd('     ↳ ⏱') || console.groupEnd() || result)
+            ;
                 
             
         }catch(err){
@@ -117,8 +154,8 @@ export default class Fondutabase {
         console.log('generateDatabaseSchema');
         return new Promise((resolve, reject) => {
             this.schemaBuilder = this.lf.schema.create('fondue', 1);
-            // Adds the "fondueConfig" table to the "fondue" database
-            this.schemaBuilder.createTable('fondueConfig').
+            // Adds the "config" table to the "fondue" database
+            this.schemaBuilder.createTable('config').
                 addColumn('key', this.lf.Type.STRING).
                 addColumn('value', this.lf.Type.STRING).
                 addPrimaryKey(['key']).
@@ -136,28 +173,32 @@ export default class Fondutabase {
 
             // Adds the "sprints" table to the "fondue" database
             this.schemaBuilder.createTable('sprints').
-                addColumn('sprintId',           this.lf.Type.INTEGER).
-                addColumn('jiraId',             this.lf.Type.INTEGER).
-                addColumn('teamId',             this.lf.Type.INTEGER).
-                addColumn('originBoardId',      this.lf.Type.INTEGER).
-                addColumn('startDate',          this.lf.Type.DATE_TIME).
-                addColumn('endDate',            this.lf.Type.DATE_TIME).
-                addColumn('activatedDate',      this.lf.Type.DATE_TIME).
-                addColumn('completeDate',      this.lf.Type.DATE_TIME).
-                addColumn('sprintLengthInDays', this.lf.Type.INTEGER).
-                addColumn('name',               this.lf.Type.STRING).
-                addColumn('state',              this.lf.Type.STRING).
-                addColumn('pullAssociations',   this.lf.Type.ARRAY_BUFFER).
+                addColumn('sprintId',             this.lf.Type.INTEGER).
+                addColumn('jiraId',               this.lf.Type.INTEGER).
+                addColumn('teamId',               this.lf.Type.INTEGER).
+                addColumn('originBoardId',        this.lf.Type.INTEGER).
+                addColumn('startDate',            this.lf.Type.DATE_TIME).
+                addColumn('endDate',              this.lf.Type.DATE_TIME).
+                addColumn('activatedDate',        this.lf.Type.DATE_TIME).
+                addColumn('completeDate',         this.lf.Type.DATE_TIME).
+                addColumn('sprintLengthInDays',   this.lf.Type.INTEGER).
+                addColumn('workableDaysInSprint', this.lf.Type.STRING).
+                addColumn('workableDaysCount',    this.lf.Type.INTEGER).
+                addColumn('name',                 this.lf.Type.STRING).
+                addColumn('state',                this.lf.Type.STRING).
+                addColumn('pullAssociations',     this.lf.Type.ARRAY_BUFFER).
+                addColumn('_OPTIONS',             this.lf.Type.STRING).
 
 
                 addPrimaryKey(['sprintId'], true).
-                addNullable(['sprintLengthInDays','pullAssociations', 'teamId','jiraId', 'originBoardId', 'activatedDate', 'state', 'startDate', 'name', 'endDate', 'completeDate']);
+                addNullable(['sprintLengthInDays','pullAssociations', 'teamId','jiraId', 'originBoardId', 'activatedDate', 'state', 'startDate', 'name', 'endDate', 'completeDate', '_OPTIONS']);
                 // addIndex('idxSprints', ['sprintId'], false, this.lf.Order.DESC);
 
             // Adds the "teams" table to the "fondue" database
             this.schemaBuilder.createTable('teams').
                 addColumn('teamId', this.lf.Type.INTEGER).
-                addColumn('teamName', this.lf.Type.STRING).
+                addColumn('name', this.lf.Type.STRING).
+                addColumn('description', this.lf.Type.STRING).
                 addColumn('manager', this.lf.Type.STRING).
                 addPrimaryKey(['teamId'], true).
                 addNullable(['manager']);
@@ -178,28 +219,40 @@ export default class Fondutabase {
 
             // Adds the "personnel" table to the "fondue" database
             this.schemaBuilder.createTable('issues').
-                addColumn('issueId', this.lf.Type.INTEGER).
-                addColumn('jiraIssueId', this.lf.Type.INTEGER).
-                addColumn('issueType', this.lf.Type.STRING).
-                addColumn('issueKey', this.lf.Type.STRING).
-                addColumn('parentJiraId', this.lf.Type.STRING).
-                addColumn('status', this.lf.Type.STRING).
-                addColumn('assignee', this.lf.Type.STRING).
-                addColumn('component', this.lf.Type.STRING).
-                addColumn('created', this.lf.Type.DATE_TIME).
-                addColumn('updated', this.lf.Type.DATE_TIME).
-                addColumn('summary', this.lf.Type.STRING).
-                addColumn('priority', this.lf.Type.STRING).
-                addColumn('sprint', this.lf.Type.STRING).
-                addColumn('cfIssueId', this.lf.Type.STRING).
-                addColumn('cfFeatureLink', this.lf.Type.STRING).
-                addColumn('originalEst', this.lf.Type.NUMBER).
-                addColumn('remainingEst', this.lf.Type.NUMBER).
-                addColumn('timeSpent', this.lf.Type.NUMBER).
-                addColumn('totRemainingEst', this.lf.Type.NUMBER).
-                addColumn('totTimeSpent', this.lf.Type.NUMBER).
+                addColumn('issueId',	           this.lf.Type.INTEGER).
+                addColumn('jiraIssueId',	       this.lf.Type.INTEGER).
+                addColumn('parentJiraId',	       this.lf.Type.INTEGER).
+                addColumn('issueKey',	           this.lf.Type.STRING).
+                addColumn('type',	               this.lf.Type.STRING).
+                addColumn('assigneeName',	       this.lf.Type.STRING).
+                addColumn('assigneeEmail',	       this.lf.Type.STRING).
+                addColumn('component',	           this.lf.Type.STRING).
+                addColumn('created',	           this.lf.Type.DATE_TIME).
+                addColumn('description',	       this.lf.Type.STRING).
+                addColumn('labels',	               this.lf.Type.STRING).
+                addColumn('link',	               this.lf.Type.STRING).
+                addColumn('priority',	           this.lf.Type.STRING).
+                addColumn('project',	           this.lf.Type.STRING).
+                addColumn('reporter',	           this.lf.Type.STRING).
+                addColumn('status',	               this.lf.Type.STRING).
+                addColumn('statusColor',	       this.lf.Type.STRING).
+                addColumn('subtasks',	           this.lf.Type.STRING).
+                addColumn('summary',	           this.lf.Type.STRING).
+                addColumn('title',	               this.lf.Type.STRING).
+                addColumn('timeestimate',	       this.lf.Type.NUMBER).
+                addColumn('timeoriginalestimate',  this.lf.Type.NUMBER).
+                addColumn('timespent',	           this.lf.Type.NUMBER).
+                addColumn('updated',	           this.lf.Type.DATE_TIME).
+                addColumn('retrievedFor',	       this.lf.Type.INTEGER).
+                addColumn('retrevalStamp',	       this.lf.Type.DATE_TIME).
+                addColumn('retrevalReadable',	   this.lf.Type.STRING).
+                addColumn('_OPTIONS',              this.lf.Type.STRING).
+
                 addPrimaryKey(['issueId'], true).
-                addNullable(['jiraIssueId','issueType','issueKey','parentJiraId','status','assignee','component','created','updated','summary','priority','sprint','cfIssueId','cfFeatureLink','originalEst','remainingEst','timeSpent','totRemainingEst','totTimeSpent']);
+                addNullable(['jiraIssueId', 'parentJiraId', 'issueKey', 'type', 'assigneeName', 'assigneeEmail', 
+                             'component', 'created', 'description', 'labels', 'link', 'priority', 'project', 
+                             'reporter', 'status', 'statusColor', 'subtasks', 'summary', 'title', 'timeestimate', 
+                             'timeoriginalestimate', 'timespent', 'updated', '_OPTIONS']);
             resolve(this.schemaBuilder);
                 
         })
@@ -218,16 +271,16 @@ export default class Fondutabase {
         return this.schemaBuilder.connect()
     }
 
-    getFondueConfig(dbConn){
+    getconfig(dbConn){
         _I('Attempting to retrieve Fondue configuration form local storage...');
         this.db = dbConn;
-        return this.select('SELECT * FROM fondueConfig')
+        return this.select('SELECT * FROM config')
         .then(configObject=>this.config = configObject);
     }
 
     verifyDBConnectivity(){
         return this.connect()
-        .then(dbConn=>this.getFondueConfig(dbConn))
+        .then(dbConn=>this.getconfig(dbConn))
         .then(configObj=>window.credentials.verifyJiraCredentials(configObj))
     }
 

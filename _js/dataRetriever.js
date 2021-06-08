@@ -1,21 +1,9 @@
 
-export default class DataRetriever {
-    #jql
-    #credentials
+import {startOfDay, isWeekend, addDays, differenceInDays, formatISO} from 'date-fns'
 
-    set jql(jqlString){ 
-        if(jqlString == null || jqlString === '') jqlString = `component in ("BSWMBE:Hot team", "BSWMDBN2:DB Scrum And Coke", "BSWMDBN2:DB Techquilla", "BSWMDBN2:Scrum Punch", "BSWMDBN2:DB Scrum Runner") AND Sprint in openSprints()`;
-    } get jql() { 
-        function jiraEncodeURI(uri){ // No, I'm not a moron. I'm aware of encodeURIComponent. It's simply that Jira wants CERTAIN rules processed, and others not.
-            return uri.replace(/[ \s]+/g, '+')    // Replace...     ' ' (spaces)
-                      .replace(/:/g,      '%3A')  //                ':' (colons)
-                      .replace(/,/g,      '%2C')  //                ',' (commas)
-                      .replace(/"/g,      '%22')  //                '"' (quotes)
-                      .replace(/\(/g,     '%28')  //                '(' (open parentheses)
-                      .replace(/\)/g,     '%29'); //                ')' (close parentheses)
-        }
-        return jiraEncodeURI(this.#jql) + '&tempMax=1000' 
-    }
+export default class DataRetriever {
+    #credentials
+    
     
     set credentials(credentialData){
         if(credentialData==null) throw new SyntaxError('Missing credential data!');
@@ -34,7 +22,7 @@ export default class DataRetriever {
     
     constructor() {
         console.log('DataRetriever has initialized!');
-        this.#jql = `component in ("BSWMBE:Hot team", "BSWMDBN2:DB Scrum And Coke", "BSWMDBN2:DB Techquilla", "BSWMDBN2:Scrum Punch", "BSWMDBN2:DB Scrum Runner") AND Sprint in openSprints()`;
+        
         this.#credentials = '';
         this.loaderOverlay = null;
     }
@@ -45,7 +33,7 @@ export default class DataRetriever {
         else console.log("JDR has everything it needs. You're cleared to proceed!");
         return isReady;
     }
-
+/*
     getXMLAsObj(xmlObj) {
         function getNodeAsArr(nodeChild) {
             var nodeObj = getXMLAsObj(nodeChild),
@@ -137,6 +125,7 @@ export default class DataRetriever {
     }
     
     parseXMLObjData(xmlResults){
+        console.log('parseXMLObjData(xmlResults) :', xmlResults);
         let xmlNode = new DOMParser().parseFromString(xmlResults, 'text/xml'),
             xmlJSON = this.getXMLAsObj(xmlNode),
             pulledIssues = xmlJSON.rss.channel.item,
@@ -210,64 +199,120 @@ export default class DataRetriever {
         console.groupEnd();
         return parsedIssueDetails;
     }
+*/
+    getRetrieverURL(baseURL){return "http://0.0.0.0:8080/" + baseURL; }
 
-    getJiraData(JQL=this.jql){
-        if(this.loaderOverlay == null) this.loaderOverlay = qs('#loading-overlay');
-        this.loaderOverlay.classList.toggle('on');
-        console.log('Constructing request...')
-        let xmlResults, myHeaders = new Headers();
-        myHeaders.append("Authorization", this.credentials);
-        
-        let requestOptions = {
-          method: 'GET',
-          headers: myHeaders,
-          redirect: 'follow'
-        };
-        
-        console.log('Performing requested retrieval...')
-        return fetch("http://0.0.0.0:8080/https://jirasw.t-mobile.com/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=" + JQL, requestOptions)
-          .then(response => {
-              let jiraResponseBody = response.text();
-              console.log('Data retrieved!', jiraResponseBody);
-              return jiraResponseBody;
-          })
-          .then(result => this.parseXMLObjData(result))
-          .then(()=>this.loaderOverlay.classList.toggle('on'))
-          .catch(error => console.error('error', error));
-    }
+    getRetrieverHeaders() {
+        return new Promise((resolve, reject)=>{
+            if(credentials.token == null) {
+                console.error("🔴 TRANSACTION FAILURE! Credential token object missing, corrupt, or expired!")
+                reject('Credential Token Missing!');
+            }
+            let myHeaders = new Headers();
+            myHeaders.append("Authorization", credentials.token);
+            myHeaders.append("Cookie", "AWSALB=tSqsQiDM6xRnwAkDJwVyfWO6WLbD5fP99ekmoh1YyJR5LQI1zIW766YFk9qyhb2xtY0WbXTxW2Qa52e2BOlrmg3czb+g7UEfWtNJ7B4BunZllYkTtOhOKeCQ3QeN; AWSALBCORS=tSqsQiDM6xRnwAkDJwVyfWO6WLbD5fP99ekmoh1YyJR5LQI1zIW766YFk9qyhb2xtY0WbXTxW2Qa52e2BOlrmg3czb+g7UEfWtNJ7B4BunZllYkTtOhOKeCQ3QeN; JSESSIONID=C433D78A8704BAFD74A2C854FB3A61E9; atlassian.xsrf.token=BM4R-2E5N-4QKW-6H2V_17257220f18a3eb7a0946a9dde40543156f4a144_lin");
+            
+            resolve({
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
+            });
+        });
+    }   
+
+//     getJiraData(JQL=this.jql){
+//         if(this.loaderOverlay == null) this.loaderOverlay = qs('#loading-overlay');
+//         let constructedJQLQuery = "https://jirasw.t-mobile.com/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=" + JQL;
+//         this.loaderOverlay.classList.toggle('on');
+// 
+//         this.getRetrieverHeaders()
+//         .then(hdrs=>fetch(this.getRetrieverURL(constructedJQLQuery), hdrs))
+//         .then(response => _(response.text()))
+// 
+//         .then(result   => window.lastTransaction = result)
+//         .then(result   => this.parseXMLObjData(result))
+//         .then(()       => this.loaderOverlay.classList.toggle('on'))
+//         .catch(error   => console.error('error', error))
+// 
+// 
+// // 
+//         console.log('Constructing request...')
+//         let xmlResults, retrieverHeaders = new Headers();
+//         retrieverHeaders.append("Authorization", this.credentials);
+//         
+//         let requestOptions = {
+//           method: 'GET',
+//           headers: retrieverHeaders,
+//           redirect: 'follow'
+//         };
+//         
+//         console.log('Performing requested retrieval...')
+// //         return fetch("http://0.0.0.0:8080/https://jirasw.t-mobile.com/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=" + JQL, requestOptions)
+// //           .then(response => {
+// //               let jiraResponseBody = response.text();
+// //               console.log('Data retrieved!', jiraResponseBody);
+// //               return jiraResponseBody;
+// //           })
+//           .then(result => this.parseXMLObjData(result))
+//           .then(()=>this.loaderOverlay.classList.toggle('on'))
+//           .catch(error => console.error('error', error));
+    // }
 
     seedSprints(){
         let spo = qs('#sprint');
         spo.options.length = 2;
         return fondutabase.select('SELECT * FROM sprints')
                 .then(result=>spo.insertAdjacentHTML('beforeEnd', 
-                                                    _(result.map(sp=>`<option value="${sp.sprintId}" data-jiraid="${sp.jiraId}">${sp.name}</option>`).reverse().join())))
+                result.map(sp=>`<option value="${sp.sprintId}" data-jiraid="${sp.jiraId}" data-start="${new Date(sp.startDate).toISOString().slice(0, 10)}" data-end="${new Date(sp.endDate).toISOString().slice(0, 10)}">${sp.name}</option>`).reverse().join()))
     }
 
+    datestampDataRetrieval(tablePulled) {
+        let pullLog = {key:tablePulled, value:(Date.now() + PREFS.caching.ttl)}
+        fondutabase.overwrite('config', pullLog);
+    }
+
+    checkDataDateStamp(tableSought) {
+        return fondutabase.select('SELECT * FROM config WHERE config.key=' + tableSought)
+        .then(result=>{
+            console.log('result :', result, !!(result && result.length && result[0].value <= Date.now()));
+            return !!(result && result.length && result[0].value <= Date.now());
+        });
+    }
+
+
+
     getJiraProperties(property, purgeBeforeRetrieval=false){
+        //// return;// FIXME: IN PLACE FOR TESTING
         if(this.loaderOverlay == null) this.loaderOverlay = qs('#loading-overlay');
         let availableProps = {
-            components: {
-                url: 'https://jirasw.t-mobile.com/rest/api/2/project/BSWMDBN2/components'
-            },
-            projects: {
-                url: 'https://jirasw.t-mobile.com/rest/api/2/project/BSWMDBN2/components'
+            teams: {
+                url: 'https://jirasw.t-mobile.com/rest/api/2/project/BSWMDBN2/components',
+                destination:'teams',
+                cleanup: records=>{
+                    return elideObjectKeys(JSON.parse(records).filter(rec=>!rec.archived), ['id', 'name', 'description'], true).map(rec=> {
+                        rec = Object.assign(rec, {jiraID:rec.id}); 
+                        delete(rec.id); 
+                        return rec;
+                    });
+                },
+                callBack: ()=>{} //this.seedSprints
             },
             sprints: {
                 url: 'https://jirasw.t-mobile.com/rest/agile/1.0/board/8455/sprint?maxResults=150',
                 destination:'sprints',
                 cleanup: records=>{
+                console.log('records :', records);
                     records = JSON.parse(records).values;
-                    window.toInsert = []
+                    window.toInsert = [];
                     records.forEach(sprint=>{
-                        let dayGap = daysApart(new Date(sprint.startDate), new Date(sprint.endDate));
+                        
+                        
                         sprint = Object.assign( sprint, 
                                                {jiraId: sprint.id, 
-                                                startDate:      sprint.startDate ? (new Date(sprint.startDate)) : null, 
-                                                endDate:        sprint.endDate ? (new Date(sprint.endDate)) : null, 
-                                                activatedDate:  sprint.activatedDate ? (new Date(sprint.activatedDate)) : null, 
-                                                completeDate:   sprint.completeDate ? (new Date(sprint.completeDate)) : null
-                                                ,sprintLengthInDays: dayGap
+                                                startDate:              sprint.startDate ? (new Date(sprint.startDate)) : null, 
+                                                endDate:                sprint.endDate ? (new Date(sprint.endDate)) : null, 
+                                                activatedDate:          sprint.activatedDate ? (new Date(sprint.activatedDate)) : null, 
+                                                completeDate:           sprint.completeDate ? (new Date(sprint.completeDate)) : null,
                                                 // pullAssociations: new Array((isNaN(dayGap) ? null : dayGap))
                                             });
                         delete(sprint.self);
@@ -275,39 +320,61 @@ export default class DataRetriever {
                         
                         toInsert.push(sprint);
                     })
+                    toInsert = toInsert.map(sprint=>{
+                        let dayGap   = differenceInDays((new Date(sprint.endDate)), new Date(sprint.startDate));
+                        let running  = startOfDay(new Date(sprint.startDate));
+                        let end      = startOfDay(new Date(sprint.endDate));
+                        let workable = [];
+                        let breaker  = 0;
+
+                        for(var i=0; i<=dayGap; i++){
+                            if(!isWeekend(running)) workable.push(formatISO(running, { representation: 'date' }));
+                            console.log('running :', running);
+                            running = addDays(running, 1);
+                        }
+                        return Object.assign(sprint, {
+                                                        workableDaysInSprint:   workable.length > 0 ? workable.join('|') : '',
+                                                        workableDaysCount:      workable.length,
+                                                        sprintLengthInDays:     dayGap
+                                                
+                        });
+                    })
+                    console.log('toInsert :', toInsert);
                     return toInsert
-                    // fondutabase.insert('sprints', toInsert);
+                    
                 },
                 callBack: this.seedSprints
             }
         }
 
-        let destinationURL = "http://0.0.0.0:8080/" + availableProps[property].url;
         
-        console.log('getJiraProperties :', availableProps[property]);
+        console.log('getJiraProperties :', availableProps[property], '\nstampCheck:');
         
         this.loaderOverlay.classList.toggle('on');
-
-        if(purgeBeforeRetrieval) fondutabase.delete(availableProps[property].destination)
+        
         
 
-
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", credentials.token);
-        myHeaders.append("Cookie", "AWSALB=K37aW7IayNAZyw3YsfiK4n4kDwonfAMJj6rAkKatjwdPnqt2nF7GrONtjmoe7bVPxjNBlVeWEesQ7y0jYEyalq8+0FYMK3C1QWvQeVfHKwvH2nF3CVQcAhbqhBHt; AWSALBCORS=K37aW7IayNAZyw3YsfiK4n4kDwonfAMJj6rAkKatjwdPnqt2nF7GrONtjmoe7bVPxjNBlVeWEesQ7y0jYEyalq8+0FYMK3C1QWvQeVfHKwvH2nF3CVQcAhbqhBHt; JSESSIONID=E31D87E6EB6D1038466AB6A32D31E9C2; atlassian.xsrf.token=BM4R-2E5N-4QKW-6H2V_091fc0aa625d0da3c8a0964cecd6ae6f466e258e_lin");
-
-        var requestOptions = {
-            method: 'GET',
-            headers: myHeaders,
-            redirect: 'follow'
-        };
-
-        return  fetch(destinationURL, requestOptions)
-                .then(response => response.text())
-                .then(result   => window.lastTransaction = result)
-                .then(result   => fondutabase.overwrite(availableProps[property].destination, availableProps[property].cleanup(result)))
-                .then(result   => availableProps[property].callBack(result))
-                .then(()       => this.loaderOverlay.classList.toggle('on'))
-                .catch(error   => console.error('error', error));
+        return  this.checkDataDateStamp(availableProps[property].destination)
+                .then(result => {
+                console.log('result :', result);
+                    if(result === false) {
+                    console.log(availableProps[property].destination + ' not found!');
+                    return this.getRetrieverHeaders()
+                        .then(hdrs     => fetch(this.getRetrieverURL(availableProps[property].url), hdrs))
+                        .then(response => response.text())
+                        .then(result   => window.lastTransaction = result)
+                        .then(result   => {fondutabase.delete(availableProps[property].destination); return result; })
+                        .then(result   => fondutabase.overwrite(availableProps[property].destination, availableProps[property].cleanup(result)))
+                        .then(result   => availableProps[property].callBack(result))
+                        .then(()       => this.datestampDataRetrieval(availableProps[property].destination))
+                        .then(()       => this.loaderOverlay.classList.toggle('on'))
+                        .catch(error   => console.error('error', error))
+                    } else {
+                        console.log(availableProps[property].destination + ' found!');
+                        return availableProps[property].callBack(result)
+                        .then(()       => this.loaderOverlay.classList.toggle('on'))
+                        .catch(error   => console.error('error', error))
+                    }
+                });
     }
 }

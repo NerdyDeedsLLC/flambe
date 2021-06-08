@@ -9,12 +9,19 @@ export default class GUI {
         this.seeded       = false;
         this.daytaRecords = new Array(11).fill(null);
         this.jiraModal = qs('#loading-overlay');
+        
+        window.processReportParameters = this.processReportParameters.bind(this);
+        
+
         this.renderCoreGUI()
     }
 
     daytaClick(daytaDOMObject){
         let whichDaytaBtnGotClicked = daytaDOMObject.id.replace(/[^\d]/g, ''),
             allPreviousDaytaFilled = true;
+            console.log('daytaRecords:', this.daytaRecords);
+
+        if(!this.daytaRecords[0] && whichDaytaBtnGotClicked !== 0) return false;
         for(var i=0; i<whichDaytaBtnGotClicked; i++){
             if(this.daytaRecords[i] === null || allPreviousDaytaFilled === false) allPreviousDaytaFilled = false;
         }
@@ -26,9 +33,12 @@ export default class GUI {
                          `This can impact the reports generated for the remainder of the sprint.`)){                         // ... If it's NOT...
                                return false;                                                                                 // ... bail out.
             }
-            // this.jiraModal.classList.toggle('on');
-            this.jiraModal.style="--visible:1;";
-            setTimeout(()=>(this.jiraModal.style="--visible:0;"), 21000);
+            this.jiraModal.classList.toggle('on');
+            daytaDOMObject.classList.toggle('retrieving')
+            JSR.retrieve()
+            .then(issues=>{
+                
+            })
             // Trigger modal overlay
             // Gather Jira Snapshot
             // Parse to JSON
@@ -40,17 +50,31 @@ export default class GUI {
         }
     }
 
-    performLeftColumnBindings(){
-        if(this.jiraModal == null) this.jiraModal = qs('#loading-overlay');
-        qs('#sprint-new').addEventListener('input', function(){ if(this.value !== ''){ qs('#sprint').selectedIndex = 1; }});
-        qs('#sprint').addEventListener('input', function(){ 
-            let textField = qs('#sprint-new');
-            textField.value = this.value;
-            textField.style = (this.selectedIndex > 1) ? "height:0; opacity:0; transition:0.1s all ease-out;" : "transition:0.1s all ease-out;" 
-        });
-        qs('#sprint-start-date').addEventListener('change', function(){ qs('#sprint-end-date').min = this.value; });
+    processReportParameters() {
+        let   existingSprintDD = qs('#sprint') 
+            , sprintNameField  = qs('#sprint-new')
+            , startDateField   = qs('#sprint-start-date')
+            , endDateField     = qs('#sprint-end-date');
 
-        qsa('.dayta').forEach((dayBtn, dayNum)=> {
+        fondue.ExtantSprintID = existingSprintDD ? existingSprintDD.selectedIndex : 0;
+        if(fondue.ExtantSprintID){
+            fondue.ExtantSprintID = existingSprintDD.options[fondue.ExtantSprintID].value;
+            fondue.SprintName = '';
+        }else{
+            fondue.SprintName = sprintNameField ? sprintNameField.value : '';
+        }
+        fondue.SprintStartDate = startDateField ? startDateField.value : '';
+        fondue.SprintEndDate   = endDateField ? endDateField.value : '';
+
+        if(fondue.SprintStartDate !== '' && fondue.SprintEndDate !== ''){
+            console.log('reportGrid :', window.reportGrid);
+            window.reportGrid.initializeGrid();
+            window.reportGrid.generateReportSettingsCalendar()
+        }
+    }
+
+    performLeftColumnBindings(){
+        qsa('.data-file').forEach((dayBtn, dayNum)=> {
             dayBtn.dataset.hasdata=(dayBtn.value==='' || this.daytaRecords[dayNum] !== null);
             dayBtn.addEventListener('click', (e, trg=e.target)=>{
                 console.log(trg);
@@ -59,17 +83,15 @@ export default class GUI {
         });
     }
 
-    seedSprints(){
-    }
-
     renderCoreGUI(){
         console.log('renderCoreGUI : Rendering...');
         return new Promise((resolve, reject) => {
             const generateDataSlots = (numberOfSlots=this.daysInSprint) =>{
                 let dataSlotMarkup = ``;
                 for(var i=0; i<=numberOfSlots; i++){
-                    dataSlotMarkup +=  `<li class="data-file day-${i}" data-sequence="${i * 10}" data-slot="${i}">
-                                        <input type="text" id="day-${i}-file" class="dayta"  placeholder="&lt; Empty &gt;" required><button class="trash-data" data-slot="${i}"></button>
+                    dataSlotMarkup +=  `<li id="day-${i}-slot" class="data-file day-${i}" data-sequence="${i * 10}" data-slot="${i}">
+                                            <input type="text" id="day-${i}-file" class="dayta" placeholder="&lt; Empty &gt;" readonly required><button class="trash-data" data-slot="${i}"></button>
+                                        </li>
                                         <li class="insert-between" data-sequence="${(i * 10) + 5}" data-slot="-${i}-"><button>Insert Data Slot</button></li>`;
                 }   
                 return dataSlotMarkup;
@@ -96,14 +118,14 @@ export default class GUI {
                                                     </select>
                                                     <input type="text" name="sprint-new" id="sprint-new" placeholder="...or enter a name to create one." value="" required>
                                                 </label>
-                                                <label for="teams" class="actual-label">
+                                                <!--label for="teams" class="actual-label">
                                                     Applicable to team(s):
                                                     <select name="teams" id="teams" aria-placeholder="Select Team" multiple size="6" required>
                                                         <option value="">Scrum n Coke</option>
                                                         <option value="">Techquila</option>
                                                     </select>
                                                     <em>(Hold the Ctrl/Cmd Key and/or Shift to select multiple teams)</em>
-                                                </label>
+                                                </label-->
                                                 <label for="sprint-start-date" class="date-field">
                                                     Start Date: <input type="date" name="sprint-start-date" id="sprint-start-date" required>
                                                 </label>
@@ -119,26 +141,22 @@ export default class GUI {
                                     </form>`
 
                                     // PANEL 2 - 
-                                    ,`<form id="paramPanel2-form" action="" onsubmit="return false;" novalidate="true">
-                                        <label id="paramPanel2" class="param-accordion" data-step="II" data-label="Manage Data Files" for="Step2Toggler">
-                                            <span class="panel-instructions">Select an existing Sprint from the dropdown below, or enter the name of a new one to create.</span>
-                                            <div class="param-form data-files">
-                                                <ul>
-                                                ${ generateDataSlots() }
-                                                </ul>
-                                                
-                                                <div class="button-panel">
-                                                    <label  class="previous step-buttons" for="Step1Toggler">⬆︎</label>
-                                                    <label  class="step-buttons" for="Step3Toggler">⬇︎</label>
-                                                </div>
-                                            </div>
-                                        </label>
-                                    </form>`
+                                    
+                                    ,`<form id="paramPanel2-form" class="sprint-options" action="" onsubmit="return false;" novalidate="true">
+                                    <label id="paramPanel2" class="param-accordion" data-step="II" data-label="Report Settings" for="Step2Toggler">
 
-                                    // PANEL 3 - 
-                                    ,`<form id="paramPanel3-form" class="sprint-options" action="" onsubmit="return false;" novalidate="true">
-                                    <label id="paramPanel3" class="param-accordion" data-step="III" data-label="Report Settings" for="Step3Toggler">
                                         <div class="param-form report-options">
+                                            <input type="checkbox" id="display-weekends" name="display-weekends" class="bit-flipper" checked>
+                                            <div class="bit-flipper-panel"><label for="display-weekends" data-off="Hide Weekends" data-on="Show Weekends"></label></div>
+                                            <input type="radio" id="we-disp-as-placeholders" name="weekends-display-mode" class="bit-picker"> 
+                                            <input type="radio" id="we-disp-as-optional-days" name="weekends-display-mode" class="bit-picker" checked>
+                                            <input type="radio" id="we-disp-as-normal-days" name="weekends-display-mode" class="bit-picker">
+                                            <ul class="bit-picker-panel">
+                                                <li><label for="we-disp-as-placeholders">Show, but don't include in burndown/chart</label></li>
+                                                <li><label for="we-disp-as-optional-days">Make available, but show/factor only if hilighted</label></li>
+                                                <li><label for="we-disp-as-normal-days">Show & factor in burndown/chart maths</label></li>
+                                            </ul>
+
                                             <div class="calendarSelector">
                                                 <div class="calendar-sel week-hdrs">
                                                     <span class="calendar-sel-col-headers">Sun</span>
@@ -149,42 +167,35 @@ export default class GUI {
                                                     <span class="calendar-sel-col-headers">Fri</span>
                                                     <span class="calendar-sel-col-headers">Sat</span>
                                                 </div>
-                                                <div id="calSel1" class="calendar-sel week-block" style="--week:1">
-                                                    <input type="checkbox" name="calSel1-01" id="calSel1-01"><label for="calSel1-01" class="calendar-sel-toggler">14</label>
-                                                    <input type="checkbox" name="calSel1-02" id="calSel1-02" checked><label for="calSel1-02" class="calendar-sel-toggler">15</label>
-                                                    <input type="checkbox" name="calSel1-03" id="calSel1-03" checked><label for="calSel1-03" class="calendar-sel-toggler">16</label>
-                                                    <input type="checkbox" name="calSel1-04" id="calSel1-04" checked><label for="calSel1-04" class="calendar-sel-toggler">17</label>
-                                                    <input type="checkbox" name="calSel1-05" id="calSel1-05" checked><label for="calSel1-05" class="calendar-sel-toggler">18</label>
-                                                    <input type="checkbox" name="calSel1-06" id="calSel1-06" checked><label for="calSel1-06" class="calendar-sel-toggler">19</label>
-                                                    <input type="checkbox" name="calSel1-07" id="calSel1-07"><label for="calSel1-07" class="calendar-sel-toggler">20</label>
-                                                </div>
-                                                <div id="calSel2" class="calendar-sel week-block" style="--week:2">
-                                                    <input type="checkbox" name="calSel2-01" id="calSel2-01"><label for="calSel2-01" class="calendar-sel-toggler">21</label>
-                                                    <input type="checkbox" name="calSel2-02" id="calSel2-02" checked><label for="calSel2-02" class="calendar-sel-toggler">22</label>
-                                                    <input type="checkbox" name="calSel2-03" id="calSel2-03" checked><label for="calSel2-03" class="calendar-sel-toggler">23</label>
-                                                    <input type="checkbox" name="calSel2-04" id="calSel2-04" checked><label for="calSel2-04" class="calendar-sel-toggler">24</label>
-                                                    <input type="checkbox" name="calSel2-05" id="calSel2-05" checked><label for="calSel2-05" class="calendar-sel-toggler">25</label>
-                                                    <input type="checkbox" name="calSel2-06" id="calSel2-06" checked><label for="calSel2-06" class="calendar-sel-toggler">26</label>
-                                                    <input type="checkbox" name="calSel2-07" id="calSel2-07"><label for="calSel2-07" class="calendar-sel-toggler">27</label>
-                                                </div>
-                                                <div id="calSel3" class="calendar-sel week-block" style="--week:3">
-                                                    <input type="checkbox" name="calSel3-01" id="calSel3-01"><label for="calSel3-01" class="calendar-sel-toggler">28</label>
-                                                    <input type="checkbox" name="calSel3-02" id="calSel3-02" checked><label for="calSel3-02" class="calendar-sel-toggler">29</label>
-                                                    <input type="checkbox" name="calSel3-03" id="calSel3-03" checked><label for="calSel3-03" class="calendar-sel-toggler">30</label>
-                                                    <input type="checkbox" name="calSel3-04" id="calSel3-04" checked><label for="calSel3-04" class="calendar-sel-toggler">1</label>
-                                                    <input type="checkbox" name="calSel3-05" id="calSel3-05" checked><label for="calSel3-05" class="calendar-sel-toggler">2</label>
-                                                    <input type="checkbox" name="calSel3-06" id="calSel3-06" checked><label for="calSel3-06" class="calendar-sel-toggler">3</label>
-                                                    <input type="checkbox" name="calSel3-07" id="calSel3-07"><label for="calSel3-07" class="calendar-sel-toggler">4</label>
-                                                </div>
+                                                <div id="calSelDays"></div>
                                             </div>
+                                            <div id="days-in-sprint-panel" class="plain-text"><span id="days-in-sprint" data-value="10" data-span="10">of</span><i style="float:right" data-tooltip="X of Y days: X (the number of selected days) is the number of datafiles you intend to ingest. Y (the number it's possible to select) how many the Ideal Burn will span."></i></div>
                                             <div class="button-panel">
-                                                <label class="previous step-buttons" for="Step2Toggler">⬆︎</label>
-                                                <label class="execute step-buttons"></label>
+                                                <label class="previous step-buttons" for="Step1Toggler">⬆︎</label>
+                                                <label class="step-buttons" for="Step3Toggler">⬇︎</label>
                                             </div>
                                         </div>
                                     </label>
-                                 </form> 
-                                `];
+                                 </form> `
+                                 
+                                 // PANEL 3 - 
+                                 ,`<form id="paramPanel3-form" action="" onsubmit="return false;" novalidate="true">
+                                        <label id="paramPanel3" class="param-accordion" data-step="III" data-label="Manage Data Files" for="Step3Toggler">
+                                            <span class="panel-instructions">Click on the numbered day of the sprint to pull the current JIRA snapshot and retain its data within that slot.<br>(Note: you cannot add data to a slot other than the seed until a seed has been provided.)</span>
+                                            <div class="param-form data-files">
+                                                <ul>
+                                                ${ generateDataSlots() }
+                                                </ul>
+                                                
+                                                <div class="button-panel">
+                                                    <label  class="previous step-buttons" for="Step2Toggler">⬆︎</label>
+                                                    <label  class="step-buttons execute" for="Step3Toggler">▶︎</label>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </form>`
+
+                                ];
                 return LColPanels[panelNumber];
             }
             let coreMarkup = `        
@@ -217,19 +228,34 @@ export default class GUI {
             return resolve(coreMarkup)
             
         })
-        // .then(coreMarkup=>_(coreMarkup));
         .then(coreMarkup=>APP.innerHTML = coreMarkup)
-        .then(()=>this.performLeftColumnBindings());
+        .then(()=>this.initializeCoreGUI())
+        .then(()=>this.performLeftColumnBindings())
     }
 
     initializeCoreGUI() {
-        qs('#sprint-new').addEventListener('input', function(){ if(this.value !== ''){ qs('#sprint').selectedIndex = 1; }});
+        if(this.initialized) return false;
+        if(this.jiraModal == null) this.jiraModal = qs('#loading-overlay');
+
+        qs('#sprint-new').addEventListener('input', function(){ if(this.value !== ''){ qs('#sprint').selectedIndex = 1; processReportParameters(); }});
         qs('#sprint').addEventListener('input', function(){ 
             let textField = qs('#sprint-new');
             textField.value = this.value;
-            textField.style = (this.selectedIndex > 1) ? "height:0; opacity:0; transition:0.1s all ease-out;" : "transition:0.1s all ease-out;" 
+            textField.style = (this.selectedIndex > 1) ? "height:0; opacity:0; transition:0.1s all ease-out;" : "transition:0.1s all ease-out;"; 
+            if(this.selectedIndex > 1) {
+                textField.style = "height:0; opacity:0; transition:0.1s all ease-out;"
+                let actOpt = this.options[this.selectedIndex];
+                if(actOpt.dataset.start) qs('#sprint-start-date').value = actOpt.dataset.start;
+                if(actOpt.dataset.end)   qs('#sprint-end-date').value   = actOpt.dataset.end;
+            } else { 
+                textField.style = "transition:0.1s all ease-out;" 
+            }
+            processReportParameters();
         });
-        qs('#sprint-start-date').addEventListener('change', function(){ qs('#sprint-end-date').min = this.value; });
+        qs('#sprint-start-date').addEventListener('change', function(){ qs('#sprint-end-date').min = this.value; processReportParameters(); });
+        qs('#sprint-end-date').addEventListener('change', function(){ qs('#sprint-start-date').max = this.value; processReportParameters(); });
+
+        return this.initialized = true;
     }
 
     seedCoreGUIData(){

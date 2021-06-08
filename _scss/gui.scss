@@ -19,6 +19,66 @@ main#app {
     margin: 0;
 }
 
+i:empty {
+    font-style: normal;
+    transform: translate(50%, -50%);
+    z-index: 10;
+    &::before {
+        content: 'i';
+        display: inline-block;
+        background-color: teal;
+        color:white;
+        border:2px solid teal;
+        box-shadow: inset 0 0 0 2px white;
+        border-radius: 50%;
+        width: 1.4em;
+        height: 1.4em;
+        line-height: calc(1.4em - 3px);
+        font-size: 1em;
+        font-family: serif;
+        font-weight: 900;
+        z-index:51;
+
+    }
+
+    &::after {
+        content: attr(data-tooltip);
+        position:absolute;
+        right:0.7em;
+        top:1em;
+        font-size:0.75em;
+        width:300px;
+        background:teal;
+        background-color: teal;
+        border:2px solid teal;
+        box-shadow: inset 0 0 0 2px white, 0 5px 15px #000A;
+        border-radius: 10px;
+        line-height: 1.33;
+        z-index:50;
+        transition: 0.2s all ease-out 0.15s, 0.1s color 0s;
+        padding:0;
+        overflow:hidden;
+        max-width: 0;
+        max-height: 0;
+        color:teal;
+    }
+
+    &:hover {
+        &::before {
+            content:'︙';
+            transform: rotate(90deg);
+        }
+        &::after {
+            max-width: 300px;
+            max-height: 100px;
+            padding:5px;
+            color:white;
+            transition: 0.2s all ease-out, 0.3s color 0.25s;
+        }
+    }
+}
+
+
 #flambe {
     border: 1px solid black;
     display: flex;
@@ -45,6 +105,7 @@ main#app {
         position: absolute;
         height: 100%;
         right: 0;
+        user-select: none;
 
         &:first-of-type {
             right: unset;
@@ -144,7 +205,7 @@ main#app {
                     width: 100%;
                     min-width: 250px;
                     max-width: 540px;
-                    padding: 25px 50px 30px 50px;
+                    padding: 25px 50px 30px 40px;
                     margin: 0;
                     position: relative;
                     color: #eee;
@@ -155,7 +216,7 @@ main#app {
                         position: absolute;
                         width: calc(100% - 60px);
                         border: 4px double #aaa;
-                        margin: -10px -30px;
+                        margin: -10px -10px;
                         height: calc(100% - 34px);
                     }
                 }
@@ -222,8 +283,8 @@ main#app {
                         transition: 0.5s all ease-in-out;
 
                         &.execute {
-                            background: #FFF3 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-3 -3 40 35'%3E%3Cg fill-rule='evenodd'%3E%3Cpath fill='%23666' d='M11 28l-1.9-.4c-.1 0-4-6.7-9-7l3.3-6.8c2.5 2.3 5 4.4 6.6 8.3l.3-.7h4A30.4 30.4 0 0011 28zm9-28l5.7 6.5c-4.4 2.3-6.6 5.8-6.2 6h-7.2C13.3 7 17.3 1.3 20 0z'/%3E%3Cpath d='M.7 13.3v4.9L0 19.6v-6.3h.7zm1.9 0v.7l-1.3 2.8v-3.5h1.3zm3 0v1.6L4 13.4l-.1-.1h1.8zm3.5 0V19c-1-1.3-1.7-2.5-2.8-3.5v-2.4H9zm12.8 7.4H10.2l-.6-.8v-6.7H22v-3L32 16.6l-10 7v-3z'/%3E%3C/g%3E%3C/svg%3E") no-repeat;
-                            background-position: 50%;
+                            line-height: 38px;
+                            text-indent: 3px;
                         }
                     }
                 }
@@ -281,7 +342,7 @@ main#app {
                             margin:6px 0 0 60px;
                             padding:0 0 0 15px;
                             text-align: left;
-                            border:0px none;
+                            border:0 none;
                             background-color: transparent;
                             font-size:18px;
                             color:#0006;
@@ -312,30 +373,30 @@ main#app {
                             background: white;
                             border: 0 none;
                             opacity: 0;
-                            box-shadow: inset 0 0 20px #338ded,
-                                inset 0 0 15px #338ded, inset 0 0 10px #338ded,
-                                inset 0 0 5px #338ded, inset 0 0 20px #338ded,
-                                inset 0 0 15px #338ded
+                            box-shadow: inset 0 0 20px #35a0a2,
+                                inset 0 0 15px #35a0a2, inset 0 0 10px #35a0a2,
+                                inset 0 0 5px #35a0a2, inset 0 0 20px #35a0a2,
+                                inset 0 0 15px #35a0a2
                                 , 0 4px 6px #0003, 0 2px 2px #0005;
                             border-radius: 500px / 50px;
                         }
 
                         &:hover {
-                            // border-top: 4px solid #338ded;
+                            // border-top: 4px solid #35a0a2;
                             // border-image-source: linear-gradient(
                             //     0deg,
-                            //     0 #338ded00,
-                            //     10% #338ded00,
-                            //     15% #338ded,
-                            //     85% #338ded,
-                            //     90% #338ded00,
-                            //     #338ded00
+                            //     0 #35a0a200,
+                            //     10% #35a0a200,
+                            //     15% #35a0a2,
+                            //     85% #35a0a2,
+                            //     90% #35a0a200,
+                            //     #35a0a200
                             // );
                             // border-image-slice: 1;
                             
                             &::before {
                                 content:'';
-                                background:linear-gradient(90deg, #338ded00, #338ded00 10%, #338dedAA 25%, #338dedAA 75%, #338ded00 90%);
+                                background:linear-gradient(90deg, #35a0a200, #35a0a200 10%, #35a0a2AA 25%, #35a0a2AA 75%, #35a0a200 90%);
                                 position:absolute;
                                 top:-6px;
                                 left:0;
@@ -353,10 +414,10 @@ main#app {
                                     filter:none;
                                     opacity:1;
                                     top: -12px;
-                                    box-shadow: inset 0 0 20px #338ded,
-                                    inset 0 0 15px #338ded, inset 0 0 10px #338ded,
-                                    inset 0 0 5px #338ded, inset 0 0 20px #338ded,
-                                    inset 0 0 15px #338ded
+                                    box-shadow: inset 0 0 20px #35a0a2,
+                                    inset 0 0 15px #35a0a2, inset 0 0 10px #35a0a2,
+                                    inset 0 0 5px #35a0a2, inset 0 0 20px #35a0a2,
+                                    inset 0 0 15px #35a0a2
                                     , 0 8px 12px #0002, 0 5px 5px #0004;
                                     transition-delay:0.75s;
                                 }
@@ -370,6 +431,7 @@ main#app {
                     }
 
                     li.data-file {
+                        user-select: none;
                         height: 72px;
                         &::before {
                             content: "";
@@ -403,6 +465,14 @@ main#app {
                             border: 1px solid #666;
                             pointer-events: none;
                         }
+
+                        &.retrieving {
+                            &::after {
+                                
+                            }
+                        }
+
+                        
                         
                         .pre-file-selection {
                             position:absolute;
@@ -503,24 +573,8 @@ main#app {
                             
                         }
                         
-                        input[type="file"] {
-                            opacity: 0.5;
-                            vertical-align: middle;
-                            display: inline-block;
-                            position: absolute;
-                            text-indent: 6px;
-                            background: transparent;
-                            height: 54px;
-                            padding: 15px 0 0 0;
-                            width: calc(100% + 32px);
-                            font-size: 18px;
-                            left: -50px;
-                            z-index: 2;
-                            top: 2px;
-                            // &, *, *::before, *::after { cursor:pointer !important; }
-                            &::file-selector-button {
-                                opacity: 0;
-                            }
+                        input {
+                            pointer-events: none;
                         }
 
                         button {
@@ -535,12 +589,20 @@ main#app {
                             opacity: 0.25;
                         }
 
-                        &:hover button {
-                            opacity: 0.66;
-                            &:hover {
-                                opacity: 1;
-                                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 174 254'%3E%3Cpath fill-rule='evenodd' d='M21 13l8-11h13l37 17h1l2-7c3-5 9-7 14-4l26 12c5 2 7 8 5 13l-3 6v1l37 17 9 9-3 14L21 13zm96 22c2-4 0-10-5-12l-13-6a9 9 0 00-13 5l30 14 1-1zM143 250c-11 4-105 4-113 0-10-6-18-168-18-168h149s-7 163-18 168zM58 110c0-3-3-6-12-6 0 0-1-1-1 5l6 126c1 3-8 5-15 6l10 1c9 0 16-3 15-6l-3-126zm32-10s-1-1-1 5l-1 130c0 3-9 5-16 6l9 1c9 0 16-3 16-6l5-130c0-3-3-6-12-6zm41-4s-1-1-1 5l-6 134c0 3-9 5-17 6l10 1c9 0 16-3 17-6l8-134c1-3-2-6-11-6z'/%3E%3C/svg%3E");
-                                transform: scale(1.33);
+                        &:hover {
+
+                            cursor:pointer;
+                            &::after{
+                                animation: pulsehover 2s ease-in-out;
+                                animation-iteration-count: infinite;
+                            }
+                            button {
+                                opacity: 0.66;
+                                &:hover {
+                                    opacity: 1;
+                                    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 174 254'%3E%3Cpath fill-rule='evenodd' d='M21 13l8-11h13l37 17h1l2-7c3-5 9-7 14-4l26 12c5 2 7 8 5 13l-3 6v1l37 17 9 9-3 14L21 13zm96 22c2-4 0-10-5-12l-13-6a9 9 0 00-13 5l30 14 1-1zM143 250c-11 4-105 4-113 0-10-6-18-168-18-168h149s-7 163-18 168zM58 110c0-3-3-6-12-6 0 0-1-1-1 5l6 126c1 3-8 5-15 6l10 1c9 0 16-3 15-6l-3-126zm32-10s-1-1-1 5l-1 130c0 3-9 5-16 6l9 1c9 0 16-3 16-6l5-130c0-3-3-6-12-6zm41-4s-1-1-1 5l-6 134c0 3-9 5-17 6l10 1c9 0 16-3 17-6l8-134c1-3-2-6-11-6z'/%3E%3C/svg%3E");
+                                    transform: scale(1.33);
+                                }
                             }
                         }
 
@@ -555,12 +617,13 @@ main#app {
                                 margin-top: -7px;
                             }
 
-                            & > input {
-                            }
+                            
                         }
+
+                        
                     }
 
-                    li.data-file:not(.seed) {
+                    li.data-file:not(.seed):not(.day-0) {
                         counter-increment: days;
 
                         &::before {
@@ -569,23 +632,253 @@ main#app {
                     }
                 }
             }
+            #days-in-sprint-panel {
+                
+                z-index: 1000000;
+                width:100%;
+                text-align: center;
+                font-style: italic;
+                font-size:20px;
+                margin:0 0 0 10px;
+                padding:0;
+                height: 36px;
+                line-height: 40px;
+                color:#555;
+                &::before{
+                    content:"Sprint duration:";
+                }
+                &::after{
+                    content:"days.";
+                    z-index: 0;
+                }
+                background-color: #AAA;
+                border-radius: 5px;
 
+                span::before, span::after {
+                    content:attr(data-value);
+                    line-height: 25px;
+                    display: inline-block;
+                    width:50px;
+                    height:30px;
+                    font-style: normal;
+                    background-color: #BBB;
+                    font-size:25px;
+                    font-weight: 900;
+                    vertical-align: middle;
+                    padding:5px 10px;
+                    text-align: center;
+                    margin: -3px 5px 0;
+                    color:#0448;
+                    box-shadow: inset 0 0 10px #999;
+                }
+
+                span::after { content: attr(data-span); }
+            }
 
             .sprint-options {
-                
+                user-select: none;
                 display:flex;
                 flex-direction: column;
+
+                #display-weekends{
+                    position: fixed;
+                    left:-100000px;
+                    &:not(:checked) ~ .calendarSelector {
+                        .day-sat + label,
+                        .day-sun + label,
+                        .calendar-sel-col-headers:first-of-type,
+                        .calendar-sel-col-headers:last-of-type {
+                            display:none;
+                        }
+                        .calendar-sel-col-headers,
+                        .calendar-sel-toggler {
+                            min-width:20%;
+                        }
+                    }
+
+                    &:checked {
+                        & ~ .bit-picker-panel {
+                            max-height: 155px;
+                            box-shadow: 0 5px 10px #0006;
+                        }
+                        & + .bit-flipper-panel {
+                            label {
+                                &::before {color:white;}
+                                &::after {color:black;}
+                            }
+                            &::before {
+                                left:1px;
+                            }
+                        }
+                    }
+
+                }
+
+                .bit-flipper-panel {
+                    margin:20px 0 0 25px;
+                    border-radius: 20px;
+                    background:#DDD; 
+                    padding:0;
+                    border:3px ridge #AAA;
+                    height:40px;
+                    line-height:30px;
+                    font-size:18px;
+
+                    &::before {
+                        content:'';
+                        position: absolute;
+                        display: block;
+                        background:teal;
+                        opacity: 1;
+                        height:33px;
+                        left:calc(50% - 2px);
+                        width:50%;
+                        top:1px;
+                        border-radius: 30px;;
+
+                        z-index: 1;
+                        box-shadow: inset 5px 5px 15px #FFF9, inset -5px -5px 15px #0009;
+                        transition: 0.2s all ease-in-out;
+                    }
+
+
+                    input { position:fixed; left: -100000px; }
+                    
+                    label { 
+                        display: block;
+                        width: 100%;
+                        height: 40px;
+                        line-height: 37px;
+                        &::before {
+                            content:attr(data-on);
+                            position: absolute;
+                            display: block;
+                            white-space: nowrap;
+                            height: 40px;
+                            left:2.5%;
+                            width:45%;
+                            text-align: center;;
+                            z-index: 2;
+                        transition: 0.1s all ease-in-out 0.05s;
+                    }
+                        &::after {
+                            content:attr(data-off);
+                            position: absolute;
+                            display: block;
+                            white-space: nowrap;
+                            right:2.5%;
+                            height: 40px;
+                            width:45%;
+                            text-align: center;
+                            z-index: 2;
+                            color:white;
+                        transition: 0.1s all ease-in-out 0.05s;
+                    }
+                    }
+
+                }
+                [type="radio"] {
+                    position: fixed; left:-100000px;
+
+                    &#we-disp-as-placeholders:checked ~ .bit-picker-panel > li > [for="we-disp-as-placeholders"],
+                    &#we-disp-as-optional-days:checked ~ .bit-picker-panel > li > [for="we-disp-as-optional-days"],
+                    &#we-disp-as-normal-days:checked ~ .bit-picker-panel > li > [for="we-disp-as-normal-days"] {
+                        border:1px solid teal;
+                        box-shadow:inset 0 0 4px 0 white, inset 0 0 20px 0 #088;
+                        color:#033;
+                    }
+
+                    &#we-disp-as-placeholders:checked ~ .calendarSelector > #calSelDays > .day-sun + label,
+                    &#we-disp-as-placeholders:checked ~ .calendarSelector > #calSelDays > .day-sat + label {
+                        pointer-events: none;
+                        color:#0006;
+                        background-color: #FFF2;
+                        box-shadow       : inset 0 0 12px 3px  #0005;
+                        border           : 1px dashed #0002;
+
+                    }
+
+                    &#we-disp-as-normal-days:checked ~ .calendarSelector {
+                        .calendar-sel-col-headers:first-of-type,
+                        .calendar-sel-col-headers:last-of-type {
+                            border: 2px solid black;
+                            background-color: #000A;
+                            color: #FFFC;
+                        }
+                    
+                        & > #calSelDays > .day-sat, 
+                        & > #calSelDays > .day-sun {
+                            & + label {
+                                pointer-events:    all;
+                                color:           #000;
+                                background-color:#FFF9;
+                                box-shadow       : inset 0 0 12px 3px  #0005;
+                                border           : 1px dashed #0002;
+                            }
+                            &:checked + label {
+                                pointer-events:    all;
+                                color:           #000;
+                                box-shadow: inset 0 0 18px 0 #35a0a299, inset 0 0 1px 1px #fff, inset 0 0 2px 1px #35a0a2, 0 0 0 1px #fff9;
+                                border: 1px solid #35a0a2;
+                            }
+                        }
+                    }
+                }
+                .bit-picker-panel {
+                    display: flex;
+                    flex-direction: column;
+                    flex-wrap: nowrap;
+                    align-items: stretch;
+                    align-content: stretch;
+
+                    justify-content: center;
+                    position: relative;
+                    background-color: #BBB;
+                    left:8%;
+                    width:89%;
+                    border-radius: 0 0 10px 10px;
+                    top:0;
+                    height:150px;
+                    max-height: 0;
+                    overflow: hidden;
+                    transition: 2s all cubic-bezier(0,1,.28,.99);
+                    &, li {margin:0; padding:0; list-style: none; }
+                    li {
+                        position: absolute;
+                        bottom:50px;
+                        width:100%;
+                        &:last-of-type{bottom:5px}
+                        &:first-of-type{bottom:95px}
+                    }
+                    label {
+                        display:block;
+                        padding:4px 4px 4px 14px;
+                        margin:0 20px 10px;
+                        height: 30px;
+                        line-height: 25px;
+                        border-radius: 30px;
+                        background-color: #DDD;
+                        text-align: center;
+                        color:#055;
+                        transition: 1s all cubic-bezier(0,-0.5,0,2);
+                    }
+
+                }
+
                 .calendarSelector {
+                    user-select: none;
                     margin:10px;
-                    width: 100%;;
+                    width: 100%;
                     display:flex;
                     flex-direction: column;
+                    border:5px double #707070;
+                    background-color: #BBB;
                     .week-hdrs {
                         display:flex;
                         flex-direction: row;
                         
                         .calendar-sel-col-headers{
-                            width:calc(13% + 2px);
+                            width:calc(100% / 7);
                             text-align: center;
                             border:2px solid black;
 
@@ -594,14 +887,93 @@ main#app {
                             
                             &:nth-of-type(1), 
                             &:nth-last-of-type(1) {
-
-
-                            background-color: #0005;
-                            color:#FFF6;
-                                
+                                background-color: #0005;
+                                color:#FFF6;
                             }
                         }
                     }
+               
+                    #calSelDays {
+                        display         : flex;
+                        flex-wrap       : wrap;
+                        align-content   : flex-start;
+                        justify-content : flex-start;
+                        align-items     : baseline;
+
+                        .checkable-day {
+                            position             : fixed; 
+                            left                 : -10000px;
+                            & + .calendar-sel-toggler {
+                                display          : inline-block;
+                                width            : calc(100% / 7);
+                                height           : 0;
+                                position         : relative;
+                                line-height      : 60px;
+                                font-size        : 24px;
+                                text-align       : center;
+                                border           : 1px dashed #0002;
+                                background-color : #FFF9;
+                                box-shadow       : inset 0 0 12px 3px  #0005;
+                                margin           : 0;
+                                cursor           : pointer;
+                                padding          : 0 0 60px 0;
+                            }
+
+                        &:checked {
+                            & + .calendar-sel-toggler {
+                                box-shadow: inset 0 0 18px 0  #35a0a299, inset 0 0 1px 1px  #FFF, inset 0 0 2px 1px  #35a0a2, 0 0 0 1px  #FFF9;
+                                border:1px solid #35a0a2;
+                            }
+                        }
+
+
+                        &.weekend:not(:checked)  + .calendar-sel-toggler {
+                            // box-shadow: inset 0 0 12px 3px  #0008, inset 0 0 0 1px #0008, 0 0 0 1px #0008;;
+                            color: #0006;
+                            // border-color:#555;
+                            background-color: transparent;
+                        }
+
+                        &.date-01 + .calendar-sel-toggler {
+                            font-size: 36px;
+                            line-height: 75px;
+                            padding-bottom:60px;
+                            transform: translateY(10px);
+                            margin-top: -10px;
+                            font-weight: 900;
+                            color:#000A;
+                            &::before {
+                                content:attr(data-month);
+                                display: block;
+                                position: absolute;
+                                top:0;
+                                left:0;
+                                font-size:14px;
+                                line-height: 1;
+                                background-color: #777;
+                                background: linear-gradient(90deg, #777, #7770);
+                                text-shadow: 0 -1px 0 #0009, -1px -1px 0 #0009;
+                                padding: 2px 14px 2px 4px;
+                                border-radius: 0 0 5px 0;
+                                color:#dfdfdf;
+                                                                
+                            }
+                        }
+
+                        &.date-01:checked + .calendar-sel-toggler::before {
+                            background: linear-gradient(90deg, #35a0a2, #35a0a200);
+                        }
+
+                        &:disabled + .calendar-sel-toggler {
+                            color:#CCC !important;
+                            background:#0004 !important;
+                        }
+                    }
+
+                }
+                
+
+
                     .week-block{
                         display:flex;
                         flex-direction: row;
@@ -972,6 +1344,12 @@ main#app {
     }
 }
 
-
-
-
+@keyframes pulsehover {
+    0%, 50%, 100% {box-shadow:inset 0 0 10px 0 #22aeafCC;}
+    25% {
+        box-shadow:inset 0 0 30px 0 #22aeafff;
+        background:white;
+    }
+    // 15%, 35% {box-shadow:inset 0 0 20px 0 #22aeaf99; background-color: #FFFC}
+    
+}

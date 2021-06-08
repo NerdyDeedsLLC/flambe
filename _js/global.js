@@ -61,6 +61,66 @@ const global_helper_functions = {
         if(isNaN(d1) || isNaN(d2)) return null;
         return M.abs((d1 - d2) / MSTIMES.D)
     }
+
+    , calendarDays : {
+        'jan':31,
+        'feb':28 + ((new Date().getFullYear() % 4) === 0),
+        'mar':31,
+        'apr':30,
+        'may':31,
+        'jun':30,
+        'jul':31,
+        'aug':31,
+        'sep':30,
+        'oct':31,
+        'nov':30,
+        'dec':31,
+        'year':new Date().getFullYear(),
+        'isLeapYear':((new Date().getFullYear() % 4) === 0)
+    }
+    , daysOfWeek : ['sun','mon','tue','wed','thu','fri','sat']
+
+    , elideObjectKeys(obj, keyList, keyListIsInclusive=false){
+        if(obj == null) throw new SyntaxError();
+        if(typeof(obj) !== 'object' || (!Array.isArray(keyList) && typeof(keyList) !== 'string')) throw new TypeError();
+        keyList = [...[keyList]].flat()
+        if(!keyListIsInclusive) keyList = Object.keys(obj).filter(key=>!keyList.includes(key));
+        return JSON.parse(JSON.stringify(obj, keyList))
+    }
+    
+
+    , conditionallyElideObjectKeys(obj, keyList, inclusiveKeyList=true){
+        let tests = {
+            '===': (f1, f2) => f1 === f2,
+            '==' : (f1, f2) => f1 == f2,
+            '>=' : (f1, f2) => f1 >= f2,
+            '<=' : (f1, f2) => f1 <= f2,
+            '>'  : (f1, f2) => f1 > f2,
+            '<'  : (f1, f2) => f1 < f2,
+            '!'  : exp => !exp
+        }
+        //'!'  : (exp, inclusiveKeyList) => (inclusiveKeyList && !exp) || (exp && !inclusiveKeyList),
+        let simpleKeyList = [], 
+            complexKeyList = [];
+
+        keyList.forEach(key=>{
+            if(/[!=<>]/.test(key)) complexKeyList.push(key);
+            else simpleKeyList.push(key);
+        });
+        complexKeyList.map(cond => {
+            cond ='a<=6'.match(/^(.*?)([=<>!]+)(.*)$/)
+            if(cond == null) return null;
+            cond = cond.slice(1,4);
+            cond[1] = tests[cond[1]];
+        });
+        
+        obj = this.elideObjectKeys(obj, simpleKeyList, inclusiveKeyList);
+
+        inclusiveKeyList = (Array.isArray(inclusiveKeyList)) ? inclusiveKeyList : inclusiveKeyList.split(',')
+        return JSON.parse(JSON.stringify(obj, inclusiveKeyList));
+    }
+
+    // ,elideObjectKeys(t, ['name','id','projectId'])
 };
 Object.assign(window, global_helper_functions);
 

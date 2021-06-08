@@ -1,0 +1,37 @@
+^(?:SELECT)?(?<COLUMNS>[a-z0-9\.\*\, ]+)FROM (?<TABLES>.*?)(?: (?<JOIN_TYPE>LEFT OUTER JOIN|INNER SELF JOIN|INNER JOIN) (?<JOIN_ON>.+?))?(?: WHERE (?<WHERE>.+?))?(?:(?: ORDER BY )(?<ORDER_BY>.+?))?(?: LIMIT (?<LIMIT>.+?))?(?: SKIP (?<SKIP>.+?))?$
+
+
+-- Basic
+* FROM table
+* FROM table ORDER BY Column
+
+-- Basic With Conditions
+* FROM table WHERE column='1'
+* FROM table WHERE ColumnA='1' ORDER BY ColumnA
+* FROM table WHERE ColumnA='1' AND ColumnB IS NOT NULL ORDER BY ColumnB, ColumnA
+* FROM table WHERE ColumnA='1' AND ColumnB IS NOT NULL ORDER BY ColumnB, ColumnA LIMIT 100
+* FROM table WHERE ColumnA='1' AND ColumnB IS NOT NULL ORDER BY ColumnB, ColumnA SKIP 200
+* FROM table WHERE ColumnA='1' AND ColumnB IS NOT NULL ORDER BY ColumnB, ColumnA LIMIT 100 SKIP 200
+
+-- Implicit inner join
+* FROM table1 t1, table2 t2 WHERE t1.table1ID = t2.table2ID AND t1.table1ID = '1' AND t1.ColumnA IS NOT NULL
+* FROM table1 t1, table2 t2 WHERE t1.table1ID = t2.table2ID AND t1.table1ID = '1' AND t1.ColumnA IS NOT NULL ORDER BY t1.ColumnA
+* FROM table1 t1, table2 t2 WHERE t1.table1ID = t2.table2ID AND t1.table1ID = '1' AND t1.ColumnA IS NOT NULL ORDER BY t1.ColumnA, t2.ColumnX
+* FROM table1 t1, table2 t2 WHERE t1.table1ID = t2.table2ID AND t1.table1ID = '1' AND t1.ColumnA IS NOT NULL ORDER BY t1.ColumnA, t2.ColumnX LIMIT 100
+* FROM table1 t1, table2 t2 WHERE t1.table1ID = t2.table2ID AND t1.table1ID = '1' AND t1.ColumnA IS NOT NULL ORDER BY t1.ColumnA, t2.ColumnX SKIP 200
+* FROM table1 t1, table2 t2 WHERE t1.table1ID = t2.table2ID AND t1.table1ID = '1' AND t1.ColumnA IS NOT NULL ORDER BY t1.ColumnA, t2.ColumnX LIMIT 100 SKIP 200
+
+-- Implicit inner self join
+* FROM table t1, table t2 WHERE t1.columnY = t2.columnZ AND t1.columnZ > 10 AND t1.ColumnA IS NOT NULL
+* FROM table t1, table t2 WHERE t1.columnY = t2.columnZ AND t1.columnZ > 10 AND t1.ColumnA IS NOT NULL ORDER BY t1.ColumnA
+* FROM table t1, table t2 WHERE t1.columnY = t2.columnZ AND t1.columnZ > 10 AND t1.ColumnA IS NOT NULL ORDER BY t1.ColumnA, t2.ColumnY
+* FROM table t1, table t2 WHERE t1.columnY = t2.columnZ AND t1.columnZ > 10 AND t1.ColumnA IS NOT NULL ORDER BY t1.ColumnA, t2.ColumnY LIMIT 100
+* FROM table t1, table t2 WHERE t1.columnY = t2.columnZ AND t1.columnZ > 10 AND t1.ColumnA IS NOT NULL ORDER BY t1.ColumnA, t2.ColumnY SKIP 200
+* FROM table t1, table t2 WHERE t1.columnY = t2.columnZ AND t1.columnZ > 10 AND t1.ColumnA IS NOT NULL ORDER BY t1.ColumnA, t2.ColumnY LIMIT 100 SKIP 200
+
+-- Explicit inner join
+* FROM table1 INNER JOIN table2 ON table1.table1ID = table2.table2ID WHERE table1.table1ID <= 5
+* FROM table1 INNER JOIN table2 ON table1.table1ID = table2.table2ID WHERE table1.table1ID <= 5 AND table2.oneToMany IN ('a','b','c')
+
+-- Left outer join
+t1.id, t2.id, t1.FOO FROM table1 t1 LEFT OUTER JOIN table2 t2 ON t1.id = t2.id WHERE t1.FOO IS NULL OR t1.FOO IN ('bar','baz') ORDER BY t1.FOO ASC LIMIT 100 SKIP 200

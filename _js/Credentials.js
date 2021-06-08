@@ -15,7 +15,7 @@ export default class Credentials {
         console.log('Credentials has initialized!');
         this.#hasCreds    = false;
         this.#credentials = null;
-        this.fondueConfigObj = null;
+        this.configObj = null;
         this.dbConnection = null;
         this.dialog = null;
     }
@@ -31,7 +31,7 @@ export default class Credentials {
         document.getElementById('authBtn').addEventListener('click', ()=>{
             return new Promise((resolve, reject)=>{
                 let authString = btoa(`${document.getElementById('userName').value}:${document.getElementById('password').value}`);
-                return resolve(window.fondutabase.insert('fondueConfig', {
+                return resolve(window.fondutabase.insert('config', {
                     key: 'jiraHash',
                     value: 'Basic ' + authString,
                 }))
@@ -86,21 +86,21 @@ export default class Credentials {
                 </form>`;
     }
 
-    verifyJiraCredentials(fondueConfigObj = null){
+    verifyJiraCredentials(configObj = null){
         _I('Verifying presence of JIRA credentials...');
-        this.fondueConfigObj = fondueConfigObj;
+        this.configObj = configObj;
 
         return new Promise((resolve, reject)=>{
-            if(fondueConfigObj == null || !Array.isArray(fondueConfigObj)) {
-                _E('FATAL ERROR! Configuration Object provided is missing, malformed, or corrupted!', fondueConfigObj);
+            if(configObj == null || !Array.isArray(configObj)) {
+                _E('FATAL ERROR! Configuration Object provided is missing, malformed, or corrupted!', configObj);
                 throw reject(new Error('Unable to read object.'));
             }
-            let jiraHashKVP = fondueConfigObj.find(ent=>ent.key==='jiraHash');
+            let jiraHashKVP = configObj.find(ent=>ent.key==='jiraHash');
             if(jiraHashKVP != null){
                 _I('...success! Jira credentials securely loaded. No further authentication required.');
                 this.#credentials = jiraHashKVP.value;
                 JDR.credentials   = this.token;
-                return resolve();
+                return resolve(JDR.getJiraProperties('sprints', true))
             }else{
                 _I('...unsuccessful. Config loaded, but Jira token is absent or corrupted. Transferrring user to Jira login credential collection dialog!');
                 return resolve(this.toggleToCredentialCollector());
