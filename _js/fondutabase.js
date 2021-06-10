@@ -165,8 +165,8 @@ export default class Fondutabase {
             this.schemaBuilder.createTable('imports').
                 addColumn('importId', this.lf.Type.INTEGER).
                 addColumn('sprintId', this.lf.Type.INTEGER).
-                addColumn('fileName', this.lf.Type.STRING).
-                addColumn('dayNumber', this.lf.Type.NUMBER).
+                addColumn('importedFor', this.lf.Type.STRING).
+                addColumn('slotNumber', this.lf.Type.NUMBER).
                 addColumn('datePulled', this.lf.Type.DATE_TIME).
                 addPrimaryKey(['importId'], true);
 
@@ -244,6 +244,7 @@ export default class Fondutabase {
                 addColumn('timespent',	           this.lf.Type.NUMBER).
                 addColumn('updated',	           this.lf.Type.DATE_TIME).
                 addColumn('retrievedFor',	       this.lf.Type.INTEGER).
+                addColumn('retrievedForSlot',      this.lf.Type.INTEGER).
                 addColumn('retrevalStamp',	       this.lf.Type.DATE_TIME).
                 addColumn('retrevalReadable',	   this.lf.Type.STRING).
                 addColumn('_OPTIONS',              this.lf.Type.STRING).

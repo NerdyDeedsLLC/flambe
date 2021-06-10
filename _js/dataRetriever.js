@@ -267,16 +267,15 @@ export default class DataRetriever {
     }
 
     datestampDataRetrieval(tablePulled) {
-        let pullLog = {key:tablePulled, value:(Date.now() + PREFS.caching.ttl)}
+        let pullLog = {key:tablePulled, value:(Date.now() + fondue.PREFS.caching.ttl)}
         fondutabase.overwrite('config', pullLog);
     }
 
+    // Returning TRUE means the data is STILL VALID
     checkDataDateStamp(tableSought) {
+        console.log('checkDataDateStamp(tableSought) :', tableSought);
         return fondutabase.select('SELECT * FROM config WHERE config.key=' + tableSought)
-        .then(result=>{
-            console.log('result :', result, !!(result && result.length && result[0].value <= Date.now()));
-            return !!(result && result.length && result[0].value <= Date.now());
-        });
+        .then(results=>_(results && results.length && results[0] && results[0].value > Date.now()));
     }
 
 
@@ -356,19 +355,19 @@ export default class DataRetriever {
 
         return  this.checkDataDateStamp(availableProps[property].destination)
                 .then(result => {
-                console.log('result :', result);
+                    console.log('result :', result);
                     if(result === false) {
-                    console.log(availableProps[property].destination + ' not found!');
-                    return this.getRetrieverHeaders()
-                        .then(hdrs     => fetch(this.getRetrieverURL(availableProps[property].url), hdrs))
-                        .then(response => response.text())
-                        .then(result   => window.lastTransaction = result)
-                        .then(result   => {fondutabase.delete(availableProps[property].destination); return result; })
-                        .then(result   => fondutabase.overwrite(availableProps[property].destination, availableProps[property].cleanup(result)))
-                        .then(result   => availableProps[property].callBack(result))
-                        .then(()       => this.datestampDataRetrieval(availableProps[property].destination))
-                        .then(()       => this.loaderOverlay.classList.toggle('on'))
-                        .catch(error   => console.error('error', error))
+                        console.log(availableProps[property].destination + ' not found!');
+                        return this.getRetrieverHeaders()
+                            .then(hdrs     => fetch(this.getRetrieverURL(availableProps[property].url), hdrs))
+                            .then(response => response.text())
+                            .then(result   => window.lastTransaction = result)
+                            .then(result   => {fondutabase.delete(availableProps[property].destination); return result; })
+                            .then(result   => fondutabase.overwrite(availableProps[property].destination, availableProps[property].cleanup(result)))
+                            .then(result   => availableProps[property].callBack(result))
+                            .then(()       => this.datestampDataRetrieval(availableProps[property].destination))
+                            .then(()       => this.loaderOverlay.classList.toggle('on'))
+                            .catch(error   => console.error('error', error))
                     } else {
                         console.log(availableProps[property].destination + ' found!');
                         return availableProps[property].callBack(result)

@@ -17,19 +17,23 @@ export default class GUI {
     }
 
     daytaClick(daytaDOMObject){
-        let whichDaytaBtnGotClicked = daytaDOMObject.id.replace(/[^\d]/g, ''),
-            allPreviousDaytaFilled = true;
-            console.log('daytaRecords:', this.daytaRecords);
+        console.log('***daytaDOMObject :', daytaDOMObject);
+        fondue.TransactionSlot = daytaDOMObject.id.replace(/[^\d]/g, '');
+        let allPreviousDaytaFilled = true;
+        console.log('daytaRecords:', this.daytaRecords);
+        console.log('fondue.TransactionSlot :', fondue.TransactionSlot);
 
-        if(!this.daytaRecords[0] && whichDaytaBtnGotClicked !== 0) return false;
-        for(var i=0; i<whichDaytaBtnGotClicked; i++){
+        // if(!this.daytaRecords[0] && fondue.TransactionSlot !== 0) return false;
+
+        for(var i=0; i<fondue.TransactionSlot; i++){
             if(this.daytaRecords[i] === null || allPreviousDaytaFilled === false) allPreviousDaytaFilled = false;
         }
 
-        if(!daytaDOMObject.dataset.hasdata != true) {                     // No data stored for this day yet. Perform retrieval.
-            _('Retrieving data to seed Day ' + whichDaytaBtnGotClicked + '...');
-            if( !allPreviousDaytaFilled &&                                                                                   // If all days prior to the one clicked don't already have a dayta value...
-                !confirm(`Are you sure you wish to add a data pull out of sequence?\n\n`+                                    // ... alert the user and ask them to verify this is intentional.
+        // if(daytaDOMObject.dataset.hasdata != true) {                     // No data stored for this day yet. Perform retrieval.
+            _('Retrieving data to seed Day ' + fondue.TransactionSlot + '...');
+            if(    !allPreviousDaytaFilled 
+                && fondue.TransactionSlot > 0                                                                                  // If all days prior to the one clicked don't already have a dayta value...
+                && !confirm(`Are you sure you wish to add a data pull out of sequence?\n\n`+                                    // ... alert the user and ask them to verify this is intentional.
                          `This can impact the reports generated for the remainder of the sprint.`)){                         // ... If it's NOT...
                                return false;                                                                                 // ... bail out.
             }
@@ -39,6 +43,10 @@ export default class GUI {
             .then(issues=>{
                 
             })
+            .then(()=>{
+                daytaDOMObject.classList.toggle('retrieving')
+                this.jiraModal.classList.toggle('on');
+            });
             // Trigger modal overlay
             // Gather Jira Snapshot
             // Parse to JSON
@@ -47,7 +55,7 @@ export default class GUI {
             // Update button text
             // Clear modal overlay - this.jiraModal.className.toggle('on');
             return false;
-        }
+        // }
     }
 
     processReportParameters() {
@@ -90,7 +98,7 @@ export default class GUI {
                 let dataSlotMarkup = ``;
                 for(var i=0; i<=numberOfSlots; i++){
                     dataSlotMarkup +=  `<li id="day-${i}-slot" class="data-file day-${i}" data-sequence="${i * 10}" data-slot="${i}">
-                                            <input type="text" id="day-${i}-file" class="dayta" placeholder="&lt; Empty &gt;" readonly required><button class="trash-data" data-slot="${i}"></button>
+                                            <input type="text" id="day-${i}-file" class="dayta" placeholder="Data Pull for Jun 4: &lt; Empty &gt;" readonly required><button class="trash-data" data-slot="${i}"></button>
                                         </li>
                                         <li class="insert-between" data-sequence="${(i * 10) + 5}" data-slot="-${i}-"><button>Insert Data Slot</button></li>`;
                 }   
@@ -113,10 +121,10 @@ export default class GUI {
                                                     Sprint:
                                                     <select name="sprint" id="sprint" aria-placeholder="Select Sprint">
                                                         <option value="">Select the desired sprint...</option>
-                                                        <option value="">Creating a new sprint:</option>
+                                                        <!--option value="">Creating a new sprint:</option-->
                                                         <option>Some Old Sprint</option>
                                                     </select>
-                                                    <input type="text" name="sprint-new" id="sprint-new" placeholder="...or enter a name to create one." value="" required>
+                                                    <input type="text" name="sprint-new" id="sprint-new" placeholder="...or enter a name to create one." value="" style="display:none;">
                                                 </label>
                                                 <!--label for="teams" class="actual-label">
                                                     Applicable to team(s):
@@ -146,6 +154,7 @@ export default class GUI {
                                     <label id="paramPanel2" class="param-accordion" data-step="II" data-label="Report Settings" for="Step2Toggler">
 
                                         <div class="param-form report-options">
+                                            <fieldset>
                                             <input type="checkbox" id="display-weekends" name="display-weekends" class="bit-flipper" checked>
                                             <div class="bit-flipper-panel"><label for="display-weekends" data-off="Hide Weekends" data-on="Show Weekends"></label></div>
                                             <input type="radio" id="we-disp-as-placeholders" name="weekends-display-mode" class="bit-picker"> 
@@ -169,7 +178,21 @@ export default class GUI {
                                                 </div>
                                                 <div id="calSelDays"></div>
                                             </div>
-                                            <div id="days-in-sprint-panel" class="plain-text"><span id="days-in-sprint" data-value="10" data-span="10">of</span><i style="float:right" data-tooltip="X of Y days: X (the number of selected days) is the number of datafiles you intend to ingest. Y (the number it's possible to select) how many the Ideal Burn will span."></i></div>
+                                            <div id="days-in-sprint-panel" class="plain-text"><span id="days-in-sprint" data-value="10" data-span="10">of</span><i data-tooltip="X of Y days: X (the number of selected days) is the number of datafiles you intend to ingest. Y (the number it's possible to select) how many the Ideal Burn will span."></i></div>
+                                            </fieldset>
+                                            <fieldset>
+                                            <input type="checkbox" id="auto-resume" name="auto-resume" class="bit-flipper" checked>
+                                            <div class="bit-flipper-panel"><label for="auto-resume" data-off="Start at Step One" data-on="Auto-Resume this Sprint"></label></div>
+                                            <i data-tooltip="Selecting these options will allow you to skip these first two steps, instructing the system to simply pick up where you left off your last visit (of course you can change things after that, should you choose)."></i>
+                                                <input type="radio" id="auto-res-from-datafiles" name="auto-resume-mode" class="bit-picker"> 
+                                                <input type="radio" id="auto-res-from-output" name="auto-resume-mode" class="bit-picker">
+                                                <ul class="bit-picker-panel">
+                                                    <li><label for="auto-res-from-datafiles">Resume session at III: Manage Data Files</label></li>
+                                                    <li><label for="auto-res-from-output">Resume session & auto-run most recent report</label></li>
+                                                    <li><label for="auto-res-from-output">Resume & auto-run only until final day of sprint</label></li>
+                                                </ul>
+                                                </fieldset>
+
                                             <div class="button-panel">
                                                 <label class="previous step-buttons" for="Step1Toggler">⬆︎</label>
                                                 <label class="step-buttons" for="Step3Toggler">⬇︎</label>

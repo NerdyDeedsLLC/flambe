@@ -6,27 +6,35 @@ import Fondutabase   from './fondutabase.js'
 import GUI           from './gui.js'
 import ReportGrid    from './ReportGrid'
 
-window.PREFS = {
-    units:{
-        showTime:'hours', // also supported: days, minutes
-        timezone:'Central',
-        tzOffset:'-0500'
-    },
-    caching:{
-        enabled:true,
-        ttl:MSTIMES.D,
-        exemptDataFiles:true
-    }
-}
 
 class Fondue {
     constructor(...props) {
-        window.credentials   = new Credentials();
-        window.JDR           = new DataRetriever();
-        window.JSR           = new SprintRetriever();
-        window.fondutabase   = new Fondutabase();
-        window.gui           = new GUI();
-        window.reportGrid    = new ReportGrid();
+        this.PREFS = {
+            units:{
+                showTime:'hours', // also supported: days, minutes
+                timezone:'Central',
+                tzOffset:'-0500'
+            },
+            caching:{
+                enabled:true,
+                ttl:MSTIMES.D,
+                exemptDataFiles:true
+            }
+        }
+        
+        this.credentials = window.credentials = new Credentials();
+        this.JDR         = window.JDR         = new DataRetriever();
+        this.JSR         = window.JSR         = new SprintRetriever();
+        this.fondutabase = window.fondutabase = new Fondutabase();
+        this.gui         = window.gui         = new GUI();
+        this.reportGrid  = window.reportGrid  = new ReportGrid();
+
+        this.ExtantSprintID     = null;
+        this.TransactionSlot    = null;
+        this.SprintName         = null;
+        this.SprintStartDate    = null;
+        this.SprintEndDate      = null;
+        this.ActiveSprintObject = null;
     }
 }
 

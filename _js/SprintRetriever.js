@@ -116,7 +116,9 @@ export default class SprintRetriever {
     
     parseXMLObjData(xmlResults) {
         var xmlNode = new DOMParser().parseFromString(xmlResults, 'text/xml')
-        let xmlJSON = this.getXMLAsObj(xmlNode)
+        let xmlJSON = this.getXMLAsObj(xmlNode),
+            retrevalStamp        = Date.now(),
+            retrevalReadable     = new Date().toISOString();
         // console.log('xmlJSON :', xmlJSON);
         // console.log('xmlJSON.rss :', xmlJSON.rss);
         // console.log('xmlJSON.rss.channel :', xmlJSON.rss.channel);
@@ -149,9 +151,7 @@ export default class SprintRetriever {
             "timeoriginalestimate" : "timeoriginalestimate.key",
             "timespent"            : "timespent.key",
             "updated"              : "updated",
-            "retrievedFor"         : fondue.ExtantSprintID,
-            "retrevalStamp"        : Date.now(),
-            "retrevalReadable"     : new Date().toISOString(),
+            
         }
     
         console.groupCollapsed("Parsing response payload from JIRA's &^%@!$-ed-up version of XML into something the REST of the world can use...");
@@ -188,19 +188,23 @@ export default class SprintRetriever {
             });
             console.log('Parsed Issue Data: ', parsedIssue);
             console.groupEnd()
-            parsedIssueDetails.push(parsedIssue);
+            parsedIssueDetails.push(Object.assign(parsedIssue, {
+                "retrievedFor"         : fondue.ExtantSprintID,
+                "retrievedForSlot"     : fondue.TransactionSlot,
+                "retrevalStamp"        : retrevalStamp,
+                "retrevalReadable"     : retrevalReadable
+            }));
         });
         console.log('Parse Complete.', parsedIssueDetails);
         console.groupEnd();
+        return parsedIssueDetails;
     }
 
     headers = () => {
         return new Promise((resolve, reject)=>{
             console.group('Performing data retrieval from JIRA -------------------------------');
             if(credentials.token == null) {
-                console.error("🔴 TRANSACTION FAILURE! Credential token object missing, corrupt, or expired!")
-                console.groupEnd();
-                reject('Credential Token Missing!');
+                throw("🔴 TRANSACTION FAILURE! Credential token object missing, corrupt, or expired!")
             }
             _I('(JQL:', this.#jql, ')');
             _I('  - Constructing request headers... done.\n  - Constructing request body... done. \n  - Initializing XHR request with specified JQL... OK.\n  - Executing...')
@@ -226,15 +230,23 @@ export default class SprintRetriever {
         fondutabase.insert('issues', resultsCollection);
     }
 
-    retrieve(callback){
-        return this.headers()
+    performRetrieve(){
+        return    this.headers()
         .then(headerObj=>fetch("http://0.0.0.0:8080/https://jirasw.t-mobile.com/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=" + this.jql + "&tempMax=1000", headerObj))
         .then(response => console.log('🟢 SUCCESS!... response received!') && console.log('\n\n  - Decoding response & parsing...') || response.text())
         .then(result => this.parseXMLObjData(result))
         .then(result => console.log('🟢 SUCCESS!... data successfully retrieved and parsed.') || result)
-        .then(result => (callback) ? console.log('  - Executing requested callback function...') || callback(result) : result)
-        .then(result => console.log('🟢 COMPLETE!') &&  console.groupEnd() || result)
-        .catch(error => console.error('🔴 FAILURE! An Error occurred in SprintRetriever.js. Details are as follows:\n', error));
+        .catch(error => {console.error('🔴 FAILURE! An Error occurred in SprintRetriever.js. Details are as follows:\n', error); throw new Error(error); })
+        
     }
+
+    retrieve() {
+        return this.performRetrieve()
+        .then(result => console.log('  - Attempting to write to Fondutabase...') || this.storeDataRetrieval(result))
+        .then(result => console.log('🟢 SUCCESS!... all retrieved issues written to data store.') || result)
+        .then(result => console.log('🟢 COMPLETE!') &&  console.groupEnd() || result)
+        .catch(error => {console.error('🔴 FAILURE! An Error occurred in SprintRetriever.js. Details are as follows:\n', error); throw new Error(error); })
+    }
+        
 
 }

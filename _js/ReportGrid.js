@@ -49,7 +49,6 @@ export default class ReportGrid {
         if(!this.isInitialized) return false;
         let getCalDay = (dt, declareChecked=null, outOfRange=false) => {
             dt = new Date(dt);
-            console.log('dt :', dt);
             let sD = new Date(this.startDate);
             let eD = new Date(this.endDate);
             
