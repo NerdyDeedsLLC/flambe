@@ -29,12 +29,14 @@ class Fondue {
         this.gui         = window.gui         = new GUI();
         this.reportGrid  = window.reportGrid  = new ReportGrid();
 
-        this.ExtantSprintID     = null;
-        this.TransactionSlot    = null;
-        this.SprintName         = null;
-        this.SprintStartDate    = null;
-        this.SprintEndDate      = null;
-        this.ActiveSprintObject = null;
+        this.ExtantSprintID      = null;
+        this.TransactionSlot     = null;
+        this.TransactionSlotDate = null;
+        this.SprintSlotCount     = null;
+        this.SprintName          = null;
+        this.SprintStartDate     = null;
+        this.SprintEndDate       = null;
+        this.ActiveSprintObject  = null;
     }
 }
 

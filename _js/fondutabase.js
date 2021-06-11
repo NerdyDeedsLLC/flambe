@@ -245,7 +245,7 @@ export default class Fondutabase {
                 addColumn('updated',	           this.lf.Type.DATE_TIME).
                 addColumn('retrievedFor',	       this.lf.Type.INTEGER).
                 addColumn('retrievedForSlot',      this.lf.Type.INTEGER).
-                addColumn('retrevalStamp',	       this.lf.Type.DATE_TIME).
+                addColumn('retrevalStamp',	       this.lf.Type.STRING).
                 addColumn('retrevalReadable',	   this.lf.Type.STRING).
                 addColumn('_OPTIONS',              this.lf.Type.STRING).
 

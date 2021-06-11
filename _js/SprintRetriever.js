@@ -135,13 +135,13 @@ export default class SprintRetriever {
             "description"          : "description",
             "issueKey"             : "key.value",
             "jiraIssueId"          : "key.key",
-            "labels"               : "labels",
+            "labels"               : "labels.label...*",
             "link"                 : "link",
             "parentJiraId"         : "",
-            "priority"             : "priority",
-            "project"              : "project",
+            "priority"             : "priority.0.value",
+            "project"              : "project.1.key",
             "reporter"             : "reporter.value",
-            "status"               : "status.1.key",
+            "status"               : "status.1.value",
             "statusColor"          : "statusCategory.value",
             "subtasks"             : "subtasks",
             "summary"              : "summary",
@@ -183,6 +183,16 @@ export default class SprintRetriever {
                     case 3: // Want key or the value of SOME NODE of retrieved data (retrieved node is an object with many entries: {foo:'bar', baz:'boo'}
                         mapsToIndex = mapsTo[2] === 'key' ? 0 : 1;
                         parsedIssue[localColumnName] = mapsToValue ? Object.entries(mapsToValue)[mapsTo[1]][mapsToIndex] : null;
+                        break;
+                    case 5:
+                        let valArr           = mapsToValue[mapsTo[1]],
+                            stringifiedArray = null;
+                        console.log('mapsTo :', mapsTo, 'valArr :', valArr, 'Array.isArray(valArr) : ', Array.isArray(valArr));
+                        if(Array.isArray(valArr)){
+                            if(mapsTo[4] === '*') stringifiedArray = valArr.flat().join(',');
+                            if(mapsTo[4] === '#') stringifiedArray = valArr.length;
+                        }
+                        parsedIssue[localColumnName] = stringifiedArray;
                         break;
                 }
             });
@@ -234,7 +244,8 @@ export default class SprintRetriever {
         return    this.headers()
         .then(headerObj=>fetch("http://0.0.0.0:8080/https://jirasw.t-mobile.com/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=" + this.jql + "&tempMax=1000", headerObj))
         .then(response => console.log('🟢 SUCCESS!... response received!') && console.log('\n\n  - Decoding response & parsing...') || response.text())
-        .then(result => this.parseXMLObjData(result))
+        .then(result => window.LAST_RAW_RETRIEVE = result)
+        .then(result => window.LAST_RETRIEVE = this.parseXMLObjData(result))
         .then(result => console.log('🟢 SUCCESS!... data successfully retrieved and parsed.') || result)
         .catch(error => {console.error('🔴 FAILURE! An Error occurred in SprintRetriever.js. Details are as follows:\n', error); throw new Error(error); })
         
