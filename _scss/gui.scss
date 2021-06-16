@@ -146,7 +146,7 @@ i:empty {
                     & > label {
                         background-color: #bbb;
                         box-shadow: inset 0 0 100px teal;
-                        max-height: 1100px;
+                        max-height: 200vh;
                     }
 
                     .step-buttons:not(.previous),
@@ -350,6 +350,13 @@ i:empty {
                         span {
                             pointer-events: none;
                         }
+
+                        [type='text']:not(:invalid) {
+                            color: #0d7277CC;
+                            font-weight: bold;
+                            text-shadow: 1px 1px 0 #FFF4;
+                        }
+
                         [type='text'] {
                             width: calc(100% - 85px);
                             height: 50px;
@@ -362,6 +369,7 @@ i:empty {
                             font-size: 18px;
                             color: #0006;
                             outline: unset;
+                            text-shadow: none;
                         }
                     }
 

@@ -1,6 +1,6 @@
 import {toDate, format, isDate, startOfDay, parseISO, isWeekend, isEqual, isBefore, isAfter, differenceInCalendarDays, differenceInBusinessDays, differenceInCalendarISOWeeks, getDay, formatRFC3339, addDays, subDays } from 'date-fns'
 
-export default class ReportGrid {
+export default class ReportCalendarPicker {
     constructor() {
         this.isInitialized  = false
         this.sprintName     = null;
@@ -8,6 +8,8 @@ export default class ReportGrid {
         this.endDate        = null;
         this.startDayOfWeek = null;
         this.endDayOfWeek   = null;
+        this.dateCollection = null;
+
         this.daySpan        = 0;
         this.workdaySpan    = 0;
         this.weekSpan       = 0
@@ -22,8 +24,8 @@ export default class ReportGrid {
         };
     }
 
-    initializeGrid(name=fondue.SprintName, sDate=fondue.SprintStartDate, eDate=fondue.SprintEndDate){
-    console.log('initializeGrid :', name, sDate, eDate);
+    initializeCalendarPicker(name=fondue.SprintName, sDate=fondue.SprintStartDate, eDate=fondue.SprintEndDate){
+    console.log('initializeCalendarPicker :', name, sDate, eDate);
         if(!(sDate && eDate)) return false;
         this.sprintName     = name;
         this.startDate      = parseISO(sDate + 'T00:00:00');
@@ -35,7 +37,7 @@ export default class ReportGrid {
         this.endDayOfWeek   = getDay(this.endDate);
         this.weekSpan       = Math.abs(differenceInCalendarISOWeeks(this.startDate, this.endDate))
 
-        this.daySpan   = differenceInCalendarDays(this.endDate, this.startDate);
+        this.daySpan        = differenceInCalendarDays(this.endDate, this.startDate);
         this.workdaySpan    = differenceInBusinessDays(this.endDate, this.startDate);
 
         // if(this.isInitialized) return false;
@@ -54,8 +56,8 @@ export default class ReportGrid {
             
             declareChecked = (!isBefore(dt, sD) && !isAfter(dt, eD) && !isWeekend(dt));
             declareChecked = declareChecked ? 'checked' : '';
-            let calDay = `<input type="checkbox" name="calSel${format(dt, 'MM-dd')}" id="calSel${format(dt, 'MM-dd')}"  class="checkable-day date-${format(dt, 'dd')} day-${daysOfWeek[getDay(dt)]} ${isWeekend(dt) ? 'weekend' : 'weekday'}" ${declareChecked} ${outOfRange ? "readonly disabled" : ""}>
-                <label for="calSel${format(dt, 'MM-dd')}" class="calendar-sel-toggler" data-month="${format(dt, 'MMM')}">${format(dt, 'dd')}
+            let calDay = `<input type="checkbox" name="calSel${format(dt, 'MM-dd')}" id="calSel${format(dt, 'MM-dd')}" data-fulldate="${format(dt, 'yyyy-MM-dd')}" class="checkable-day date-${format(dt, 'dd')} day-${daysOfWeek[getDay(dt)]} ${isWeekend(dt) ? 'weekend' : 'weekday'}" ${declareChecked} ${outOfRange ? "readonly disabled" : ""}>
+                <label for="calSel${format(dt, 'MM-dd')}" class="calendar-sel-toggler" data-month="${format(dt, 'MMM')}" data-fulldate="${format(dt, 'yyyy-MM-dd')}">${format(dt, 'dd')}
             </label>`
             return calDay;
         }
@@ -64,26 +66,32 @@ export default class ReportGrid {
         console.log('numberOfWeeksInCalendar :', numberOfWeeksInCalendar);
         let calOutput = '';
         let calOutput2 = '';
-        let daysToAccountFor = this.workdaySpan;
+        let daysToAccountFor = [];
+        let daysToAccountFormat = 'yyyy-MM-dd';
         let runningDay = 0,
             runningDate = null;;
 
         for(var i=0; i<this.startDayOfWeek; i++){
             runningDate = subDays(this.startDate, (this.startDayOfWeek-i))
             calOutput2 += getCalDay(runningDate, false, true);
+            // daysToAccountFor.push(format(runningDate, daysToAccountFormat))
         }
         while(runningDay <= this.daySpan){
             runningDate = addDays(this.startDate, runningDay);
             calOutput2 += getCalDay(runningDate);
+            daysToAccountFor.push(format(runningDate, daysToAccountFormat))
             runningDay++;
         }
         for(var i=this.endDayOfWeek + 1; i<7; i++){
             runningDate = addDays(this.endDate, (i-this.endDayOfWeek));
             calOutput2 += getCalDay(runningDate, false, true);
+            // daysToAccountFor.push(format(runningDate, daysToAccountFormat))
         }
 
+
         qs('#calSelDays').innerHTML = calOutput2;
-        
+        this.dateCollection = daysToAccountFor;
+        return daysToAccountFor;
     }
 
     updateDaysInSprint(){
@@ -101,20 +109,40 @@ export default class ReportGrid {
             }
             let unselectedWeekends = qsa('.checkable-day.weekend:not(:checked):not(:disabled)');
             unselectedWeekends = (unselectedWeekends == null) ? 0 : unselectedWeekends.length;
-        countSelectedWeekdays = qsa('.checkable-day.weekday:checked');
-        allSelectableDays = (allSelectableDays == null) ? 0 : allSelectableDays.length;
-        countSelectedWeekdays = (countSelectedWeekdays == null) ? 0 : countSelectedWeekdays.length;
-        countSelectedWeekends = (countSelectedWeekends == null) ? 0 : countSelectedWeekends.length;
-        if(selectedDisplayMode === 'we-disp-as-placeholders') countSelectedWeekends = 0;
-        if(selectedDisplayMode === 'we-disp-as-optional-days') allSelectableDays = allSelectableDays - unselectedWeekends;
+            countSelectedWeekdays = qsa('.checkable-day.weekday:checked');
+            allSelectableDays = (allSelectableDays == null) ? 0 : allSelectableDays.length;
 
-        console.log('countSelectedWeekdays, countSelectedWeekends, allSelectableDays :', countSelectedWeekdays, countSelectedWeekends, allSelectableDays);
-        let DIS = qs('#days-in-sprint');
-        DIS.dataset.value = countSelectedWeekdays + countSelectedWeekends;
-        DIS.dataset.span = allSelectableDays;
+            let allDatesMarkedWorkable = [];
+            
+            if(countSelectedWeekdays && Array.isArray(countSelectedWeekdays)) allDatesMarkedWorkable = [...allDatesMarkedWorkable, ...countSelectedWeekdays];
+            if(countSelectedWeekends && Array.isArray(countSelectedWeekends)) allDatesMarkedWorkable = [...allDatesMarkedWorkable, ...countSelectedWeekends];
+            
+            countSelectedWeekdays = (countSelectedWeekdays == null) ? 0 : countSelectedWeekdays.length;
+            countSelectedWeekends = (countSelectedWeekends == null) ? 0 : countSelectedWeekends.length;
+            if(selectedDisplayMode === 'we-disp-as-placeholders') countSelectedWeekends = 0;
+            if(selectedDisplayMode === 'we-disp-as-optional-days') allSelectableDays = allSelectableDays - unselectedWeekends;
+
+            let DIS = qs('#days-in-sprint');
+            DIS.dataset.value = countSelectedWeekdays + countSelectedWeekends;
+            DIS.dataset.span = allSelectableDays;
+
+            if(allDatesMarkedWorkable.length) {
+                console.log('allDatesMarkedWorkable :', allDatesMarkedWorkable);
+                let strigifiedDatesInSprint = allDatesMarkedWorkable.map(dts=>dts.dataset.fulldate);
+                fondue.WorkableDaysCount    = strigifiedDatesInSprint.length;
+                fondue.WorkableDaysInSprint = strigifiedDatesInSprint.join('|');
+                if(allDatesMarkedWorkable && allDatesMarkedWorkable.length > 0) {
+                    fondue.WorkableDaysCount = allDatesMarkedWorkable.length;
+                }
+                fondue.SprintEndDate = strigifiedDatesInSprint.pop();
+                fondue.SprintStartDate = strigifiedDatesInSprint.length ? strigifiedDatesInSprint.unshift : fondue.SprintEndDate;
+
+                fondue.gui.processReportParameters();
+            }
+            _('fondue object', fondue);
 
         window.debounce = false;}, 100)
     }
 }
 
-window.reportGrid    = new ReportGrid()
+window.ReportCalendarPicker    = new ReportCalendarPicker()

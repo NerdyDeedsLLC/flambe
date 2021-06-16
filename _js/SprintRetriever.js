@@ -201,8 +201,10 @@ export default class SprintRetriever {
             parsedIssueDetails.push(Object.assign(parsedIssue, {
                 "retrievedFor"         : fondue.ExtantSprintID,
                 "retrievedForSlot"     : fondue.TransactionSlot,
-                "retrevalStamp"        : retrevalStamp,
-                "retrevalReadable"     : retrevalReadable
+                "retrevalStamp"        : new Date(retrevalStamp),
+                "retrevalReadable"     : retrevalReadable,
+                "created": new Date(parsedIssue.created),
+                "updated": new Date(parsedIssue.updated),
             }));
         });
         console.log('Parse Complete.', parsedIssueDetails);

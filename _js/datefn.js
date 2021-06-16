@@ -4,7 +4,7 @@ import isBefore from 'date-fns/isBefore'
 import isAfter from 'date-fns/isAfter'
 import subDays from 'date-fns/subDays'
 
-export default class ReportGrid {
+export default class ReportCalendarPicker {
     constructor() {
         this.startDate = parseISO('2021-05-26T00:00:00');
         this.produceErrorCondition()
@@ -29,4 +29,4 @@ export default class ReportGrid {
     }
 }
 
-window.reportGrid = new ReportGrid()
+window.ReportCalendarPicker = new ReportCalendarPicker()
