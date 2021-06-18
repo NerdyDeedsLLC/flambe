@@ -219,6 +219,7 @@ export default class Fondutabase {
 
             // Adds the "personnel" table to the "fondue" database
             this.schemaBuilder.createTable('issues').
+                addColumn('fondueIssueId',	           this.lf.Type.INTEGER).
                 addColumn('issueId',	           this.lf.Type.INTEGER).
                 addColumn('jiraIssueId',	       this.lf.Type.INTEGER).
                 addColumn('parentJiraId',	       this.lf.Type.INTEGER).
@@ -249,7 +250,7 @@ export default class Fondutabase {
                 addColumn('retrevalReadable',	   this.lf.Type.STRING).
                 addColumn('_OPTIONS',              this.lf.Type.STRING).
 
-                addPrimaryKey(['issueId'], true).
+                addPrimaryKey(['fondueIssueId'], true).
                 addNullable(['jiraIssueId', 'parentJiraId', 'issueKey', 'type', 'assigneeName', 'assigneeEmail', 
                              'component', 'created', 'description', 'labels', 'link', 'priority', 'project', 
                              'reporter', 'status', 'statusColor', 'subtasks', 'summary', 'title', 'timeestimate', 

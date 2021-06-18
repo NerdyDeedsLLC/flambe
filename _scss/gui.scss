@@ -25,6 +25,7 @@ i:empty {
     transform: translate(50%, -50%);
     z-index: 10;
     float:right;
+
     &::before {
         content: 'i';
         display: inline-block;
@@ -487,11 +488,6 @@ i:empty {
                             left: 46px;
                             border: 1px solid #666;
                             pointer-events: none;
-                        }
-
-                        &.retrieving {
-                            &::after {
-                            }
                         }
 
                         .pre-file-selection {
@@ -1429,6 +1425,30 @@ i:empty {
     }
 }
 
+#grid-output-panel {
+    --offsetWidth: 0px;
+    width:calc(100% - var(--offsetWidth));
+    max-width:calc(100vw - var(--offsetWidth));
+    height:90vh;
+    margin:0 20px;
+
+    iframe {
+        width: 100%;
+        height: 100vh;
+    }
+}
+
+#paramsToggle:not(:checked) ~ main #grid-output-panel {
+    margin-left:540px;
+}
+.panel-togglers:not(:checked) ~ main #grid-output-panel {
+    --offsetWidth: 540px;
+}
+
+.panel-togglers:not(:checked) + .panel-togglers:not(:checked) ~ main #grid-output-panel {
+    --offsetWidth: 1080px;
+}
+
 @keyframes pulsehover {
     0%,
     50%,
@@ -1441,3 +1461,5 @@ i:empty {
     }
     // 15%, 35% {box-shadow:inset 0 0 20px 0 #22aeaf99; background-color: #FFFC}
 }
+
+

@@ -5,6 +5,7 @@ import SprintRetriever from './SprintRetriever.js'
 import Fondutabase   from './fondutabase.js'
 import GUI           from './gui.js'
 import ReportCalendarPicker    from './ReportCalendarPicker'
+import GridRenderer    from './GridRenderer'
 
 
 class Fondue {
@@ -47,6 +48,10 @@ class Fondue {
         this.gui                   = W.gui                   = new GUI();
         this.ReportCalendarPicker  = W.ReportCalendarPicker  = new ReportCalendarPicker();
 
+    }
+
+    loadGrid(){
+        qs('#grid-output').innerHTML = `<iframe src="./grid.html"></iframe>`;
     }
 }
 

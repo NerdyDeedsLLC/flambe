@@ -172,8 +172,6 @@ export default class GUI {
                                                     Sprint:
                                                     <select name="sprint" id="sprint" aria-placeholder="Select Sprint">
                                                         <option value="">Select the desired sprint...</option>
-                                                        <!--option value="">Creating a new sprint:</option-->
-                                                        <option>Some Old Sprint</option>
                                                     </select>
                                                     <input type="text" name="sprint-new" id="sprint-new" placeholder="...or enter a name to create one." value="" style="display:none;">
                                                 </label>
@@ -289,6 +287,9 @@ export default class GUI {
                                 <main>
                                     <header></header>
                                     <section>
+                                        <div id="grid-output-panel" class="grid-output-panel">
+                                            <div id="grid-output" class="grid-output"></div>
+                                        </div>
                                         <div class="graph-output">
                                             <div class="graph-output-widgets">
 

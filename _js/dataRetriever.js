@@ -356,7 +356,7 @@ export default class DataRetriever {
         return  this.checkDataDateStamp(availableProps[property].destination)
                 .then(result => {
                     console.log('result :', result);
-                    if(result === false) {
+                    if(result == false) {
                         console.log(availableProps[property].destination + ' not found!');
                         return this.getRetrieverHeaders()
                             .then(hdrs     => fetch(this.getRetrieverURL(availableProps[property].url), hdrs))
