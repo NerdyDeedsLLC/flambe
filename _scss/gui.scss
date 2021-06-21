@@ -810,9 +810,13 @@ i:empty {
                     position: fixed;
                     left: -100000px;
 
-                    &.bit-picker:nth-child(3):checked ~ .bit-picker-panel > li:nth-child(1) > label,
-                    &.bit-picker:nth-child(4):checked ~ .bit-picker-panel > li:nth-child(2) > label,
-                    &.bit-picker:nth-child(5):checked ~ .bit-picker-panel > li:nth-child(3) > label {
+                    &.bit-picker#we-disp-as-placeholders:checked   ~ .bit-picker-panel > li > label[for="we-disp-as-placeholders"],
+                    &.bit-picker#we-disp-as-optional-days:checked  ~ .bit-picker-panel > li > label[for="we-disp-as-optional-days"],
+                    &.bit-picker#we-disp-as-normal-days:checked    ~ .bit-picker-panel > li > label[for="we-disp-as-normal-days"],
+                    &.bit-picker#auto-res-until-eos:checked        ~ .bit-picker-panel > li > label[for="auto-res-until-eos"],
+                    &.bit-picker#auto-res-from-output:checked      ~ .bit-picker-panel > li > label[for="auto-res-from-output"],
+                    &.bit-picker#auto-res-from-datafiles:checked   ~ .bit-picker-panel > li > label[for="auto-res-from-datafiles"]
+                    {
                         border: 1px solid teal;
                         box-shadow: inset 0 0 4px 0 white, inset 0 0 20px 0 #088;
                         color: #033;

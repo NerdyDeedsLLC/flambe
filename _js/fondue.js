@@ -37,6 +37,7 @@ class Fondue {
         this.SprintDaytaSlotPulls = [];
 
         this.loadComponents()
+        // this.loadGrid()
     }
 
     loadComponents(){
@@ -51,7 +52,9 @@ class Fondue {
     }
 
     loadGrid(){
-        qs('#grid-output').innerHTML = `<iframe src="./grid.html"></iframe>`;
+        W.fondueObj = this;
+        // W.addEventListener('load', ()=>{qs('#grid-output').innerHTML = `<iframe src="./grid.html?sprintID=18"></iframe>`;})
+        qs('#grid-output').innerHTML = `<iframe src="./grid.html?sprintID=${this.ExtantSprintID}"></iframe>`;
     }
 }
 

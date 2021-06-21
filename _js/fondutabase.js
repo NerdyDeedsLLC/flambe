@@ -43,6 +43,17 @@ export default class Fondutabase {
         return this.db.insertOrReplace().into(targetTable).values(allRows).exec()
     }
 
+    groupBy(data, column){
+        if(Object.keys(data[0]).indexOf(column) === -1) throw new Error('cannot find column ' + column);
+        return new Promise((resolve)=>{
+            let uniqueGroupingValues = [...new Set(data.map(dsc=>dsc[column]))];
+            let groupedOutput = [];
+            uniqueGroupingValues.forEach(grouper=>groupedOutput[grouper] = data.filter(rec=>rec[column]===grouper))
+            return resolve(groupedOutput);
+        })
+        .catch((err)=>console.error('ERROR! Details are as follows:', err));
+    }
+
     // Usage: select('SELECT manager FROM sprints').then(rows=>console.log(rows))
     select(tsql, dryrun=false){
         let {db} = this;
@@ -65,7 +76,7 @@ export default class Fondutabase {
 
 
         let tableMappings = {};
-        let targetData = tsql.match(/^(?:SELECT)?(?<COLUMNS>[a-z0-9\.\*\, ]+)FROM (?<TABLES>.*?)(?: (?<JOIN_TYPE>LEFT OUTER JOIN|INNER SELF JOIN|INNER JOIN) (?<JOIN_ON>.+?))?(?: WHERE (?<WHERE>.+?))?(?:(?: ORDER BY )(?<ORDER_BY>.+?))?(?: LIMIT (?<LIMIT>.+?))?(?: SKIP (?<SKIP>.+?))?$/i).groups
+        let targetData = tsql.match(/^(?:SELECT)?(?<COLUMNS>[a-z0-9\.\*\, ]+)FROM (?<TABLES>.*?)(?: (?<JOIN_TYPE>LEFT OUTER JOIN|INNER SELF JOIN|INNER JOIN) (?<JOIN_ON>.+?))?(?: WHERE (?<WHERE>.+?))?(?:(?: ORDER BY )(?<ORDER_BY>.+?))?(?:(?: GROUP BY )(?<GROUP_BY>.+?))?(?: LIMIT (?<LIMIT>.+?))?(?: SKIP (?<SKIP>.+?))?$/i).groups
         
         //# TABLES (A)      Begin with the tables specified in the tSQL
         let tableQuery = targetData.TABLES.split(',');
@@ -94,7 +105,7 @@ export default class Fondutabase {
 
         //# CONDITIONS      Obtain the WHERE statements and evaluate them to construct the boolean value expression
         //## ITERATIVE DEV ON THIS BIT: initial support: = and <>
-        let whereQuery = null, conditionResults = [], pseudoCond = [];
+        let whereQuery = null, orderByQuery = [], groupByQuery = null;
         if(targetData.WHERE){
             whereQuery = {};
             targetData.WHERE.replace(/^(.*?)(?: *([=<>]+) *)(.*)$/, 
@@ -106,13 +117,35 @@ export default class Fondutabase {
                                                   });
             console.log('whereQuery :', whereQuery = [whereQuery]);
         }
+        if(targetData.ORDER_BY){
+            orderByQuery = targetData.ORDER_BY.split(/ *, */g);
+            // console.log('orderByQuery :', orderByQuery);
+            orderByQuery = orderByQuery.map(sortCol=>{
+            // console.log('sortCol :', sortCol);
+                sortCol = sortCol.split(' ');
+
+                let retVal = {column:prefixColumn(sortCol[0].trim(), tableQuery), sortDirection:'ASC', orDir:0};
+                if(sortCol.length > 1){
+                    retVal.sortDirection = (/ *DESC */i.test(sortCol[1])) ? 'DESC' : 'ASC';
+                    retVal.orDir = +(!fondutabase.lf.Order[retVal.sortDirection]);
+                }
+                // console.log('retVal :', retVal);
+                return retVal;
+            });
+            // console.log('orderByQuery :', orderByQuery);
+        }
+
+        if(targetData.GROUP_BY){
+            groupByQuery = targetData.GROUP_BY;
+            // console.log('groupByQuery :', groupByQuery);
+        }
 
         let pseudoColQuery = [...columnQuery];
         pseudoColQuery = pseudoColQuery[0] ? pseudoColQuery : '*'
         let pseudoQuery = ["SELECT", pseudoColQuery, 'FROM', ...Object.values(tableQuery).map(v=>v.name)];
         if(whereQuery) pseudoQuery.push(...['WHERE', Object.values(whereQuery[0]).join(' ')])
-        
-        
+        if(orderByQuery.length) pseudoQuery.push(' ORDER BY ', orderByQuery.flatMap(oi=>oi.column + ' ' + oi.sortDirection).join())
+        if(groupByQuery) pseudoQuery.push('GROUP BY', groupByQuery);
         try {
             console.time('     ↳ ⏱');
             let result, runningQuery;
@@ -120,11 +153,22 @@ export default class Fondutabase {
                 result = Promise.resolve(db.select(...columnQuery))
                        .then(QUERY=>QUERY.from(...Object.values(tableQuery).map(v=>v.schema)))
                        .then(QUERY=>{
-                           if(whereQuery == null) return QUERY;
-                           let q = whereQuery[0];
-                           return QUERY.where(q.c1[q.op](q.c2))
-                       })
-                       .then(QUERY=>runningQuery=QUERY.exec()))
+                        if(whereQuery == null) return QUERY;
+                        let q = whereQuery[0];
+                        return QUERY.where(q.c1[q.op](q.c2))
+                    })
+                    .then(QUERY=>{
+                        console.log('QUERY :', QUERY);
+                        if(!orderByQuery || orderByQuery.length < 1) return QUERY;
+                        orderByQuery.forEach(sorter=>{
+                            console.log('sorter :', sorter);
+
+                            QUERY.orderBy(sorter.column, sorter.orDir);
+                        })
+                        return QUERY;
+                    })
+                    .then(QUERY=>runningQuery=QUERY.exec())
+                    .then(initialResults=>groupByQuery ? this.groupBy(initialResults, groupByQuery) :  initialResults))
             .then(result=>console.groupCollapsed('▶️ 🟢 Executed tSQL from components: ', pseudoQuery.flat()) || console.log('     ↳ 🛠 Query Literal:', runningQuery) || result)
             .then(result=>console.log('     ↳ ✅ Transaction Succeeded!', result) || result)
             .then(result=>console.timeEnd('     ↳ ⏱') || console.groupEnd() || result)

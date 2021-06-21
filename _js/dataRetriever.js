@@ -25,6 +25,8 @@ export default class DataRetriever {
         
         this.#credentials = '';
         this.loaderOverlay = null;
+
+        
     }
 
     ready(){
@@ -275,7 +277,7 @@ export default class DataRetriever {
     checkDataDateStamp(tableSought) {
         console.log('checkDataDateStamp(tableSought) :', tableSought);
         return fondutabase.select('SELECT * FROM config WHERE config.key=' + tableSought)
-        .then(results=>_(results && results.length && results[0] && results[0].value > Date.now()));
+        .then(results=>!!(results && results.length && results[0] && results[0].value >= Date.now()));
     }
 
 
@@ -355,8 +357,8 @@ export default class DataRetriever {
 
         return  this.checkDataDateStamp(availableProps[property].destination)
                 .then(result => {
-                    console.log('result :', result);
-                    if(result == false) {
+                    console.log('Last Update Check:', result);
+                    if(result != true) {
                         console.log(availableProps[property].destination + ' not found!');
                         return this.getRetrieverHeaders()
                             .then(hdrs     => fetch(this.getRetrieverURL(availableProps[property].url), hdrs))

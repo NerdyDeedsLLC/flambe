@@ -10,6 +10,7 @@ export default class GUI {
         this.filledSlots  = 0;
         this.seeded       = false;
         this.jiraModal = qs('#loading-overlay');
+        this.leftBindings = false;
         
         window.getSprintDataFromFondutabase = this.getSprintDataFromFondutabase.bind(this);
         window.processReportParameters = this.processReportParameters.bind(this);
@@ -144,6 +145,7 @@ export default class GUI {
     }
 
     performLeftColumnBindings(){
+        if(this.leftBindings) return;
         qsa('.data-file').forEach((dayBtn, dayNum)=> {
             dayBtn.dataset.hasdata=(dayBtn.value==='' || this.daytaRecords[dayNum] !== null);
             dayBtn.addEventListener('click', (e, trg=e.target)=>{
@@ -151,9 +153,17 @@ export default class GUI {
                 this.daytaClick(trg);
             })
         });
+
+        qsa('.bit-picker').forEach(radio=>{
+            radio.addEventListener('input', (e, trg=e.target)=>fondutabase.overwrite('config', {key:trg.name, value:trg.id}))
+        })
+        this.leftBindings = true;
     }
 
     renderCoreGUI(){
+
+
+        
         console.log('renderCoreGUI : Rendering...');
         return new Promise((resolve, reject) => {
             
@@ -235,10 +245,11 @@ export default class GUI {
                                             <i data-tooltip="Selecting these options will allow you to skip these first two steps, instructing the system to simply pick up where you left off your last visit (of course you can change things after that, should you choose)."></i>
                                                 <input type="radio" id="auto-res-from-datafiles" name="auto-resume-mode" class="bit-picker"> 
                                                 <input type="radio" id="auto-res-from-output" name="auto-resume-mode" class="bit-picker">
+                                                <input type="radio" id="auto-res-until-eos" name="auto-resume-mode" class="bit-picker">
                                                 <ul class="bit-picker-panel">
+                                                <li><label for="auto-res-until-eos">Resume & auto-run only until final day of sprint</label></li>
+                                                <li><label for="auto-res-from-output">Resume session & auto-run most recent report</label></li>
                                                     <li><label for="auto-res-from-datafiles">Resume session at III: Manage Data Files</label></li>
-                                                    <li><label for="auto-res-from-output">Resume session & auto-run most recent report</label></li>
-                                                    <li><label for="auto-res-from-output">Resume & auto-run only until final day of sprint</label></li>
                                                 </ul>
                                                 </fieldset>
 
