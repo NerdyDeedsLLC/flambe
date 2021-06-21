@@ -17,12 +17,25 @@ export default class Fondutabase {
         this.schemaBuilder = null;
         this.lf            = window.lf;
         this.initialized   = false;
-        this.connected = false;
-        this.generateDatabaseSchema();
-            
+        this.connected     = false;
+        this.queuedTransactions = [];
+        this.generateDatabaseSchema()
+        .then(()=>{
+            let transaction;
+            while(this.queuedTransactions.length > 0){
+                this.replayQueuedTransaction();
+
+            }
+        });
+    }
+
+    replayQueuedTransaction(){
+        let transaction = this.queuedTransactions.shift();
+        return this[transaction.verb](...transaction.params)
     }
 
     insert(table, fieldData){
+        if(!this.readyForThisTransaction('insert', [table, fieldData])) return console.log('TRANSACTION QUEUED:', this.queuedTransactions[this.queuedTransactions.length-1]);
         if(!Array.isArray(fieldData)) fieldData = [fieldData];
         console.log('fieldData :', fieldData);
         var targetTable = this.db.getSchema().table(table);
@@ -31,11 +44,14 @@ export default class Fondutabase {
     }
 
     delete(table, condition){
+        if(!this.readyForThisTransaction('delete', [table, condition])) return console.log('TRANSACTION QUEUED:', this.queuedTransactions[this.queuedTransactions.length-1]);
+
         var targetTable = this.db.getSchema().table(table);
         this.db.delete().from(targetTable).exec();
     }
 
     overwrite(table, fieldData){
+        if(!this.readyForThisTransaction('overwrite', [table, fieldData])) return console.log('TRANSACTION QUEUED:', this.queuedTransactions[this.queuedTransactions.length-1]);
         if(!Array.isArray(fieldData)) fieldData = [fieldData];
         console.log('fieldData :', fieldData);
         var targetTable = this.db.getSchema().table(table);
@@ -56,6 +72,12 @@ export default class Fondutabase {
 
     // Usage: select('SELECT manager FROM sprints').then(rows=>console.log(rows))
     select(tsql, dryrun=false){
+        return new Promise(resolve=>{
+            if(!this.readyForThisTransaction('select', [tsql, dryrun, resolve])) console.log('TRANSACTION QUEUED:', this.queuedTransactions[this.queuedTransactions.length-1]);
+            else resolve(true);
+        })
+        .then(()=>{
+            _('past choke')
         let {db} = this;
         const booleanConditions = {
             '='  : 'eq',
@@ -186,6 +208,7 @@ export default class Fondutabase {
             console.timeEnd('     ↳ ⏱')
             console.groupEnd();
         }
+        });
     }
 
     
@@ -310,6 +333,12 @@ export default class Fondutabase {
             console.error('FONDON\'T: Error during setup: ', err);
         });
     }
+
+    readyForThisTransaction(verb, params, resolution){
+        if(!this.db || !this.connected) return this.queuedTransactions.push({verb, params, resolution}) === "It won't";
+        return true;
+    }
+
 
     connect() {
         if(this.connected === true && this.db != null) return Promise.resolve(this.db);

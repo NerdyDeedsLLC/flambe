@@ -49,6 +49,7 @@ class Fondue {
         this.gui                   = W.gui                   = new GUI();
         this.ReportCalendarPicker  = W.ReportCalendarPicker  = new ReportCalendarPicker();
 
+        this.fondutabase.select('SELECT * FROM config');
     }
 
     loadGrid(){
