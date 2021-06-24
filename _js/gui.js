@@ -142,7 +142,7 @@ export default class GUI {
             , selectedSprint   = existingSprintDD.selectedIndex > 0 ? existingSprintDD.options[existingSprintDD.selectedIndex].value : null;
 
             
-        fondutabase.writeToConfig('config', [{key:'reload-sprint', value:selectedSprint}, {key:'reload-sprint-start-date', value:startDateField ? startDateField.value : ''}, {key:'reload-sprint-end-date', value:endDateField ? endDateField.value : ''}])
+        fondutabase.writeToConfig('config', [{key:'reload-sprint', value:selectedSprint}, {key:'reload-sprint-start-date', value:startDateField ? fondue.MANdate(startDateField.value) : ''}, {key:'reload-sprint-end-date', value:endDateField ? fondue.MANdate(endDateField.value) : ''}])
 
         .then(()=>{
             fondue.SprintStartDate = (startDateField && startDateField.value) ? fondue.MANdate(startDateField.value, Date.prototype.toLocaleDateString) : '';

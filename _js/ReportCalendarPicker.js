@@ -1,4 +1,4 @@
-import {toDate, format, isDate, startOfDay, parseISO, isWeekend, isEqual, isBefore, isAfter, differenceInCalendarDays, differenceInBusinessDays, differenceInCalendarISOWeeks, getDay, formatRFC3339, addDays, subDays } from 'date-fns'
+import {toDate, format, isDate, startOfDay, parseISO, isWeekend, isEqual, isBefore, isAfter, differenceInCalendarDays, differenceInBusinessDays, differenceInCalendarISOWeeks, getDay, addDays, subDays } from 'date-fns'
 
 export default class ReportCalendarPicker {
     constructor() {
@@ -28,10 +28,10 @@ export default class ReportCalendarPicker {
     console.log('initializeCalendarPicker :', name, sDate, eDate);
         if(!(sDate && eDate)) return false;
         this.sprintName     = name;
-        this.startDate      = parseISO(sDate + 'T00:00:00');
-        this.endDate        = parseISO(eDate + 'T00:00:00');
-        this.startDate      = startOfDay(this.startDate);
-        this.endDate        = startOfDay(this.endDate);
+        this.startDate      = fondue.MANdate(sDate);
+        this.endDate        = fondue.MANdate(eDate);
+        this.startDate      = this.startDate;
+        this.endDate        = this.endDate;
         this.isInitialized  = true;
         this.startDayOfWeek = getDay(this.startDate);
         this.endDayOfWeek   = getDay(this.endDate);
@@ -49,11 +49,11 @@ export default class ReportCalendarPicker {
 
     generateReportSettingsCalendar(){
         if(!this.isInitialized) return false;
+        let sD = fondue.MANdate(this.startDate);
+        let eD = fondue.MANdate(this.endDate);
+        
         let getCalDay = (dt, declareChecked=null, outOfRange=false) => {
-            dt = new Date(dt);
-            let sD = new Date(this.startDate);
-            let eD = new Date(this.endDate);
-            
+            dt = fondue.MANdate(dt);
             declareChecked = (!isBefore(dt, sD) && !isAfter(dt, eD) && !isWeekend(dt));
             declareChecked = declareChecked ? 'checked' : '';
             let calDay = `<input type="checkbox" name="calSel${format(dt, 'MM-dd')}" id="calSel${format(dt, 'MM-dd')}" data-fulldate="${format(dt, 'yyyy-MM-dd')}" class="checkable-day date-${format(dt, 'dd')} day-${daysOfWeek[getDay(dt)]} ${isWeekend(dt) ? 'weekend' : 'weekday'}" ${declareChecked} ${outOfRange ? "readonly disabled" : ""}>
@@ -62,7 +62,7 @@ export default class ReportCalendarPicker {
             return calDay;
         }
 
-        let numberOfWeeksInCalendar = differenceInCalendarISOWeeks(this.endDate, this.startDate)
+        let numberOfWeeksInCalendar = differenceInCalendarISOWeeks(eD, sD);
         console.log('numberOfWeeksInCalendar :', numberOfWeeksInCalendar);
         let calOutput = '';
         let calOutput2 = '';
@@ -72,12 +72,12 @@ export default class ReportCalendarPicker {
             runningDate = null;;
 
         for(var i=0; i<this.startDayOfWeek; i++){
-            runningDate = subDays(this.startDate, (this.startDayOfWeek-i))
+            runningDate = subDays(sD, (this.startDayOfWeek-i))
             calOutput2 += getCalDay(runningDate, false, true);
             // daysToAccountFor.push(format(runningDate, daysToAccountFormat))
         }
         while(runningDay <= this.daySpan){
-            runningDate = addDays(this.startDate, runningDay);
+            runningDate = addDays(sD, runningDay);
             calOutput2 += getCalDay(runningDate);
             daysToAccountFor.push(format(runningDate, daysToAccountFormat))
             runningDay++;
@@ -116,6 +116,13 @@ export default class ReportCalendarPicker {
             
             if(countSelectedWeekdays && Array.isArray(countSelectedWeekdays)) allDatesMarkedWorkable = [...allDatesMarkedWorkable, ...countSelectedWeekdays];
             if(countSelectedWeekends && Array.isArray(countSelectedWeekends)) allDatesMarkedWorkable = [...allDatesMarkedWorkable, ...countSelectedWeekends];
+            allDatesMarkedWorkable = [...allDatesMarkedWorkable][0];
+
+            let a=[1,2,3,4],
+                b=[5,6,7,8],
+                c=a;
+                c = [...c, ...b]
+            console.log('allDatesMarkedWorkable :', allDatesMarkedWorkable, c);
             
             countSelectedWeekdays = (countSelectedWeekdays == null) ? 0 : countSelectedWeekdays.length;
             countSelectedWeekends = (countSelectedWeekends == null) ? 0 : countSelectedWeekends.length;
@@ -128,7 +135,7 @@ export default class ReportCalendarPicker {
 
             if(allDatesMarkedWorkable.length) {
                 console.log('allDatesMarkedWorkable :', allDatesMarkedWorkable);
-                let strigifiedDatesInSprint = allDatesMarkedWorkable.map(dts=>dts.dataset.fulldate);
+                let strigifiedDatesInSprint = [...allDatesMarkedWorkable].map(dts=>dts.dataset.fulldate);
                 fondue.WorkableDaysCount    = strigifiedDatesInSprint.length;
                 fondue.WorkableDaysInSprint = strigifiedDatesInSprint.join('|');
                 if(allDatesMarkedWorkable && allDatesMarkedWorkable.length > 0) {

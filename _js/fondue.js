@@ -89,6 +89,7 @@ class Fondue {
      * @memberof Fondue
      */
     MANdate(dt, formatter=toDate, clearTimes=true){ 
+    console.log('dt, formatter :', dt, formatter);
         let retVal, frmtdVal;
         try{
             if(/^\d{2}[\.\-\/]\d{2}$/.test(dt)) dt = `2021-${dt}`
