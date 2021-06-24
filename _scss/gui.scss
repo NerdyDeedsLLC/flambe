@@ -704,7 +704,7 @@ i:empty {
                 display: flex;
                 flex-direction: column;
 
-                #display-weekends {
+                #weekends-display {
                     position: fixed;
                     left: -100000px;
                     &:not(:checked) ~ .calendarSelector {

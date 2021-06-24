@@ -5,6 +5,7 @@ let fondue = window.top.fondue;
 const fondutabase = window.top.fondutabase;
 
 fondue.table = null;
+const gridMode = true;
     
 function toHours(val = null, appendLabel=true) {                                                                   		// Converts the asinine JIRA output we're currently getting (seconds, across the board) to hours
     if(val == null) return 0;

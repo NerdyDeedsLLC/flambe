@@ -22,12 +22,11 @@
       [
         "@babel/preset-env",
         {
-          "useBuiltIns": "entry"
+          "useBuiltIns": "entry",
+          "loose": true,
+          "corejs": { "version": "3", "proposals": true, "development":false }
         }
       ]
-    ],
-    "plugins": [
-      "@babel/plugin-proposal-class-properties"
     ]
   },
   "author": "@JJ (NerdyDeeds, LLC)",
@@ -37,6 +36,7 @@
   },
   "homepage": "https://github.com/NerdyDeedsLLC/flambe#readme",
   "dependencies": {
+    "core-js": "^2.6.12",
     "cors-anywhere": "^0.4.4",
     "date-fns": "^2.22.1",
     "exceljs": "^4.2.1",
@@ -46,7 +46,7 @@
     "tabulator-tables": "^4.9.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.5.5",
+    "@babel/core": "^7.14.6",
     "@babel/plugin-proposal-class-properties": "^7.13.0",
     "@babel/preset-env": "^7.14.2",
     "@rollup/plugin-babel": "^5.3.0",

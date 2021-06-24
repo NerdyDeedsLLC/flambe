@@ -31,7 +31,8 @@ export default class Fondutabase {
 
     replayQueuedTransaction(){
         let transaction = this.queuedTransactions.shift();
-        return this[transaction.verb](...transaction.params)
+        console.log('transaction :', transaction);
+        return transaction.resolution(this[transaction.verb](...transaction.params));
     }
 
     insert(table, fieldData){
@@ -59,6 +60,20 @@ export default class Fondutabase {
         return this.db.insertOrReplace().into(targetTable).values(allRows).exec()
     }
 
+    writeToConfig(table, fieldData){
+        return new Promise(resolve=>{
+            if(!this.readyForThisTransaction('overwrite', [table, fieldData], resolve)) console.log('TRANSACTION QUEUED:', this.queuedTransactions[this.queuedTransactions.length-1]);
+            else resolve(true);
+        })
+        .then(()=>{
+            if(!Array.isArray(fieldData)) fieldData = [fieldData];
+            console.log('fieldData :', fieldData);
+            var targetTable = this.db.getSchema().table(table);
+            var allRows = fieldData.map(row=>targetTable.createRow(row));
+            return this.db.insertOrReplace().into(targetTable).values(allRows).exec()
+        })
+    }
+
     groupBy(data, column){
         if(Object.keys(data[0]).indexOf(column) === -1) throw new Error('cannot find column ' + column);
         return new Promise((resolve)=>{
@@ -73,7 +88,7 @@ export default class Fondutabase {
     // Usage: select('SELECT manager FROM sprints').then(rows=>console.log(rows))
     select(tsql, dryrun=false){
         return new Promise(resolve=>{
-            if(!this.readyForThisTransaction('select', [tsql, dryrun, resolve])) console.log('TRANSACTION QUEUED:', this.queuedTransactions[this.queuedTransactions.length-1]);
+            if(!this.readyForThisTransaction('select', [tsql, dryrun], resolve)) console.log('TRANSACTION QUEUED:', this.queuedTransactions[this.queuedTransactions.length-1]);
             else resolve(true);
         })
         .then(()=>{

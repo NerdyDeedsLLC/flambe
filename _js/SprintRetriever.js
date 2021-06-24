@@ -19,6 +19,8 @@ export default class SprintRetriever {
     constructor(...props) {
         this.props = props;
         this.#jql = `component in ("BSWMBE:Hot team", "BSWMDBN2:DB Scrum And Coke", "BSWMDBN2:DB Techquilla", "BSWMDBN2:Scrum Punch", "BSWMDBN2:DB Scrum Runner") AND Sprint in openSprints()`;
+        this.mostRecentStamp = null;
+        this.mostRecentSlotObj = null;
     }
 
     getXMLAsObj(xmlObj) {
@@ -198,6 +200,7 @@ export default class SprintRetriever {
             });
             console.log('Parsed Issue Data: ', parsedIssue);
             console.groupEnd()
+            this.mostRecentStamp = new Date(retrevalStamp);
             parsedIssueDetails.push(Object.assign(parsedIssue, {
                 "retrievedFor"         : fondue.ExtantSprintID,
                 "retrievedForSlot"     : fondue.TransactionSlot,
@@ -253,11 +256,13 @@ export default class SprintRetriever {
         
     }
 
-    retrieve() {
+    retrieve(slotObj) {
+        this.mostRecentSlotObj = slotObj;
         return this.performRetrieve()
         .then(result => console.log('  - Attempting to write to Fondutabase...') || this.storeDataRetrieval(result))
         .then(result => console.log('🟢 SUCCESS!... all retrieved issues written to data store.') || result)
         .then(result => console.log('🟢 COMPLETE!') &&  console.groupEnd() || result)
+        .then(result => qs('input', slotObj).value="Retrieved :: " + this.mostRecentStamp)
         .catch(error => {console.error('🔴 FAILURE! An Error occurred in SprintRetriever.js. Details are as follows:\n', error); throw new Error(error); })
     }
         

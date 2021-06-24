@@ -99,7 +99,7 @@ export default class ReportCalendarPicker {
         window.debounce = true;
         setTimeout(()=>{
             let selectedDisplayMode, countSelectedWeekdays, countSelectedWeekends = null, allSelectableDays ;
-            if(qs("#display-weekends").checked){
+            if(qs("#weekends-display").checked){
                 selectedDisplayMode = qs("[name='weekends-display-mode']:checked").id;
                 console.log('selectedDisplayMode :', selectedDisplayMode);
                 allSelectableDays = (selectedDisplayMode === 'we-disp-as-placeholders') ? qsa('.checkable-day.weekday:not(:disabled)') : qsa('.checkable-day:not(:disabled)');

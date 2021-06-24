@@ -151,7 +151,7 @@
 
 .tabulator-row { position: relative; box-sizing: border-box; box-sizing: border-box; min-height: 24px; margin-bottom: 2px; }
 
-.tabulator-row .tabulator-cell:first-child { border-left: 10px solid #3759D7; }
+.tabulator-row .tabulator-cell:first-child { border-left: 10px solid #3759D7; z-index:100; }
 
 .tabulator-row:nth-child(even) { background-color: #627ce0; }
 

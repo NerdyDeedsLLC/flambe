@@ -296,7 +296,7 @@ export default class DataRetriever {
                         return rec;
                     });
                 },
-                callBack: ()=>{} //this.seedSprints
+                callBack: this.seedSprints
             },
             sprints: {
                 url: 'https://jirasw.t-mobile.com/rest/agile/1.0/board/8455/sprint?maxResults=150',
