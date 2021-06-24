@@ -145,8 +145,8 @@ export default class GUI {
     }
 
     performLeftColumnBindings(){
-        if(this.leftBindings) return;
-        qsa('.data-file').forEach((dayBtn, dayNum)=> {
+        [...qsa('.data-file')].forEach((dayBtn, dayNum)=> {
+        console.log('dayBtn, dayNum :', dayBtn, dayNum);
             dayBtn.dataset.hasdata=(dayBtn.value==='' || this.daytaRecords[dayNum] !== null);
             dayBtn.addEventListener('click', (e, trg=e.target)=>{
                 console.log(trg);
@@ -154,6 +154,8 @@ export default class GUI {
             })
         });
 
+        if(this.leftBindings) return;
+        qs('.execute').addEventListener('click', fondue.loadGrid);
         qsa('.bit-picker').forEach(radio=>{
             radio.addEventListener('input', (e, trg=e.target)=>fondutabase.overwrite('config', {key:trg.name, value:trg.id}))
         })
@@ -320,20 +322,20 @@ export default class GUI {
     }
 
     initializeCoreGUI() {
-        if(this.initialized) return false;
         if(this.jiraModal == null) this.jiraModal = qs('#loading-overlay');
-
+        
         // qs('#sprint-new').addEventListener('input', function(){ if(this.value !== ''){ qs('#sprint').selectedIndex = 1; processReportParameters(); }});
         qs('#sprint').addEventListener('input', function(){ 
             let mySelInd = this.selectedIndex,
-                myValue  = this.options[mySelInd].value,
-                fondueId = (fondue && fondue.ExtantSprintID) ? fondue.ExtantSprintID : null;
+            myValue  = this.options[mySelInd].value,
+            fondueId = (fondue && fondue.ExtantSprintID) ? fondue.ExtantSprintID : null;
             if(mySelInd > 1 && myValue != fondueId) {
                 return getSprintDataFromFondutabase(myValue);
             }
             if(fondueId) return (this.value = fondueId);
             
         });
+        if(this.initialized) return false;
         qs('#sprint-start-date').addEventListener('change', function(){ qs('#sprint-end-date').min = this.value; processReportParameters(); });
         qs('#sprint-end-date').addEventListener('change',   function(){ qs('#sprint-start-date').max = this.value; processReportParameters(); });
 
