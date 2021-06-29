@@ -202,7 +202,7 @@ export default class DataRetriever {
         return parsedIssueDetails;
     }
 */
-    getRetrieverURL(baseURL){return "http://0.0.0.0:8080/" + baseURL; }
+    getRetrieverURL(baseURL){return "http://127.0.0.1:1337/" + baseURL; }
 
     getRetrieverHeaders() {
         return new Promise((resolve, reject)=>{
@@ -249,7 +249,7 @@ export default class DataRetriever {
 //         };
 //         
 //         console.log('Performing requested retrieval...')
-// //         return fetch("http://0.0.0.0:8080/https://jirasw.t-mobile.com/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=" + JQL, requestOptions)
+// //         return fetch("http://127.0.0.1:1337/https://jirasw.t-mobile.com/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=" + JQL, requestOptions)
 // //           .then(response => {
 // //               let jiraResponseBody = response.text();
 // //               console.log('Data retrieved!', jiraResponseBody);

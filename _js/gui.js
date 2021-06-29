@@ -406,10 +406,13 @@ export default class GUI {
         
             let dataSlotMarkup = ``;
             for(var i=0; i<numberOfSlots; i++){
-                let placeholderText = `placeholder="Day ${i} - Data for ${i===0 ? 'Seed File' : fondue.MANdate(listOfSlotDates[i], 'MMM dd')}: &lt; Empty &gt;"`;
-                if(fondue.SprintDaytaSlotPulls && fondue.SprintDaytaSlotPulls[i]) placeholderText = (i===0) 
-                                                                                                  ? 'value="Seed File (Retrieved :: ' + fondue.MANdate(fondue.SprintDaytaSlotPulls[i], 'MM-dd-yyyy hh:mm:ss', false) + ')"' 
-                                                                                                  : 'value="Day ' + i + ' (Retrieved :: ' + fondue.MANdate(fondue.SprintDaytaSlotPulls[i], 'MM-dd-yyyy hh:mm:ss', false) + ')"';
+                let placeholderText = `placeholder="Day ${i} - Data for ${i===0 ? 'Seed File' : fondue.MANdate(listOfSlotDates[i], 'MMM dd')}: &lt; Empty &gt;"`, dayName = "Seed File ";
+                if(fondue.SprintDaytaSlotPulls && fondue.SprintDaytaSlotPulls[i]){
+                    placeholderText = placeholderText.replace(/^placeholder/, "value").replace("Data for ", "").replace(/Empty/, '(☇ ' + fondue.MANdate(fondue.SprintDaytaSlotPulls[i], 'MM-dd-yyyy hh:mm:ss', false) + ')"');
+                }
+                // if(fondue.SprintDaytaSlotPulls && fondue.SprintDaytaSlotPulls[i]) placeholderText = (i===0) 
+                //                                                                                   ? 'value="Seed File (Retrieved :: ' + fondue.MANdate(fondue.SprintDaytaSlotPulls[i], 'MM-dd-yyyy hh:mm:ss', false) + ')"' 
+                //                                                                                   : 'value="Day ' + i + ' (Retrieved :: ' + fondue.MANdate(fondue.SprintDaytaSlotPulls[i], 'MM-dd-yyyy hh:mm:ss', false) + ')"';
 
                 dataSlotMarkup +=  `<li id="day-${i}-slot" class="data-file day-${i}" data-sequence="${i * 10}" data-slot="${i}">
                                         <input type="text" id="day-${i}-file" class="dayta" ${placeholderText} readonly required><button class="trash-data" data-slot="${i}"></button>

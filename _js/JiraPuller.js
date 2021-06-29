@@ -204,7 +204,7 @@
 //         };
         
 //         console.log('Performing requested retrieval...')
-//         return fetch("http://0.0.0.0:8080/https://jirasw.t-mobile.com/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml" + this.JQL, requestOptions)
+//         return fetch("http://127.0.0.1:1337/https://jirasw.t-mobile.com/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml" + this.JQL, requestOptions)
 //           .then(response => console.log('Data retrieved!') || response.text())
 //           .then(result => parseXMLObjData(result))
 //           .catch(error => console.error('error', error));

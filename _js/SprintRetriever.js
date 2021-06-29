@@ -247,7 +247,7 @@ export default class SprintRetriever {
 
     performRetrieve(){
         return    this.headers()
-        .then(headerObj=>fetch("http://0.0.0.0:8080/https://jirasw.t-mobile.com/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=" + this.jql + "&tempMax=1000", headerObj))
+        .then(headerObj=>fetch("http://127.0.0.1:1337/https://jirasw.t-mobile.com/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=" + this.jql + "&tempMax=1000", headerObj))
         .then(response => console.log('🟢 SUCCESS!... response received!') && console.log('\n\n  - Decoding response & parsing...') || response.text())
         .then(result => window.LAST_RAW_RETRIEVE = result)
         .then(result => window.LAST_RETRIEVE = this.parseXMLObjData(result))
