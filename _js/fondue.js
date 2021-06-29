@@ -6,9 +6,12 @@ import Fondutabase   from './fondutabase.js'
 import GUI           from './gui.js'
 import ReportCalendarPicker    from './ReportCalendarPicker'
 import GridRenderer    from './GridRenderer'
-import {toDate, intlFormat, isValid, format} from 'date-fns'
+import {toDate, intlFormat, isValid, format, set} from 'date-fns'
 
-
+W.toDate = toDate;
+W.intlFormat = intlFormat; 
+W.isValid = isValid;
+W.format = format;
 class Fondue {
     constructor(...props) {
         this.PREFS = {
@@ -49,8 +52,18 @@ class Fondue {
         this.JSR                   = W.JSR                   = new SprintRetriever();
         this.fondutabase           = W.fondutabase           = new Fondutabase();
         this.gui                   = W.gui                   = new GUI();
-        this.ReportCalendarPicker  = W.ReportCalendarPicker  = new ReportCalendarPicker();
+        this.reportCalendarPicker  = W.reportCalendarPicker  = new ReportCalendarPicker();
         this.refreshConfig()
+        
+    }
+
+    status(text, severity=0, duration=5000){
+        let statusMsg = D.createElement('div');
+        statusMsg.className = 'status-message severity-' + severity;
+        statusMsg.style = `animation: ${duration}ms fade forwards;`;
+        statusMsg.innerHTML = text;
+        document.querySelector("#status-overlay").insertAdjacentElement('beforeEnd', statusMsg);
+        setTimeout(()=>statusMsg.remove(), duration);
         
     }
     
@@ -88,25 +101,63 @@ class Fondue {
      * @return {object | null | custom}       Returns dt as a date object, but formatted as per the formatter                           
      * @memberof Fondue
      */
-    MANdate(dt, formatter=toDate, clearTimes=true){ 
-    console.log('dt, formatter :', dt, formatter);
-        let retVal, frmtdVal;
+    MANdate(dt, formatter=null, clearTimes=true){ 
+        if(dt == null || !dt || dt === '') return null;
+ console.log('MANdate(dt, formatter, clearTimes):\n   => dt: ', dt, 
+             '\n   => formatter: ', (formatter == null ? void(0) : formatter.toString().replace(/function (.*?)\([\s\S]*/gim, '$1()')), 
+             '\n   => clearTimes: ', clearTimes);
+        let changer = '', auto = null;
+        if(!clearTimes){
+            try{auto = new Date(dt); }catch{}
+            if(auto) dt = auto;
+        }
         try{
-            if(/^\d{2}[\.\-\/]\d{2}$/.test(dt)) dt = `2021-${dt}`
-            if(/^\d{1,2}[ -]\D{3,}$|^\D{3,}[ -]\d{1,2}$/.test(dt)) dt = `${dt}, 2021`
-            if(/^\d{4}[\.\-\/]|}[\.\-\/]\d{4}$/.test(dt)) dt = `${dt}T00:00:00.000`
-            retVal = new Date(Date.parse(dt));
-            retVal = intlFormat(dt);
+ if(changer === '' && dt instanceof(Date)) changer = ('started that way: ' + dt);
+            if(!(dt instanceof(Date)) && !isNaN(parseInt(dt)) && !/\D/.test(dt)) dt = new Date(+dt);                                                             //# 1624959337613 | '1624959337613'                                              =>  new Date(1624959337613)
+ if(changer === '' && dt instanceof(Date)) changer = ('mktime: ' + dt);
+            if(!(dt instanceof(Date)) && /^\d{2}[\.\-\/]\d{2}$/.test(dt)) dt = new Date(`2021-${dt} `)                                         //# 10-31 | 10.31 | 10/31                                                        =>  new Date("2021-[{INPUT}] ")¹
+ if(changer === '' && dt instanceof(Date)) changer = ('##-##: ' + dt);
+            if(!(dt instanceof(Date)) && /^\d{1,2}[ -]\D{3,}$|^\D{3,}[ -]\d{1,2}$/.test(dt)) dt = new Date(`${dt}, 2021`);                     //# 31 Oct | Oct 31                                                              =>  new Date("[{INPUT}], 2021")
+ if(changer === '' && dt instanceof(Date)) changer = ('## MMM: ' + dt);
+            
+            if(!(dt instanceof(Date)) && /^\d{4}[\.\-\/]|[\.\-\/]\d{4}$/.test(dt)){
+                if(clearTimes) dt = dt.slice(0,10);
+                 dt = new Date(`${dt} `);                                    //# 10/31/2021 | 10-31-2021 | 10.31.2021 | 2021/10/31 | 2021-10-31 | 2021.10.31  =>  new Date("[{INPUT}] ")¹
+            }
+ if(changer === '' && dt instanceof(Date)) changer = ('####-##-##: ' + dt);
+ //(#① - IMPORTANT: There MUST be a trailing space at the end of these strings BEFORE their conversion to a Date!)
+            if(!(dt instanceof(Date))) dt = new Date(dt);
         }catch{
-            if(clearTimes) retVal = MANdate(new Date(Date.parse(dt)), formatter, clearTimes);
-        }finally{
-            retVal = new Date(Date.parse(retVal));
-            if(!isValid(retVal)) return null;
-            if(typeof(formatter) === 'string') return format(retVal, formatter);
-            try{   console.log(frmtdVal = formatter(retVal)); }
-            catch{ frmtdVal = formatter.apply(retVal);}
-            return frmtdVal;
-        }   
+ console.log(' --- DT AFTER CATCH', dt);
+            dt = new Date(Date.parse(dt));
+            if(dt instanceof(Date)) changer = ('Last Resort');
+        }
+        if(clearTimes) {
+            dt = set(dt, {hours:0, minutes:0, seconds:0});
+ changer += ' and reset time';
+        }
+ _('CHANGED VIA: ', changer);
+        switch(typeof(formatter)) {
+            case 'function':
+                try{
+ console.log(' ---> fn1', formatter)
+                    dt = formatter(dt);
+                }catch{
+ console.log(' ---> fn2', formatter)
+                    dt = formatter.apply( dt);
+                }
+                break;
+
+            case 'string':
+ console.log(' ---> str', formatter)
+                dt = format(dt, formatter);
+                break;
+
+            default: break;
+        }
+
+        return dt;
+           
     }
     
 }

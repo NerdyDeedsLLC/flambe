@@ -1453,6 +1453,41 @@ i:empty {
     --offsetWidth: 1080px;
 }
 
+#status-overlay {
+    background: #0009;
+    border-radius: 0 0 10px 10px;
+    position:fixed;
+    top:0;
+    width: 50vw;
+    left:25vw;
+    min-height:0;
+    height: min-content;
+    z-index: 99999;
+    transition: 0.2s all ease-in-out;
+
+    & > div {
+        
+        padding:5px 15px;
+        margin:5px 10px;
+        background:linear-gradient(180deg, #FFF2, #0003);
+        border:1px solid;
+
+        color:white;
+        border-radius: 8px;
+        overflow: hidden;
+        
+        &.severity-0 { background-color:#777; }
+        &.severity-1 { background-color:#7f7; }
+        &.severity-2 { background-color:#ff7; }
+        &.severity-3 { background-color:#f77; }
+
+        & + div {
+            margin-top:0;
+
+        }
+    }
+}
+
 @keyframes pulsehover {
     0%,
     50%,
@@ -1465,5 +1500,10 @@ i:empty {
     }
     // 15%, 35% {box-shadow:inset 0 0 20px 0 #22aeaf99; background-color: #FFFC}
 }
-
+@keyframes fade {
+    0%, 50% {opacity:0.9;display:block;max-height: 300px;}
+    95% { display:block;max-height: 300px;}
+    99% { display:block;max-height: 0;}
+    99%, 100% {opacity:0;display:none; max-height: 0;}
+}
 

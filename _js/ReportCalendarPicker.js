@@ -116,7 +116,7 @@ export default class ReportCalendarPicker {
             
             if(countSelectedWeekdays && Array.isArray(countSelectedWeekdays)) allDatesMarkedWorkable = [...allDatesMarkedWorkable, ...countSelectedWeekdays];
             if(countSelectedWeekends && Array.isArray(countSelectedWeekends)) allDatesMarkedWorkable = [...allDatesMarkedWorkable, ...countSelectedWeekends];
-            allDatesMarkedWorkable = [...allDatesMarkedWorkable][0];
+            allDatesMarkedWorkable = [...allDatesMarkedWorkable];
 
             let a=[1,2,3,4],
                 b=[5,6,7,8],
@@ -151,5 +151,5 @@ export default class ReportCalendarPicker {
         window.debounce = false;}, 100)
     }
 }
-
-window.ReportCalendarPicker    = new ReportCalendarPicker()
+// 
+// window.ReportCalendarPicker    = new ReportCalendarPicker()

@@ -11,6 +11,8 @@ export default class GUI {
         this.seeded       = false;
         this.jiraModal = qs('#loading-overlay');
         this.leftBindings = false;
+        this.startDate    = null;
+        this.endDate      = null;
         
         window.getSprintDataFromFondutabase = this.getSprintDataFromFondutabase.bind(this);
         window.processReportParameters = this.processReportParameters.bind(this);
@@ -94,10 +96,16 @@ export default class GUI {
     getSprintDataFromFondutabase(sprintId){
         var fondue = window.fondue;
         return fondutabase.select("SELECT * FROM sprints WHERE sprintId=" + sprintId)
-                .then(data=>{
-                    data = data[0];
+        .then(data=>{
+            data = data[0];
+            
                     console.log('Retrieved data from fondutabase: ', data, 'Attempting to apply to global fondue object...');
                     console.log('Assignation Attempt : ', fondue);
+                    
+                    console.log('fondue.SprintStartDate :', data.startDate);
+                    console.log('fondue.SprintEndDate :', data.endDate);
+
+
                     fondue.ExtantSprintID       = sprintId
                     fondue.JiraSprintID         = data.jiraId
                     fondue.SprintSlotCount      = (+data.workableDaysCount + 1)
@@ -117,7 +125,7 @@ export default class GUI {
                     console.log('fondue.SprintDayta :', fondue.SprintDayta);
                     let uniquePulls = allIssues.reduce((acc, cv)=>{
                         if(!acc[cv.retrievedForSlot]){
-                            acc[cv.retrievedForSlot] = fondue.MANdate(cv.retrevalReadable, 'MMM dd, yyyy (HH:mm:ss)');
+                            acc[cv.retrievedForSlot] = fondue.MANdate(cv.retrevalReadable, 'MMM dd, yyyy hh:mm:ss', false);
                             console.log('Unique retrievals:', acc)
                         }
                         return acc;
@@ -126,6 +134,8 @@ export default class GUI {
                     return fondue.SprintDaytaSlotPulls = uniquePulls
                 })
                 .then(()=>{
+                    console.log('fondue.SprintStartDate :', fondue.SprintStartDate);
+                    console.log('fondue.SprintEndDate :', fondue.SprintEndDate);
                     qs('#sprint-start-date').value = fondue.MANdate(fondue.SprintStartDate, 'yyyy-MM-dd');
                     qs('#sprint-end-date').value   = fondue.MANdate(fondue.SprintEndDate, 'yyyy-MM-dd');
                     return;
@@ -136,29 +146,31 @@ export default class GUI {
     processReportParameters() {
         console.log('processReportParameters :', fondue);
         let   existingSprintDD = qs('#sprint') 
-            , sprintNameField  = qs('#sprint-new')
             , startDateField   = qs('#sprint-start-date')
             , endDateField     = qs('#sprint-end-date')
             , selectedSprint   = existingSprintDD.selectedIndex > 0 ? existingSprintDD.options[existingSprintDD.selectedIndex].value : null;
 
-            
-        fondutabase.writeToConfig('config', [{key:'reload-sprint', value:selectedSprint}, {key:'reload-sprint-start-date', value:startDateField ? fondue.MANdate(startDateField.value) : ''}, {key:'reload-sprint-end-date', value:endDateField ? fondue.MANdate(endDateField.value) : ''}])
+        return fondutabase.writeToConfig('config', 
+        [
+            {key:'reload-sprint', value:selectedSprint}, 
+            {key:'reload-sprint-start-date', value:startDateField.value}, 
+            {key:'reload-sprint-end-date',   value:endDateField.value}
+        ])
 
         .then(()=>{
-            fondue.SprintStartDate = (startDateField && startDateField.value) ? fondue.MANdate(startDateField.value, Date.prototype.toLocaleDateString) : '';
-            fondue.SprintEndDate   = (endDateField && endDateField.value)     ? fondue.MANdate(endDateField.value, Date.prototype.toLocaleDateString) : '';
+            fondue.SprintStartDate = (startDateField && startDateField.value) ? fondue.MANdate(startDateField.value, 'MM/dd/yyyy') : '';
+            fondue.SprintEndDate   = (endDateField && endDateField.value)     ? fondue.MANdate(endDateField.value,   'MM/dd/yyyy') : '';
         })
         .then(()=>{
             console.log('fondue | fondue.SprintStartDate | fondue.SprintEndDate :', fondue, fondue.SprintStartDate, fondue.SprintEndDate);
 
-            if(fondue.SprintStartDate === '' || fondue.SprintEndDate === '') return null;
-            console.log('ReportCalendarPicker :', window.ReportCalendarPicker);
-
-            if(!window.ReportCalendarPicker.isInitialized){
+            if(fondue.SprintStartDate === '' || fondue.SprintEndDate === '') throw new Error('NO_START_END')
+            
+            if(!window.reportCalendarPicker.isInitialized){
                 console.log('Initializing ReportCalendarPicker...');
 
-                window.ReportCalendarPicker.initializeCalendarPicker('',fondue.SprintStartDate,fondue.SprintEndDate);
-                window.ReportCalendarPicker.generateReportSettingsCalendar()
+                reportCalendarPicker.initializeCalendarPicker('',fondue.SprintStartDate,fondue.SprintEndDate);
+                reportCalendarPicker.generateReportSettingsCalendar()
                 console.log('fondue.WorkableDaysCount :', fondue.WorkableDaysCount);
             }
 
@@ -174,38 +186,24 @@ export default class GUI {
                 this.generateCoreUIDataSlots()
             }
         })
-
-        return;
+        .catch(err=>/NO_START_END/.test(err) ? console.log('Start or end missing. Progressing...') : console.error(err))
     }
 
     performLeftColumnBindings(){
-        qs('.execute').onclick = ()=>window.fondue.loadGrid();
-        qsa('.data-file').forEach((dayBtn, dayNum)=> {
-            dayBtn = dayBtn[0];
-            if(dayBtn == null || !dayBtn || dayBtn === '') return console.warn('Cannot iterate data-file collection. The DOM has become corrupted. Please refresh and try again, and inform your network administrator should the problem persist.');
-            console.log('dayBtn :', dayBtn);
-            console.log('dayBtn.dataset :', dayBtn.dataset);
-            console.log('dayBtn.dataset.hasdata :', dayBtn.dataset.hasdata);
-            dayBtn.dataset.hasdata = false;
-            dayBtn.dataset.hasdata = (dayBtn.value==='' || this.daytaRecords[dayNum] !== null);
-            dayBtn.onclick = (e, trg=e.target)=>{
-                console.log(trg);
-                this.daytaClick(trg);
-            }
-            this.leftBindings = true;
-
-        });
+        
+        
         if(this.leftBindings) return;
-
+        qs('.execute').onclick = ()=>window.fondue.loadGrid();
+        
         qsa('.bit-picker').forEach(radio=>{
-            
             radio.addEventListener('input', (e, trg=e.target)=>{
                 _(trg.name, trg.name.replace('-mode', ''), qs('#' + trg.name.replace('-mode', '')).checked, qs('#' + trg.name.replace('-mode', '')))
                 fondutabase.writeToConfig('config', {key:'reload-' + trg.name, value:(qs('#' + trg.name.replace('-mode', '')).checked) ? trg.id : null})
             })
         })
-
+        
         qsa('.step-buttons:not(.execute)').forEach(btn=>btn.addEventListener('click', processReportParameters));
+        this.leftBindings = true;
     }
 
     renderCoreGUI(){
@@ -329,7 +327,8 @@ export default class GUI {
                                 ];
                 return LColPanels[panelNumber];
             }
-            let coreMarkup = `        
+            let coreMarkup = `
+                            <div id="status-overlay"></div>
                             <div id="loading-overlay"><div class="fail">ERROR!</div></div>
                             <article id="flambe">
                                 <input type="checkbox" id="paramsToggle" class="panel-togglers">
@@ -389,28 +388,56 @@ export default class GUI {
     }
 
     generateCoreUIDataSlots() {
-        let numberOfSlots = fondue.WorkableDaysCount;
-        let firstDateOfSprint = fondue.SprintStartDate;
-        console.log('firstDateOfSprint :', firstDateOfSprint);
         let dataSlotDOMTarget = qs('#paramPanel3 .data-files ul');
+        let numberOfSlots     = fondue.WorkableDaysCount;
+        let listOfSlotDates   = fondue.WorkableDaysInSprint;
+        let firstDateOfSprint = fondue.SprintStartDate;
+
         return new Promise((resolve, reject) => {
+
+            if(listOfSlotDates){
+                listOfSlotDates = listOfSlotDates.split('|');
+                if(Array.isArray(listOfSlotDates) && listOfSlotDates.length > 1){
+                    firstDateOfSprint = listOfSlotDates[0];
+                    listOfSlotDates.unshift(listOfSlotDates[0]);
+                    numberOfSlots = listOfSlotDates.length;
+                }
+            }
+        
             let dataSlotMarkup = ``;
-            if(firstDateOfSprint != null) firstDateOfSprint = fondue.MANdate(firstDateOfSprint, 'yyyy-MM-dd');
-            console.log('firstDateOfSprint :', firstDateOfSprint, fondue.MANdate(firstDateOfSprint), fondue.MANdate(firstDateOfSprint, 'yyyy-MM-dd'));
-            let slotPHText = firstDateOfSprint == null ? 'Day 0' : fondue.MANdate(firstDateOfSprint, 'yyyy-MM-dd');
-            for(var i=0; i<=numberOfSlots; i++){
-                let textualDisplay = `placeholder="Data Pull for ${slotPHText}: &lt; Empty &gt;"`;
-                if(fondue.SprintDaytaSlotPulls && fondue.SprintDaytaSlotPulls[i]) textualDisplay = 'value="Retrieved :: ' + fondue.SprintDaytaSlotPulls[i] + '"';
+            for(var i=0; i<numberOfSlots; i++){
+                let placeholderText = `placeholder="Day ${i} - Data for ${i===0 ? 'Seed File' : fondue.MANdate(listOfSlotDates[i], 'MMM dd')}: &lt; Empty &gt;"`;
+                if(fondue.SprintDaytaSlotPulls && fondue.SprintDaytaSlotPulls[i]) placeholderText = (i===0) 
+                                                                                                  ? 'value="Seed File (Retrieved :: ' + fondue.MANdate(fondue.SprintDaytaSlotPulls[i], 'MM-dd-yyyy hh:mm:ss', false) + ')"' 
+                                                                                                  : 'value="Day ' + i + ' (Retrieved :: ' + fondue.MANdate(fondue.SprintDaytaSlotPulls[i], 'MM-dd-yyyy hh:mm:ss', false) + ')"';
 
                 dataSlotMarkup +=  `<li id="day-${i}-slot" class="data-file day-${i}" data-sequence="${i * 10}" data-slot="${i}">
-                                        <input type="text" id="day-${i}-file" class="dayta" ${textualDisplay} readonly required><button class="trash-data" data-slot="${i}"></button>
+                                        <input type="text" id="day-${i}-file" class="dayta" ${placeholderText} readonly required><button class="trash-data" data-slot="${i}"></button>
                                     </li>
                                     <li class="insert-between" data-sequence="${(i * 10) + 5}" data-slot="-${i}-"><button>Insert Data Slot</button></li>`;
-                slotPHText = (/^Day/.test(slotPHText)) ? `Day ${i + 1}` : fondue.MANdate(addDays(fondue.MANdate(firstDateOfSprint), i), 'yyyy-MM-dd');
             }
+//             for(var i=0; i<=numberOfSlots; i++){
+//                 let textualDisplay = `placeholder="Data Pull for ${slotPHText}: &lt; Empty &gt;"`;
+//                 if(fondue.SprintDaytaSlotPulls && fondue.SprintDaytaSlotPulls[i]) textualDisplay = 'value="Retrieved :: ' + fondue.SprintDaytaSlotPulls[i] + '"';
+// 
+//                 dataSlotMarkup +=  `<li id="day-${i}-slot" class="data-file day-${i}" data-sequence="${i * 10}" data-slot="${i}">
+//                                         <input type="text" id="day-${i}-file" class="dayta" ${textualDisplay} readonly required><button class="trash-data" data-slot="${i}"></button>
+//                                     </li>
+//                                     <li class="insert-between" data-sequence="${(i * 10) + 5}" data-slot="-${i}-"><button>Insert Data Slot</button></li>`;
+//                 slotPHText = (/^Day/.test(slotPHText)) ? `Day ${i + 1}` : addDays(fondue.MANdate(firstDateOfSprint), i);
+//             }
             return resolve(dataSlotMarkup);
         })
         .then(dataSlotMarkup => dataSlotDOMTarget.innerHTML = dataSlotMarkup)
-        .then(()=>this.performLeftColumnBindings());
+        .then(()=>{
+            qsa('.data-file').forEach((dayBtn, dayNum)=> {
+                if(dayBtn == null || !dayBtn || dayBtn === '') return '';//console.warn('Cannot iterate data-file collection. The DOM has become corrupted. Please refresh and try again, and inform your network administrator should the problem persist.');
+                dayBtn.dataset.hasdata = (this.daytaRecords[dayNum] !== null);
+                dayBtn.onclick = (e, trg=e.target)=>{
+                    this.daytaClick(trg);
+                }
+                
+            });
+        });
     }
 }

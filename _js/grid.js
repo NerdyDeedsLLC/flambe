@@ -251,8 +251,8 @@ function instantiateGrid () {
                 table.setSort("assigneeName", "asc");
                 table.setGroupBy('assigneeName');
             } else { 
-                table.setGroupBy();
-                table.setSort(prvSt, "asc");
+                fondue.table.setGroupBy();
+                fondue.table.setSort(prvSt, "asc");
             }
         });
         return;
