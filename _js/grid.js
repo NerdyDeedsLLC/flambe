@@ -113,9 +113,9 @@ function generateHourSlots(totColCt = fondue.SprintSlotCount){
     let dynamicallyCreatedColumns = [], dispColOutput = [], hidColOutput = [];
     let remOP=[], delOP=[], ideOP=[], dayOP=[];
     for(var j=0; j<+fondue.SprintSlotCount; j++){
-        remOP.push({title: 'REMAIN' + j, field:'remaining-' + j, bottomCalc:"sum", bottomCalcFormatter:totalToHours, bottomCalcFormatterParams:{slot:j, type:'rem'}, hozAlign:'right', formatter:hourColumnFormatter, formatterParams:{slot:j}, class:"day-col-header", visible:false, resizable:false});
-        delOP.push({title: 'DELTA' + j, field:'delta-' + j, bottomCalc:"sum", bottomCalcFormatter:totalToHours, bottomCalcFormatterParams:{slot:j, type:'del'}, hozAlign:'right', formatter:hourColumnFormatter, formatterParams:{slot:j}, class:"day-col-header", visible:false, resizable:false});
-        ideOP.push({title: 'IDEAL' + j, field:'ideal-' + j, bottomCalc:"sum", bottomCalcFormatter:totalToHours, bottomCalcFormatterParams:{slot:j, type:'ide'}, hozAlign:'right', formatter:hourColumnFormatter, formatterParams:{slot:j}, class:"day-col-header", visible:false, resizable:false});
+        remOP.push({title: 'REMAIN' + j, field:'remaining-' + j, bottomCalc:"sum", bottomCalcFormatter:totalToHours, bottomCalcFormatterParams:{slot:j, type:'rem'}, hozAlign:'right', formatter:hourColumnFormatter, formatterParams:{slot:j}, visible:false, resizable:false});
+        delOP.push({title: 'DELTA' + j, field:'delta-' + j, bottomCalc:"sum", bottomCalcFormatter:totalToHours, bottomCalcFormatterParams:{slot:j, type:'del'}, hozAlign:'right', formatter:hourColumnFormatter, formatterParams:{slot:j}, visible:false, resizable:false});
+        ideOP.push({title: 'IDEAL' + j, field:'ideal-' + j, bottomCalc:"sum", bottomCalcFormatter:totalToHours, bottomCalcFormatterParams:{slot:j, type:'ide'}, hozAlign:'right', formatter:hourColumnFormatter, formatterParams:{slot:j}, visible:false, resizable:false});
         dayOP.push({title: 'DAY ' + j, titleFormatter:dayHeaderFormatter, titleFormatterParams:{slot:j}, field:'remaining-' + j, bottomCalc:"sum", bottomCalcFormatter:totalFormatter, bottomCalcFormatterParams:{slot:j, key:''}, hozAlign:'right', formatter:dayFormatter, formatterParams:{slot:j}, visible:true, resizable:false});
     }
     return [...remOP,...delOP,...ideOP, ...dayOP];
