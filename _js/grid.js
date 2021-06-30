@@ -246,10 +246,10 @@ function instantiateGrid () {
         let gpBy = document.querySelector('#grouping'), prvSt;
         gpBy.addEventListener('input', ()=>{
             if(gpBy.checked) {
-                prvSt = table.getSorters();
+                prvSt = fondue.table.getSorters();
                 prvSt = prvSt ? prvSt[0].field : 'issueKey';
-                table.setSort("assigneeName", "asc");
-                table.setGroupBy('assigneeName');
+                fondue.table.setSort("assigneeName", "asc");
+                fondue.table.setGroupBy('assigneeName');
             } else { 
                 fondue.table.setGroupBy();
                 fondue.table.setSort(prvSt, "asc");
