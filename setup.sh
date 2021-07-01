@@ -17,3 +17,4 @@ source ./builds.sh
 
 mv ./setup.sh ./.data;
 echo "./.data/setup.sh" >> .gitignore
+ 
