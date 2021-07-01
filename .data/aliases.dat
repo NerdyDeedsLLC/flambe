@@ -1,4 +1,0 @@
-alias builds='source ./builds.sh'
-alias flambe2='cd /c/ProgramData/fondue && git fetch --all && git pull && gulp'
-alias fondir='cd /c/ProgramData/fondue && pwd && ls'
-alias setupfondue='source ./setup.sh'
