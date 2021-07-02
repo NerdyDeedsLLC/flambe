@@ -5,8 +5,9 @@ import SprintRetriever from './SprintRetriever.js'
 import Fondutabase   from './fondutabase.js'
 import GUI           from './gui.js'
 import ReportCalendarPicker    from './ReportCalendarPicker'
-import GridRenderer    from './GridRenderer'
+import GridRenderer  from './GridRenderer'
 import {toDate, intlFormat, isValid, format, set} from 'date-fns'
+import Starport      from './Starport'
 
 W.toDate = toDate;
 W.intlFormat = intlFormat; 
@@ -53,9 +54,12 @@ class Fondue {
         this.fondutabase           = W.fondutabase           = new Fondutabase();
         this.gui                   = W.gui                   = new GUI();
         this.reportCalendarPicker  = W.reportCalendarPicker  = new ReportCalendarPicker();
-        this.refreshConfig()
+        this.refreshConfig();
+        this.importer = W.importer = new Starport('import');
+        this.exporter = W.exporter = new Starport('export');
         
     }
+
 
     status(text, severity=0, duration=5000){
         let statusMsg = D.createElement('div');
@@ -103,9 +107,9 @@ class Fondue {
      */
     MANdate(dt, formatter=null, clearTimes=true){ 
         if(dt == null || !dt || dt === '') return null;
- console.log('MANdate(dt, formatter, clearTimes):\n   => dt: ', dt, 
-             '\n   => formatter: ', (formatter == null ? void(0) : formatter.toString().replace(/function (.*?)\([\s\S]*/gim, '$1()')), 
-             '\n   => clearTimes: ', clearTimes);
+//  console.log('MANdate(dt, formatter, clearTimes):\n   => dt: ', dt, 
+//              '\n   => formatter: ', (formatter == null ? void(0) : formatter.toString().replace(/function (.*?)\([\s\S]*/gim, '$1()')), 
+//              '\n   => clearTimes: ', clearTimes);
         let changer = '', auto = null;
         if(!clearTimes){
             try{auto = new Date(dt); }catch{}
@@ -128,7 +132,7 @@ class Fondue {
  //(#① - IMPORTANT: There MUST be a trailing space at the end of these strings BEFORE their conversion to a Date!)
             if(!(dt instanceof(Date))) dt = new Date(dt);
         }catch{
- console.log(' --- DT AFTER CATCH', dt);
+// console.log(' --- DT AFTER CATCH', dt);
             dt = new Date(Date.parse(dt));
             if(dt instanceof(Date)) changer = ('Last Resort');
         }
@@ -136,20 +140,20 @@ class Fondue {
             dt = set(dt, {hours:0, minutes:0, seconds:0});
  changer += ' and reset time';
         }
- _('CHANGED VIA: ', changer);
+//  _('CHANGED VIA: ', changer);
         switch(typeof(formatter)) {
             case 'function':
                 try{
- console.log(' ---> fn1', formatter)
+// console.log(' ---> fn1', formatter)
                     dt = formatter(dt);
                 }catch{
- console.log(' ---> fn2', formatter)
+// console.log(' ---> fn2', formatter)
                     dt = formatter.apply( dt);
                 }
                 break;
 
             case 'string':
- console.log(' ---> str', formatter)
+// console.log(' ---> str', formatter)
                 dt = format(dt, formatter);
                 break;
 
