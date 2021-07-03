@@ -1,4 +1,3 @@
-import * as Pako from "pako";
 
 export default class Starport{
         constructor(portDirection) {

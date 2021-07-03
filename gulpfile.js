@@ -31,15 +31,15 @@ const   gulp         = require('gulp'),
         commonjs     = require('rollup-plugin-commonjs'),
         babel        = require('rollup-plugin-babel'),
         // localforage  = require('localforage'),                                     // CSS Post-processor rules (responsiveness, hex conversions, certain polyfills)
-
-        sass         = require('gulp-sass'),                                       // Provides CSS PRE-processing (via a light-weight wrapper around node-sass, itself a Node binding for libsass/Sass)
+        sass = require('gulp-sass')(require('sass'));
+        // sass         = require('gulp-sass'),                                       // Provides CSS PRE-processing (via a light-weight wrapper around node-sass, itself a Node binding for libsass/Sass)
         autoprefixer = require('gulp-autoprefixer'),                               // Applies prefixes for common and popular platforns and browsers (-ms-, -webkit-)
         postcss      = require('gulp-postcss'),                                    // Provides CSS POST-processing
         rucksack     = require('rucksack-css'),                                    // CSS Post-processor rules (responsiveness, hex conversions, certain polyfills)
         
         // runCLICmd    = require('gulp-run-command').default,                     // Allows for the execution of Bash shell commands directly from gulp.
         sync         = require('browser-sync').create();                           // TODO : Detect and terminate any instances already running?
- 
+
 // function cl(){
 //     console.log.apply(console, arguments);
 // }
