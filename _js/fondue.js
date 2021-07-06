@@ -55,9 +55,8 @@ class Fondue {
         this.gui                   = W.gui                   = new GUI();
         this.reportCalendarPicker  = W.reportCalendarPicker  = new ReportCalendarPicker();
         this.refreshConfig();
-        this.importer = W.importer = new Starport('import');
-        this.exporter = W.exporter = new Starport('export');
-        
+        this.starport = new Starport('export');
+        setTimeout(this.starport.hail, 3000);
     }
 
 
