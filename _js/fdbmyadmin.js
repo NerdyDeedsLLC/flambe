@@ -151,12 +151,27 @@ class FDBMyadmin {
                 this.renderNode.insertAdjacentHTML('beforeEnd', `<div class="fdbma-table-states">
                                                                     <input type="checkbox" name="${tableName}-toggler" id="${tableName}-toggler" class="table-toggler">
                                                                     <label for="${tableName}-toggler" class="table-toggler-control" data-rows="${rowCount}">${tableName}</label>
-                                                                    <span class="table-ctrl_pnl"><button class="table-control import"></button></span>
-                                                                    <span class="table-ctrl_pnl"><button class="table-control export"></button></span>
-                                                                    <span class="table-ctrl_pnl"><button class="table-control deport"></button></span>
+                                                                    <span class="table-ctrl_pnl"><button class="table-control import" data-table="${tableName}"></button></span>
+                                                                    <span class="table-ctrl_pnl"><button class="table-control export" data-table="${tableName}"></button></span>
+                                                                    <span class="table-ctrl_pnl"><button class="table-control deport" data-table="${tableName}"></button></span>
                                                                     <div id="${tableName}-display" class="table-viewer">${renderData(tableName, tableData)}</div>
                                                                 </div>`)
             )
+            .then(()=>{
+
+                qsa('.table-control').forEach(tcBtn=>{
+                    if(!tcBtn.dataset.bindings) {
+                        tcBtn.addEventListener('click', (e, trg=e.target)=>{
+                            if(/import/.test(trg.className)) return this.showImport(trg.dataset.table);
+                            // if(/import/.test(trg.className)) return top.window.starport.initializeImporterForSingleTable(trg.dataset.table);
+                            if(/export/.test(trg.className)) return top.window.starport.initializeExporterForSingleTable(trg.dataset.table);
+                            if(/deport/.test(trg.className)) return top.window.starport.performSingleTableDeportation(trg.dataset.table);
+                        });
+                    }
+                    tcBtn.dataset.bindings = true;
+                });
+                return true;
+            })
             .then(() => performTabulatorConversion(`#display-table-${tableName}`))
             
         }
@@ -170,7 +185,22 @@ class FDBMyadmin {
         })
     }
     
+    triggerImport(){
+        console.log('triggered');
+        qs('#importFilePicker').classList.toggle('active');
+    }
+    
+    cancelImport(){
+        console.log('cancelled');
+        qs('#importFilePicker').classList.toggle('active');
 
+    }
+
+    showImport(targetTable){
+        this.importingFor = targetTable;
+        qs('#importFilePicker').classList.toggle('active');
+        
+    }
     
 }
 

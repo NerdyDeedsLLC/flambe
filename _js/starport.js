@@ -24,28 +24,35 @@ export default class Starport{
 
     convertJSONtoCSV (exportDataInJSON) {
         const validJSON = (str) => {
-            try { JSON.parse(str); } catch (e) { return false; }
-            return true;
-            };
+            try { JSON.parse(str); return true; } 
+            catch (e) { return false; }
+        };
 
-        if (validJSON(exportDataInJSON) && exportDataInJSON != "") {
-            const input = JSON.parse(exportDataInJSON);
-            const header = Object.keys(input[0]);
-            const dataLines = input.map(x => {
-                                return Object.values(x)
-                                .toString()
-                                .replace(/,/g, ", ");
-                            });
-            return header.toString().replace(/,/g, ", ") + "\r\n" + dataLines.join("\r\n");
+        if (exportDataInJSON != null && exportDataInJSON !== "" && validJSON(exportDataInJSON)) {
+            const parsedInput = JSON.parse(exportDataInJSON);
+            const header = '"' + Object.keys(parsedInput[0]).join('", "') + '"';
+            const dataLines = parsedInput.map(line => {
+                let lineData = Object.values(line);
+                lineData = lineData.map(e=>{
+                    if(!isNaN(parseInt(e)))   return e;
+                    if(typeof e === 'object') return e == null ? '"NULL"' : '"' + JSON.stringify(e).replace(/,/g, '&x44;').replace(/"/g, '\\"') + '"';
+                    if(typeof e === 'string') return '"' + this.eject(this.warp(e), true, true) + '"';
+                    return e;
+                }).join(', ');
+                window.lastLine = lineData;
+                return lineData;
+            });
+            dataLines.unshift(header)
+            return dataLines.join("\r\n");
         } else {
             throw new Error("Must be valid, flattened JSON!");
         }
-        };
+    };
         
         
         
         
-        saveCSV() {
+    saveCSV() {
         const fileType = ["csv", "csv"];
         const blob = new Blob([csvBox.value], {
             type: `text/${fileType[0]};charset=utf-8`
@@ -92,11 +99,25 @@ export default class Starport{
                         .then(result=>console.log(result))
                         .then(this.exportOutput = nonEmptyTableData)
     }
+    initializeImporterForSingleTable(tableName){}
+    
+    initializeExporterForSingleTable(tableName, exportType='csv') {
+        return fondutabase.select('SELECT * FROM ' + tableName)
+        .then(result => this.convertJSONtoCSV(JSON.stringify(result)))
+        .then(csvOutput=>this.generateDownloadableFile('fondutabase-' + tableName, 'csv', csvOutput));
+    }
 
-    exportToJSON(){
+    performSingleTableDeportation(tableName){if(confirm(`Really deport (delete the full contents of) fondutabase table ${tableName}?`)) fondutabase.delete('DELETE FROM ' + tableName);}
+    
+    exportToJSON(exportData){
         let exportPromise;
-        exportPromise = (this.exportOutput == null) ? this.initializeExporter() : Promise.resolve();
-        return exportPromise.then(()=>JSON.stringify(this.exportOutput))
+        if(exportData == null){
+            exportPromise = (this.exportOutput == null) ? this.initializeExporter() : Promise.resolve();
+            exportData = this.exportOutput;
+        }else{
+            exportPromise = Promise.resolve();
+        }
+        return exportPromise.then(()=>JSON.stringify(exportData))
         .then(stringifiedOP=>this.generateDownloadableFile('fondutabase', 'json', stringifiedOP));
     }
 
@@ -122,10 +143,25 @@ export default class Starport{
         top.window.starport = this;
     }
 
+    // Removes all pauses from the values contained within a line of JSON
+    warp(string){
+        return string.replaceAll('",\"', '~~~+~++~++~+~~~').replace(/,/gm, '&#44;').replaceAll('~~~+~++~++~+~~~', ', ');
+    }
+
+    eject(string, specials=true, punctuation=false){
+        if(punctuation) string = string.replaceAll(/"/g, '&#22;');
+        if(specials) string = string.replace(/\t/gm, '').replace(/\v/gm, '').replace(/\n/gm, '\\n').replace(/\r/gm, '\\r').replace(/\f/gm, '\\f');
+        return string;
+    }
+
     dock(){
-        let existingPort = qs('#starport');
-        if(existingPort) existingPort.remove();
+        this.undock();
         document.head.insertAdjacentHTML('beforeEnd', `<link rel='stylesheet' type='text/css' href='./lib/css/starport.css'>`);
-        document.body.insertAdjacentHTML('beforeEnd', `<aside id="starport"><iframe src="fdbmyadmin.html" frameborder="0" width="100%" height="600" style="z-index: 100000;background-color: white;" ></iframe></aside>`)
+        document.body.insertAdjacentHTML('beforeEnd', `<div class="stars"></div><aside id="starport"><iframe src="fdbmyadmin.html" frameborder="0" width="100%" height="600" style="z-index: 100000;background-color: white;" ></iframe><button class="undock" onclick="starport.undock()"</aside>`)
+    }
+
+    undock(){
+        let existingPort = qsa('#starport, .stars');
+        if(existingPort.length > 0) existingPort.forEach(port=>port.remove());
     }
 }

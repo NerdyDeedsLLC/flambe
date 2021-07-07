@@ -19,6 +19,15 @@ export default class Fondutabase {
         this.initialized   = false;
         this.connected     = false;
         this.queuedTransactions = [];
+
+        this.booleanConditions = {
+            '='  : 'eq',
+            '<>' : 'neq',
+            '>=' : 'gte',
+            '>'  : 'gt',
+            '<=' : 'lte',
+            '<'  : 'lt'
+        }
         this.generateDatabaseSchema()
         .then(()=>{
             let transaction;
@@ -46,9 +55,29 @@ export default class Fondutabase {
 
     delete(table, condition){
         if(!this.readyForThisTransaction('delete', [table, condition])) return console.log('TRANSACTION QUEUED:', this.queuedTransactions[this.queuedTransactions.length-1]);
+        if(condition == null && /FROM/.test(table)){
+            console.log('TSQL :', table);
+            let tsql = table.match(/^(?:DELETE)? FROM (?<TABLE>[a-zA-Z]+) *(?: WHERE (?<WHERE>.+))?$/).groups;
+            table = tsql.TABLE;
+            console.log('table :', table);
+            condition = tsql.WHERE ? tsql.WHERE : void(0);
+            console.log('condition :', condition);
+        }
 
         var targetTable = this.db.getSchema().table(table);
-        this.db.delete().from(targetTable).exec();
+        if(condition){
+            let whereQuery = {};
+            condition.replace(/^(.*?)(?: *([=<>]+) *)(.*)$/, 
+                                                  (p, c1, op, c2)=>{
+                                                      whereQuery.c1 = c1;
+                                                      whereQuery.op = this.booleanConditions[op];
+                                                      whereQuery.c2 = c2;
+                                                    //   return c1.eq(c2);
+                                                  });
+            console.log('whereQuery :', whereQuery);
+            this.db.delete().from(targetTable).where(targetTable[whereQuery.c1][whereQuery.op](whereQuery.c2)).exec()
+        }else   
+            this.db.delete().from(targetTable).exec();
     }
 
     overwrite(table, fieldData){
@@ -103,7 +132,7 @@ export default class Fondutabase {
             '<'  : 'lt'
         }
         const prefixColumn = (columnName, tableCollection) => {
-            console.log('prefixColumn = (columnName, tableCollection) :', columnName, tableCollection);
+            // console.log('prefixColumn = (columnName, tableCollection) :', columnName, tableCollection);
             columnName = columnName.trim().split('.');
             if(columnName[0] === '*') return void(0);
             if(columnName.length === 1) return Object.values(tableCollection)[0].schema[columnName[0]]

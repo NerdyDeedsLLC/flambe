@@ -11,14 +11,16 @@
     <title>FDB MyAdmin - Fondutabase Adminstration Tool</title>
 </head>
 <body>
-    <header>
-        <h1>Fondutabase Table Browser</h1>
-    </header>
+    <h2>StarPort</h2>
     <main>
         <article class="fdbma">
-            <h2>Tables</h2>
+            <aside id="importFilePicker" class="">
+                <label for="fileImporter">Select File to Import</label><input type="file" name="fileImporter" id="fileImporter">
+                <button class="cancelImport" onclick="fdbmyadmin.cancelImport()"></button>
+                <button class="performImport" onclick="fdbmyadmin.triggerImport()"></button>
+            </aside>
             <section class="fdbma-tables"></section>
-    </article>
+        </article>
 </main>
 </body>
 </html>
