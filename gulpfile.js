@@ -121,7 +121,8 @@ function onError(err) {
   }
   
 
-gulp.task('spew', shell.task('clear && lsof -t -i ":8080" -i ":8081" -i ":3000" -i ":3001" -i ":5000" -i ":5001" -i ":1337" | xargs kill'));                                        // Terminates any servers currently running on 8080, 8081, 3000, 3001, 5000, 5001
-gulp.task('purge', shell.task("clear && ps -a -o pid,command | grep -E 'localhost\:3000|node|gulp' | grep -v grep | sed 's/ .*//' | xargs kill && gulp spew"));                     // Terminates any servers currently running on 8080, 8081, 3000, 3001, 5000, 5001
+// gulp.task('spew', shell.task('clear && lsof -t -i ":8080" -i ":8081" -i ":3000" -i ":3001" -i ":5000" -i ":5001" -i ":1337" | xargs kill'));                                        // Terminates any servers currently running on 8080, 8081, 3000, 3001, 5000, 5001
+// gulp.task('purge', shell.task("clear && ps -a -o pid,command | grep -E 'localhost\:3000|node|gulp' | grep -v grep | sed 's/ .*//' | xargs kill && gulp spew"));                     // Terminates any servers currently running on 8080, 8081, 3000, 3001, 5000, 5001
 gulp.task('cores',   shell.task('node cors.js'));                                                                                                                                   // Launches the CORS bypass proxy
-gulp.task('default', gulp.series('spew', gulp.parallel('cores', 'css', 'js', 'server')));                                                                                           // Fondue...?
+gulp.task('default', gulp.series(gulp.parallel('cores', 'css', 'js', 'server')));                                                                                           // Fondue...?
+// gulp.task('default', gulp.series('spew', gulp.parallel('cores', 'css', 'js', 'server')));                                                                                           // Fondue...?
