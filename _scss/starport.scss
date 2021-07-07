@@ -13,14 +13,29 @@
     iframe {
         padding:20px;
         border-radius: 20px;
-        box-shadow: 0 0 30px black, 0 20px 50px black;
         position: fixed;
-        z-index: 9999999;
+        z-index: 999999;
         width:70vw;
         height:70vh;
         left:15vw;
         top:15vh;
         opacity:0.88;
+        box-shadow: inset 0 0 0 5px #fff2, inset 0 10px 40px black, inset 0 -40px 90px black, 0 0 100px 0 #41fbff55;
+    }
+    
+    &::before {
+      content:'';
+      position:absolute;
+      z-index: 9999999;
+      top:calc(15vh - 45px);
+      left:calc(15vw - 15px);
+      animation: 30s hued forwards infinite;
+
+      display: block;
+      width:328px;
+      height:135px;
+      filter:  hue-rotate(0) brightness(0) drop-shadow(0 0 10px white);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1313 542'%3E%3Cpath fill='%23004F45' fill-rule='evenodd' d='M680 277l-14 6c-5 27-15 50-29 72l-64-2-22-58-21 58-65 2 52 38-19 60 53-36 14 10c-38 25-83 40-129 43-63 0-150-23-150-108 0-25 15-46 32-64 59-60 193-49 230-69-84-11-280 16-396 69-49 23-98 52-95 79 1 8 10 21 31 33 28 14 58 19 91 17l-4-26 64 24-56 39-2-18c-12 2-25 3-37 3-61-1-135-34-142-79-12-72 147-148 189-166l13-6a235 235 0 01465 5c18-7 35-14 51-22 48-22 98-51 95-79-1-8-11-21-32-32-27-15-57-20-90-19l3 27-63-24 55-40 3 20c12-3 24-4 37-4 60 2 134 35 142 80 12 72-147 148-190 167zm-89 130l-5-14 50-37c-12 19-28 37-45 51z'/%3E%3Cpath fill='%23830009' fill-rule='evenodd' stroke='%23FFF' stroke-width='4' d='M598 398l25 83-71-49-72 49 25-83-68-53 86-2 29-81 28 81 87 2-69 53zm-25-45l-22-58-21 58-65 2 52 38-19 60 53-36 54 36-19-60 52-38-65-2z'/%3E%3Cpath fill='%2350B9B1' fill-rule='evenodd' d='M1062 523l4 12-12-7-11 7 4-12-10-8 13-1 4-12 5 12 13 1-10 8zm-237 12l-12-7-11 7 4-12-10-8 13-1 4-12 5 12 13 1-10 8 4 12zm-243 0l-12-7-11 7 4-12-10-8 13-1 4-12 5 12 13 1-10 8 4 12zm-240 0l-11-7-12 7 4-12-10-8 13-1 5-12 4 12 13 1-10 8 4 12z'/%3E%3Cpath fill='%23580011' fill-rule='evenodd' d='M1167 323v-17h144v17h-144zm0-40h144v17h-144v-17zm-55 182h36v18h-36v-18zm0-23h36v17h-36v-17zm0-23h36v18h-36v-18zm0-22h36v17h-36v-17zm0-51v-18h36v18h-36zm-107-40h143v17h-143v-17zm0-23h119c11 0 18 6 22 17h-141v-17zM843 459v-17h143v12l-1 5H843zm107-40h36v18h-36v-18zm0-22h36v17h-36v-17zm0-23h36v17h-36v-17zm0-23h36v17h-36v-17zm0-23h36v18h-36v-18zm-107-17v-5h142l1 5v12H843v-12zm23-28h96c10 0 18 6 22 17H844c5-11 12-17 22-17zm-186 85v-17h143v17H680zm108-40h35v18h-35v-18zm-108-22h143v17H680v-17zm0-23h120c11 0 17 6 22 17H680v-17zm36 63h-36v-18h36v18zm84 45H680v-17h142c-5 11-11 17-22 17zm-84 23h-36v-17h36v17zm0 23h-36v-18h36v18zm0 22h-36v-17h36v17zm0 24h-36v-18h36v18zm162-137h-35v-18h35v18zm0 22h-35v-17h35v17zm0 23h-35v-17h35v17zm0 23h-35v-17h35v17zm0 23h-35v-18h35v18zm84 46h-96c-10 0-17-7-22-18h140c-4 11-12 18-22 18zm79-137h-36v-18h36v18zm83 22h-119v-17h141c-4 12-11 17-22 17zm22 23h-141v-17h119c11 0 18 6 22 17zm-105 23h-36v-17h36v17zm0 23h-36v-18h36v18zm0 22h-36v-17h36v17zm0 24h-36v-18h36v18zm218-137h-35v-18h35v18zm0 22h-35v-17h35v17zm0 23h-35v-17h35v17zm0 23h-35v-17h35v17zm0 23h-35v-18h35v18zm0 22h-35v-17h35v17zm0 24h-35v-18h35v18z'/%3E%3Cpath fill='%23022D28' fill-rule='evenodd' d='M1296 512v28h-9v-28h-10v-10h29v10h-10zm-39 14v-7h9v-8h-10v29h-9v-38h24c2 0 3 2 3 5v15c0 3-1 4-3 4h-2l7 13v1h-10l-9-14zm-19 14h-21c-3 0-4-2-4-5v-28c0-3 1-5 4-5h21c3 0 4 2 4 5v28c0 3-1 5-4 5zm-6-29h-10v20h10v-20zm-27 18h-15v11h-9v-38h24c2 0 3 2 3 5v17c0 3-1 5-3 5zm-6-18h-9v9h9v-9zm-27 18h-14v11h-10v-38h24c3 0 4 2 4 5v17c0 3-1 5-4 5zm-6-18h-8v9h8v-9zm-27 29h-21c-2 0-4-2-4-5v-33h10v29h10v-29h9v33c0 3-1 5-4 5zm-33 0h-21c-2 0-3-2-3-5v-8h9v5h9v-4l-17-8-1-4v-9c0-3 1-5 3-5h21c2 0 3 2 3 5v7h-9v-4h-9v4l17 8 1 4v9c0 3-1 5-3 5zm-87 0h-9v-28h-10v-10h29v10h-10v28zm-39-14v-7h8v-8h-9v29h-9v-38h24c3 0 3 2 3 5v15c0 3 0 4-3 4h-2l7 13v1h-10l-9-14zm-18 14h-22c-3 0-4-2-4-5v-28c0-3 1-5 4-5h22c2 0 3 2 3 5v28c0 3-1 5-3 5zm-7-29h-10v20h10v-20zm-27 18h-15v11h-9v-38h24c3 0 3 2 3 5v17c0 3-1 5-3 5zm-6-18h-9v9h9v-9zm-48-9h25v10h-16v4h12v9h-12v6h16v9h-25v-38zm-22 24v-7h7v-8h-9v29h-9v-38h24c2 0 4 2 4 5v15c0 3-2 4-4 4h-2l8 13v1h-11l-8-14zm-74 14h-9v-28h-9v-10h28v10h-10v28zm-38-14v-7h7v-8h-9v29h-9v-38h24c2 0 4 2 4 5v15c0 3-2 4-4 4h-2l7 13v1h-10l-8-14zm-20 14h-21c-3 0-4-2-4-5v-28c0-3 1-5 4-5h21c3 0 4 2 4 5v28c0 3-1 5-4 5zm-5-29h-10v20h10v-20zm-28 18h-15v11h-9v-38h24c2 0 4 2 4 5v17c0 3-2 5-4 5zm-5-18h-10v9h10v-9zm-50-9h26v10h-16v4h13v9h-13v6h17v9h-27v-38zm-14 38h-19v-38h19c6 0 10 5 10 12v14c0 8-4 12-10 12zm0-25c0-3 0-4-3-4h-7v20h7c3 0 3-1 3-3v-13zm-81 25h-10v-28h-9v-10h28v10h-9v28zm-39-14v-7h7v-8h-8v29h-9v-38h23c2 0 4 2 4 5v15c0 3-2 4-4 4h-2l7 13v1h-10l-8-14zm-20 14h-21c-2 0-4-2-4-5v-28c0-3 2-5 4-5h21c3 0 4 2 4 5v28c0 3-1 5-4 5zm-5-29h-10v20h10v-20zm-28 18h-15v11h-9v-38h24c2 0 4 2 4 5v17c0 3-2 5-4 5zm-6-18h-9v9h9v-9zm-37 19l-5 10h-10l9-20-9-18h11l4 10 4-10h11l-10 18 11 20h-11l-5-10zm-45-28h27v10h-17v4h13v9h-13v6h17v9h-27v-38zm-62 38h-9v-28h-10v-10h29v10h-10v28zm-39-14v-7h8v-8h-9v29h-9v-38h24c2 0 3 2 3 5v15c0 3-1 4-3 4h-2l7 13v1h-11l-8-14zm-19 14h-22c-1 0-3-2-3-5v-28c0-3 2-5 3-5h22c2 0 4 2 4 5v28c0 3-2 5-4 5zm-6-29h-10v20h10v-20zm-28 18h-14v11h-10v-38h24c3 0 4 2 4 5v17c0 3-1 5-4 5zm-5-18h-9v9h9v-9zm-33 12l-4 15h-7l-4-15v17h-10v-38h10l7 20h1l7-20h9v38h-9v-17zm-38-21h9v38h-9v-38z'/%3E%3C/svg%3E");
     }
 }
 // @import "compass/css3";
@@ -103,10 +118,18 @@ button.undock {
   width:48px;
   height:48px;
   position:absolute;
-  top:3px;
-  right: 3px;
-  background-color:#F005;
+  top:calc(15vh - 10px);
+  right: calc(15vw - 30px);
+  background-color:#600C;
   border-radius: 50%;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='red' fill-rule='evenodd' d='M24 48.1a24 24 0 11.2-48 24 24 0 01-.2 48zM24 3a21 21 0 100 42 21 21 0 000-42zm13.2 29l-5.4 5.4-7.4-7.8-8.2 7.8-5.4-5.4 7.8-7.8-7.8-8 5.4-5.3 8.2 7.9 7.5-7.9 5.4 5.4-7.9 7.9 7.8 7.8zm-3-14.4l-3.6-3-6.2 6-7-6.3-3.5 3.3 6.6 6.6-6.6 6.5 3.6 3.6 6.9-6.6 6.2 6.5 4.4-3.5-7.4-6.5 6.5-6.6z'/%3E%3C/svg%3E");
+  z-index: 999999;
+  box-shadow: 0 0 0 3px  black;
+}
 
+@keyframes hued {
+  
+  0%, 50%, 100% {filter:  hue-rotate(0) brightness(0) drop-shadow(0 0 10px white);}
+  60% { filter:  hue-rotate(0) brightness(1) drop-shadow(0 0 10px white);}
+  90% { filter:  hue-rotate(359deg) brightness(1) drop-shadow(0 0 10px white);}
 }
