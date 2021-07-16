@@ -14,9 +14,15 @@
     <main>
         <article class="fdbma">
             <aside id="importFilePicker" class="">
-                <label for="fileImporter">Select File to Import</label><input type="file" name="fileImporter" id="fileImporter">
-                <button class="cancelImport" onclick="fdbmyadmin.cancelImport()"></button>
-                <button class="performImport" onclick="fdbmyadmin.triggerImport()"></button>
+                <div id="importFields">
+                    <label for="fileImporter">Select File to Import</label>
+                    <input type="file" name="fileImporter" id="fileImporter" accept="*.csv" placeholder="Select a .CSV file for import">
+                    <button class="performImport" onclick="fdbmyadmin.triggerImport(this)"></button>
+                    <button class="cancelImport" onclick="fdbmyadmin.cancelImport(this)"></button>
+                </div>
+                <div class="fileImporterDisplay">
+                    <div id="importLog"></div>
+                </div>
             </aside>
             <section class="fdbma-tables"></section>
         </article>

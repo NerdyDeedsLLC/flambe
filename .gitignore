@@ -81,3 +81,4 @@ public/lib/js/
 ./.data/setup.sh
 ./.data/setup.sh
 ./.data/setup.sh
+gulpfile.js

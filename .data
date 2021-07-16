@@ -4,7 +4,7 @@ clear
 FONDUE_PREFIX="$HOME/repoz/flambe"
 if [ -d "/c/" ]; then
     FONDUE_PREFIX="/c/ProgramData/fondue"
-    [ ! -d "$FONDUE_PREFIX/.data" ] && mkdir "$FONDUE_PREFIX/.data"
+    [ ! -d "$FONDUE_PREFIX/.data" ] && mkdir $FONDUE_PREFIX/.data
 fi
 
 touch "$FONDUE_PREFIX/.data/aliases.dat"
@@ -23,4 +23,4 @@ source "$FONDUE_PREFIX/builds.sh"
 alias setupfondue='source $FONDUE_PREFIX/setup.sh'
 alias unsetup="mv '$FONDUE_PREFIX/.data/setup.sh' '$FONDUE_PREFIX'"
 
-mv "$FONDUE_PREFIX/setup.sh" "$FONDUE_PREFIX/.data/";
+mv "$FONDUE_PREFIX/setup.sh" "$FONDUE_PREFIX/.data";

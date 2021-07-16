@@ -109,14 +109,14 @@ function dayHeaderFormatter(header, params){
     return header.getValue() + "<br>" + dateOP
 }
 
-function generateHourSlots(totColCt = fondue.SprintSlotCount){
+function generateHourSlots(totColCt = fondue.SprintSlotCount + 1){
     let dynamicallyCreatedColumns = [], dispColOutput = [], hidColOutput = [];
     let remOP=[], delOP=[], ideOP=[], dayOP=[];
-    for(var j=0; j<+fondue.SprintSlotCount; j++){
-        remOP.push({title: 'REMAIN' + j, field:'remaining-' + j, bottomCalc:"sum", bottomCalcFormatter:totalToHours, bottomCalcFormatterParams:{slot:j, type:'rem'}, hozAlign:'right', formatter:hourColumnFormatter, formatterParams:{slot:j}, visible:false, resizable:false});
-        delOP.push({title: 'DELTA' + j, field:'delta-' + j, bottomCalc:"sum", bottomCalcFormatter:totalToHours, bottomCalcFormatterParams:{slot:j, type:'del'}, hozAlign:'right', formatter:hourColumnFormatter, formatterParams:{slot:j}, visible:false, resizable:false});
-        ideOP.push({title: 'IDEAL' + j, field:'ideal-' + j, bottomCalc:"sum", bottomCalcFormatter:totalToHours, bottomCalcFormatterParams:{slot:j, type:'ide'}, hozAlign:'right', formatter:hourColumnFormatter, formatterParams:{slot:j}, visible:false, resizable:false});
-        dayOP.push({title: 'DAY ' + j, titleFormatter:dayHeaderFormatter, titleFormatterParams:{slot:j}, field:'remaining-' + j, bottomCalc:"sum", bottomCalcFormatter:totalFormatter, bottomCalcFormatterParams:{slot:j, key:''}, hozAlign:'right', formatter:dayFormatter, formatterParams:{slot:j}, visible:true, resizable:false});
+    for(var j=0; j<=totColCt; j++){
+        remOP.push({title: 'REMAIN' + j, field:'remaining-' + j, bottomCalc:"sum", bottomCalcFormatter:totalToHours, bottomCalcFormatterParams:{slot:j, type:'rem'}, hozAlign:'right', formatter:hourColumnFormatter, formatterParams:{slot:j}, visible:false, resizable:false, width:100});
+        delOP.push({title: 'DELTA' + j, field:'delta-' + j, bottomCalc:"sum", bottomCalcFormatter:totalToHours, bottomCalcFormatterParams:{slot:j, type:'del'}, hozAlign:'right', formatter:hourColumnFormatter, formatterParams:{slot:j}, visible:false, resizable:false, width:100});
+        ideOP.push({title: 'IDEAL' + j, field:'ideal-' + j, bottomCalc:"sum", bottomCalcFormatter:totalToHours, bottomCalcFormatterParams:{slot:j, type:'ide'}, hozAlign:'right', formatter:hourColumnFormatter, formatterParams:{slot:j}, visible:false, resizable:false, width:100});
+        dayOP.push({title: 'DAY ' + j, titleFormatter:dayHeaderFormatter, titleFormatterParams:{slot:j}, field:'remaining-' + j, bottomCalc:"sum", bottomCalcFormatter:totalFormatter, bottomCalcFormatterParams:{slot:j, key:''}, hozAlign:'right', formatter:dayFormatter, formatterParams:{slot:j}, visible:true, resizable:false, width:100});
     }
     return [...remOP,...delOP,...ideOP, ...dayOP];
 }
@@ -151,10 +151,12 @@ function instantiateGrid () {
     .then(()=>fondutabase.select('SELECT * FROM issues WHERE retrievedFor=' + sprintId + ' ORDER BY retrievedForSlot, issueKey GROUP BY retrievedForSlot'))
     .then(dataFeed=>{
         fondue.slotDates = fondue.WorkableDaysInSprint.split('|');
-        fondue.SprintSlotCount = fondue.slotDates.length;
+        fondue.SprintSlotCount = fondue.slotDates.length + 1;
         let dataOP = {}, masterDataSet;
-        dataFeed.forEach(dataPull=>{
+        dataFeed.forEach((dataPull, pullCt)=>{
+            console.groupCollapsed('[*][*][*][*] (Iteration #' + pullCt + ') [*] All issues within ', dataPull, '(Expand for details) [*][*][*][*]');
             dataPull.forEach((issue, issueCount)=>{
+                console.log('[*] issueCount: ' + issueCount + ' [*] issue :', issue);
                 // delete(issue.description);
                 if(!dataOP[issue.issueId]) dataOP[issue.issueId] = {}
                 
@@ -189,6 +191,8 @@ function instantiateGrid () {
                 }
                 dataOP[issue['issueId']] = activeStoryRecord;
             });
+            console.log('[*][*][*][*][*][*][*][*]')
+            console.groupEnd()
             window.ds = masterDataSet = dataOP;
         });
             

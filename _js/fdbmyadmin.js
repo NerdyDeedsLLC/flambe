@@ -149,11 +149,11 @@ class FDBMyadmin {
         let renderTable = (tableName, rowCount, tableData) => {
             return Promise.resolve(
                 this.renderNode.insertAdjacentHTML('beforeEnd', `<div class="fdbma-table-states">
-                                                                    <input type="checkbox" name="${tableName}-toggler" id="${tableName}-toggler" class="table-toggler">
-                                                                    <label for="${tableName}-toggler" class="table-toggler-control" data-rows="${rowCount}">${tableName}</label>
+                                                                    <input type="checkbox" name="${tableName}-toggler" id="${tableName}-toggler" class="table-toggler ${!rowCount ? 'disabled' : ''}">
+                                                                    <label for="${tableName}-toggler" class="table-toggler-control ${!rowCount ? 'disabled' : ''}" data-rows="${rowCount}">${tableName}</label>
                                                                     <span class="table-ctrl_pnl"><button class="table-control import" data-table="${tableName}"></button></span>
-                                                                    <span class="table-ctrl_pnl"><button class="table-control export" data-table="${tableName}"></button></span>
-                                                                    <span class="table-ctrl_pnl"><button class="table-control deport" data-table="${tableName}"></button></span>
+                                                                    <span class="table-ctrl_pnl ${!rowCount ? 'disabled' : ''}"><button class="table-control export" data-table="${tableName}"></button></span>
+                                                                    <span class="table-ctrl_pnl ${!rowCount ? 'disabled' : ''}"><button class="table-control deport" data-table="${tableName}"></button></span>
                                                                     <div id="${tableName}-display" class="table-viewer">${renderData(tableName, tableData)}</div>
                                                                 </div>`)
             )
@@ -181,13 +181,35 @@ class FDBMyadmin {
         this.tableSchema = [...Object.values([...this.fondutabase.schemaBuilder.schema_.tables_]).map(table=>table[0])];
         this.renderedDomNodes = this.tableSchema.map(table=>{
             return  this.fondutabase.select('SELECT * FROM ' + table)
-                    .then(res=> (res.length === 0) ? false : renderTable(table, res.length, res))
+                    .then(res=> renderTable(table, res.length, res))
         })
     }
+
+    logMessage(textToLog){
+        document.getElementById('importLog').innerHTML += '<div class="stamps">' + new Date().toLocaleTimeString() + '</div><div class="logs">' + textToLog + '</div>';
+    }
     
-    triggerImport(){
-        console.log('triggered');
-        qs('#importFilePicker').classList.toggle('active');
+    triggerImport(trg){
+        var fileInput = trg.previousElementSibling;
+        var reader = new FileReader();
+        reader.onload = () => new Promise((resolve,reject)=>{
+            let fileContents = reader.result;
+            this.logMessage('File uploaded. Ingesting... [DONE]');
+            this.logMessage('Determining Schema...<br>' + fileContents.split(/\n/g)[0]);
+            this.logMessage('[DONE]<br>Parsing...');
+            this.logMessage('<div>' + fileContents.split(/\n/g).join('</div><div>').split(',').map(d=>`<span>${d}</span>`).join('') + '</div>');
+            this.logMessage('[DONE]');
+            return resolve(fileContents);
+        })
+        .then(()=>{
+            let logField = document.getElementById('importLog');
+            logField.scrollIntoView(logField.childNodes[logField.childNodes.length-1]);
+            this.logMessage('Checking for mapping compatability and data completeness... <b>[FAILURE]</b><br>There is necessary data missing before the import can be completed. Please complete the following fields:');
+        });
+        
+        reader.readAsBinaryString(fileInput.files[0]);
+        
+
     }
     
     cancelImport(){
@@ -197,11 +219,19 @@ class FDBMyadmin {
     }
 
     showImport(targetTable){
+        document.getElementById('importLog').innerHTML = '';
         this.importingFor = targetTable;
         qs('#importFilePicker').classList.toggle('active');
-        
+        this.logMessage('Awaiting file selection...');
+        let submit = qs('.performImport'),
+            cancel = qs('.performImport');
+        submit.addEventListener('click', this.performImport);
     }
     
+    performImport(e, trg=e.target) {
+        
+
+    }
 }
 
 let fdbmyadmin = W.fdbmyadmin = new FDBMyadmin();
