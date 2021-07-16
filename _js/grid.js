@@ -1,5 +1,5 @@
 import tabulatorTables from "tabulator-tables";
-import {format} from 'date-fns';
+import {format, toDate} from 'date-fns';
 
 let fondue = window.top.fondue;
 const fondutabase = window.top.fondutabase;
@@ -42,7 +42,7 @@ function totalFormatter(cell, recievedData, onRendered){
         // console.log('hit', relatedTotalColumn);
             return relatedTotalColumn;
     })
-        .then(relatedTotalColumn=>(relatedTotalColumn != null) ? (console.log(relatedTotalColumn.innerText) || relatedTotalColumn.innerText) : null)
+        .then(relatedTotalColumn=>(relatedTotalColumn != null) ? relatedTotalColumn.innerText : null)
     );
         
     let totDelta;
@@ -102,22 +102,30 @@ function dayFormatter( cell, formatterParams) {
 }
 
 function dayHeaderFormatter(header, params){
+    console.log('dayHeaderFormatter(header, params) :', header, params);
     let dateOP = "";
     let headelement = header.getElement();
     headelement.classList.add('day-col-header');
-    dateOP = format(new Date(fondue.slotDates[params.slot]), 'MMM dd');
-    return header.getValue() + "<br>" + dateOP
+    dateOP = format(new Date(fondue.slotDates[params.slot] + ' '), 'MMM dd');
+    console.log('fondue.slotDates[params.slot] :\n     -', '"' + fondue.slotDates[params.slot] + ' "', new Date(fondue.slotDates[params.slot] + ' '), '\n     -', '"' + fondue.slotDates[params.slot] + '"', new Date(fondue.slotDates[params.slot]));
+    if(!Array.isArray(top.window.slotDates)) top.window.slotDates = [];
+    top.window.slotDates.push(fondue.slotDates[params.slot])
+    return params.slot === 0 ? '<b>SEED</b>' : header.getValue() + "<br>" + dateOP
 }
 
-function generateHourSlots(totColCt = fondue.SprintSlotCount + 1){
+function generateHourSlots(totColCt = fondue.SprintSlotCount){
+console.log('totColCt :', totColCt);
     let dynamicallyCreatedColumns = [], dispColOutput = [], hidColOutput = [];
     let remOP=[], delOP=[], ideOP=[], dayOP=[];
-    for(var j=0; j<=totColCt; j++){
+    for(var j=0; j<totColCt; j++){
+        console.log('j :', j);
         remOP.push({title: 'REMAIN' + j, field:'remaining-' + j, bottomCalc:"sum", bottomCalcFormatter:totalToHours, bottomCalcFormatterParams:{slot:j, type:'rem'}, hozAlign:'right', formatter:hourColumnFormatter, formatterParams:{slot:j}, visible:false, resizable:false, width:100});
         delOP.push({title: 'DELTA' + j, field:'delta-' + j, bottomCalc:"sum", bottomCalcFormatter:totalToHours, bottomCalcFormatterParams:{slot:j, type:'del'}, hozAlign:'right', formatter:hourColumnFormatter, formatterParams:{slot:j}, visible:false, resizable:false, width:100});
         ideOP.push({title: 'IDEAL' + j, field:'ideal-' + j, bottomCalc:"sum", bottomCalcFormatter:totalToHours, bottomCalcFormatterParams:{slot:j, type:'ide'}, hozAlign:'right', formatter:hourColumnFormatter, formatterParams:{slot:j}, visible:false, resizable:false, width:100});
         dayOP.push({title: 'DAY ' + j, titleFormatter:dayHeaderFormatter, titleFormatterParams:{slot:j}, field:'remaining-' + j, bottomCalc:"sum", bottomCalcFormatter:totalFormatter, bottomCalcFormatterParams:{slot:j, key:''}, hozAlign:'right', formatter:dayFormatter, formatterParams:{slot:j}, visible:true, resizable:false, width:100});
+        console.log('remOP, delOP, ideOP, dayOP; :', remOP, delOP, ideOP, dayOP);
     }
+    console.log('remOP, delOP, ideOP, dayOP; :', remOP, delOP, ideOP, dayOP);
     return [...remOP,...delOP,...ideOP, ...dayOP];
 }
 
@@ -151,7 +159,9 @@ function instantiateGrid () {
     .then(()=>fondutabase.select('SELECT * FROM issues WHERE retrievedFor=' + sprintId + ' ORDER BY retrievedForSlot, issueKey GROUP BY retrievedForSlot'))
     .then(dataFeed=>{
         fondue.slotDates = fondue.WorkableDaysInSprint.split('|');
-        fondue.SprintSlotCount = fondue.slotDates.length + 1;
+        fondue.slotDates.unshift(fondue.slotDates[0]);
+        // fondue.slotDates = fondue.slotDates.map(dt=> dt + ' 00:00:00 ');
+        fondue.SprintSlotCount = fondue.slotDates.length;
         let dataOP = {}, masterDataSet;
         dataFeed.forEach((dataPull, pullCt)=>{
             console.groupCollapsed('[*][*][*][*] (Iteration #' + pullCt + ') [*] All issues within ', dataPull, '(Expand for details) [*][*][*][*]');
@@ -261,6 +271,6 @@ function instantiateGrid () {
         });
         return;
     })
-    // .then(()=>console.log('fondue.table :', fondue.table)||fondue.table));
+    .then(()=>console.log('fondue.table :', fondue.table)||fondue.table);
     }
 export default setTimeout(instantiateGrid, 1000);
