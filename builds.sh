@@ -24,7 +24,7 @@ runbuilds(){
 }
 
 switchToBranch(){
-    git checkout $1
+    git checkout -- . && git clean -fd && git checkout $1
     echo -ne "\n${fR}  Switched to $1!${XX}\n\n"
     printf "    - ${fY}Pulling latest changes... "
     git pull
