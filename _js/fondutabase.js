@@ -19,6 +19,7 @@ export default class Fondutabase {
         this.initialized   = false;
         this.connected     = false;
         this.queuedTransactions = [];
+        this.meta          = void(0);
 
         this.booleanConditions = {
             '='  : 'eq',
@@ -42,6 +43,36 @@ export default class Fondutabase {
         let transaction = this.queuedTransactions.shift();
         console.log('transaction :', transaction);
         return transaction.resolution(this[transaction.verb](...transaction.params));
+    }
+
+    constructMeta(discardExisting=false){
+        let dataTypeMap = ["ARRAY_BUFFER", "BOOLEAN", "DATE_TIME", "INTEGER", "NUMBER", "OBJECT", "STRING"];
+
+        if(discardExisting) this.meta = void(0);
+
+        if(this.meta) return Promise.resolve(this.meta);
+
+        let {db} = this;
+        this.meta = [];
+
+        let metaSchemaPromiseChain = db.getSchema().tables().map(tbl=>{
+            return new Promise((resolve, reject)=>{
+                let opObj = {
+                    name: tbl.name_,
+                    columns: tbl.columns_.map(col=>Object.fromEntries([['name',col.name_], ['type',dataTypeMap[col.type_]], ['unique', col.isUnique_],['acceptsNull', col.isNullable_]]))
+                };
+                resolve(opObj);
+            })
+            .then(obj=>{
+                return this.select('SELECT * FROM ' + obj.name)
+                .then(res=>Object.assign(obj,{count:res.length, data:[...res]}))
+                .then(obj=>this.meta.push(obj))
+            })
+        })
+
+        return Promise.all(metaSchemaPromiseChain)
+        .then(()=>this.meta)
+    
     }
 
     insert(table, fieldData){
@@ -121,7 +152,6 @@ export default class Fondutabase {
             else resolve(true);
         })
         .then(()=>{
-            _('past choke')
         let {db} = this;
         const booleanConditions = {
             '='  : 'eq',
@@ -213,7 +243,6 @@ export default class Fondutabase {
         if(orderByQuery.length) pseudoQuery.push(' ORDER BY ', orderByQuery.flatMap(oi=>oi.column + ' ' + oi.sortDirection).join())
         if(groupByQuery) pseudoQuery.push('GROUP BY', groupByQuery);
         try {
-            console.time('     ↳ ⏱');
             let result, runningQuery;
             return !dryrun ? Promise.resolve(
                 result = Promise.resolve(db.select(...columnQuery))
@@ -237,7 +266,7 @@ export default class Fondutabase {
                     .then(initialResults=>groupByQuery ? this.groupBy(initialResults, groupByQuery) :  initialResults))
             .then(result=>console.groupCollapsed('▶️ 🟢 Executed tSQL from components: ', pseudoQuery.flat()) || console.log('     ↳ 🛠 Query Literal:', runningQuery) || result)
             .then(result=>console.log('     ↳ ✅ Transaction Succeeded!', result) || result)
-            .then(result=>console.timeEnd('     ↳ ⏱') || console.groupEnd() || result)
+            .then(result=>console.groupEnd() || result)
             :
             Promise.resolve()
             .then(result=>console.group('▶️ 🟡 DRY RUN: Executed tSQL from components: ', pseudoQuery.flat()) || console.log('     ↳ 🔕 Query Literal: Unavailable in Dry Run') || result)

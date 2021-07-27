@@ -352,6 +352,8 @@ export default class GUI {
                                             <div class="graph-output-widgets">
 
                                             </div>
+                                            <div id="graph-output-panel" class="graph-output-panel">
+                                            </div>
                                         </div>
                                     </section>
                                     <footer></footer>

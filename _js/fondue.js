@@ -83,6 +83,12 @@ class Fondue {
         qs('#grid-output').innerHTML = `<iframe src="./grid.html?sprintID=${this.ExtantSprintID}"></iframe>`;
     }
 
+    loadGraph(){
+        W.fondueObj = this;
+        // W.addEventListener('load', ()=>{qs('#grid-output').innerHTML = `<iframe src="./grid.html?sprintID=18"></iframe>`;})
+        qs('#graph-output-panel').innerHTML = `<iframe src="./burndown.html?sprintID=${this.ExtantSprintID}"></iframe>`;
+    }
+
     /**
      * MANdate
      * Insists ANY of the date formats used by this app, its dependencies, its libraries, and Jira itself, is converted

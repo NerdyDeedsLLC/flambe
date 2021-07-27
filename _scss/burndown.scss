@@ -1,0 +1,342 @@
+* {
+    box-sizing: border-box;
+    position: relative;
+    font-family: "PT Sans";
+    user-select:none;
+}
+
+html,
+body {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    border: 0 none;
+    margin: 0;
+    padding: 0;
+
+    // background: radial-gradient(circle at 50% 50%, #aaaaaa, #666666);
+}
+
+svg#burndownGraphPanel {
+    border: 5px double black;
+    background: white;
+    min-width: 90vw;
+    max-width: 100%;
+
+    *:not[fill] {
+        fill: transparent;
+    }
+
+    .seedling {
+        transform: translate(-16px, -35px) scale(0.75);
+    }
+
+    .slot-plot {
+        pointer-events: all;
+        z-index: 100;
+        width: 28px;
+        height: 28px;
+        stroke-width: 3px;
+        stroke: hsla(var(--calc-color), 100%, 50%, 0.66);
+        fill: hsla(var(--calc-color), 100%, 50%, 0.2);
+        filter: drop-shadow(1px 3px 2px hsla(var(--calc-color), 100%, 0%, 1));
+        cursor: pointer;
+
+        &[data-state="hover"] {
+            animation: 2s pulse infinite;
+        }
+    }
+    circle.pulsar {
+        pointer-events: none !important;
+        stroke: hsla(var(--calc-color), 100%, 50%, 1);
+        stroke-width: 4px;
+        fill: transparent;
+        transform: translate(-1px, 14px);
+        animation: 2.5s pulsewave forwards infinite;
+    }
+
+    #contents {
+        width: 100%;
+    }
+    polyline {
+        pointer-events: none !important;
+    }
+
+    polyline.progress-bg {
+        pointer-events: none !important;
+        animation: 1s marching linear forwards infinite;
+        // vector-effect: non-scaling-stroke;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 6px;
+        stroke-dasharray: 6 10;
+
+        filter: blur(2px);
+    }
+
+    .plot-spoiler {
+        --color: var(--base-color);
+        :first-child {
+            fill: var(--color);
+        }
+        // --color:hsla(var(--calc-color), 100%, 50%, 1);
+        .spoiler-hrs {
+            font-size: 72px;
+            font-weight: 900;
+            letter-spacing: -7px;
+            &.perfect {
+                letter-spacing: -5px;
+
+                & ~ .spoiler-ideal-label {
+                    opacity: 1;
+                    font-weight: 900;
+                    --neutral: #fbfcf7;
+                    filter: drop-shadow(1px 1px 0.25px var(--neutral))
+                        drop-shadow(-1px 1px 0.25px var(--neutral))
+                        drop-shadow(1px -1px 0.25px var(--neutral))
+                        drop-shadow(-1px -1px 0.25px var(--neutral))
+                        drop-shadow(1px 0 0.1px var(--neutral))
+                        drop-shadow(-1px 0 0.1px var(--neutral))
+                        drop-shadow(0 1px 0.1px var(--neutral))
+                        drop-shadow(0 -1px 0.1px var(--neutral));
+                    transform: translate(-25px, 3px);
+                }
+            }
+        }
+        .spoiler-hrs-sign {
+            font-size: 19px;
+            font-style: italic;
+            transform-origin: 100% 0;
+            font-weight: 300;
+            letter-spacing: -1px;
+            opacity: 0.5;
+        }
+        .spoiler-hrs-character {
+            font-size: 22px;
+            font-style: normal;
+            transform-origin: 100% 0;
+            font-weight: 900;
+            fill: #fff9;
+            filter: drop-shadow(1px 1px 0.25px var(--color))
+                drop-shadow(-1px 1px 0.25px var(--color))
+                drop-shadow(1px -1px 0.25px var(--color))
+                drop-shadow(-1px -1px 0.25px var(--color))
+                drop-shadow(1px 0 0.1px var(--color))
+                drop-shadow(-1px 0 0.1px var(--color))
+                drop-shadow(0 1px 0.1px var(--color))
+                drop-shadow(0 -1px 0.1px var(--color));
+            opacity: 0.5;
+        }
+        .spoiler-over-under-label {
+            font-size: 34px;
+            text-transform: uppercase;
+            font-weight: 800;
+            fill: var(--color);
+        }
+        .spoiler-ideal-label {
+            font-size: 24px;
+            opacity: 0.33;
+        }
+        .hour-synopsis {
+            font-size: 19px;
+            font-style: italic;
+            transform-origin: 100% 0;
+            font-weight: 300;
+            opacity: 0.5;
+            line-height: 22px;
+            tspan {
+                display: inline-block;
+                font-size: 22px;
+                font-weight: 900;
+            }
+        }
+        .spoiler-facilitated {
+            font-family: Yellowtail;
+        }
+
+        #didBurn,
+        #didNotBurn {
+            pointer-events: all !important;
+        }
+
+        #didNotBurn,
+        #didNotBurnNames,
+        #didBurn,
+        #didBurnNames {
+            display: inline-block;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+            user-select:unset;
+        }
+        #didNotBurn,
+        #didNotBurnNames {
+            max-height: calc(var(--show-did-not-burn) * 1000px);
+            opacity: var(--show-did-not-burn, 0);
+            margin-top: -10px;
+        }
+        #didBurn,
+        #didBurnNames {
+            max-height: calc(var(--show-did-burn) * 1000px);
+            opacity: var(--show-did-burn, 1);
+        }
+    }
+    .header-panel {
+        font-family: "PT Sans Narrow";
+        font-weight: 900;
+        transform: translate(calc(100px * (var(--slot) - 1)), -80px);
+        border-right: 1.2px solid white;
+
+        .panel-ele {
+            fill: #aaa;
+        }
+        .calendar-date {
+            text-transform: uppercase;
+            fill: #fff4;
+            font-size: 14px;
+            letter-spacing: 1px;
+            font-weight: 900;
+            filter: drop-shadow(0 1px 1px #0006);
+        }
+        .day-of-week {
+            font-size: 32px;
+            font-weight: 900;
+            fill: #fff7;
+            filter: drop-shadow(0 -1px 1px #0009);
+            text-transform: capitalize;
+        }
+        .slot-number {
+            font-size: 55px;
+            letter-spacing: -5px;
+            filter: drop-shadow(1px -1px 1px #fff6);
+        }
+    }
+    
+    .slot-plot-caption {
+        font-size: 16px;
+        fill: hsl(var(--calc-color), 100%, 25%);
+        font-weight: 900;
+        position: absolute;
+        transform: calc(var(--y) * var(--over-under-inverter) * 10em);
+        opacity: 0.5;
+        transition: 0.33s all cubic-bezier(0.26, -3.22, 0.81, 4.58);
+        --neutral: white;
+        filter: drop-shadow(1px 1px 0.25px var(--neutral))
+            drop-shadow(-1px 1px 0.25px var(--neutral))
+            drop-shadow(1px -1px 0.25px var(--neutral))
+            drop-shadow(-1px -1px 0.25px var(--neutral))
+            drop-shadow(1px 0 0.1px var(--neutral))
+            drop-shadow(-1px 0 0.1px var(--neutral))
+            drop-shadow(0 1px 0.1px var(--neutral))
+            drop-shadow(0 -1px 0.1px var(--neutral));
+
+        & + .slot-plot-caption {
+            font-size: 12px;
+            font-weight: 400;
+            opacity: 0;
+        }
+    }
+
+    .slot-plot-wrapped {
+        --neutral: white;
+        font-weight: 700;
+        opacity: 0.8;
+        filter: drop-shadow(1px 1px 0.25px var(--neutral))
+            drop-shadow(0 1px 0.25px var(--neutral))
+            drop-shadow(1px -0.5px 0.25px var(--neutral))
+            drop-shadow(-0.5px -0.5px 0.25px var(--neutral))
+            drop-shadow(1px 0 0.1px var(--neutral))
+            drop-shadow(-1px 0 0.1px var(--neutral))
+            drop-shadow(0 1px 0.1px var(--neutral))
+            drop-shadow(0 0 0.1px var(--neutral));
+    }
+
+    [data-hovering] {
+        & + .slot-plot-caption {
+            font-size: 25px;
+            fill: hsl(var(--calc-color), 100%, 25%);
+            font-weight: 900;
+            opacity: 1;
+            transform: none;
+            transition: 0.33s all cubic-bezier(1, 2.65, 0.62, 0.12);
+
+            & + .slot-plot-caption {
+                font-size: 22px;
+                font-weight: 400;
+                opacity: 1;
+            }
+        }
+    }
+
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        fill: hsla(var(--calc-color), 100%, 50%, 0.33);
+    }
+    50% {
+        opacity: 1;
+        filter: drop-shadow(0 0 20px white);
+        fill: hsla(var(--calc-color), 100%, 50%, 1);
+    }
+}
+
+@keyframes pulsewave {
+    0% {
+        opacity: 0;
+        stroke-width: 4;
+    }
+    18% {
+        opacity: 0.66;
+    }
+    70%,
+    100% {
+        opacity: 0;
+        r: 42px;
+        fill: hsla(var(--calc-color), 100%, 50%, 1);
+        filter: drop-shadow(0 0 20px hsla(var(--calc-color), 100%, 50%, 0.5));
+        stroke-width: 0;
+    }
+}
+
+@keyframes marching {
+    0% {
+        stroke-dashoffset: 0;
+    }
+    100% {
+        stroke-dashoffset: -16;
+    }
+}
+
+.graduations {
+    font-size: 60%;
+    font-weight: 200;
+    font-variant: small-caps;
+    fill: #0005;
+
+    &:nth-of-type(odd) {
+        font-size: 70%;
+        font-weight: 400;
+        fill: #0009;
+    }
+
+    &:nth-of-type(4n - 1) {
+        font-size: 80%;
+        font-weight: 800;
+        fill: #000b;
+    }
+
+    &:nth-of-type(8n - 1) {
+        font-size: 100%;
+        fill: #000d;
+        font-weight: 900;
+    }
+
+    &:nth-of-type(16n - 1) {
+        font-size: 120%;
+        fill: #000;
+        font-weight: 900;
+    }
+}
+
