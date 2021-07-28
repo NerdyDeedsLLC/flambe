@@ -22,10 +22,12 @@ svg#burndownGraphPanel {
     
     max-width: min(1600px, 98%);
     padding:0 20px;
+    pointer-events: all;
 
     *:not[fill] {
         fill: transparent;
     }
+
 
     .seedling {
         transform: translate(-16px, -35px) scale(0.75);
@@ -64,7 +66,7 @@ svg#burndownGraphPanel {
 
     polyline.progress-bg {
         pointer-events: none !important;
-        animation: 1s marching linear forwards infinite;
+        animation: 2s marching linear forwards infinite;
         // vector-effect: non-scaling-stroke;
         stroke-linecap: round;
         stroke-linejoin: round;
@@ -72,6 +74,7 @@ svg#burndownGraphPanel {
         stroke-dasharray: 6 10;
 
         filter: blur(2px);
+        
     }
 
     .plot-spoiler {
@@ -169,11 +172,20 @@ svg#burndownGraphPanel {
             margin: 0;
             user-select:unset;
         }
+
+        #didNotBurnNames,
+        #didBurnNames {
+            display: block;
+            overflow: hidden;
+            padding: 0 0 0 3px;
+            margin: 0;
+            user-select:contain !important;
+            max-height: 0;
+        }
         #didNotBurn,
         #didNotBurnNames {
             max-height: calc(var(--show-did-not-burn) * 1000px);
             opacity: var(--show-did-not-burn, 0);
-            margin-top: -10px;
         }
         #didBurn,
         #didBurnNames {
@@ -287,14 +299,17 @@ svg#burndownGraphPanel {
     0% {
         opacity: 0;
         stroke-width: 4;
+        transform: translate(2px,12px);
     }
     18% {
         opacity: 0.66;
+        transform: translate(2px,12px);
     }
     70%,
     100% {
         opacity: 0;
         r: 42px;
+        transform: translate(2px,12px);
         fill: hsla(var(--calc-color), 100%, 50%, 1);
         filter: drop-shadow(0 0 20px hsla(var(--calc-color), 100%, 50%, 0.5));
         stroke-width: 0;
@@ -304,9 +319,26 @@ svg#burndownGraphPanel {
 @keyframes marching {
     0% {
         stroke-dashoffset: 0;
+        filter: blur(2px);
+        opacity:1;
+        stroke: #AFA9;
+    }
+    12%, 37%, 62%, 87% {stroke:#FFF4; filter:blur(4px)}
+    
+    25%, 75%{
+        opacity:0.66;
+        stroke: #FFA6;
+    }
+    50% {
+        filter: blur(0px);
+        stroke: #FAA3;
+        opacity:1;
     }
     100% {
         stroke-dashoffset: -16;
+        filter: blur(2px);
+        stroke: #AFA5;
+        opacity:1;
     }
 }
 
@@ -322,19 +354,19 @@ svg#burndownGraphPanel {
         fill: #0009;
     }
 
-    &:nth-of-type(4n - 1) {
+    &:nth-of-type(4n - 3) {
         font-size: 80%;
         font-weight: 800;
         fill: #000b;
     }
 
-    &:nth-of-type(8n - 1) {
+    &:nth-of-type(8n - 3) {
         font-size: 100%;
         fill: #000d;
         font-weight: 900;
     }
 
-    &:nth-of-type(16n - 1) {
+    &:nth-of-type(16n - 11) {
         font-size: 120%;
         fill: #000;
         font-weight: 900;
