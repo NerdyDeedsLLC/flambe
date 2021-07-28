@@ -51,21 +51,27 @@ class BurndownChart {
         this.baseResolutionX   = 1000;                                                      // DEFAULT number of horizontal pixels the graph area occupies
         this.baseResolutionY   = 500;                                                       // DEFAULT number of vertical pixels the graph area occupies
         this.maxHourValue      = Math.max(...dayta);                                        // The highest # of hours amonst the data to be graphed (sets scale factor)
+        this.vertScaleFactor   = this.baseResolutionY / this.maxHourValue;            // Scale factor to adjust the Y coordinate assuming the sprint's total hours !== 500
+
+        console.log('dayta :', dayta);
+        console.log('this.dayta :', this.dayta);
+        console.log('this.maxHourValue :', this.maxHourValue);
+        this.overageAdjustment = this.maxHourValue > this.dayta[0] ? (this.maxHourValue - this.dayta[0]) * this.vertScaleFactor : 0;
+        console.log('this.overageAdjustment :', this.overageAdjustment);
         this.workDayCtInSprint = workDatesInSprint.length - 1;                              // The number of ACTUAL work days in the sprint (sets the ideal value per day)
         this.totalDayCtInSprint= 14;//dateFns.differenceInCalendarDays(this.workDatesInSprint[this.workDatesInSprint.length-1], this.workDatesInSprint[0]);                                        // The number of days DISPLAYED in the graph (sets headers and horiz spacing)
 
         this.horizontalInterval= this.baseResolutionX / this.workDayCtInSprint;      // The number of horizontal pixels a single "day" occupies in the graph
-        this.verticalInterval  = this.baseResolutionY / this.totalDayCtInSprint;      // The number of horizontal pixels a single "day" occupies in the graph
-        this.vertScaleFactor   = this.baseResolutionY / this.maxHourValue;            // Scale factor to adjust the Y coordinate assuming the sprint's total hours !== 500
+        this.verticalInterval  = ((this.baseResolutionY + this.overageAdjustment) / this.totalDayCtInSprint);      // The number of horizontal pixels a single "day" occupies in the graph
         console.log('this.vertScaleFactor :', this.vertScaleFactor);
-        this.idealHoursPerDay  = this.vertScaleFactor * (this.maxHourValue / this.workDayCtInSprint);          // The number of hours per work day that should have ideally been accomplished
+        this.idealHoursPerDay  = this.vertScaleFactor * ((this.maxHourValue - this.overageAdjustment) / this.workDayCtInSprint);          // The number of hours per work day that should have ideally been accomplished
         this.pointCount = 0;
         
         this.idealHoursByDay   = new Array(this.workDayCtInSprint);          // Quick-reference shorthand array to prevent the need to constantly multiply these
         this.idealHoursByPlot   = new Array(this.workDayCtInSprint);          // Quick-reference shorthand array to prevent the need to constantly multiply these
         for(var i=0; i<=this.workDayCtInSprint+1; i++){
-            this.idealHoursByDay[i] = this.maxHourValue - (this.maxHourValue / this.workDayCtInSprint * i);
-            this.idealHoursByPlot[i] = this.baseResolutionY - (this.baseResolutionY / this.workDayCtInSprint * i);
+            this.idealHoursByDay[i] = this.maxHourValue - ((this.maxHourValue - this.overageAdjustment) / this.workDayCtInSprint * i);
+            this.idealHoursByPlot[i] = this.baseResolutionY - ((this.baseResolutionY - this.overageAdjustment) / this.workDayCtInSprint * i);
             
         }
         
@@ -146,7 +152,7 @@ class BurndownChart {
     }
     
     renderPoly(sx, sy, ex, ey, props) {
-        let polyPts = `${sx} ${sy},${ex} ${ey}, ${ex} ${this.baseResolutionY}, ${sx} ${this.baseResolutionY}`;
+        let polyPts = `${sx} ${sy + this.overageAdjustment},${ex} ${ey + this.overageAdjustment}, ${ex} ${this.baseResolutionY}, ${sx} ${this.baseResolutionY}`;
         if(props && props !== "") props = Object.entries(props).map(prop=>`${prop[0]}="${prop[1]}"`).join(' ');
         this.graphObjectSVG.insertAdjacentHTML('beforeEnd', `<polyline points="${polyPts}" ${props} />`);
     }
@@ -185,15 +191,16 @@ class BurndownChart {
         }
         
         const drawDottedLine = () =>{
-            this.graphObjectSVG.insertAdjacentHTML('beforeEnd', `<line x1="0" y1="0" x2="1000" y2="500" stroke-width="100" stroke="#fff4" filter="url(#sheen)"/>`);
-            this.graphObjectSVG.insertAdjacentHTML('beforeEnd', `<line x1="0" y1="0" x2="1000" y2="500" stroke-width="10" stroke="#fff9" filter="url(#idealGlow)"/>`);
-            this.graphObjectSVG.insertAdjacentHTML('beforeEnd', `<line x1="0" y1="0" x2="1000" y2="500" stroke-width="3" stroke="#C005" stroke-dasharray="0 8" stroke-linecap="round"/>`);
+            this.graphObjectSVG.insertAdjacentHTML('beforeEnd', `<line x1="0" y1="${this.overageAdjustment}" x2="1000" y2="500" stroke-width="100" stroke="#fff4" filter="url(#sheen)"/>`);
+            this.graphObjectSVG.insertAdjacentHTML('beforeEnd', `<line x1="0" y1="${this.overageAdjustment}" x2="1000" y2="500" stroke-width="10" stroke="#fff9" filter="url(#idealGlow)"/>`);
+            this.graphObjectSVG.insertAdjacentHTML('beforeEnd', `<line x1="0" y1="${this.overageAdjustment}" x2="1000" y2="500" stroke-width="3" stroke="#C005" stroke-dasharray="0 8" stroke-linecap="round"/>`);
 
         }
         
         for(var i=0; i<=this.workDayCtInSprint; i++){
             var iLow  = i;
             var iHigh = i + 1;
+            
             var hLow  = iLow * this.horizontalInterval;
             var hHigh = iHigh * this.horizontalInterval - 1;
             var vLow  = getYForGraph(this.idealHoursByPlot[iLow]);
@@ -317,9 +324,9 @@ class BurndownChart {
             }
         }else{
             this.graphObjectSVG.insertAdjacentHTML('beforeEnd', `
-                <image x="-18" y="-28" height="42" width="32" href='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNTAuNjU3IiBoZWlnaHQ9IjY1LjgxMiIgdmlld0JveD0iMCAwIDUwLjY1NyA2NS44MTIiPgogIDxkZWZzPgogICAgPHN0eWxlPgogICAgICAuY2xzLTEgewogICAgICAgIGZpbGw6ICM1MzI4MTI7CiAgICAgIH0KCiAgICAgIC5jbHMtMSwgLmNscy0yIHsKICAgICAgICBmaWxsLXJ1bGU6IGV2ZW5vZGQ7CiAgICAgIH0KCiAgICAgIC5jbHMtMiB7CiAgICAgICAgZmlsbDogdXJsKCNsaW5lYXItZ3JhZGllbnQpOwogICAgICB9CiAgICA8L3N0eWxlPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJsaW5lYXItZ3JhZGllbnQiIHgxPSIzMjAuOTYyIiB5MT0iMzI3LjY1NiIgeDI9IjMzNy43NTciIHkyPSIyNzUuOTY5IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzUzMjgxMiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjAuMDE0IiBzdG9wLWNvbG9yPSIjNTMyODEyIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMC4wNzciIHN0b3AtY29sb3I9IiMyNzY2MjMiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjE0OCIgc3RvcC1jb2xvcj0iIzE4MCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjAuNzgxIiBzdG9wLWNvbG9yPSIjMTYwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMC45OSIgc3RvcC1jb2xvcj0iIzM1NWMxYiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMzNTVjMWIiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTM0Mi4xMjksMzIzLjc0N2MzLjUyNywxMS45ODMtMTYuMzkxLDEyLjU4Mi0xOC4zNjcsMTguMDMzbC0wLjA3Mi0uMDExYzguNjMxLTEwLjI4MSwxMS43MTEtNS4yODYsMTYuNjIyLTEzLjEtMTcuODQyLDE1LjM3My0zNC44NTcsMS41NzctMzMuMjQ2LTguMDE1LDkuMTA4LS4xMzQsMTQuNjkzLDUuODkzLDIyLjA0NSw3LjY3OCw0LjYzNywxLjIsMTAuMTQ5LS44NTMsMTIuMzQ1LTQuODc2WiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTMwNC4wMzEgLTI3NS45NjkpIi8+CiAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMzM4LjA2MSwzMDkuMjI2Yy04LjIzNiwyLTEyLjc4OS0uNzk0LTEyLjc4OS0wLjc5NCwzLjI4MSwxMS43MzgsMTMuMTI1LDQuMTYxLDE1LjUzNSwxMC4xNWE2LjA5NCw2LjA5NCwwLDAsMSwuMTQsNC42OCwxMS40NjUsMTEuNDY1LDAsMCwxLTExLjgzNiw0LjA2OGMtNy40OS0xLjgxOS0xMy4xNC04LjA0OC0yMi41NTQtNy42NzIsMTQuMjg2LTE0LjY1OCwyMS4xMjguODUzLDMyLjU5MywwLjE2NkMzMjUuOTI3LDMxOC4xODksMzI0LDMwOCwzMjQsMzA4YzAtMy42NjcsMTcuMTc1LTExLjU5NCwyMS45NzEtMTguNC01Ljc5NCw2LTExLjExMSw4LTE2LjU1MSwxMS4yNzhsLTQuODMzLDMuOTU0di0wLjg3OWMtMC44NzgtMi4yLS42MTMtNS4wNzUtMC4yOTMtNy4zMjMsMi4wMjgtMTQuMjc4LDIwLjEyMS0xMS4yLDI5LjczMi0yMC42NTJDMzU2LjU1NiwyODQuNDYyLDM1MS42NjYsMzA1LjkxNSwzMzguMDYxLDMwOS4yMjZaTTMyNCwzMTFjMCwwLjc1NS4xMzgsMS4wNjksMCwxLTEuODM4LTQuOS0zLjI4Ni00LjQ1Mi0zLjgyNS00Ljg4NS02LjE1OSw2LjU1LTE0LjkyMy0zLjk1MS0xNi4xNDMtOS4wMTcsMy41MjgsMS4yMjYsNi40OTQtMi4wNzIsMTEuNDIyLS4yMDksMy45ODMsMS4zNiw2LDMuNjMsNi4xMTIsNi43NTdsLTAuMTktLjA3NGMtMy4yNjgtMi43NDYtNy43OTQtMy4zNTMtMTEuNjUyLTQuMjczbC0wLjA3OC4yQzMxNy43MzYsMzAyLjgsMzIxLjksMzA0LjAyLDMyNCwzMTFaIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMzA0LjAzMSAtMjc1Ljk2OSkiLz4KPC9zdmc+Cg=='/>
-                <text class="seed slot-plot-caption" x="-32" y="18" text-anchor="middle" style="--calc-color:${calcColor};">seed</text>
-                <text class="seed slot-plot-caption" x="35" y="25" text-anchor="middle" style="--calc-color:${calcColor};" >(day 0)</text>
+                <image x="-18" y="${-28 + this.overageAdjustment}" height="42" width="32" href='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNTAuNjU3IiBoZWlnaHQ9IjY1LjgxMiIgdmlld0JveD0iMCAwIDUwLjY1NyA2NS44MTIiPgogIDxkZWZzPgogICAgPHN0eWxlPgogICAgICAuY2xzLTEgewogICAgICAgIGZpbGw6ICM1MzI4MTI7CiAgICAgIH0KCiAgICAgIC5jbHMtMSwgLmNscy0yIHsKICAgICAgICBmaWxsLXJ1bGU6IGV2ZW5vZGQ7CiAgICAgIH0KCiAgICAgIC5jbHMtMiB7CiAgICAgICAgZmlsbDogdXJsKCNsaW5lYXItZ3JhZGllbnQpOwogICAgICB9CiAgICA8L3N0eWxlPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJsaW5lYXItZ3JhZGllbnQiIHgxPSIzMjAuOTYyIiB5MT0iMzI3LjY1NiIgeDI9IjMzNy43NTciIHkyPSIyNzUuOTY5IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzUzMjgxMiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjAuMDE0IiBzdG9wLWNvbG9yPSIjNTMyODEyIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMC4wNzciIHN0b3AtY29sb3I9IiMyNzY2MjMiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjE0OCIgc3RvcC1jb2xvcj0iIzE4MCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjAuNzgxIiBzdG9wLWNvbG9yPSIjMTYwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMC45OSIgc3RvcC1jb2xvcj0iIzM1NWMxYiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMzNTVjMWIiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTM0Mi4xMjksMzIzLjc0N2MzLjUyNywxMS45ODMtMTYuMzkxLDEyLjU4Mi0xOC4zNjcsMTguMDMzbC0wLjA3Mi0uMDExYzguNjMxLTEwLjI4MSwxMS43MTEtNS4yODYsMTYuNjIyLTEzLjEtMTcuODQyLDE1LjM3My0zNC44NTcsMS41NzctMzMuMjQ2LTguMDE1LDkuMTA4LS4xMzQsMTQuNjkzLDUuODkzLDIyLjA0NSw3LjY3OCw0LjYzNywxLjIsMTAuMTQ5LS44NTMsMTIuMzQ1LTQuODc2WiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTMwNC4wMzEgLTI3NS45NjkpIi8+CiAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMzM4LjA2MSwzMDkuMjI2Yy04LjIzNiwyLTEyLjc4OS0uNzk0LTEyLjc4OS0wLjc5NCwzLjI4MSwxMS43MzgsMTMuMTI1LDQuMTYxLDE1LjUzNSwxMC4xNWE2LjA5NCw2LjA5NCwwLDAsMSwuMTQsNC42OCwxMS40NjUsMTEuNDY1LDAsMCwxLTExLjgzNiw0LjA2OGMtNy40OS0xLjgxOS0xMy4xNC04LjA0OC0yMi41NTQtNy42NzIsMTQuMjg2LTE0LjY1OCwyMS4xMjguODUzLDMyLjU5MywwLjE2NkMzMjUuOTI3LDMxOC4xODksMzI0LDMwOCwzMjQsMzA4YzAtMy42NjcsMTcuMTc1LTExLjU5NCwyMS45NzEtMTguNC01Ljc5NCw2LTExLjExMSw4LTE2LjU1MSwxMS4yNzhsLTQuODMzLDMuOTU0di0wLjg3OWMtMC44NzgtMi4yLS42MTMtNS4wNzUtMC4yOTMtNy4zMjMsMi4wMjgtMTQuMjc4LDIwLjEyMS0xMS4yLDI5LjczMi0yMC42NTJDMzU2LjU1NiwyODQuNDYyLDM1MS42NjYsMzA1LjkxNSwzMzguMDYxLDMwOS4yMjZaTTMyNCwzMTFjMCwwLjc1NS4xMzgsMS4wNjksMCwxLTEuODM4LTQuOS0zLjI4Ni00LjQ1Mi0zLjgyNS00Ljg4NS02LjE1OSw2LjU1LTE0LjkyMy0zLjk1MS0xNi4xNDMtOS4wMTcsMy41MjgsMS4yMjYsNi40OTQtMi4wNzIsMTEuNDIyLS4yMDksMy45ODMsMS4zNiw2LDMuNjMsNi4xMTIsNi43NTdsLTAuMTktLjA3NGMtMy4yNjgtMi43NDYtNy43OTQtMy4zNTMtMTEuNjUyLTQuMjczbC0wLjA3OC4yQzMxNy43MzYsMzAyLjgsMzIxLjksMzA0LjAyLDMyNCwzMTFaIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMzA0LjAzMSAtMjc1Ljk2OSkiLz4KPC9zdmc+Cg=='/>
+                <text class="seed slot-plot-caption" x="-32" y="${18 + this.overageAdjustment}" text-anchor="middle" style="--calc-color:${calcColor};">seed</text>
+                <text class="seed slot-plot-caption" x="35" y="${25 + this.overageAdjustment}" text-anchor="middle" style="--calc-color:${calcColor};" >(day 0)</text>
            `);
         }
         this.pointCount++;

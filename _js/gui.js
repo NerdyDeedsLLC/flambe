@@ -61,8 +61,8 @@ export default class GUI {
         let allPreviousDaytaFilled = true;
         
 
-        if(     fondue.SprintDaytaSlotPulls[fondue.TransactionSlot] !== null
-            &&  !confirm("This will overwrite the data currently within this slot! Proceed?")) return false;
+        if(daytaDOMObject.querySelector('.dayta').value != '')
+            if(!confirm("This will overwrite the data currently within this slot! Proceed?")) return false;
 
         for(var i=0; i<fondue.TransactionSlot; i++){
             if(fondue.SprintDaytaSlotPulls[i] === null || allPreviousDaytaFilled === false) allPreviousDaytaFilled = false;

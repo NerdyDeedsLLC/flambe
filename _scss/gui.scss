@@ -1510,11 +1510,11 @@ i:empty {
     max-width:var(--dynamic-width);
     margin:0 20px;
     margin-left:min(540px, var(--offsetMargin));
-    height:min(880px, calc(66vh - (0.666 * var(--offsetWidth))));
+    height:max(880px, calc(66vh - (0.666 * var(--offsetWidth))));
 
     iframe {
         width: 100%;
-        height:min(1000px, calc(66vw - (0.666 * var(--offsetWidth))));
+        height:max(1000px, calc(66vw - (0.666 * var(--offsetWidth))));
         
         min-width:1000px;
     }
