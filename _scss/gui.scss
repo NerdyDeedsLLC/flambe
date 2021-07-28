@@ -1429,28 +1429,95 @@ i:empty {
     }
 }
 
+.panel-togglers:checked + .panel-togglers:checked ~ main {
+    --offsetWidth: 80px;
+    --offsetMargin: 80px;
+}
+
+.panel-togglers:not(:checked) + .panel-togglers:checked ~ main,
+.panel-togglers:checked + .panel-togglers:not(:checked) ~ main {
+    --offsetWidth: 580px;
+    --offsetMargin: 80px;
+
+}
+.panel-togglers:not(:checked) + .panel-togglers:checked ~ main {
+    --offsetMargin: 540px;
+}
+
+.panel-togglers:not(:checked) + .panel-togglers:not(:checked) ~ main {
+    --offsetWidth: 1120px;
+    --offsetMargin: 540px;
+}
+// 
+// 
+// 
+// #paramsToggle:checked ~ main {
+//     #grid-output-panel, #graph-output-panel {
+//         margin-left:20px;
+//         --offsetWidth: 20px;
+//     }
+// }
+// 
+// #paramsToggle:not(:checked) ~ main {
+//     #grid-output-panel, #graph-output-panel {
+//         margin-left:540px;
+//         --offsetWidth: 560px;
+//     }
+// }
+// 
+// #filterToggle:checked ~ main {
+//     #grid-output-panel, #graph-output-panel {
+//         --offsetWidth: 20px;
+//     }
+// }
+// 
+// #filterToggle:not(:checked) ~ main {
+//     #grid-output-panel, #graph-output-panel {
+//         --offsetWidth: 560px;
+//     }
+// }
+// #paramsToggle:not(:checked) + #filterToggle:not(:checked) ~ main {
+//     #grid-output-panel, #graph-output-panel {
+//         --offsetWidth: 1080px;
+//     }
+// }
+// 
+// #paramsToggle:checked + #filterToggle:checked ~ main {
+//     #grid-output-panel, #graph-output-panel {
+//         --offsetWidth: 40px;
+//     }
+// }
 #grid-output-panel {
-    --offsetWidth: 0px;
+    // --offsetWidth: 0px;
     width:calc(100% - var(--offsetWidth));
     max-width:calc(100vw - var(--offsetWidth));
-    height:90vh;
     margin:0 20px;
+    margin-left:min(540px, var(--offsetMargin));
+    height:50vh;
+    min-height: 975px;
+    position: relative;
 
     iframe {
         width: 100%;
-        height: 100vh;
+        min-height: 975px;
+        height: 100%;
     }
 }
 
-#paramsToggle:not(:checked) ~ main #grid-output-panel {
-    margin-left:540px;
-}
-.panel-togglers:not(:checked) ~ main #grid-output-panel {
-    --offsetWidth: 540px;
-}
+#graph-output-panel {
+    --dynamic-width:min(1500px, calc(100vw - var(--offsetWidth)));
+    width:calc(100% - var(--offsetWidth));
+    max-width:var(--dynamic-width);
+    margin:0 20px;
+    margin-left:min(540px, var(--offsetMargin));
+    height:min(880px, calc(66vh - (0.666 * var(--offsetWidth))));
 
-.panel-togglers:not(:checked) + .panel-togglers:not(:checked) ~ main #grid-output-panel {
-    --offsetWidth: 1080px;
+    iframe {
+        width: 100%;
+        height:min(1000px, calc(66vw - (0.666 * var(--offsetWidth))));
+        
+        min-width:1000px;
+    }
 }
 
 #status-overlay {

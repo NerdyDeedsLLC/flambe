@@ -85,30 +85,50 @@ export default class Fondutabase {
     }
 
     delete(table, condition){
-        if(!this.readyForThisTransaction('delete', [table, condition])) return console.log('TRANSACTION QUEUED:', this.queuedTransactions[this.queuedTransactions.length-1]);
-        if(condition == null && /FROM/.test(table)){
-            console.log('TSQL :', table);
-            let tsql = table.match(/^(?:DELETE)? FROM (?<TABLE>[a-zA-Z]+) *(?: WHERE (?<WHERE>.+))?$/).groups;
-            table = tsql.TABLE;
-            console.log('table :', table);
-            condition = tsql.WHERE ? tsql.WHERE : void(0);
-            console.log('condition :', condition);
-        }
+        // return new Promise((resolve, reject)=>{
+            if(!this.readyForThisTransaction('delete', [table, condition])) return console.log('TRANSACTION QUEUED:', this.queuedTransactions[this.queuedTransactions.length-1]);
+            if(condition == null && /FROM/.test(table)){
+                console.log('TSQL :', table);
+                let tsql = table.match(/^(?:DELETE)? FROM (?<TABLE>[a-zA-Z]+) *(?: WHERE (?<WHERE>.+))?$/).groups;
+                table = tsql.TABLE;
+                console.log('table :', table);
+                condition = tsql.WHERE ? tsql.WHERE : void(0);
+                console.log('condition :', condition);
+            }
 
-        var targetTable = this.db.getSchema().table(table);
-        if(condition){
-            let whereQuery = {};
-            condition.replace(/^(.*?)(?: *([=<>]+) *)(.*)$/, 
-                                                  (p, c1, op, c2)=>{
-                                                      whereQuery.c1 = c1;
-                                                      whereQuery.op = this.booleanConditions[op];
-                                                      whereQuery.c2 = c2;
-                                                    //   return c1.eq(c2);
-                                                  });
-            console.log('whereQuery :', whereQuery);
-            this.db.delete().from(targetTable).where(targetTable[whereQuery.c1][whereQuery.op](whereQuery.c2)).exec()
-        }else   
-            this.db.delete().from(targetTable).exec();
+            var targetTable = this.db.getSchema().table(table);
+            if(condition){
+                let allConditions = [],
+                    hasMultiples  = [...condition.matchAll(/^(.*?)(AND|OR)(.*?)$/g)][0],
+                    eachCondition = condition.split(/ (?:AND|OR) /g);
+                hasMultiples  = (hasMultiples) ? hasMultiples[2].trim().toLowerCase() : false;
+
+                console.log('eachCondition :', eachCondition);
+                
+                eachCondition.forEach((criteria, ind)=>{
+                    var whereQuery = {};
+                    criteria.replace(/^(.*?)(?: *([=<>]+) *)(.*)$/, 
+                        (p, c1, op, c2)=>{
+                            whereQuery.c1 = c1;
+                            whereQuery.op = this.booleanConditions[op];
+                            whereQuery.c2 = c2;
+                            //   return c1.eq(c2);
+                    });
+                    console.log('whereQuery ' + ind + ': ', whereQuery);
+                    allConditions.push(whereQuery);
+                })
+
+                if(!hasMultiples){
+                    var whereQuery = allConditions.pop();
+                    whereQuery = targetTable[whereQuery.c1][whereQuery.op](whereQuery.c2)
+                }else{
+                    whereQuery = fondutabase.lf.op[hasMultiples](...allConditions.map(whereQuery=>targetTable[whereQuery.c1][whereQuery.op](whereQuery.c2)))
+                }
+                    
+                return this.db.delete().from(targetTable).where(whereQuery).exec()
+            }else   
+                return this.db.delete().from(targetTable).exec();
+        // });
     }
 
     overwrite(table, fieldData){

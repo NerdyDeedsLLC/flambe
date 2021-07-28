@@ -1,7 +1,7 @@
 import tabulatorTables from "tabulator-tables";
 import {format, toDate} from 'date-fns';
 
-let fondue = window.top.fondue;
+const fondue = top.window.fondue
 const fondutabase = window.top.fondutabase;
 
 fondue.table = null;
@@ -63,7 +63,7 @@ function totalFormatter(cell, recievedData, onRendered){
     return dayFormatter(cell, {slot : totalIndex, remaining : totRemaining, delta : totDelta, ideal : totIdeal});
 }
 
-
+window.logged = 0;
 function dayFormatter( cell, formatterParams) {
     let cellement   = cell.getElement(),
         cellData    = cell.getData(),
@@ -73,7 +73,17 @@ function dayFormatter( cell, formatterParams) {
         delta       = formatterParams.delta || cellData['delta-'+slot],
         ideal       = formatterParams.ideal || cellData['ideal-'+slot];
     
-    
+    let assignee = null;
+    if(cell && cell.getRow && cell.getRow().getCells && cell.getRow().getCells() && cell.getRow().getCells()[3] && cell.getRow().getCells()[3].getValue) assignee = cell.getRow().getCells()[3].getValue();
+
+    if(assignee != null){
+        if(delta !== 0){
+            cellement.dataset["burned" + slot] = assignee;
+        }else{
+            cellement.dataset["unburned" + slot] = assignee;
+        }
+    }
+        
     cellement.classList.add('hour-display');
     cellement.classList.add('day-display');
     cellement.dataset.slot = +slot;
@@ -253,6 +263,27 @@ function instantiateGrid () {
                 
             ],
         });
+
+        fondue.table.retrieveBurners = function(column) {
+            let pyroList, 
+                getPyroList = (slot) => {
+                                            let pList = {
+                                                unburned: [...new Set([...document.querySelectorAll('[data-unburned' + slot + ']')].map(cell=>cell.dataset['unburned' + slot]))].sort(),
+                                                burned: [...new Set([...document.querySelectorAll('[data-burned' + slot + ']')].map(cell=>cell.dataset['burned' + slot]))].sort()
+                                            };
+                                            pList.burned   = pList.burned.map(name=>name.replace(/^(.).+ (\S*)$/, '$1 $2'))
+                                            pList.unburned = pList.unburned.filter(pyro=>pList.burned.indexOf(pyro) === -1).map(name=>name.replace(/^(.).+ (\S*)$/, '$1 $2'));
+                                            return pList;
+                                        }
+            if(column)
+                pyroList = getPyroList(column);
+            else {
+                pyroList = new Array(fondue.maxSlot);
+                pyroList = pyroList.map((s,i)=>getPyroList(i));
+                pyroList.unshift({seedColumn:'non-applicable', burned:[], unburned:[]});
+            }            
+            return pyroList;
+        }
         return;
     })
     

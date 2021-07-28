@@ -60,6 +60,10 @@ export default class GUI {
         fondue.TransactionSlot = daytaDOMObject.id.replace(/[^\d]/g, '');
         let allPreviousDaytaFilled = true;
         
+
+        if(     fondue.SprintDaytaSlotPulls[fondue.TransactionSlot] !== null
+            &&  !confirm("This will overwrite the data currently within this slot! Proceed?")) return false;
+
         for(var i=0; i<fondue.TransactionSlot; i++){
             if(fondue.SprintDaytaSlotPulls[i] === null || allPreviousDaytaFilled === false) allPreviousDaytaFilled = false;
         }
@@ -345,21 +349,19 @@ export default class GUI {
                                 <main>
                                     <header></header>
                                     <section>
+                                        <div id="graph-output-panel" class="graph-output-panel">
+                                            <div class="graph-output-widgets"></div>
+                                            <div id="graph-output" class="graph-output"></div>
+                                        </div>
                                         <div id="grid-output-panel" class="grid-output-panel">
                                             <div id="grid-output" class="grid-output"></div>
-                                        </div>
-                                        <div class="graph-output">
-                                            <div class="graph-output-widgets">
-
-                                            </div>
-                                            <div id="graph-output-panel" class="graph-output-panel">
-                                            </div>
                                         </div>
                                     </section>
                                     <footer></footer>
                                 </main>
                                 <aside id="filterAside"><label for="filterToggle" class="slide-panel"></label></aside>
                             </article>`;
+                            console.log('APP :', APP);
             return resolve(coreMarkup)
             
         })
@@ -389,6 +391,16 @@ export default class GUI {
         return this.initialized = true;
     }
 
+    removePullFromDataset(slotObj, slotToRemove, dateOfSlot){
+        console.log('removePullFromDataset(slotObj, slotToRemove) :', slotObj, slotToRemove);
+        if(!confirm("Are you sure you wish to remove the data associated with this slot, within this sprint?")) return false;
+        let slotFieldObj         = slotObj;
+        slotFieldObj.placeholder = `Day ${slotToRemove} - Data for ${slotToRemove === 0 ? 'Seed File' : dateOfSlot} : &lt; Empty &gt;`;
+        fondutabase.delete('DELETE FROM issues WHERE retrievedFor=' + fondue.ExtantSprintID + ' AND retrievedForSlot=' + slotToRemove)
+        .then(()=> slotFieldObj.value = '');
+
+    }
+
     generateCoreUIDataSlots() {
         let dataSlotDOMTarget = qs('#paramPanel3 .data-files ul');
         let numberOfSlots     = fondue.WorkableDaysCount;
@@ -416,10 +428,10 @@ export default class GUI {
                 //                                                                                   ? 'value="Seed File (Retrieved :: ' + fondue.MANdate(fondue.SprintDaytaSlotPulls[i], 'MM-dd-yyyy hh:mm:ss', false) + ')"' 
                 //                                                                                   : 'value="Day ' + i + ' (Retrieved :: ' + fondue.MANdate(fondue.SprintDaytaSlotPulls[i], 'MM-dd-yyyy hh:mm:ss', false) + ')"';
 
-                dataSlotMarkup +=  `<li id="day-${i}-slot" class="data-file day-${i}" data-sequence="${i * 10}" data-slot="${i}">
+                dataSlotMarkup +=  `<li id="day-${i}-slot" class="data-file day-${i}" data-sequence="${i * 10}" data-slot="${i}" data-day="${ fondue.MANdate(listOfSlotDates[i], 'MMM dd') }">
                                         <input type="text" id="day-${i}-file" class="dayta" ${placeholderText} readonly required><button class="trash-data" data-slot="${i}"></button>
-                                    </li>
-                                    <li class="insert-between" data-sequence="${(i * 10) + 5}" data-slot="-${i}-"><button>Insert Data Slot</button></li>`;
+                                    </li>`;
+                                    // <li class="insert-between" data-sequence="${(i * 10) + 5}" data-slot="-${i}-"><button>Insert Data Slot</button></li>`;
             }
 //             for(var i=0; i<=numberOfSlots; i++){
 //                 let textualDisplay = `placeholder="Data Pull for ${slotPHText}: &lt; Empty &gt;"`;
@@ -439,7 +451,11 @@ export default class GUI {
                 if(dayBtn == null || !dayBtn || dayBtn === '') return '';//console.warn('Cannot iterate data-file collection. The DOM has become corrupted. Please refresh and try again, and inform your network administrator should the problem persist.');
                 dayBtn.dataset.hasdata = (this.daytaRecords[dayNum] !== null);
                 dayBtn.onclick = (e, trg=e.target)=>{
-                    this.daytaClick(trg);
+                    if(trg.className.indexOf('trash-data') !== -1){
+                        this.removePullFromDataset(trg.previousElementSibling, trg.dataset.slot, trg.parentNode.dataset.day);
+                    }else{
+                        this.daytaClick(trg);
+                    }
                 }
                 
             });

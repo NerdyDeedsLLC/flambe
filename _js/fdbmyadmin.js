@@ -257,7 +257,7 @@ class FDBMyadmin {
         [...starportLog.children].pop().scrollIntoView()
     }
 
-    parseImportIntoRecords (stringifiedRecord) {
+    parseImportIntoRecords (stringifiedRecord, sprintNum, slotNum) {
         console.log("parseImportIntoRecords called with params (", stringifiedRecord, ")");
         console.log('stringifiedRecord :', stringifiedRecord);
         let hdrData
@@ -290,14 +290,13 @@ class FDBMyadmin {
         }
 
         function amendMissingImportData (recordToAmend) {
-            console.log("amendMissingImportData called with params (", recordToAmend, ")");
-            return Object.assign(recordToAmend, {
+            let amendedRecord = Object.assign(recordToAmend, {
                 "created"          : (new Date(recordToAmend.created) == "Invalid Date") ? new Date() : new Date(recordToAmend.created),
                 "updated"          : (new Date(recordToAmend.updated) == "Invalid Date") ? new Date() : new Date(recordToAmend.updated),
                 "retrevalReadable" : new Date().toLocaleString(),
                 "retrevalStamp"    : new Date(),
-                "retrievedFor"     : +qs("#sprintImportPicker").value,
-                "retrievedForSlot" : +qs("#slotImportPicker").value,
+                "retrievedFor"     : +sprintNum, 
+                "retrievedForSlot" : +slotNum,
                 "statusColor"      : 'white',
                 "subtasks"         : '',
                 "labels"           : '',
@@ -307,6 +306,8 @@ class FDBMyadmin {
                 "link"             : "https : //jirasw.t-mobile.com/browse/" + recordToAmend.issueKey,
                  "_OPTIONS"        : {}
             });
+            console.log("amendMissingImportData called with params (", recordToAmend, "), returning with", amendedRecord);
+            return amendedRecord
         }
 
         function objectifyCSV (csvObj) {
@@ -346,17 +347,17 @@ class FDBMyadmin {
         });
     }
 
-    concludeImport () {
+    concludeImport (sprintNum, slotNum) {
         console.log("concludeImport called!");
         this.logMessage('Attempting to conclude import...');
-        return this.parseImportIntoRecords(this.pendingImport)
+        return this.parseImportIntoRecords(this.pendingImport, sprintNum, slotNum)
             .then(parsedData => top.fondutabase.insert('issues', parsedData) )
             .then(parsedData => {
                 top.lastImportAttempt = parsedData;
                 console.log('Imported and parsed data file:', parsedData)
                 return parsedData;
             })
-            .then(()=>document.location.reload())
+            // .then(()=>document.location.reload())
     }
     
     triggerImport (trg) {
@@ -389,7 +390,7 @@ class FDBMyadmin {
             let fieldSaver   = qs("#fieldsImportSaver");
             sprintPicker.addEventListener('change', (e, trg=e.target)=>{ if(trg.selectedIndex !== 0){ slotPicker.innerHTML = '<option value="">Select day slot to associate import with!</option><option value="0">Day 0 (SEED)</option>' + trg.options[trg.selectedIndex].dataset.slots.split('|').sort().reverse().map((slot, seq)=>`<option value="${seq + 1}">Day ${seq + 1} (${slot})</option>`).join('\n'); slotPicker.classList.remove('disabled'); }else{ slotPicker.classList.add('disabled'); }});
             slotPicker.addEventListener('change', (e, trg=e.target)=>{ if(trg.selectedIndex !== 0 && !/disabled/.test(trg.className)) { fieldSaver.classList.remove('disabled'); }else{ fieldSaver.classList.add('disabled'); }});
-            fieldSaver.addEventListener('click', (e, trg=e.target)=>{ if(!/disabled/.test(trg.className)) { this.concludeImport(); }});
+            fieldSaver.addEventListener('click', (e, trg=e.target)=>{ if(!/disabled/.test(trg.className)) { this.concludeImport(sprintPicker.value, slotPicker.value); }});
         });
         
         reader.readAsBinaryString(fileInput.files[0]);

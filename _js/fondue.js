@@ -65,7 +65,7 @@ class Fondue {
         statusMsg.className = 'status-message severity-' + severity;
         statusMsg.style = `animation: ${duration}ms fade forwards;`;
         statusMsg.innerHTML = text;
-        document.querySelector("#status-overlay").insertAdjacentElement('beforeEnd', statusMsg);
+        document.querySelector("#status-overlay").insertAdjacentElement('beforeEnd', statusMsg);z
         setTimeout(()=>statusMsg.remove(), duration);
         
     }
@@ -78,15 +78,27 @@ class Fondue {
     }
 
     loadGrid(){
-        W.fondueObj = this;
-        // W.addEventListener('load', ()=>{qs('#grid-output').innerHTML = `<iframe src="./grid.html?sprintID=18"></iframe>`;})
-        qs('#grid-output').innerHTML = `<iframe src="./grid.html?sprintID=${this.ExtantSprintID}"></iframe>`;
+        return new Promise((resolve)=>{
+            const thenWaitLonger = () => {
+                if(fondue.table && fondue.table.getCalcResults()) resolve(fondue.table.getCalcResults());
+                else setTimeout(thenWaitLonger, 1000);
+            }
+            W.fondueObj = this;
+            // W.addEventListener('load', ()=>{qs('#grid-output').innerHTML = `<iframe src="./grid.html?sprintID=18"></iframe>`;})
+            qs('#grid-output').innerHTML = `<iframe src="./grid.html?sprintID=${this.ExtantSprintID}" frameborder="0"></iframe>`
+            thenWaitLonger();
+        })
+        .then(()=> this.loadGraph())
     }
 
     loadGraph(){
         W.fondueObj = this;
-        // W.addEventListener('load', ()=>{qs('#grid-output').innerHTML = `<iframe src="./grid.html?sprintID=18"></iframe>`;})
-        qs('#graph-output-panel').innerHTML = `<iframe src="./burndown.html?sprintID=${this.ExtantSprintID}"></iframe>`;
+        let totalsByDay = fondue.table.getCalcResults();
+        if(totalsByDay && totalsByDay.bottom) totalsByDay = Object.values(Object.fromEntries(Object.entries(totalsByDay.bottom).filter(data=>/^remaining/.test(data[0]))));
+        for(var i=totalsByDay.length-1; i>0; i--){
+            if(totalsByDay[i] <= 0) totalsByDay.pop();
+        }
+        qs('#graph-output').innerHTML = `<iframe frameborder="0" src="./burndown.html?sprintDates=${this.WorkableDaysInSprint}&runningTotals=${totalsByDay.join('|')}"></iframe>`;
     }
 
     /**

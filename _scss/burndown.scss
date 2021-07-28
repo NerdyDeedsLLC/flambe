@@ -8,20 +8,20 @@
 html,
 body {
     position: relative;
-    width: 100vw;
-    height: 100vh;
+    // width: 100vw;
+    // height: 100vh;
     border: 0 none;
     margin: 0;
     padding: 0;
 
-    // background: radial-gradient(circle at 50% 50%, #aaaaaa, #666666);
+    background-color: transparent;
 }
 
 svg#burndownGraphPanel {
-    border: 5px double black;
-    background: white;
-    min-width: 90vw;
-    max-width: 100%;
+    // background: white;
+    
+    max-width: min(1600px, 98%);
+    padding:0 20px;
 
     *:not[fill] {
         fill: transparent;
@@ -214,6 +214,7 @@ svg#burndownGraphPanel {
     
     .slot-plot-caption {
         font-size: 16px;
+        pointer-events: none !important;
         fill: hsl(var(--calc-color), 100%, 25%);
         font-weight: 900;
         position: absolute;

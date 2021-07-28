@@ -1,13 +1,7 @@
 import {differenceInCalendarDays} from "date-fns";
 
-let dayta = [880, 713, 704, 400, 280, 650, 140, 470];                                       // 8 Hours each day to graph
-
-let workDatesInSprint  = ['2021/07/20','2021/07/21','2021/07/22',                           // List of the dates of the WORK DAYS being expressed in the sprint
-                          '2021/07/23','2021/07/26','2021/07/27',                           // Note that this collection should begin with the day BEFORE the 
-                          '2021/07/28','2021/07/29','2021/07/30',                           // sprint starts, to account for the Seed. So if the sprint starts 6/15/21
-                          '2021/08/02','2021/08/03'];                                       // the first date listed here should be 6/14/21
-
-const monTxt=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'],     // Month abbreviations
+const fondue = top.window.fondue,
+      monTxt=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'],     // Month abbreviations
 
       dayTxt=['sun', 'mon','tue','wed','thu','fri','sat'],                                  // Day abbreviations
 
@@ -23,8 +17,15 @@ const monTxt=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov',
               'Shooting for the stars!', 'Like rhinestone cowpersons!', 'Tricks missed: 0', 
               'Aiming for the bleachers!', 'G.O.A.T.\s, every one!', 'Laser-focused!', 
               'Bright & bushy (eyes & tails, respectively)', 'Playin\' for keeps!'],
-      zeroPt=Math.floor(Math.random() * spotOn.length);
-console.log(zeroPt, spotOn, spotOn.length)
+      zeroPt=()=>spotOn[Math.floor(Math.random() * spotOn.length)];
+      
+let QryStr = {};
+    document.location.search.split(/[?&]/g).forEach(ind=>{if(ind !== ""){ Object.assign(QryStr, Object.fromEntries([ind.split('=')])); }})
+
+let dayta = QryStr.runningTotals.split('|').map(v=>v/3600);                                       // 8 Hours each day to graph
+
+let workDatesInSprint  = fondue.slotDates;                                       // the first date listed here should be 6/14/21
+
               
 class BurndownChart {
     constructor(props) {
@@ -56,6 +57,7 @@ class BurndownChart {
         this.horizontalInterval= this.baseResolutionX / this.workDayCtInSprint;      // The number of horizontal pixels a single "day" occupies in the graph
         this.verticalInterval  = this.baseResolutionY / this.totalDayCtInSprint;      // The number of horizontal pixels a single "day" occupies in the graph
         this.vertScaleFactor   = this.baseResolutionY / this.maxHourValue;            // Scale factor to adjust the Y coordinate assuming the sprint's total hours !== 500
+        console.log('this.vertScaleFactor :', this.vertScaleFactor);
         this.idealHoursPerDay  = this.vertScaleFactor * (this.maxHourValue / this.workDayCtInSprint);          // The number of hours per work day that should have ideally been accomplished
         this.pointCount = 0;
         
@@ -222,7 +224,7 @@ class BurndownChart {
             daytaIndex = trg.dataset.index
         let overUnderLabel = (activeOverUnder > 0) ? "behind" : "ahead";
         activeOverUnder = (activeOverUnder > 0) ? '+' + activeOverUnder : activeOverUnder;
-        
+        let burners = fondue.table.retrieveBurners(daytaIndex);
         
         let spoilerAlert = `<g class="plot-spoiler" style="--base-color:hsl(${trg.style.getPropertyValue('--calc-color')}, 100%, 30%);">
             <rect x="${x + 0}" y="${y + 0}" width="300" height="250" rx="25" filter="drop-shadow(0 20px 10px #0009)" stroke="#0002" stroke-width="4" />
@@ -252,8 +254,8 @@ class BurndownChart {
                         <foreignObject x="${x + 32}" y="${y + 120}" width="255" height="80">
                             <div xmlns="http://www.w3.org/1999/xhtml" style="overflow:auto;">
 
-                              <span id="didBurnNames"><b>Burned: </b>J Olenhouse, A Barrow, J Topias, G Coles</span>
-                              <span id="didNotBurnNames"><b>Didn't Burn: </b>J Jurus</span>
+                              <span id="didBurnNames"><b>Burned: </b>${burners.burned.join(', ').replace(/@.*?(?:org|com)|\d/gi, '').replace(/(, )?([A-Z])([A-Z])/g, '$1$2 $3')}</span>
+                              <span id="didNotBurnNames"><b>Didn't Burn: </b>${burners.unburned.join(', ').replace(/@.*?(?:org|com)|\d/gi, '').replace(/(, )?([A-Z])([A-Z])/g, '$1$2 $3')}</span>
                             </div>
                         </foreignObject>
                     </g>
@@ -264,22 +266,24 @@ class BurndownChart {
     }
     
     plotDataPoint(daytaIndex, x, y, radius, id, overUnder, drawLines=true, dynamicColor=true, click=true, hover=true, animated=true){
-        x -= radius,
-        y = ((y * this.vertScaleFactor) - (radius)).toFixed(1);
-        let inertCaptionOffset = (overUnder > 0) ? -50 : 125,
-            calcColor = Math.min(120, Math.max(0, parseInt((this.idealHoursPerDay + 30 + -overUnder))));
+        let inertCaptionOffset = (overUnder > 0) ? -60 : 35,
+            calcColor = Math.min(120, Math.max(0, parseInt((this.idealHoursPerDay + 30 + -overUnder)))),
+            capY;
+        x -= radius;
+        y = parseInt((y * this.vertScaleFactor) - (radius / 2) - 6);
+        capY = y + inertCaptionOffset + radius;
         if(this.pointCount){
         this.graphObjectSVG.insertAdjacentHTML('beforeEnd', `
                                                              <rect id="slotPlot${this.pointCount}" class="${this.pointCount === 0 ? 'seed' : '' } slot-plot"
-                                                                   x="${x + (radius / 4)}" 
-                                                                   y="${y + radius / 4}" 
+                                                                   x="${x + (radius / 2) - 3}" 
+                                                                   y="${y}" 
                                                                    rx="${radius}" 
                                                                    width="${radius*2}" 
                                                                    height="${radius*2}"
                                                                    data-index="${daytaIndex}"
                                                                    style="--calc-color:${calcColor}; 
-                                                                          --x:${x - radius / 2}; 
-                                                                          --y:${y - radius / 2};
+                                                                          --x:${x - radius / 4}; 
+                                                                          --y:${y - radius / 4};
                                                                           --rx:${radius}; 
                                                                           --overUnder:${overUnder};
                                                                           --width:${radius*2}px; 
@@ -289,7 +293,7 @@ class BurndownChart {
                                                              `);
             document.querySelector("#slotPlot" + this.pointCount).addEventListener('mouseover', (e, trg=e.target)=>{
                 trg.dataset.hovering="true"
-                trg.insertAdjacentHTML('beforeBegin', `<circle class="pulsar" cx="${x + (radius)}" cy="${y + (radius)}" r="${radius-8}" style="--calc-color:${calcColor};" />`);
+                trg.insertAdjacentHTML('beforeBegin', `<circle class="pulsar" cx="${x + (radius)}" cy="${y+3}" r="${radius-8}" style="--calc-color:${calcColor};" />`);
             });
             document.querySelector("#slotPlot" + this.pointCount).addEventListener('mouseout', (e, trg=e.target)=>{
                 let openPulsars = document.querySelectorAll('.pulsar');
@@ -301,11 +305,11 @@ class BurndownChart {
             });
             if(parseInt(overUnder) !== 0){
                this.graphObjectSVG.insertAdjacentHTML('beforeEnd', `
-                    <text class="slot-plot-caption" x="${x + (radius)}" y="${(y - (radius / 2)) + (inertCaptionOffset * this.vertScaleFactor)}" text-anchor="middle" style="--calc-color:${calcColor}; --over-under-inverter:${overUnder > 0 ? 1 : 0}; --y:${(y - (radius / 2)) + (inertCaptionOffset * this.vertScaleFactor)}">${overUnder}%</text>
-                    <text class="slot-plot-caption" x="${x + (radius)}" y="${(y - (radius / 2)) + (inertCaptionOffset * this.vertScaleFactor) + 25}" text-anchor="middle" style="--calc-color:${calcColor}; --over-under-inverter:${overUnder > 0 ? 1 : 0}; --y:${(y - (radius / 2)) + (inertCaptionOffset * this.vertScaleFactor)}">${(overUnder > 0) ? "behind!" : "ahead!"}</text>
+                    <text class="slot-plot-caption" x="${x + (radius)}" y="${overUnder > 0 ? capY - 25 : capY}" text-anchor="middle" style="--calc-color:${calcColor}; --over-under-inverter:${overUnder > 0 ? 1 : 0}; --y:${overUnder > 0 ? capY - 25 : capY}">${overUnder}%</text>
+                    <text class="slot-plot-caption" x="${x + (radius)}" y="${overUnder > 0 ? capY : capY + 25}" text-anchor="middle" style="--calc-color:${calcColor}; --over-under-inverter:${overUnder > 0 ? 1 : 0}; --y:${overUnder > 0 ? capY : capY + 25}">${(overUnder > 0) ? "behind!" : "ahead!"}</text>
                `);
             }else{
-                let spotOnMsg = spotOn[Math.floor(Math.random() * spotOn.length)];
+                let spotOnMsg = zeroPt();
                 this.graphObjectSVG.insertAdjacentHTML('beforeEnd', `<foreignObject class="slot-plot-wrapped" width="80" height="150"  x="${x + (radius) - 40}" y="${(y - (radius)) + (inertCaptionOffset * this.vertScaleFactor) - 15}" text-anchor="middle" style="color:hsla(${calcColor}, 100%, 30%, 0.66);"><center>${spotOnMsg}</center></foreignObject>`);
             }
         }else{
@@ -342,7 +346,7 @@ class BurndownChart {
             pointPlot.push([i, x, y, 20, 'plotted-point-' + i, overUnder]);
         }
         if(drawLines){
-        coordinatePairs.push(((this.dayta.length-1) * this.horizontalInterval) + ' ' + (500 - (this.idealHoursByDay[i-1] * this.vertScaleFactor)));
+            // coordinatePairs.push(((this.dayta.length-1) * this.horizontalInterval) + ' ' + (500 - (this.idealHoursByDay[i-1] * this.vertScaleFactor)));
             this.renderComplexPoly(coordinatePairs, {class:'progress-bg', fill:'transparent', stroke:'#FFF', 'stroke-dasharray':'3 1', 'stroke-width':3});
             this.renderComplexPoly(coordinatePairs, {class:'progress-bg', fill:'transparent', stroke:'#AA6F', 'stroke-dasharray':'3 1', 'stroke-width':3});
             this.renderComplexPoly(coordinatePairs, {class:'progress', fill:'transparent', stroke:'#066C', 'stroke-dasharray':'3 1', 'stroke-width':3});
@@ -374,16 +378,17 @@ class BurndownChart {
         let gradScale = upperBoundary / 16,
             gradLines = 500/16;
         let graduations = [];
-        for(var i=0; i< 17; i++){
+        for(var i=0; i<16; i++){
             graduations.push(`<text class="graduations" text-anchor="end" x="-10" y="${(i * gradLines) }">${(i%2!==0) ? '⸺' : this.maxHourValue - Math.round(i*gradScale) + 'hrs –'} </text>`);
         }
+        graduations.push(0);
         this.graphObjectSVG.insertAdjacentHTML('beforeEnd', graduations.join(''))
         if((this.workDatesInSprint.length - 1) % 5 === 0){
             this.graphObjectSVG.insertAdjacentHTML('beforeEnd', `
-                <rect x="0" y="501" width="499" height="30" rx="6" fill="#EEE" />
-                <rect x="500" y="501" width="499" height="30" rx="6" fill="#EEE" />
-                <text x="250" y="523" text-anchor="middle" fill="#FFF"> WEEK 1</text>
-                <text x="750" y="523" text-anchor="middle" fill="#FFF"> WEEK 2</text>
+                <rect x="0" y="501" width="499" height="30" rx="6" fill="#FFF" />
+                <rect x="500" y="501" width="499" height="30" rx="6" fill="#FFF" />
+                <text x="250" y="523" text-anchor="middle" fill="#DDD"> WEEK 1</text>
+                <text x="750" y="523" text-anchor="middle" fill="#DDD"> WEEK 2</text>
                 <rect x="-5" y="501" width="1005" height="4" rx="0" fill="#333" />
             `)
         }
