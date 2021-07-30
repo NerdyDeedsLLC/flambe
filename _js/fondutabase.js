@@ -21,7 +21,7 @@ export default class Fondutabase {
         this.queuedTransactions = [];
         this.meta          = void(0);
 
-        this.valueComparisonOperators = {
+        this.booleanConditions = {
             '='  : 'eq',
             '<>' : 'neq',
             '>=' : 'gte',
@@ -29,13 +29,6 @@ export default class Fondutabase {
             '<=' : 'lte',
             '<'  : 'lt'
         }
-
-        this.logicalOperators = {
-            'AND' : 'and',
-            'OR'  : 'or',
-            'NOT' : 'not'
-        }
-
         this.generateDatabaseSchema()
         .then(()=>{
             let transaction;
@@ -44,10 +37,6 @@ export default class Fondutabase {
 
             }
         });
-
-        this.tSQLParsers = {
-            'update': /^(?<VERB>UPDATE )?(?<TABLE>.+?) SET (?<UPDATES>.*?)(?: WHERE (?<CRITERIA>.*))?$/i
-        }
     }
 
     replayQueuedTransaction(){
@@ -93,57 +82,6 @@ export default class Fondutabase {
         var targetTable = this.db.getSchema().table(table);
         var allRows = fieldData.map(row=>targetTable.createRow(row));
         return this.db.insert().into(targetTable).values(allRows).exec()
-    } 
-
-    _deconstructOperatorStatements(...statement) {
-        console.log(statement)
-        if(!statement || (!Array.isArray(statement) && typeof(statement) !== 'string')) throw new TypeError('Invalid statement!');
-        
-        let retArr = [];
-        statement.forEach(stmnt=>{
-        console.log(stmnt, typeof stmnt)
-            stmnt = stmnt.trim();
-            stmnt = stmnt.replace(/^(.*?) ?([\<\>\=\!]{1,2}?) ?((?:[^\s\<\>\=\!]).*?)?$/, ((orig, ...matches)=> retArr.push(new Array(
-                                                                                                                    matches[0].toString(), 
-                                                                                                                    this.valueComparisonOperators[matches[1]],                    
-                                                                                                                    (  /[\"\']/.test(matches[2])  ||  isNaN(matches[2])  )
-                                                                                                                        ? matches[2].replace(/[\"\']/gm, '')
-                                                                                                                        : matches[2]
-                                                                                                              )
-                                                                                )));
-        });
-        console.log('retArr :', retArr);
-        return retArr;
-    }
-
-    _deconstructDynamicCritera(targetTable, criteriaString){
-        criteriaString = criteriaString.replace(/^WHERE/i, '').trim();                                                                                 // Remove leading WHERE
-        let criteria   = [...criteriaString.matchAll(/^([\S]+=[\S]+)$|(.*) (AND|OR) (.*)/g)][0];                                                       // Create array, separating  up to 2 conditions from the boolean operator
-            criteria   = (!!criteria[1]) ? criteria.slice(1,2) : criteria.slice(2)                                                                     // Break into [condition1, boolean, condition2] OR [condition]
-        let logicalOp  = criteria.length > 1 ? logicalOperators[criteria.splice(1,1)[0]] : void(0);                                                    // Move the operator (if present) into own variable and look it up
-            criteria   = _deconstructOperatorStatements(criteria)
-
-        if(!logicalOp){
-            criteria = criteria[0];
-            return targetTable[criteria[0]][criteria[1]](criteria[2]);
-        }else{
-            return fondutabase.lf.op[logicalOp](...criteria.map(critSet=>targetTable[critSet[0]][critSet[1]](critSet[2])));
-        }
-    }
-    
-    // UPDATE - Updates a record or records, altering the values in the columns matching the search                                                     ex. UPDATE  table  SET column1=value1, column2="value2" WHERE haystack>=needle
-    update(tSQL){                                                                                                                                       //  [VERB] [TABLE]     [-----------UPDATES------------]       [---CRITERIA---]
-        let queryElements = tSQL.match(this.tSQLParsers.update).groups,                                                                                 // Execute the parser regex to break the user-inputted tSQL into the elements of a UPDATE statement
-            {VERB, TABLE, UPDATES, CRITERIA} = queryElements,                                                                                           // Deconstruct tSQL elements
-            {db} = fondutabase; TABLE = db.getSchema().table(TABLE);                                                                                    // Proxy references to the DB and to the table in question
-
-            UPDATES = UPDATES.split(/, ?/).map(v=>this._deconstructOperatorStatements(v))                                                               // 
-
-        db.update(TABLE).
-            UPDATES.map(update=>set(TABLE[update[0]], update[2])).
-            where(this._deconstructDynamicCritera(TABLE, CRITERIA)).
-            exec();  // Returns a Promise.
-
     }
 
     delete(table, condition){
@@ -172,7 +110,7 @@ export default class Fondutabase {
                     criteria.replace(/^(.*?)(?: *([=<>]+) *)(.*)$/, 
                         (p, c1, op, c2)=>{
                             whereQuery.c1 = c1;
-                            whereQuery.op = this.valueComparisonOperators[op];
+                            whereQuery.op = this.booleanConditions[op];
                             whereQuery.c2 = c2;
                             //   return c1.eq(c2);
                     });
@@ -235,7 +173,7 @@ export default class Fondutabase {
         })
         .then(()=>{
         let {db} = this;
-        const valueComparisonOperators = {
+        const booleanConditions = {
             '='  : 'eq',
             '<>' : 'neq',
             '>=' : 'gte',
@@ -289,7 +227,7 @@ export default class Fondutabase {
             targetData.WHERE.replace(/^(.*?)(?: *([=<>]+) *)(.*)$/, 
                                                   (p, c1, op, c2)=>{
                                                       window.c1 = whereQuery.c1 = prefixColumn(c1, tableQuery);
-                                                      window.op = whereQuery.op = [valueComparisonOperators[op]];
+                                                      window.op = whereQuery.op = [booleanConditions[op]];
                                                       window.c2 = whereQuery.c2 = c2;
                                                     //   return c1.eq(c2);
                                                   });
