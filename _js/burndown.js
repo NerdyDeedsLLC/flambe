@@ -31,10 +31,11 @@ class BurndownChart {
     constructor(props) {
         console.clear();
         if(props) Object.assign(this, props);
+        this.props = props;
         
         this.dayta             = props.dailyHourTotals
         
-        this.workDatesInSprint = props.datesToGraph.map(inputDate =>  new Date(inputDate) || null);
+        this.workDatesInSprint = props.datesToGraph.map(inputDate =>  new Date(inputDate + ' ') || null);
                 
         this.graphObjectSVG    = null
         this.graphSVGDefs      = null
@@ -360,8 +361,10 @@ class BurndownChart {
     }
     
      generateHeaders(){
-        for(var i=1; i<=workDatesInSprint.length; i++){
+        for(var i=1; i<workDatesInSprint.length; i++){
+            console.log(this.workDatesInSprint[i])
             let dayToRepresent = new Date(this.workDatesInSprint[i]);
+            console.log('dayToRepresent :', dayToRepresent);
 
             this.generateHeader(i, monTxt[dayToRepresent.getMonth()] + ' ' + dayToRepresent.getDate(), dayTxt[dayToRepresent.getDay()])
         }
@@ -398,4 +401,5 @@ class BurndownChart {
     }
 }
 let burndown = new BurndownChart({dailyHourTotals: dayta, datesToGraph:workDatesInSprint});
+fondue.burndown = burndown;
 export default burndown;
