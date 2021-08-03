@@ -100,7 +100,7 @@ export default class Credentials {
                 _I('...success! Jira credentials securely loaded. No further authentication required.');
                 this.#credentials = jiraHashKVP.value;
                 JDR.credentials   = this.token;
-                return resolve(JDR.getJiraProperties('sprints', true))
+                return resolve(JDR.getJiraProperties('sprints'))
             }else{
                 _I('...unsuccessful. Config loaded, but Jira token is absent or corrupted. Transferrring user to Jira login credential collection dialog!');
                 return resolve(this.toggleToCredentialCollector());

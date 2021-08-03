@@ -302,7 +302,7 @@ export default class DataRetriever {
                 url: 'https://jirasw.t-mobile.com/rest/agile/1.0/board/8455/sprint?maxResults=150',
                 destination:'sprints',
                 cleanup: records=>{
-                console.log('records :', records);
+                // console.log('records :', records);
                     records = JSON.parse(records).values;
                     window.toInsert = [];
                     records.forEach(sprint=>{
@@ -330,7 +330,7 @@ export default class DataRetriever {
 
                         for(var i=0; i<=dayGap; i++){
                             if(!isWeekend(running)) workable.push(formatISO(running, { representation: 'date' }));
-                            console.log('running :', running);
+                            // console.log('running :', running);
                             running = addDays(running, 1);
                         }
                         return Object.assign(sprint, {
@@ -352,7 +352,12 @@ export default class DataRetriever {
         console.log('getJiraProperties :', availableProps[property], '\nstampCheck:');
         
         this.loaderOverlay.classList.toggle('on');
-        
+
+        this.existingSprintList = [];
+        fondutabase.select('SELECT * FROM sprints')
+        .then(res=>res.forEach(sprintData=>this.existingSprintList.push({jiraId: sprintData.jiraId, sprintId: sprintData.sprintId})))
+        .then(res=>this.existingSprintList = [...new Set(this.existingSprintList.map(sr=>{return sr.jiraId}))])
+        .then(res=>window.esl = this.existingSprintList)        
         
 
         return  this.checkDataDateStamp(availableProps[property].destination)
@@ -364,8 +369,9 @@ export default class DataRetriever {
                             .then(hdrs     => fetch(this.getRetrieverURL(availableProps[property].url), hdrs))
                             .then(response => response.text())
                             .then(result   => window.lastTransaction = result)
-                            .then(result   => {fondutabase.delete(availableProps[property].destination); return result; })
-                            .then(result   => fondutabase.overwrite(availableProps[property].destination, availableProps[property].cleanup(result)))
+                            .then(result   => {if(purgeBeforeRetrieval) {fondutabase.delete(availableProps[property].destination); }  return result; })
+                            .then(result   => {console.log('RETRIEVAL RESULT:', window.pull=JSON.parse(result).values, '\nEXISTING SPRINTS', this.existingSprintList); return JSON.parse(result).values.filter(itm=>this.existingSprintList.indexOf(itm.id) === -1); })
+                            .then(result   => (result.length > 0) ? fondutabase.overwrite(availableProps[property].destination, availableProps[property].cleanup(result)) : result)
                             .then(result   => availableProps[property].callBack(result))
                             .then(()       => this.datestampDataRetrieval(availableProps[property].destination))
                             .then(()       => this.loaderOverlay.classList.toggle('on'))
