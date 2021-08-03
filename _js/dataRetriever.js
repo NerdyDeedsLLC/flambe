@@ -370,7 +370,13 @@ export default class DataRetriever {
                             .then(response => response.text())
                             .then(result   => window.lastTransaction = result)
                             .then(result   => {if(purgeBeforeRetrieval) {fondutabase.delete(availableProps[property].destination); }  return result; })
-                            .then(result   => {console.log('RETRIEVAL RESULT:', window.pull=JSON.parse(result).values, '\nEXISTING SPRINTS', this.existingSprintList); return JSON.parse(result).values.filter(itm=>this.existingSprintList.indexOf(itm.id) === -1); })
+                            .then(result   => {
+                                //console.log('RETRIEVAL RESULT:', window.pull=result, '\nEXISTING SPRINTS', this.existingSprintList); return JSON.parse(result).values.filter(itm=>this.existingSprintList.indexOf(itm.id) === -1); 
+                                result = JSON.parse(result); 
+                                result.values = result.values.filter(val=>this.existingSprintList.indexOf(val.id) === -1); 
+                                result=JSON.stringify(result);
+                                return result;
+                            })
                             .then(result   => (result.length > 0) ? fondutabase.overwrite(availableProps[property].destination, availableProps[property].cleanup(result)) : result)
                             .then(result   => availableProps[property].callBack(result))
                             .then(()       => this.datestampDataRetrieval(availableProps[property].destination))
