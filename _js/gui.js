@@ -61,7 +61,7 @@ export default class GUI {
         let allPreviousDaytaFilled = true;
         
 
-        if(     fondue.SprintDaytaSlotPulls[fondue.TransactionSlot] !== null
+        if(     fondue.SprintDaytaSlotPulls[fondue.TransactionSlot] != null
             &&  !confirm("This will overwrite the data currently within this slot! Proceed?")) return false;
 
         for(var i=0; i<fondue.TransactionSlot; i++){
@@ -80,7 +80,8 @@ export default class GUI {
             daytaDOMObject.classList.toggle('retrieving')
             JSR.retrieve(daytaDOMObject)
             .then(issues=>{
-                
+                console.log('💾 Launching archival protocol!');
+                window.open('https://jirasw.t-mobile.com/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery=component+in+%28%22BSWMDBN2%3ADB+Scrum+And+Coke%22%2C+%22BSWMDBN2%3ADB+Techquilla%22%29+AND+Sprint+in+openSprints%28%29')    
             })
             .then(()=>{
                 daytaDOMObject.classList.toggle('retrieving')
