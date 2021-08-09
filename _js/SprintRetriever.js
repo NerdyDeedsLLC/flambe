@@ -261,7 +261,7 @@ export default class SprintRetriever {
         return this.performRetrieve()
         .then(result => console.log('  - Attempting to write to Fondutabase...') || this.storeDataRetrieval(result))
         .then(result => console.log('🟢 SUCCESS!... all retrieved issues written to data store.') || result)
-        .then(result => console.log('🟢 COMPLETE!') &&  console.groupEnd() || result)
+        .then(result => {console.log('🟢 COMPLETE!') &&  console.groupEnd(); return result})
         .then(result => qs('input', slotObj).value="Retrieved :: " + this.mostRecentStamp)
         .catch(error => {console.error('🔴 FAILURE! An Error occurred in SprintRetriever.js. Details are as follows:\n', error); throw new Error(error); })
     }

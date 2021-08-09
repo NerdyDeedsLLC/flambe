@@ -78,10 +78,9 @@ export default class GUI {
             }
             this.jiraModal.classList.toggle('on');
             daytaDOMObject.classList.toggle('retrieving')
+            window.open('https://jirasw.t-mobile.com/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery=component+in+%28%22BSWMDBN2%3ADB+Scrum+And+Coke%22%2C+%22BSWMDBN2%3ADB+Techquilla%22%29+AND+Sprint+in+openSprints%28%29');
+            console.log('💾 Launching archival protocol!');
             JSR.retrieve(daytaDOMObject)
-            .then(issues=>{
-                
-            })
             .then(()=>{
                 daytaDOMObject.classList.toggle('retrieving')
                 this.jiraModal.classList.toggle('on');
