@@ -1527,8 +1527,8 @@ i:empty {
 
     iframe {
         width: 100%;
-        height:min(1000px, calc(66vw - (0.666 * var(--offsetWidth))));
-        max-height: 47vh;
+        height: 80vh;
+        max-height: 80vh;
         min-width:1000px;
     }
 }
