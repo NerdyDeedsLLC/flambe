@@ -13,6 +13,7 @@ body {
     border: 0 none;
     margin: 0;
     padding: 0;
+    max-height: 100vh;
 
     background-color: transparent;
 }
@@ -23,6 +24,7 @@ svg#burndownGraphPanel {
     max-width: min(1600px, 98%);
     padding:0 20px;
     pointer-events: all;
+    max-height: 100vh;
 
     *:not[fill] {
         fill: transparent;

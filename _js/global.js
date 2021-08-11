@@ -120,6 +120,10 @@ const global_helper_functions = {
         return JSON.parse(JSON.stringify(obj, inclusiveKeyList));
     }
 
+    , cacheBuster(){
+        return Math.floor(Math.random() * 999) + '=' + Math.floor(Math.random() * 999);
+    }
+
     // ,elideObjectKeys(t, ['name','id','projectId'])
 };
 Object.assign(window, global_helper_functions);

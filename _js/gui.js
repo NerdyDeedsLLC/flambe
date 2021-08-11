@@ -13,6 +13,7 @@ export default class GUI {
         this.leftBindings = false;
         this.startDate    = null;
         this.endDate      = null;
+        this.isReload     = false;
         
         window.getSprintDataFromFondutabase = this.getSprintDataFromFondutabase.bind(this);
         window.processReportParameters = this.processReportParameters.bind(this);
@@ -25,7 +26,9 @@ export default class GUI {
 
     primeDataFields(attempt=0) {
         console.log('primeDataFields(attempt) :', attempt);
-        if(!W.fondue || !W.fondue.Config || fondue.WorkableDaysCount) return setTimeout(()=>this.primeDataFields(attempt + 1), 500);
+        if(attempt < 3) {
+            if(!W.fondue || !W.fondue.Config || fondue.WorkableDaysCount) return setTimeout(()=>this.primeDataFields(attempt + 1), 500);
+        }
         this.generateCoreUIDataSlots()
         return Promise.resolve(fondue.Config)
         .then((cfg)=>{
@@ -46,7 +49,10 @@ export default class GUI {
                         if(quickCfg['reload-auto-resume-mode'] != null){
                             fld.value = configs.value;
                             this.getSprintDataFromFondutabase(quickCfg['reload-sprint'])
-                            if(quickCfg['reload-auto-resume-mode'] === 'auto-res-until-eos') qs('#' + Step3Toggler).checked = true;
+                            if(quickCfg['reload-auto-resume-mode'] === 'auto-res-from-datafiles'){
+                                qs('#Step1Toggler').checked = false;
+                                qs('#Step3Toggler').checked = true;
+                            }
                         }
                     }
                 });
@@ -80,7 +86,7 @@ export default class GUI {
             daytaDOMObject.classList.toggle('retrieving')
             window.open('https://jirasw.t-mobile.com/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery=component+in+%28%22BSWMDBN2%3ADB+Scrum+And+Coke%22%2C+%22BSWMDBN2%3ADB+Techquilla%22%29+AND+Sprint+in+openSprints%28%29');
             console.log('💾 Launching archival protocol!');
-            JSR.retrieve(daytaDOMObject)
+            return JSR.retrieve(daytaDOMObject)
             .then(()=>{
                 daytaDOMObject.classList.toggle('retrieving')
                 this.jiraModal.classList.toggle('on');
@@ -450,14 +456,17 @@ export default class GUI {
                 if(dayBtn == null || !dayBtn || dayBtn === '') return '';//console.warn('Cannot iterate data-file collection. The DOM has become corrupted. Please refresh and try again, and inform your network administrator should the problem persist.');
                 dayBtn.dataset.hasdata = (this.daytaRecords[dayNum] !== null);
                 dayBtn.onclick = (e, trg=e.target)=>{
-                    if(trg.className.indexOf('trash-data') !== -1){
-                        this.removePullFromDataset(trg.previousElementSibling, trg.dataset.slot, trg.parentNode.dataset.day);
-                    }else{
-                        this.daytaClick(trg);
-                    }
+                    return new Promise((resolve, reject)=>{
+                        if(trg.className.indexOf('trash-data') !== -1){
+                            resolve(this.removePullFromDataset(trg.previousElementSibling, trg.dataset.slot, trg.parentNode.dataset.day));
+                        }else{
+                            resolve(this.daytaClick(trg));
+                        }
+                    })
+                    .then(()=>fondue.loadGrid(1))
                 }
                 
             });
-        });
+        })
     }
 }

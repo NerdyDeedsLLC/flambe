@@ -105,7 +105,7 @@ i:empty {
         transition: 0.3s all ease-in-out;
         box-shadow: 0 0 20px black;
         z-index: 20;
-        position: absolute;
+        position: fixed;
         height: 100%;
         right: 0;
         user-select: none;
@@ -1488,21 +1488,34 @@ i:empty {
 //     }
 // }
 #grid-output-panel {
-    // --offsetWidth: 0px;
     width:calc(100% - var(--offsetWidth));
     max-width:calc(100vw - var(--offsetWidth));
     margin:0 20px;
     margin-left:min(540px, var(--offsetMargin));
-    height:50vh;
-    min-height: 975px;
+    min-height: 150vh;
     position: relative;
 
-    iframe {
-        width: 100%;
-        min-height: 975px;
-        height: 100%;
+    div#grid-output {
+        min-height: 150vh;
+
+        iframe {
+            min-width: 100%;
+            min-height: 150vh;
+        }
     }
+
 }
+#flambe > main > section {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: stretch;
+    justify-content: flex-start;
+    height: 240vh;
+}
+
+
 
 #graph-output-panel {
     --dynamic-width:min(1500px, calc(100vw - var(--offsetWidth)));
@@ -1510,15 +1523,16 @@ i:empty {
     max-width:var(--dynamic-width);
     margin:0 20px;
     margin-left:min(540px, var(--offsetMargin));
-    height:min(880px, calc(66vh - (0.666 * var(--offsetWidth))));
+    height:min-content;
 
     iframe {
         width: 100%;
         height:min(1000px, calc(66vw - (0.666 * var(--offsetWidth))));
-        
+        max-height: 47vh;
         min-width:1000px;
     }
 }
+
 
 #status-overlay {
     background: #0009;

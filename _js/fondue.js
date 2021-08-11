@@ -77,7 +77,8 @@ class Fondue {
         });
     }
 
-    loadGrid(){
+    loadGrid(forcedReload=false){
+        fondue.table = null;
         return new Promise((resolve)=>{
             const thenWaitLonger = () => {
                 if(fondue.table && fondue.table.getCalcResults()) resolve(fondue.table.getCalcResults());
@@ -85,20 +86,21 @@ class Fondue {
             }
             W.fondueObj = this;
             // W.addEventListener('load', ()=>{qs('#grid-output').innerHTML = `<iframe src="./grid.html?sprintID=18"></iframe>`;})
-            qs('#grid-output').innerHTML = `<iframe src="./grid.html?sprintID=${this.ExtantSprintID}" frameborder="0"></iframe>`
+            qs('#grid-output').innerHTML = `<iframe src="./grid.html?sprintID=${this.ExtantSprintID}&${cacheBuster()}" frameborder="0"></iframe>`
             thenWaitLonger();
         })
-        .then(()=> this.loadGraph())
+        .then(()=> this.loadGraph(forcedReload))
     }
 
-    loadGraph(){
+    loadGraph(forcedReload=false){
         W.fondueObj = this;
         let totalsByDay = fondue.table.getCalcResults();
         if(totalsByDay && totalsByDay.bottom) totalsByDay = Object.values(Object.fromEntries(Object.entries(totalsByDay.bottom).filter(data=>/^remaining/.test(data[0]))));
         for(var i=totalsByDay.length-1; i>0; i--){
             if(totalsByDay[i] <= 0) totalsByDay.pop();
         }
-        qs('#graph-output').innerHTML = `<iframe frameborder="0" src="./burndown.html?sprintDates=${this.WorkableDaysInSprint}&runningTotals=${totalsByDay.join('|')}"></iframe>`;
+        let antiCache = forcedReload ? '&' + cacheBuster() : '';
+        qs('#graph-output').innerHTML = `<iframe frameborder="0" src="./burndown.html?sprintDates=${this.WorkableDaysInSprint}&runningTotals=${totalsByDay.join('|')}${antiCache}"></iframe>`;
     }
 
     /**

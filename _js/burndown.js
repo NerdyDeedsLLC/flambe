@@ -30,12 +30,30 @@ let workDatesInSprint  = fondue.slotDates;                                      
 class BurndownChart {
     constructor(props) {
         console.clear();
-        if(props) Object.assign(this, props);
         this.props = props;
+        this.rerunGraph()
+
+        this.plotSpoilers = this.plotSpoilers.bind(this);
+}
+
+    rerunGraph() {
+        this.setDefaultValuesForClass();
+        this.renderBaseSVGintoPage();
+        this.renderOverflowMasks();
+        this.renderSprintDataGradientMaskedPlates();
+        this.generateIdeal();
+        this.renderSprintDataGradients();
+        this.generateHeaders()
+        this.labelAxis()
+    }
+
+
+    setDefaultValuesForClass(){
+        if(this.props) Object.assign(this, this.props);
         
-        this.dayta             = props.dailyHourTotals
+        this.dayta             = this.props.dailyHourTotals
         
-        this.workDatesInSprint = props.datesToGraph.map(inputDate =>  new Date(inputDate + ' ') || null);
+        this.workDatesInSprint = this.props.datesToGraph.map(inputDate =>  new Date(inputDate + ' ') || null);
                 
         this.graphObjectSVG    = null
         this.graphSVGDefs      = null
@@ -69,17 +87,7 @@ class BurndownChart {
             this.idealHoursByPlot[i] = this.baseResolutionY - (this.baseResolutionY / this.workDayCtInSprint * i);
             
         }
-        
-        this.renderBaseSVGintoPage();
-        this.renderOverflowMasks();
-        this.renderSprintDataGradientMaskedPlates();
-        this.generateIdeal();
-        this.renderSprintDataGradients();
-        this.generateHeaders()
-        this.labelAxis()
-
-        this.plotSpoilers = this.plotSpoilers.bind(this);
-}
+    }
     
     renderBaseSVGintoPage(insertionDOMnode=document.body,directlyToDOM=true){
         let markup = `<svg id="burndownGraphPanel" class="bdgPanel" viewBox="${-this.leftMargin} ${-this.topMargin} ${this.baseResolutionX + this.leftMargin + this.rightMargin} ${this.baseResolutionY + this.topMargin + this.bottomMargin}" xmlns="http://www.w3.org/2000/svg">
