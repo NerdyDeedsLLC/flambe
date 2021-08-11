@@ -6,6 +6,87 @@ const fondutabase = window.top.fondutabase;
 
 fondue.table = null;
 const gridMode = true;
+
+console.clear();
+
+
+
+function overrideLinkContextMenu(allLinks='a'){
+    function addListenerByQS(qs, bindingAction, bindingEvent='click') {
+        let obj;
+        if(!qs) return false;
+        if(typeof(qs) !== 'string'){
+            obj = qs;
+        }else{
+           if(!/^[.#]/.test(qs)){
+                 obj = document.querySelector('#' + qs) || document.querySelector('.' + qs) || document.querySelector(qs);
+           }else obj = document.querySelector(qs);
+        }
+        if(!obj) return false;
+        obj.addEventListener(bindingEvent, bindingAction);
+        return true;
+    }
+
+    function copy(contentToCopy, menuObject, isHTML=false) {
+        let inp=document.createElement('div'),
+            selection = window.getSelection(),
+            range = document.createRange();
+
+        inp.id="clipboardContent";
+        if(!isHTML) inp.innerText = contentToCopy;
+        else inp.innerHTML = contentToCopy;
+        document.body.insertAdjacentElement('beforeEnd', inp);
+        range.selectNodeContents(inp);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        document.execCommand("Copy");
+        setTimeout(()=>{inp.remove(); menuObject.remove();}, 1);    
+    }
+    
+    function forceOpen(url){
+        console.log(url)
+        setTimeout(
+            function () {
+                window.open(url, 'spawnedWindow' + Date.now(), 'toolbar=1, scrollbars=1, location=1, statusbar=1, menubar=1, resizable=1, width=1280, height=1024');
+            }
+        , 1);
+    }    
+    allLinks = [...document.querySelectorAll(allLinks)];
+    
+    allLinks.forEach(noContext=>noContext.addEventListener('contextmenu', (e, trg=e.target) => {
+        let extantMenus = document.querySelectorAll('.ctxmenu');
+        if(extantMenus) [...extantMenus].forEach(menu=>menu.remove());
+        e.preventDefault();
+        let menu = document.createElement("div"),
+            xPos = Math.max(e.pageX - 480, 50),
+            yPos = Math.max(e.pageY - 295, 20);
+        menu.className = "ctxmenu"
+        menu.style = `top:${yPos}px;left:${xPos}px`
+        menu.onmouseenter = () => {menu.classList.add('dirty'); clearTimeout(window.menuCloseTimer); }
+        menu.onmouseleave = (e, trg=e.target) => window.menuCloseTimer = setTimeout(()=>trg.remove(), 1000);
+        menu.innerHTML = `<ul>
+                            <li class="heading">Open issue in...</li>
+                            <li data-url="${trg.href}" class="spawnTab"><b>A new tab</b> (Open issue in a new tab of the current browser window)</li>
+                            <li data-url="${trg.href}" class="spawnWindow"><b>A new window</b> (Open new browser window containing only this issue)</li>
+                            <li class="heading">Copy...</li>
+                            <li data-text="${trg.innerText}" class="copyText"><b>Key text only</b> ${trg.innerText}</li>
+                            <li data-url="${trg.href}" class="copyUrl"><b>Link URL only</b> ${trg.href}</li>
+                            <li data-text="${trg.innerText}" data-title="${trg.dataset.title}" class="copyDetails"><b>Key with title</b> ${trg.innerText}: ${trg.dataset.title}</li>
+                            <li data-url="${trg.href}" data-text="${trg.innerText}" class="copyHotText"><b>Hot hyperlink</b> <a href="${trg.href}'">${trg.innerText}</a></li>
+                            <li data-url="${trg.href}" data-text="${trg.innerText}" class="copyHotUrl"><b>Hyperlinked URL</b> <a href="${trg.href}'">${trg.href}</a></li>
+                            <li data-url="${trg.href}" data-text="${trg.innerText}" data-title="${trg.dataset.title}" class="copyHotDetails"><b>Hyperlinked Detail</b> <a href="${trg.href}'"><strong>${trg.innerText}:</strong> ${trg.dataset.title}</a></li>
+                         </ul>`
+        document.body.insertAdjacentElement('beforeEnd', menu)
+        addListenerByQS('spawnTab',    (e, trg=e.target)=>window.open(trg.dataset.url));
+        addListenerByQS('spawnWindow', (e, trg=e.target)=>forceOpen(trg.dataset.url));
+        addListenerByQS('copyText',    (e, trg=e.target)=>copy(trg.dataset.text, menu));
+        addListenerByQS('copyUrl',     (e, trg=e.target)=>copy(trg.dataset.url, menu));
+        addListenerByQS('copyDetails',    (e, trg=e.target)=>copy(`${trg.dataset.text}: ${trg.dataset.title}`, menu));
+        addListenerByQS('copyHotText',    (e, trg=e.target)=>copy(`<a href="${trg.dataset.url}">${trg.dataset.text}</a>`, menu, 1));
+        addListenerByQS('copyHotUrl',    (e, trg=e.target)=>copy(`<a href="${trg.dataset.url}">${trg.dataset.url}</a>`, menu, 1));
+        addListenerByQS('copyHotDetails',    (e, trg=e.target)=>copy(`<a href="${trg.dataset.url}"><b>${trg.dataset.text}:</b> ${trg.dataset.title}</a>`, menu, 1));
+    }));
+}
     
 function toHours(val = null, appendLabel=true) {                                                                   		// Converts the asinine JIRA output we're currently getting (seconds, across the board) to hours
     if(val == null) return 0;
@@ -233,11 +314,18 @@ function instantiateGrid () {
                     $cell.dataset.statusColor = findSiblingCellValue(cell, 'statusColor');
                     return titleText(value);
                 }}, //frozen column
+
+                // {title:"***TITLE PLACEHOLDER***", field:"title", visible:false}, //frozen column
                 
                 {title:"Key", field:"issueKey", width:140, frozen:true, formatter:function(cell, formatterParams) {
                     window.cell = cell;
-                return `<a href="${findSiblingCellValue(cell, 'link')}" target="_blank" title="${cell.getValue()}">${cell.getValue()}</a>`;
+                    return `<a href="${findSiblingCellValue(cell, 'link')}" data-url="${findSiblingCellValue(cell, 'link')}" data-title="${findSiblingCellValue(cell, 'summary')}" data-text="${cell.getValue()}" target="_blank" title="${cell.getValue()}">${cell.getValue()}</a>`;
                 }}, //frozen column
+                
+                // {title:"Key", field:"issueKey", width:140, frozen:true, formatter:function(cell, formatterParams) {
+                //     window.cell = cell;
+                // return `<a href="${findSiblingCellValue(cell, 'link')}" target="_blank" title="${cell.getValue()}">${cell.getValue()}</a>`;
+                // }}, //frozen column
                 
                 {title:"👤", field:"assigneeName", hozAlign:'center', width:52, formatter:function(cell, formatterParams){
                     let value = cell.getValue();
@@ -302,6 +390,7 @@ function instantiateGrid () {
         });
         return;
     })
+    .then(()=>overrideLinkContextMenu('a'))
     .then(()=>console.log('fondue.table :', fondue.table)||fondue.table);
     }
 export default setTimeout(instantiateGrid, 1000);

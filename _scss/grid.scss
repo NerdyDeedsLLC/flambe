@@ -514,3 +514,150 @@ div > div.tabulator-col-title.day-col-header > b {
     background-position-y: -10px;
     text-align: right;
 }
+    
+.ctxmenu {
+    *, *::before, *::after {
+        position:relative;
+        box-sizing:border-box;
+        font-family:system-ui;
+    }
+    width:min-content;
+    min-width:150px;
+    height:275px;
+    border:2px solid #0e7277;
+    position:absolute;
+    background:#EEE;
+    border-radius:6px;
+    overflow:hidden;
+    padding-bottom:3px;
+    box-shadow:0 10px 20px #0007;
+    
+    &.dirty { animation:1s fadeMenu cubic-bezier(1,.01,.83,.67) forwards; }
+    
+    &:hover {
+        opacity:1;
+        animation:none;
+    }
+    
+    ul {
+        display:flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-content: flex-start;
+        align-items: stretch;
+        list-style:none;
+        padding:0;
+        margin:-1px;
+        cursor:pointer;
+        min-width:calc(100% + 1px);
+        
+        li { 
+            * {
+                pointer-events:none;
+            }
+            &.heading {
+                background:#0e7277;
+                color:#FFFA;
+                font-size:12px;
+                font-weight:700;
+                padding:3px 3px 5px 5px;
+                margin:-1px 0 0 -1px;
+            }
+            &:not(.heading) {
+                display:block;
+                white-space:nowrap;
+                padding:5px 5px 5px 20px;
+                outline: 0 none;
+                font-size:12px;
+                color:#0009;
+                
+                &::before{
+                    content:'━➤';
+                    letter-spacing:-6px;
+                    position:absolute;
+                    color:#0e7277;
+                    left:-1px;
+                    box-shadow:inset 5px 0 0 0 #0e7277;
+                    font-weight:900;
+                    height:100%;
+                    line-height:1.5;
+                    text-indent:-7px;
+                    top:0;
+                    font-size:150%;
+                }
+
+                a {opacity:0.5; color:#0e7277;}
+
+                b {
+                    display:inline-block;
+                    font-size:14px;
+                    opacity: 1;
+                    color:#000;
+                    min-width:128px;
+                }
+
+                &:hover {
+                    background:#22aeb0;
+                    color:#FFF9;
+                    b, a {color:#EEE; pointer-events:none;}
+                    
+                    &::before{
+                        box-shadow: inset 5px 0 0 0 #0e7277;
+                        // box-shadow:none;
+                        height:100%;
+                        color:transparent;
+                        width:25px;
+                        background:linear-gradient(90deg, #0e7277 5px, #EEE0 16px, #EEE0 30px);
+                        background-clip:text;
+                    }
+                }
+                
+                // &:nth-of-type(n+5)::before{
+                //     box-shadow:inset 0 -14px 0 0 white, inset 5px 0 0 0 #0e7277;
+                // }
+                
+                & + .heading {
+                    margin-top:10px;
+                }
+                & + .heading::before {
+                    content:'';
+                    width:5px;
+                    height:50%;
+                    position:absolute;
+                    left:0.5px;
+                    background:#EEE;
+                    top:0;
+                    transform:translatey(calc(-150% - 4px));
+
+                }
+                &:last-of-type::after {
+                    content:'';
+                    width:5px;
+                    position:absolute;
+                    left:0.5px;
+                    background:#EEE;
+                    height:calc(50% - 2px);
+                    top:calc(50% + 2px);
+
+                }
+                
+                &:hover + .heading::before,
+                &:last-of-type:hover::after{
+                    background:#EEE;
+                }
+            }
+        }
+    }
+}
+
+#clipboardContent {
+    border:0 none;
+    outline: 0 none;
+    background-color:#0000;
+    color:#0000;
+}
+
+@keyframes fadeMenu {
+    0% {opacity:1;}
+    100% {opacity:0;}
+}
