@@ -364,7 +364,14 @@ export default class GUI {
                                     </section>
                                     <footer></footer>
                                 </main>
-                                <aside id="filterAside"><label for="filterToggle" class="slide-panel"></label></aside>
+                                <aside id="filterAside">
+                                    <label for="filterToggle" class="slide-panel"></label>
+                                    <div class="filter-group">
+                                        <label for="searchByString">Filter issues by text:"</label>
+                                        <input id="searchByString" name="searchByString" type="text" class="filter-panel-text-field" placeholder="String to search">
+                                        <button class="micro-submit">↩︎</button>
+                                    </div>
+                                </aside>
                             </article>`;
                             console.log('APP :', APP);
             return resolve(coreMarkup)
