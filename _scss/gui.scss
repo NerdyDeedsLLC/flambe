@@ -1588,3 +1588,97 @@ i:empty {
     99%, 100% {opacity:0;display:none; max-height: 0;}
 }
 
+
+#filterAside {
+    
+    .slide-panel {z-index: 1;}
+    ::before {}
+  
+  .filter-group {
+      margin-left: 20px;
+      padding: 0 20px 0 0;
+      background: #AAA;
+      min-height: fit-content;
+      width: 100%;
+      height: fit-content;
+      z-index:0;
+
+      & > label {
+          position: absolute;
+          top: 0;
+          background-color: #EEE;
+          box-shadow: inset 0 0 100px teal;
+          width: calc(100% - 0px);
+          left: 0;
+          height: 45px;
+          line-height: 60px;
+          font: 32px Teko;
+          padding-left:20px;
+      }
+      .filter-panel-field-group {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        min-width: calc(100% - 50px);
+        padding: 55px 0 30px 20px;
+        border-top: 1px solid #CCC;
+        width: 100%;
+        max-width: calc(100% - 20px);
+        margin:0 0 0 20px;
+    }
+    .filter-panel-field-label {
+        white-space: nowrap;
+        display: inline-block;
+        line-height: 34px;
+          margin:20px 10px 0 0;
+        color:#333;
+    }
+      .filter-panel-text-field {
+          border:1px solid #666;
+          border-radius: 5px;
+          line-height: 30px;
+          font-size:18px;
+          width: 100%;
+            padding:4px 0 0 10px;
+            background-color: #EEE;
+      }
+      .micro-submit, .micro-cleanse {
+          font-size:25px;
+          text-align: center;
+          color:#888;
+          margin:0 0 0 5px;
+          padding:.0;
+          line-height: 34px;
+          border-radius: 50%;
+          min-width:34px;
+          height: 34px;
+          border:1px solid #666;
+          display: inline-block;
+          vertical-align: middle;
+
+          &::after {
+              content:'↩';
+              display: block;
+              position: absolute;
+              top:4px;
+              left:4px;
+          }
+      }
+
+      .micro-cleanse {
+        display: none;
+        background:#F002;
+        color:white;
+      
+        &::after {
+            content:'✖︎';
+            top: 3px;
+            left: 6px;
+            font-size: 27px;
+        }
+    }
+    }
+  }
+  

@@ -367,9 +367,13 @@ export default class GUI {
                                 <aside id="filterAside">
                                     <label for="filterToggle" class="slide-panel"></label>
                                     <div class="filter-group">
-                                        <label for="searchByString">Filter issues by text:"</label>
-                                        <input id="searchByString" name="searchByString" type="text" class="filter-panel-text-field" placeholder="String to search">
-                                        <button class="micro-submit">↩︎</button>
+                                        <label>Filter by Text</label>
+                                        <div class="filter-panel-field-group">
+                                            <label class="filter-panel-field-label" for="searchByString">Search For:</label>
+                                            <input id="searchByString" name="searchByString" type="text" class="filter-panel-text-field" placeholder="String to search">
+                                            <button data-filter="byString" class="micro-submit"></button>
+                                            <button data-filter="byString" class="micro-cleanse"></button>
+                                        </div>
                                     </div>
                                 </aside>
                             </article>`;
@@ -380,6 +384,49 @@ export default class GUI {
         .then(coreMarkup=>APP.innerHTML = coreMarkup)
         .then(()=>this.initializeCoreGUI())
         .then(()=>this.performLeftColumnBindings())
+        .then(()=>this.bindFiltrationFields())
+    }
+
+    bindFiltrationFields(){
+        qsa('.micro-submit').forEach(btn=>btn.addEventListener('click', this.performFiltration));
+        qsa('.micro-cleanse').forEach(btn=>btn.addEventListener('click', this.clearFilters));
+    }
+
+    clearFilters(preclear=false){
+        qsa('.micro-submit').forEach(btn=>btn.style.display='inline-block');
+        qsa('.micro-cleanse').forEach(btn=>btn.style.display='none');
+        fondue.table.clearFilter();
+        fondue.status("Filters cleared!",1);
+    }
+
+    performFiltration(e, trg=e.target) {
+        let grid = fondue.table;
+        if(!grid) {
+            fondue.status("Filters are only applicable after the grid has been rendered!",3);
+            return false;
+        }
+
+        window.fondue.gui.clearFilters()
+
+
+        trg.style.display="none";
+        qs(`.micro-cleanse[data-filter="${trg.dataset.filter}"]`).style.display="inline-block";
+
+        
+        let textualSearchField = document.querySelector('#searchByString'),
+            textualSearchValue = (textualSearchField.value === '') ? null : textualSearchField.value;
+
+        
+        if(textualSearchField) 
+            fondue.table.setFilter([
+                [{field:'description', type:'like', value:textualSearchValue},
+                {field:'summary', type:'like', value:textualSearchValue},
+                {field:'assigneeName', type:'like', value:textualSearchValue},
+                {field:'component', type:'like', value:textualSearchValue},
+                {field:'issueKey', type:'like', value:textualSearchValue}]
+            ])
+        fondue.status("Filters set!",1);
+        
     }
 
     initializeCoreGUI() {

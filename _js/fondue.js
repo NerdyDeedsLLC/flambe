@@ -65,7 +65,7 @@ class Fondue {
         statusMsg.className = 'status-message severity-' + severity;
         statusMsg.style = `animation: ${duration}ms fade forwards;`;
         statusMsg.innerHTML = text;
-        document.querySelector("#status-overlay").insertAdjacentElement('beforeEnd', statusMsg);z
+        document.querySelector("#status-overlay").insertAdjacentElement('beforeEnd', statusMsg);
         setTimeout(()=>statusMsg.remove(), duration);
         
     }
