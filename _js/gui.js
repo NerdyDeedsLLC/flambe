@@ -426,7 +426,7 @@ export default class GUI {
                 {field:'issueKey', type:'like', value:textualSearchValue}]
             ])
         fondue.status("Filters set!",1);
-        
+        fondue.table.bindRightClickMenu();
     }
 
     initializeCoreGUI() {

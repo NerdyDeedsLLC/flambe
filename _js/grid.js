@@ -372,6 +372,10 @@ function instantiateGrid () {
             }            
             return pyroList;
         }
+
+        fondue.table.bindRightClickMenu = overrideLinkContextMenu;
+
+
         return;
     })
     
