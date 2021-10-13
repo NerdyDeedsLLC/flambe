@@ -396,5 +396,6 @@ function instantiateGrid () {
     })
     .then(()=>overrideLinkContextMenu('a'))
     .then(()=>console.log('fondue.table :', fondue.table)||fondue.table);
+    .then(()=>overrideLinkContextMenu('a'))
     }
 export default setTimeout(instantiateGrid, 1000);
