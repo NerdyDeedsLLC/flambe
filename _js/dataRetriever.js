@@ -298,8 +298,12 @@ export default class DataRetriever {
                 },
                 callBack: this.seedSprints
             },
+            /*
+                The reson the startAt value is set below is that Jira will ONLY pull 50 sprints, and we have to dictate the point of origin.
+                Every year or so, that number should be changed.
+            */
             sprints: {
-                url: 'https://jirasw.t-mobile.com/rest/agile/1.0/board/8455/sprint?maxResults=150',
+                url: 'https://jirasw.t-mobile.com/rest/agile/1.0/board/8455/sprint?maxResults=250&startAt=49',
                 destination:'sprints',
                 cleanup: records=>{
                 // console.log('records :', records);
