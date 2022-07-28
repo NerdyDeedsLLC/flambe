@@ -1,61 +1,41 @@
 {
-  "name": "flambe",
-  "version": "1.0.0",
-  "description": "An Excel-ent way of persuading JIRA to provide burndown charts for the current iteration",
-  "main": "index.js",
+  "name": "flambe2",
+  "version": "2.0.0",
+  "description": "",
+  "main": "gulp",
   "scripts": {
-    "test": "test"
+    "test": "flambe"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/NerdyDeedsLLC/flambe.git"
   },
-  "keywords": [
-    "flambe",
-    "jira",
-    "excel",
-    "burndown",
-    "chart"
-  ],
-  "author": "@JJ (NerdyDeeds, LLC)",
-  "license": "SEE LICENSE IN ./license.md",
+  "author": "",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/NerdyDeedsLLC/flambe/issues"
   },
   "homepage": "https://github.com/NerdyDeedsLLC/flambe#readme",
   "dependencies": {
-    "exceljs": "^4.2.0"
+    "exceljs": "^4.3.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.8",
-    "@typescript-eslint/eslint-plugin": "^4.16.1",
-    "@typescript-eslint/parser": "^4.16.1",
-    "async": "^3.2.0",
-    "browser-sync": "^2.26.14",
-    "eslint": "^7.21.0",
+    "babel": "^6.23.0",
+    "browser-sync": "^2.27.10",
     "gulp": "^4.0.2",
-    "gulp-autoprefixer": "^7.0.1",
+    "gulp-autoprefixer": "^8.0.0",
     "gulp-babel": "^8.0.0",
-    "gulp-changed": "^4.0.2",
+    "gulp-changed": "^4.0.3",
     "gulp-cli": "^2.3.0",
-    "gulp-fn": "0.0.3",
-    "gulp-notify": "^3.2.0",
-    "gulp-postcss": "^9.0.0",
-    "gulp-run-command": "0.0.10",
-    "gulp-sass": "^4.1.0",
+    "gulp-fn": "^0.0.3",
+    "gulp-notify": "^4.0.0",
+    "gulp-postcss": "^9.0.1",
+    "gulp-run-command": "^0.0.10",
+    "gulp-sass": "^5.1.0",
     "gulp-shell": "^0.8.0",
     "gulp-streamify": "^1.0.2",
-    "gulp-watch": "^5.0.1",
-    "known-css-properties": "^0.21.0",
-    "minimatch": "^3.0.2",
-    "postcss": "^8.2.7",
-    "request": "^2.88.2",
-    "rucksack-css": "^1.0.2",
-    "sass": "^1.32.8"
-  },
-  "browserslist": [
-    "last 1 version",
-    "> 1%",
-    "IE 10"
-  ]
+    "node-sass": "^7.0.1",
+    "postcss": "^8.4.14",
+    "rucksack-css": "^1.0.2"
+  }
 }

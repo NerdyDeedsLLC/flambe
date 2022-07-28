@@ -20,7 +20,7 @@ var gulp, sass, babel, autoprefixer, shell, postcss, rucksack, bigBrother, runCL
 
 gulp         = require('gulp');
 
-sass         = require('gulp-sass');                            // Provides CSS PRE-processing (via a light-weight wrapper around node-sass, itself a Node binding for libsass/Sass)
+sass         = require('gulp-sass')(require('node-sass'));                            // Provides CSS PRE-processing (via a light-weight wrapper around node-sass, itself a Node binding for libsass/Sass)
 babel        = require('gulp-babel');                           // Automatically converts ES6 code into CommonJS
 autoprefixer = require('gulp-autoprefixer');                    // Applies prefixes for common and popular platforns and browsers (-ms-, -webkit-)
 runCLICmd    = require('gulp-run-command').default;             // Allows for the execution of Bash shell commands directly from gulp.
